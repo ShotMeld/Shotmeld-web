@@ -1,3 +1,11 @@
 # Shotmeld-web
 
-这是 Shotmeld 的 web 站点
+## 快速开始
+
+```
+git clone https://github.com/ShotMeld/Shotmeld-web.git
+
+npm install
+
+npm run dev
+```
