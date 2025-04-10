@@ -1,27 +1,46 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import Register from '../components/Register.vue'
-import Login from '../components/Login.vue'
+import LoginPage from '../components/LoginPage.vue'
+import RegisterPage from '../components/RegisterPage.vue'
+import ProfilePage from '../components/ProfilePage.vue'
 
 const routes = [
   {
     path: '/',
-    redirect: '/register'
+    redirect: '/login'
   },
   {
     path: '/register',
     name: 'Register',
-    component: Register
+    component: RegisterPage
   },
   {
     path: '/login',
     name: 'Login',
-    component: Login
+    component: LoginPage
+  },
+  {
+    path: '/profile',
+    name: 'Profile',
+    component: ProfilePage,
+    meta: { requiresAuth: true }
   }
 ]
 
 const router = createRouter({
   history: createWebHistory(),
   routes
+})
+
+// 添加导航守卫，保护需要登录的页面
+router.beforeEach((to, from, next) => {
+  const requiresAuth = to.matched.some(record => record.meta.requiresAuth)
+  const isAuthenticated = localStorage.getItem('token')
+  
+  if (requiresAuth && !isAuthenticated) {
+    next('/login')
+  } else {
+    next()
+  }
 })
 
 export default router
