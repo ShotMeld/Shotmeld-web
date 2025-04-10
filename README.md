@@ -5,7 +5,7 @@
 ```
 git clone https://github.com/ShotMeld/Shotmeld-web.git
 
-npm install
+yarn install
 
-npm run dev
+yarn dev
 ```
