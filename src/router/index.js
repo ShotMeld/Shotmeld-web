@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import LoginPage from '../components/LoginPage.vue'
 import RegisterPage from '../components/RegisterPage.vue'
 import ProfilePage from '../components/ProfilePage.vue'
+import AIRecognitionPage from '../components/AIRecognitionPage.vue'
 
 const routes = [
   {
@@ -22,6 +23,12 @@ const routes = [
     path: '/profile',
     name: 'Profile',
     component: ProfilePage,
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/ai-recognition',
+    name: 'AIRecognition',
+    component: AIRecognitionPage,
     meta: { requiresAuth: true }
   }
 ]
