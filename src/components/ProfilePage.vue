@@ -17,10 +17,7 @@
           <span class="value id-text">{{ user.id }}</span>
         </div>
       </div>
-      <div class="button-group">
-        <button @click="goToAIRecognition" class="md-button primary">AI 图像识别</button>
-        <button @click="handleLogout" class="md-button outlined">退出登录</button>
-      </div>
+      <button @click="handleLogout" class="md-button outlined">退出登录</button>
     </div>
   </div>
 </template>
@@ -55,9 +52,6 @@ export default {
       localStorage.removeItem('token');
       localStorage.removeItem('user');
       this.$router.push('/login');
-    },
-    goToAIRecognition() {
-      this.$router.push('/ai-recognition');
     }
   }
 }
@@ -141,14 +135,6 @@ h1 {
   font-size: 0.9rem;
 }
 
-.button-group {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  width: 100%;
-  max-width: 200px;
-}
-
 .md-button {
   padding: 14px 24px;
   border: none;
@@ -171,19 +157,6 @@ h1 {
 }
 
 .md-button.outlined:active {
-  transform: scale(0.98);
-}
-
-.md-button.primary {
-  background-color: #6750a4;
-  color: white;
-}
-
-.md-button.primary:hover {
-  background-color: #5c4693;
-}
-
-.md-button.primary:active {
   transform: scale(0.98);
 }
 </style>

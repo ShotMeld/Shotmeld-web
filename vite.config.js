@@ -1,16 +1,7 @@
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 
-// https://vitejs.dev/config/
+// https://vite.dev/config/
 export default defineConfig({
   plugins: [vue()],
-  server: {
-    proxy: {
-      '/baidu': {
-        target: 'https://aip.baidubce.com',
-        changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/baidu/, '')
-      }
-    }
-  }
 })
