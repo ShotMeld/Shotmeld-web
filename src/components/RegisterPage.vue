@@ -9,8 +9,10 @@
             v-model="formData.email"
             required
             class="md-input"
+            :class="{ 'error-input': emailError }"
           />
           <label>邮箱地址</label>
+          <span v-if="emailError" class="error-message">{{ emailError }}</span>
         </div>
         <div class="input-group">
           <input
@@ -18,8 +20,10 @@
             v-model="formData.username"
             required
             class="md-input"
+            :class="{ 'error-input': usernameError }"
           />
           <label>用户名</label>
+          <span v-if="usernameError" class="error-message">{{ usernameError }}</span>
         </div>
         <div class="input-group">
           <input
@@ -53,11 +57,38 @@ export default {
         username: '',
         password: ''
       },
-      loading: false
+      loading: false,
+      usernameError: '',
+      emailError: ''
+    }
+  },
+  watch: {
+    'formData.username'(newVal) {
+      this.usernameError = this.validateUsername(newVal);
+    },
+    'formData.email'(newVal) {
+      this.emailError = this.validateEmail(newVal);
     }
   },
   methods: {
+    validateUsername(username) {
+      return username.includes('@') ? '用户名不能包含@符号' : '';
+    },
+    validateEmail(email) {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      return email && !emailRegex.test(email) ? '请输入有效的邮箱地址' : '';
+    },
     async handleRegister() {
+      if (this.usernameError || this.emailError) {
+        return;
+      }
+      // 验证用户名
+      const usernameError = this.validateUsername(this.formData.username);
+      if (usernameError) {
+        alert(usernameError);
+        return;
+      }
+      
       try {
         this.loading = true;
         const response = await axios.post('http://120.55.78.33:3000/auth/register', this.formData);
@@ -79,12 +110,16 @@ export default {
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background-color: #f8f9fa;
   padding: 16px;
+  background-image: url('../assets/photo-bg.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
 .card {
-  background: #ffffff;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(10px);
   border-radius: 28px;
   padding: 32px;
   width: 100%;
@@ -108,7 +143,7 @@ h1 {
 
 .input-group {
   position: relative;
-  margin-bottom: 24px;
+  margin-bottom: 40px;
 }
 
 .md-input {
@@ -127,6 +162,22 @@ h1 {
   box-shadow: 0 0 0 4px rgba(103, 80, 164, 0.1);
 }
 
+.md-input + label {
+  position: absolute;
+  left: 16px;
+  top: -20px;
+  transform: scale(0.8);
+  transform-origin: left;
+  pointer-events: none;
+}
+
+.md-input:focus + label,
+.md-input:not(:placeholder-shown) + label {
+  top: -20px;
+  transform: scale(0.8);
+  transform-origin: left;
+}
+
 label {
   position: absolute;
   left: 16px;
@@ -136,15 +187,16 @@ label {
   transition: all 0.2s;
   pointer-events: none;
   font-size: 1rem;
+  background: transparent;
 }
 
 .md-input:focus + label,
 .md-input:not(:placeholder-shown) + label {
-  top: 0;
-  transform: translateY(-50%) scale(0.8);
-  background: white;
-  padding: 0 8px;
+  top: -25px;
+  transform: scale(0.8);
+  background: transparent;
   color: #6750a4;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
 .md-button {
@@ -194,5 +246,17 @@ label {
 
 .text-link:hover {
   color: #7c63b9;
+}
+
+.error-input {
+  border-color: #dc3545 !important;
+}
+
+.error-message {
+  color: #dc3545;
+  font-size: 0.875rem;
+  position: absolute;
+  bottom: -22px;
+  left: 16px;
 }
 </style>
