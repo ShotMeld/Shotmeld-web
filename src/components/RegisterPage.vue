@@ -118,19 +118,18 @@ export default {
 }
 
 .card {
-  background: rgba(255, 255, 255, 0.9);
+  background-color: rgba(255, 255, 255, 0.8);
   backdrop-filter: blur(10px);
   border-radius: 28px;
   padding: 32px;
   width: 100%;
   max-width: 400px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-  transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  transition: box-shadow 0.2s;
 }
 
 .card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.5);
 }
 
 h1 {
@@ -150,7 +149,7 @@ h1 {
   width: 100%;
   padding: 12px 16px;
   font-size: 1rem;
-  border: 2px solid #e0e0e0;
+  border: 2px solid #4b4b4b8a;
   border-radius: 12px;
   background: transparent;
   transition: border-color 0.2s, box-shadow 0.2s;
