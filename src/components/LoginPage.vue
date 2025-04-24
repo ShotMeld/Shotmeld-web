@@ -33,43 +33,43 @@
 </template>
 
 <script>
-import axios from 'axios';
-
-export default {
-  name: 'LoginPage',
-  data() {
-    return {
-      formData: {
-        email: '',
-        password: ''
-      },
-      loading: false
-    }
-  },
+     export default {
+        name: 'LoginPage',
+        data() {
+     return {
+          formData: {
+            email: '',
+            password: ''
+          },
+          loading: false
+         }
+     },
   methods: {
     async handleLogin() {
       try {
         this.loading = true;
         const response = await axios.post('http://120.55.78.33:3000/auth/login', this.formData);
-        const { token, user } = response.data;
-        
-        // 保存 token 和用户信息
+        const {token, user} = response.data;
+
+         // 保存 token 和用户信息
         localStorage.setItem('token', token);
         localStorage.setItem('user', JSON.stringify(user));
-        
+
         // 设置默认请求头
         axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-        
-        this.$router.push('/profile');
-      } catch (error) {
-        alert(error.response?.data?.message || '登录失败，请重试');
-      } finally {
-        this.loading = false;
-      }
+
+      // 跳转到照片墙页面
+       this.$router.push('/photowall');
+       } catch (error) {
+         alert(error.response?.data?.message || '登录失败，请重试');
+        } finally {
+      this.loading = false;
+       }
     }
   }
 }
 </script>
+
 
 <style scoped>
 .page-container {
