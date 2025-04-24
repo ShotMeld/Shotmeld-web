@@ -9,7 +9,11 @@
 
         <div class="photo-wall-content">
             <h1>照片墙</h1>
-
+             <PhotoDetail 
+                v-if="currentPhoto" 
+                :photo="currentPhoto" 
+                @photo-deleted="handlePhotoDeleted"
+                />
             <div class="photo-input">
                 <input v-model="photoId" type="number" placeholder="输入照片ID" min="1">
                 <button @click="fetchPhoto" :disabled="loading">
@@ -52,6 +56,13 @@ export default {
         }
     },
     methods: {
+         handlePhotoDeleted(deletedPhotoId) {
+            if (this.currentPhoto && this.currentPhoto.id === deletedPhotoId) {
+                this.currentPhoto = null
+                this.photoId = ''
+            } 
+        },
+
         async fetchPhoto() {
             if (!this.photoId) {
                 this.error = '请输入照片ID'
@@ -81,6 +92,9 @@ export default {
             } finally {
                 this.loading = false
             }
+      
+    },
+         
         },
         handleLogout() {
             // 清除本地存储
@@ -94,7 +108,7 @@ export default {
             this.$router.push('/login')
         }
     }
-}
+
 </script>
 
 <style scoped>
