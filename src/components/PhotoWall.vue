@@ -63,6 +63,28 @@ export default {
                 this.photoId = ''
             } 
         },
+        handlePhotoUpdated(updatedPhoto) {
+  
+         if (this.currentPhoto && this.currentPhoto.id ===   updatedPhoto.id) {
+                this.currentPhoto = updatedPhoto
+            }
+              // 更新时间轴数据
+         this.timelineData = this.timelineData.map(yearGroup => ({
+           ...yearGroup,
+         months: yearGroup.months.map(monthGroup => ({
+         ...monthGroup,
+            photos: monthGroup.photos.map(photo => 
+         photo.id === updatedPhoto.id ? updatedPhoto : photo
+        )
+        }))
+     }))
+  
+    this.$notify({
+        title: '成功',
+        message: '照片信息已更新',
+        type: 'success'
+      })
+    },
 
         async fetchPhoto() {
             if (!this.photoId) {
