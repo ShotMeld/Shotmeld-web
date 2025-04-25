@@ -5,6 +5,7 @@
                 <span>欢迎, {{ userName }}</span>
                 <button @click="handleLogout" class="logout-button">登出</button>
             </div>
+            <router-link to="/timeline" class="nav-link">时间轴</router-link>
         </header>
 
         <div class="photo-wall-content">

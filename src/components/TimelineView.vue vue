@@ -1,0 +1,216 @@
+<template>
+  <div class="timeline-view">
+    <h1>照片时间轴</h1>
+    
+    <div class="timeline-controls">
+      <button @click="fetchTimeline" :disabled="loading" class="refresh-btn">
+        {{ loading ? '加载中...' : '刷新时间轴' }}
+      </button>
+    </div>
+    
+    <div v-if="error" class="error-message">{{ error }}</div>
+    
+    <div class="timeline-container" v-if="timelineData.length > 0">
+      <div v-for="yearGroup in timelineData" :key="yearGroup.year" class="year-group">
+        <h2 class="year-header">{{ yearGroup.year }}年</h2>
+        
+        <div v-for="monthGroup in yearGroup.months" :key="monthGroup.month" class="month-group">
+          <h3 class="month-header">{{ monthGroup.month }}月</h3>
+          
+          <div class="photos-grid">
+            <div v-for="photo in monthGroup.photos" :key="photo.id" class="photo-card">
+              <img :src="photo.url" :alt="photo.title" @click="showPhotoDetail(photo)">
+              <div class="photo-info">
+                <p class="photo-title">{{ photo.title || '无标题' }}</p>
+                <p class="photo-date">{{ formatDate(photo.createdAt) }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div v-else-if="!loading" class="empty-message">
+      暂无照片，请上传照片或稍后再试
+    </div>
+    
+    <PhotoDetail 
+      v-if="selectedPhoto" 
+      :photo="selectedPhoto" 
+      @close="selectedPhoto = null"
+      @photo-deleted="handlePhotoDeleted"
+    />
+  </div>
+</template>
+
+<script>
+import PhotoDetail from './PhotoDetail.vue'
+
+export default {
+  name: 'TimelineView',
+  components: {
+    PhotoDetail
+  },
+  data() {
+    return {
+      timelineData: [],
+      loading: false,
+      error: '',
+      selectedPhoto: null
+    }
+  },
+  created() {
+    this.fetchTimeline()
+  },
+  methods: {
+    async fetchTimeline() {
+      this.loading = true
+      this.error = ''
+      
+      try {
+        const response = await this.$http.get('/timeline')
+        this.timelineData = response.data
+      } catch (err) {
+        console.error('获取时间轴失败:', err)
+        this.error = err.response?.data?.message || '获取时间轴失败，请重试'
+      } finally {
+        this.loading = false
+      }
+    },
+    formatDate(dateString) {
+      const date = new Date(dateString)
+      return `${date.getFullYear()}年${date.getMonth() + 1}月${date.getDate()}日`
+    },
+    showPhotoDetail(photo) {
+      this.selectedPhoto = photo
+    },
+    handlePhotoDeleted(deletedPhotoId) {
+      // 从时间轴中移除已删除的照片
+      this.timelineData = this.timelineData.map(yearGroup => ({
+        ...yearGroup,
+        months: yearGroup.months.map(monthGroup => ({
+          ...monthGroup,
+          photos: monthGroup.photos.filter(photo => photo.id !== deletedPhotoId)
+        })).filter(monthGroup => monthGroup.photos.length > 0)
+      })).filter(yearGroup => yearGroup.months.length > 0)
+      
+      this.selectedPhoto = null
+    }
+  }
+}
+</script>
+
+<style scoped>
+.timeline-view {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.timeline-controls {
+  margin: 20px 0;
+  text-align: right;
+}
+
+.refresh-btn {
+  padding: 8px 16px;
+  background-color: #42b983;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.refresh-btn:hover {
+  background-color: #369f6b;
+}
+
+.refresh-btn:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.error-message {
+  color: #ff4444;
+  padding: 10px;
+  background-color: #fff5f5;
+  border-radius: 4px;
+  text-align: center;
+  margin: 20px 0;
+}
+
+.empty-message {
+  text-align: center;
+  color: #888;
+  margin: 40px 0;
+  font-size: 1.2em;
+}
+
+.timeline-container {
+  margin-top: 30px;
+}
+
+.year-group {
+  margin-bottom: 40px;
+}
+
+.year-header {
+  font-size: 1.8em;
+  color: #333;
+  border-bottom: 2px solid #eee;
+  padding-bottom: 10px;
+  margin-bottom: 20px;
+}
+
+.month-group {
+  margin-bottom: 30px;
+}
+
+.month-header {
+  font-size: 1.4em;
+  color: #555;
+  margin-bottom: 15px;
+}
+
+.photos-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 20px;
+}
+
+.photo-card {
+  border: 1px solid #eee;
+  border-radius: 8px;
+  overflow: hidden;
+  transition: transform 0.2s, box-shadow 0.2s;
+  cursor: pointer;
+}
+
+.photo-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.photo-card img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+
+.photo-info {
+  padding: 12px;
+}
+
+.photo-title {
+  font-weight: bold;
+  margin-bottom: 5px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.photo-date {
+  color: #888;
+  font-size: 0.9em;
+}
+</style>

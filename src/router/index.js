@@ -23,6 +23,12 @@ const routes = [
     name: 'Profile',
     component: ProfilePage,
     meta: { requiresAuth: true }
+  },
+  {
+    path: '/timeline',
+    name: 'Timeline',
+    component: () => import('../views/TimelineView.vue'),
+    meta: { requiresAuth: true }
   }
 ]
 
