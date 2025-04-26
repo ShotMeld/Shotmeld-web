@@ -5,12 +5,12 @@
       <form @submit.prevent="handleLogin">
         <div class="input-group">
           <input
-            type="email"
-            v-model="formData.email"
+            type="text"
+            v-model="formData.account"
             required
             class="md-input"
           />
-          <label>邮箱地址</label>
+          <label>用户名或邮箱地址</label>
         </div>
         <div class="input-group">
           <input
@@ -33,17 +33,19 @@
 </template>
 
 <script>
-     export default {
-        name: 'LoginPage',
-        data() {
-     return {
-          formData: {
-            email: '',
-            password: ''
-          },
-          loading: false
-         }
-     },
+import axios from 'axios';
+
+export default {
+  name: 'LoginPage',
+  data() {
+    return {
+      formData: {
+        account: '',
+        password: ''
+      },
+      loading: false
+    }
+  },
   methods: {
     async handleLogin() {
       try {
@@ -77,23 +79,27 @@
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background-color: #f8f9fa;
   padding: 16px;
+  background-image: url('../assets/photo-bg.jpg');
+  /* TODO: 背景图换成自动API，两边都要改 */
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
 .card {
-  background: #ffffff;
+  background-color: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(10px);
   border-radius: 28px;
   padding: 32px;
   width: 100%;
   max-width: 400px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-  transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+  transition: box-shadow 0.2s;
 }
 
 .card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.5);
 }
 
 h1 {
@@ -113,7 +119,7 @@ h1 {
   width: 100%;
   padding: 12px 16px;
   font-size: 1rem;
-  border: 2px solid #e0e0e0;
+  border: 2px solid #4b4b4b8a;
   border-radius: 12px;
   background: transparent;
   transition: border-color 0.2s, box-shadow 0.2s;
@@ -125,6 +131,22 @@ h1 {
   box-shadow: 0 0 0 4px rgba(103, 80, 164, 0.1);
 }
 
+.md-input + label {
+  position: absolute;
+  left: 16px;
+  top: -20px;
+  transform: scale(0.8);
+  transform-origin: left;
+  pointer-events: none;
+}
+
+.md-input:focus + label,
+.md-input:not(:placeholder-shown) + label {
+  top: -20px;
+  transform: scale(0.8);
+  transform-origin: left;
+}
+
 label {
   position: absolute;
   left: 16px;
@@ -134,15 +156,16 @@ label {
   transition: all 0.2s;
   pointer-events: none;
   font-size: 1rem;
+  background: transparent;
 }
 
 .md-input:focus + label,
 .md-input:not(:placeholder-shown) + label {
-  top: 0;
-  transform: translateY(-50%) scale(0.8);
-  background: white;
-  padding: 0 8px;
+  top: -25px;
+  transform: scale(0.8);
+  background: transparent;
   color: #6750a4;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
 .md-button {
