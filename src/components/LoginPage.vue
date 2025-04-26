@@ -6,7 +6,7 @@
         <div class="input-group">
           <input
             type="text"
-            v-model="formData.account"
+            v-model="formData.emailOrUsername"
             required
             class="md-input"
           />
@@ -40,7 +40,7 @@ export default {
   data() {
     return {
       formData: {
-        account: '',
+        emailOrUsername: '',
         password: ''
       },
       loading: false
