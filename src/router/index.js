@@ -27,7 +27,7 @@ const routes = [
   {
     path: '/timeline',
     name: 'Timeline',
-    component: () => import('../views/TimelineView.vue'),
+    component: () => import('../components/TimelineView.vue'),
     meta: { requiresAuth: true }
   }
 ]
