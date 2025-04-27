@@ -9,8 +9,10 @@
             v-model="formData.emailOrUsername"
             required
             class="md-input"
+            @focus="handleInputFocus"
+            @blur="handleInputBlur"
           />
-          <label>用户名或邮箱地址</label>
+          <label :class="{ 'active': isEmailFocused || formData.emailOrUsername }">用户名或邮箱地址</label>
         </div>
         <div class="input-group">
           <input
@@ -18,11 +20,16 @@
             v-model="formData.password"
             required
             class="md-input"
+            @focus="handlePasswordFocus"
+            @blur="handlePasswordBlur"
           />
-          <label>密码</label>
+          <label :class="{ 'active': isPasswordFocused || formData.password }">密码</label>
         </div>
         <button type="submit" :disabled="loading" class="md-button">
-          <span class="button-content">{{ loading ? '登录中...' : '登录' }}</span>
+          <span class="button-content">
+            <span v-if="loading" class="button-loader"></span>
+            {{ loading ? '登录中...' : '登录' }}
+          </span>
         </button>
         <div class="additional-links">
           <router-link to="/register" class="text-link">没有账号？立即注册</router-link>
@@ -43,35 +50,73 @@ export default {
         emailOrUsername: '',
         password: ''
       },
-      loading: false
+      loading: false,
+      isEmailFocused: false,
+      isPasswordFocused: false
     }
   },
   methods: {
+    handleInputFocus() {
+      this.isEmailFocused = true;
+    },
+    handleInputBlur() {
+      this.isEmailFocused = false;
+    },
+    handlePasswordFocus() {
+      this.isPasswordFocused = true;
+    },
+    handlePasswordBlur() {
+      this.isPasswordFocused = false;
+    },
     async handleLogin() {
       try {
         this.loading = true;
-        const response = await axios.post('http://120.55.78.33:3000/auth/login', this.formData);
-        const {token, user} = response.data;
+        
+        // 基本输入验证
+        if (!this.formData.emailOrUsername || !this.formData.password) {
+          throw new Error('请输入用户名/邮箱和密码');
+        }
 
-         // 保存 token 和用户信息
+        const response = await axios.post('http://120.55.78.33:3000/auth/login', {
+          emailOrUsername: this.formData.emailOrUsername,
+          password: this.formData.password
+        });
+
+        const { token, user } = response.data;
+
+        // 保存认证信息
         localStorage.setItem('token', token);
         localStorage.setItem('user', JSON.stringify(user));
 
-        // 设置默认请求头
+        // 设置axios默认请求头
         axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 
-      // 跳转到照片墙页面
-       this.$router.push('/photowall');
-       } catch (error) {
-         alert(error.response?.data?.message || '登录失败，请重试');
-        } finally {
-      this.loading = false;
-       }
+        // 确保路由跳转前完成状态更新
+        await this.$nextTick();
+
+        // 跳转到照片墙页面
+        this.$router.push({ path: '/photowall', replace: true });
+        
+      } catch (error) {
+        let errorMessage = '登录失败，请重试';
+        if (error.response) {
+          errorMessage = error.response.data.message || errorMessage;
+        } else if (error.message) {
+          errorMessage = error.message;
+        }
+        
+        this.$notify.error({
+          title: '登录错误',
+          message: errorMessage
+        });
+        
+      } finally {
+        this.loading = false;
+      }
     }
   }
 }
 </script>
-
 
 <style scoped>
 .page-container {
@@ -215,5 +260,42 @@ label {
 
 .text-link:hover {
   color: #7c63b9;
+}
+.page-container {
+  /* 添加渐变遮罩提升文字可读性 */
+  background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url('../assets/photo-bg.jpg');
+  background-size: cover;
+  background-position: center;
+}
+
+.button-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.button-loader {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: white;
+  animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@media (max-width: 480px) {
+  .card {
+    padding: 24px;
+    margin: 0 16px;
+  }
+  
+  h1 {
+    font-size: 1.8rem;
+  }
 }
 </style>

@@ -19,6 +19,12 @@ const routes = [
     component: LoginPage
   },
   {
+    path: '/photowall',
+    name: 'PhotoWall',
+    component: () => import('../components/PhotoWall.vue'),
+    meta: { requiresAuth: true }
+  },
+  {
     path: '/profile',
     name: 'Profile',
     component: ProfilePage,
