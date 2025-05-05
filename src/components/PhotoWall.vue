@@ -47,6 +47,11 @@
             <span v-if="loading" class="button-loader"></span>
             <span v-else>搜索</span>
           </button>
+            <div class="action-bar">
+        <button @click="showAlbumForm = true" class="create-album-button">
+          <i class="fas fa-plus"></i> 创建相册
+        </button>
+      </div>
         </div>
       </div>
 
@@ -145,15 +150,30 @@
           </button>
         </div>
       </transition>
+<transition name="modal">
+        <div v-if="showAlbumForm" class="modal-overlay">
+          <div class="modal-container">
+            <AlbumForm 
+              @success="handleAlbumCreated"
+              @cancel="showAlbumForm = false"
+              @close="showAlbumForm = false"
+            />
+          </div>
+        </div>
+      </transition>
     </main>
   </div>
 </template>
 
 <script>
 import axios from 'axios'
+import AlbumForm from '../components/AlbumForm.vue'
 
 export default {
   name: 'PhotoWall',
+  components: {
+    AlbumForm,
+  },
   data() {
     return {
       photoId: '',
@@ -161,7 +181,8 @@ export default {
       error: '',
       loading: false,
       userName: '',
-      imageLoaded: false
+      imageLoaded: false,
+      showAlbumForm: false,
     }
   },
   created() {
@@ -171,6 +192,15 @@ export default {
     }
   },
   methods: {
+     handleAlbumCreated(newAlbum) {
+      this.showAlbumForm = false
+      this.$notify({
+        title: '成功',
+        message: `相册"${newAlbum.name}"已创建`,
+        type: 'success'
+      })
+      // 这里可以添加逻辑来更新相册列表
+    },
     formatDate(dateString) {
       if (!dateString) return '未知日期'
       const date = new Date(dateString)
@@ -737,5 +767,72 @@ body {
   .photo-actions {
     flex-direction: column;
   }
+}
+.action-bar {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 20px;
+}
+
+.create-album-button {
+  background-color: #4361ee;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 16px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: background-color 0.3s;
+}
+
+.create-album-button:hover {
+  background-color: #3a56d4;
+}
+
+.create-album-button i {
+  font-size: 0.9rem;
+}
+
+/* 模态框样式 */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-container {
+  background-color: white;
+  border-radius: 12px;
+  max-width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+/* 模态框过渡动画 */
+.modal-enter-active, .modal-leave-active {
+  transition: opacity 0.3s;
+}
+.modal-enter, .modal-leave-to {
+  opacity: 0;
+}
+
+.modal-enter-active .modal-container,
+.modal-leave-active .modal-container {
+  transition: transform 0.3s;
+}
+.modal-enter .modal-container,
+.modal-leave-to .modal-container {
+  transform: translateY(-20px);
 }
 </style>
