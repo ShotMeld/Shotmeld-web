@@ -1,6 +1,5 @@
 name: Deploy Vue App
 
-# 当 push 到 main 分支时触发此 workflow
 on:
   push:
     branches:
@@ -8,114 +7,99 @@ on:
 
 jobs:
   deploy:
-    # 在最新的 Ubuntu 环境中运行此 job
     runs-on: ubuntu-latest
 
     steps:
-      # 步骤 1: 检出代码到 GitHub Actions runner
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # 步骤 2: 设置 Node.js 环境 (需要 Node 来执行构建)
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20 # 或者你的项目需要的 Node.js 版本
 
-      # 步骤 3: 安装项目依赖 (如果 package.json 或 yarn.lock 有变化)
       - name: Install dependencies
-        run: npm install --force # 或 yarn install --force (使用 --force 是为了确保即使有锁文件差异也能安装，生产中慎用，这里为方便)
-        # 如果使用 yarn: run: yarn install
+        run: npm install --force # 或 yarn install --force
 
-      # 步骤 4: 构建 Vue 项目
       - name: Build Vue project
         run: npm run build # 或 yarn build
 
-      # 步骤 5: 通过 SSH 连接服务器并执行部署命令
-      # 使用一个 GitHub Action 来简化 SSH 操作
-      - name: Deploy to server
-        uses: appleboy/ssh-action@v1.0.3 # 使用一个稳定的版本
+      # --- 修改这里，使用 appleboy/ssh-action 执行 rsync 命令 ---
+      - name: Sync files to server using rsync over SSH
+        # 不需要 burnettrobot/rsync-deploy Action 了，直接用 ssh-action
+        uses: appleboy/ssh-action@v1.0.3
         with:
-          host: ${{ secrets.SERVER_IP }} # 从 GitHub Secret 获取服务器 IP
-          username: ${{ secrets.SSH_USER }} # 从 GitHub Secret 获取 SSH 用户名 (e.g., root)
-          key: ${{ secrets.SSH_PRIVATE_KEY }} # 从 GitHub Secret 获取 SSH 私钥
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 22 # SSH 端口，如果不是默认的 22 请修改
+          # 在服务器上执行的命令
           script: |
-            # --- 在 Ubuntu 服务器上执行的命令序列 ---
-
-            # 定义你的项目在服务器上的代码路径 (用于 git pull 等)
-            SERVER_PROJECT_PATH="/root/projects/Shotmeld-web"
-            # 定义 Nginx 的 Web 根目录 (Vue 构建产物存放的位置)
+            # 定义 Nginx 的 Web 根目录
             NGINX_WEB_ROOT="/var/www/shotmeld-web"
 
-            echo "Entering project directory on server..."
-            cd $SERVER_PROJECT_PATH || { echo "Failed to change directory"; exit 1; } # 进入项目目录，如果失败则退出
-
-            echo "Pulling latest code from Git..."
-            # 假设你的本地仓库已经关联了 origin 并跟踪了 main 分支
-            git pull origin main || { echo "Failed to pull code"; exit 1; }
-
-            echo "Installing dependencies on server (if needed)..."
-            # 在服务器上再次安装依赖，确保构建环境完整（如果你的构建需要依赖服务器环境，否则此步可选或需根据情况调整）
-            # 注意：通常构建在 GitHub Actions runner 上进行，然后传输构建结果。
-            # 但为了简化，这里假设构建步骤也可能依赖服务器环境或你希望在服务器上重新构建。
-            # 如果你已经在上面的 GitHub Actions runner 上构建了，并且只传输 build/dist 文件夹，下面的 npm install 和 npm run build 可以跳过。
-            # 然而，上面我们在 runner 上构建是为了演示完整的 CI/CD 流程，但如果直接复制构建结果，
-            # 那么这里的 npm install/run build 就不需要了。
-            # 考虑到你的问题是“推送时自动拉取”，我们修改思路：**让服务器拉取并构建**，Workflow 只负责触发和复制构建结果。
-
-            # *** 更推荐的部署方式：在 GitHub Actions 中构建，然后 rsync 部署 ***
-            # 上面的 SSH 脚本拉取并构建的方式 Node.js/npm 必须装在服务器上，且如果 build 输出很大，复制效率不高。
-            # 使用 rsync 将 GitHub Actions runner 上构建好的 dist 文件夹传输到服务器更高效。
-            # 我们采用 rsync 的方法。
-
-            echo "--- Starting rsync deployment ---"
-            # 此 SSH 脚本只负责在服务器上执行清理和重启 Nginx 的命令，
-            # 文件传输由下一步的 rsync action 完成。
-            # 确保 Nginx web root 目录存在且权限正确
+            # 确保目标目录存在且权限正确 (即使使用rsync，这个检查也很好)
             sudo mkdir -p $NGINX_WEB_ROOT
             sudo chown www-data:www-data $NGINX_WEB_ROOT
             sudo chmod 755 $NGINX_WEB_ROOT
 
-            # 可以选择在复制前清空目标目录（谨慎使用！）
-            # echo "Clearing previous build..."
+      # *** 重要：rsync 命令需要在 ssh-action 的环境中执行 ***
+      # appleboy/ssh-action 实际上并不能直接帮你同步文件，它只执行命令。
+      # 要在 runner 和服务器之间同步文件，我们需要一个支持文件同步的 action，
+      # 或者使用scp/rsync命令，但scp/rsync需要单独的认证或配置。
+
+      # 再次回到问题原点：如果 burnettrobot/rsync-deploy 真的无法用，
+      # 并且你不想配置更复杂的 scp/rsync 认证，最简单的替代是：
+      # 让服务器自己执行 git pull, build, copy, reload 的步骤。
+      # 这种方法需要服务器上有 Node.js/npm/git，并且 ssh_user 有权限执行这些命令。
+      # 我们回到之前 SSH Action 执行脚本的方案。
+
+      # --- 备选方案：使用 appleboy/ssh-action 在服务器执行拉取、构建、复制、重启 ---
+      # 这个方案在前面讨论过，适用于服务器有 Node/npm/git 环境
+      - name: Pull, Build, Copy, and Reload on Server
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SSH_USER }} # 例如 root
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: 22
+          script: |
+            # 定义项目在服务器上的代码路径
+            SERVER_PROJECT_PATH="/root/projects/Shotmeld-web"
+            # 定义 Nginx 的 Web 根目录
+            NGINX_WEB_ROOT="/var/www/shotmeld-web"
+
+            echo "Navigating to project directory on server..."
+            cd $SERVER_PROJECT_PATH || { echo "Failed to change directory"; exit 1; }
+
+            echo "Pulling latest code from Git..."
+            # 使用 --rebase 避免创建多余的合并提交，保持历史干净
+            git pull --rebase origin main || { echo "Failed to pull code"; exit 1; }
+
+            echo "Installing dependencies on server (if package.json changed)..."
+            # 强制安装依赖，确保环境是最新的
+            npm install --force || { echo "Failed to install dependencies"; exit 1; }
+            # 或 yarn install --force
+
+            echo "Building project on server..."
+            npm run build || { echo "Failed to build project"; exit 1; }
+            # 或 yarn build
+
+            echo "Deploying built files to Nginx web root..."
+            # 确保目标目录存在且权限正确
+            sudo mkdir -p $NGINX_WEB_ROOT
+            sudo chown www-data:www-data $NGINX_WEB_ROOT
+            sudo chmod 755 $NGINX_WEB_ROOT
+
+            # 复制新的构建文件到 Web 根目录
+            # 注意：先清空目标目录再复制可能更干净，但要确保 $NGINX_WEB_ROOT 非空且是你期望的目录
             # sudo rm -rf ${NGINX_WEB_ROOT}/*
+            sudo cp -rp ./dist/* $NGINX_WEB_ROOT/ || { echo "Failed to copy files"; exit 1; }
+
+            # 确保复制后的文件权限正确（因为sudo cp可能以root权限复制）
+            sudo chown -R www-data:www-data $NGINX_WEB_ROOT || { echo "Failed to set ownership"; exit 1; }
+            sudo chmod -R 755 $NGINX_WEB_ROOT || { echo "Failed to set permissions"; exit 1; }
 
             echo "Reloading Nginx to serve new files..."
-            # 重新加载 Nginx 配置，使其提供新的文件
-            # 如果你的 ssh_user 不是 root 且没有 sudoers 配置允许无密码 reload nginx，
-            # 你可能需要配置 sudoers 或编写一个脚本，用 root 用户定时检查标记文件并 reload Nginx
-            # 或者，如果你愿意，可以在 sudoers 中允许 www-data 用户执行特定的 reload 命令 (复杂且不推荐)
-            # 简单起见，如果你用 root SSH，sudo systemctl reload nginx 就可以。
-            # 如果用非root用户，且该用户有sudo权限并能输入密码，ssh-action 无法处理交互式密码。
-            # 最简单的自动化方式是让 ssh_user 在 sudoers 中配置无密码执行此特定命令。
-            # 例如，编辑 sudoers 文件 (sudo visudo)，添加一行：
-            # your_ssh_user ALL=(ALL) NOPASSWD: /usr/sbin/nginx -s reload,/usr/sbin/systemctl reload nginx
-            # 然后这里的命令就可以是 sudo systemctl reload nginx
-
-            # 假设你的 ssh_user 可以无密码执行 reload
             sudo systemctl reload nginx || { echo "Failed to reload Nginx"; exit 1; }
-            echo "Nginx reloaded."
-
-      # 步骤 6: 使用 rsync 将构建产物部署到服务器
-      # 这个 action 将 dist 文件夹从 runner 复制到服务器
-      - name: Deploy with rsync
-        uses: burnettrobot/rsync-deploy@5.0.0 # 使用 rsync 部署 Action
-        with:
-          # 原始目录 (在 GitHub Actions runner 上构建生成的 dist 目录)
-          # 假设你的构建命令生成 dist 目录在项目根目录
-          UPLOAD_DIST: ./dist/
-          # 目标服务器 IP
-          UPLOAD_SERVER: ${{ secrets.SERVER_IP }}
-          # 目标服务器 SSH 用户名
-          UPLOAD_USER: ${{ secrets.SSH_USER }}
-          # 目标服务器 SSH 私钥
-          UPLOAD_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-          # 目标服务器上的部署路径 (Nginx root 指令指向的目录)
-          UPLOAD_DEST: /var/www/shotmeld-web/
-          # 部署前是否清空目标目录 (谨慎使用，如果里面有Nginx其他文件)
-          # CLEANUP_BEFORE_UPLOAD: "true"
-          # 删除源目录中不存在的目标目录文件 (更安全，但会删除旧版本的文件)
-          # DELETE_AFTER_UPLOAD: "true"
-          # 更多 rsync 参数可以根据需要添加
-          # ARGS: "--verbose --archive --compress"
+            echo "Deployment complete."
