@@ -41,4 +41,13 @@ jobs:
             echo "Deploying built files to Nginx web root..."
             sudo mkdir -p $NGINX_WEB_ROOT
             sudo chown www-data:www-data $NGINX_WEB_ROOT || { echo "Failed to set initial ownership for web root"; exit 1; }
-            sudo chmod 755 $NGINX_WEB_ROOT || { echo "Failed to set initial permissions for web root"; exit
+            sudo chmod 755 $NGINX_WEB_ROOT || { echo "Failed to set initial permissions for web root"; exit 1; } # <-- 修正了这一行
+
+            sudo cp -rp ./dist/* $NGINX_WEB_ROOT/ || { echo "Failed to copy files from ./dist to $NGINX_WEB_ROOT"; exit 1; }
+
+            sudo chown -R www-data:www-data $NGINX_WEB_ROOT || { echo "Failed to set ownership for copied files"; exit 1; }
+            sudo chmod -R 755 $NGINX_WEB_ROOT || { echo "Failed to set permissions for copied files"; exit 1; }
+
+            echo "Reloading Nginx to serve new files..."
+            sudo systemctl reload nginx || { echo "Failed to reload Nginx"; exit 1; }
+            echo "Deployment complete."
