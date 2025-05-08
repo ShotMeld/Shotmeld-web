@@ -78,12 +78,10 @@ jobs:
 
             echo "Installing dependencies on server (if package.json changed)..."
             # 强制安装依赖，确保环境是最新的
-            npm install --force || { echo "Failed to install dependencies"; exit 1; }
-            # 或 yarn install --force
+            yarn install --force || { echo "Failed to install dependencies"; exit 1; }
 
             echo "Building project on server..."
-            npm run build || { echo "Failed to build project"; exit 1; }
-            # 或 yarn build
+            yarn build || { echo "Failed to build project"; exit 1; }
 
             echo "Deploying built files to Nginx web root..."
             # 确保目标目录存在且权限正确
