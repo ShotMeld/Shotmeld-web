@@ -30,7 +30,8 @@ jobs:
             cd $SERVER_PROJECT_PATH || { echo "Failed to change directory: $SERVER_PROJECT_PATH"; exit 1; }
 
             echo "Pulling latest code from Git..."
-            git pull --rebase origin main || { echo "Failed to pull code"; exit 1; }
+            git fetch origin main || { echo "Failed to fetch latest code"; exit 1; }
+            git reset --hard origin/main || { echo "Failed to reset to latest code"; exit 1; }
 
             echo "Installing dependencies on server..."
             yarn install --force || { echo "Failed to install dependencies"; exit 1; }
@@ -41,7 +42,7 @@ jobs:
             echo "Deploying built files to Nginx web root..."
             sudo mkdir -p $NGINX_WEB_ROOT
             sudo chown www-data:www-data $NGINX_WEB_ROOT || { echo "Failed to set initial ownership for web root"; exit 1; }
-            sudo chmod 755 $NGINX_WEB_ROOT || { echo "Failed to set initial permissions for web root"; exit 1; } # <-- 修正了这一行
+            sudo chmod 755 $NGINX_WEB_ROOT || { echo "Failed to set initial permissions for web root"; exit 1; }
 
             sudo cp -rp ./dist/* $NGINX_WEB_ROOT/ || { echo "Failed to copy files from ./dist to $NGINX_WEB_ROOT"; exit 1; }
 
