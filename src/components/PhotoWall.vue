@@ -4,7 +4,6 @@
     <nav class="app-navbar">
       <div class="navbar-brand">
         <router-link to="/photowall" class="logo-link">
-          <i class="logo-icon">📷</i>
           <span class="logo-text">ShotMeld</span>
         </router-link>
       </div>
