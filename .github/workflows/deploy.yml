@@ -19,10 +19,10 @@ jobs:
           node-version: 20 # 或者你的项目需要的 Node.js 版本
 
       - name: Install dependencies
-        run: npm install --force # 或 yarn install --force
+        run: yarn install --force # 或 yarn install --force
 
       - name: Build Vue project
-        run: npm run build # 或 yarn build
+        run: yarn build # 或 yarn build
 
       # --- 修改这里，使用 appleboy/ssh-action 执行 rsync 命令 ---
       - name: Sync files to server using rsync over SSH
