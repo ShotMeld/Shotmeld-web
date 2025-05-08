@@ -64,6 +64,9 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 22
           script: |
+            # --- 移除之前尝试 source profile 或 bashrc 的行 ---
+            # 因为我们将直接使用 yarn 的完整路径
+
             # 定义项目在服务器上的代码路径
             SERVER_PROJECT_PATH="/root/projects/Shotmeld-web"
             # 定义 Nginx 的 Web 根目录
@@ -73,28 +76,23 @@ jobs:
             cd $SERVER_PROJECT_PATH || { echo "Failed to change directory"; exit 1; }
 
             echo "Pulling latest code from Git..."
-            # 使用 --rebase 避免创建多余的合并提交，保持历史干净
             git pull --rebase origin main || { echo "Failed to pull code"; exit 1; }
 
             echo "Installing dependencies on server (if package.json changed)..."
-            # 强制安装依赖，确保环境是最新的
-            yarn install --force || { echo "Failed to install dependencies"; exit 1; }
+            # --- 使用 yarn 的完整路径来执行安装 ---
+            /root/.nvm/versions/node/v22.15.0/bin/yarn install --force || { echo "Failed to install dependencies"; exit 1; }
 
             echo "Building project on server..."
-            yarn build || { echo "Failed to build project"; exit 1; }
+            # --- 使用 yarn 的完整路径来执行构建 ---
+            /root/.nvm/versions/node/v22.15.0/bin/yarn build || { echo "Failed to build project"; exit 1; }
 
             echo "Deploying built files to Nginx web root..."
-            # 确保目标目录存在且权限正确
             sudo mkdir -p $NGINX_WEB_ROOT
             sudo chown www-data:www-data $NGINX_WEB_ROOT
             sudo chmod 755 $NGINX_WEB_ROOT
 
-            # 复制新的构建文件到 Web 根目录
-            # 注意：先清空目标目录再复制可能更干净，但要确保 $NGINX_WEB_ROOT 非空且是你期望的目录
-            # sudo rm -rf ${NGINX_WEB_ROOT}/*
             sudo cp -rp ./dist/* $NGINX_WEB_ROOT/ || { echo "Failed to copy files"; exit 1; }
 
-            # 确保复制后的文件权限正确（因为sudo cp可能以root权限复制）
             sudo chown -R www-data:www-data $NGINX_WEB_ROOT || { echo "Failed to set ownership"; exit 1; }
             sudo chmod -R 755 $NGINX_WEB_ROOT || { echo "Failed to set permissions"; exit 1; }
 
