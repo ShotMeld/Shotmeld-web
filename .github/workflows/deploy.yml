@@ -3,99 +3,42 @@ name: Deploy Vue App
 on:
   push:
     branches:
-      - main # 替换为你实际的主分支名称
+      - main
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20 # 或者你的项目需要的 Node.js 版本
-
-      - name: Install dependencies
-        run: yarn install --force # 或 yarn install --force
-
-      - name: Build Vue project
-        run: yarn build # 或 yarn build
-
-      # --- 修改这里，使用 appleboy/ssh-action 执行 rsync 命令 ---
-      - name: Sync files to server using rsync over SSH
-        # 不需要 burnettrobot/rsync-deploy Action 了，直接用 ssh-action
+      - name: Execute Deployment Script on Server
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.SERVER_IP }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          port: 22 # SSH 端口，如果不是默认的 22 请修改
-          # 在服务器上执行的命令
-          script: |
-            # 定义 Nginx 的 Web 根目录
-            NGINX_WEB_ROOT="/var/www/shotmeld-web"
-
-            # 确保目标目录存在且权限正确 (即使使用rsync，这个检查也很好)
-            sudo mkdir -p $NGINX_WEB_ROOT
-            sudo chown www-data:www-data $NGINX_WEB_ROOT
-            sudo chmod 755 $NGINX_WEB_ROOT
-
-      # *** 重要：rsync 命令需要在 ssh-action 的环境中执行 ***
-      # appleboy/ssh-action 实际上并不能直接帮你同步文件，它只执行命令。
-      # 要在 runner 和服务器之间同步文件，我们需要一个支持文件同步的 action，
-      # 或者使用scp/rsync命令，但scp/rsync需要单独的认证或配置。
-
-      # 再次回到问题原点：如果 burnettrobot/rsync-deploy 真的无法用，
-      # 并且你不想配置更复杂的 scp/rsync 认证，最简单的替代是：
-      # 让服务器自己执行 git pull, build, copy, reload 的步骤。
-      # 这种方法需要服务器上有 Node.js/npm/git，并且 ssh_user 有权限执行这些命令。
-      # 我们回到之前 SSH Action 执行脚本的方案。
-
-      # --- 备选方案：使用 appleboy/ssh-action 在服务器执行拉取、构建、复制、重启 ---
-      # 这个方案在前面讨论过，适用于服务器有 Node/npm/git 环境
-      - name: Pull, Build, Copy, and Reload on Server
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.SERVER_IP }}
-          username: ${{ secrets.SSH_USER }} # 例如 root
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 22
           script: |
-            # --- 移除之前尝试 source profile 或 bashrc 的行 ---
-            # 因为我们将直接使用 yarn 的完整路径
+            export NVM_DIR="$HOME/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+            [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+            nvm use v22.15.0 || { echo "Failed to switch node version"; exit 1; }
 
-            # 定义项目在服务器上的代码路径
             SERVER_PROJECT_PATH="/root/projects/Shotmeld-web"
-            # 定义 Nginx 的 Web 根目录
             NGINX_WEB_ROOT="/var/www/shotmeld-web"
 
             echo "Navigating to project directory on server..."
-            cd $SERVER_PROJECT_PATH || { echo "Failed to change directory"; exit 1; }
+            cd $SERVER_PROJECT_PATH || { echo "Failed to change directory: $SERVER_PROJECT_PATH"; exit 1; }
 
             echo "Pulling latest code from Git..."
             git pull --rebase origin main || { echo "Failed to pull code"; exit 1; }
 
-            echo "Installing dependencies on server (if package.json changed)..."
-            # --- 使用 yarn 的完整路径来执行安装 ---
-            /root/.nvm/versions/node/v22.15.0/bin/yarn install --force || { echo "Failed to install dependencies"; exit 1; }
+            echo "Installing dependencies on server..."
+            yarn install --force || { echo "Failed to install dependencies"; exit 1; }
 
             echo "Building project on server..."
-            # --- 使用 yarn 的完整路径来执行构建 ---
-            /root/.nvm/versions/node/v22.15.0/bin/yarn build || { echo "Failed to build project"; exit 1; }
+            yarn build || { echo "Failed to build project"; exit 1; }
 
             echo "Deploying built files to Nginx web root..."
             sudo mkdir -p $NGINX_WEB_ROOT
-            sudo chown www-data:www-data $NGINX_WEB_ROOT
-            sudo chmod 755 $NGINX_WEB_ROOT
-
-            sudo cp -rp ./dist/* $NGINX_WEB_ROOT/ || { echo "Failed to copy files"; exit 1; }
-
-            sudo chown -R www-data:www-data $NGINX_WEB_ROOT || { echo "Failed to set ownership"; exit 1; }
-            sudo chmod -R 755 $NGINX_WEB_ROOT || { echo "Failed to set permissions"; exit 1; }
-
-            echo "Reloading Nginx to serve new files..."
-            sudo systemctl reload nginx || { echo "Failed to reload Nginx"; exit 1; }
-            echo "Deployment complete."
+            sudo chown www-data:www-data $NGINX_WEB_ROOT || { echo "Failed to set initial ownership for web root"; exit 1; }
+            sudo chmod 755 $NGINX_WEB_ROOT || { echo "Failed to set initial permissions for web root"; exit
