@@ -41,6 +41,7 @@
 
 <script>
 import axios from 'axios';
+import { authService } from '../api';
 
 export default {
   name: 'LoginPage',
@@ -77,7 +78,7 @@ export default {
           throw new Error('请输入用户名/邮箱和密码');
         }
 
-        const response = await axios.post('http://120.55.78.33:3000/auth/login', {
+        const response = await authService.login({
           emailOrUsername: this.formData.emailOrUsername,
           password: this.formData.password
         });
@@ -87,9 +88,6 @@ export default {
         // 保存认证信息
         localStorage.setItem('token', token);
         localStorage.setItem('user', JSON.stringify(user));
-
-        // 设置axios默认请求头
-        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 
         // 确保路由跳转前完成状态更新
         await this.$nextTick();

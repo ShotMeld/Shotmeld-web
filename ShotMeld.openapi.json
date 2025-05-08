@@ -1,0 +1,4639 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "ShotMeld",
+    "description": "",
+    "version": "1.0.0"
+  },
+  "tags": [
+    {
+      "name": "用户认证"
+    },
+    {
+      "name": "照片管理"
+    },
+    {
+      "name": "标签管理"
+    },
+    {
+      "name": "相册管理"
+    }
+  ],
+  "paths": {
+    "/auth/register": {
+      "post": {
+        "summary": "用户注册",
+        "deprecated": false,
+        "description": "创建新用户账号",
+        "tags": [
+          "用户认证"
+        ],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserRegistration"
+              },
+              "example": ""
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "用户创建成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthResponse"
+                }
+              }
+            },
+            "headers": {}
+          },
+          "400": {
+            "description": "请求无效",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "headers": {}
+          },
+          "409": {
+            "description": "用户名或邮箱已存在",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "summary": "用户登录",
+        "deprecated": false,
+        "description": "使用邮箱或用户名和密码登录",
+        "tags": [
+          "用户认证"
+        ],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserCredentials"
+              },
+              "example": ""
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "登录成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthResponse"
+                }
+              }
+            },
+            "headers": {}
+          },
+          "401": {
+            "description": "认证失败",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "code": 401,
+                  "message": "邮箱或密码不正确"
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      }
+    },
+    "/auth/me": {
+      "get": {
+        "summary": "获取当前用户信息",
+        "deprecated": false,
+        "description": "返回当前已认证用户的详细资料",
+        "tags": [
+          "用户认证"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "example": "Bearer {{JWT_TOKEN}}",
+            "schema": {
+              "type": "string",
+              "default": "Bearer {{JWT_TOKEN}}"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            },
+            "headers": {}
+          },
+          "401": {
+            "description": "未认证",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      }
+    },
+    "/photos": {
+      "post": {
+        "summary": "上传新照片",
+        "deprecated": false,
+        "description": "上传一张新照片",
+        "tags": [
+          "照片管理"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "example": "Bearer {{JWT_TOKEN}}",
+            "schema": {
+              "type": "string",
+              "default": "Bearer {{JWT_TOKEN}}"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "photo": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": "照片文件",
+                    "example": ""
+                  },
+                  "metadata": {
+                    "type": "string",
+                    "format": "json",
+                    "description": "照片元数据，JSON格式的PhotoUpload对象",
+                    "example": ""
+                  }
+                },
+                "required": [
+                  "photo"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "上传成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Photo"
+                }
+              }
+            },
+            "headers": {}
+          },
+          "400": {
+            "description": "请求无效",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "headers": {}
+          },
+          "401": {
+            "description": "未认证",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      },
+      "get": {
+        "summary": "获取照片列表",
+        "deprecated": false,
+        "description": "返回当前用户的所有照片",
+        "tags": [
+          "照片管理"
+        ],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "description": "页码",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 1
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "每页数量",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 50
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "排序字段",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "title",
+                "takenAt",
+                "createdAt"
+              ],
+              "default": "takenAt"
+            }
+          },
+          {
+            "name": "order",
+            "in": "query",
+            "description": "排序方向",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "asc",
+                "desc"
+              ],
+              "default": "desc"
+            }
+          },
+          {
+            "name": "albumId",
+            "in": "query",
+            "description": "按相册过滤",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "tags",
+            "in": "query",
+            "description": "按标签过滤",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "description": "照片拍摄开始日期",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "description": "照片拍摄结束日期",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "q",
+            "in": "query",
+            "description": "搜索关键词(标题、描述)",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "example": "Bearer {{JWT_TOKEN}}",
+            "schema": {
+              "type": "string",
+              "default": "Bearer {{JWT_TOKEN}}"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/PaginationResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/Photo"
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            },
+            "headers": {}
+          },
+          "401": {
+            "description": "未认证",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      }
+    },
+    "/photos/{photoId}": {
+      "get": {
+        "summary": "获取照片详情",
+        "deprecated": false,
+        "description": "返回指定照片的详细信息",
+        "tags": [
+          "照片管理"
+        ],
+        "parameters": [
+          {
+            "name": "photoId",
+            "in": "path",
+            "description": "照片ID",
+            "required": true,
+            "example": "",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "example": "Bearer {{JWT_TOKEN}}",
+            "schema": {
+              "type": "string",
+              "default": "Bearer {{JWT_TOKEN}}"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Photo"
+                }
+              }
+            },
+            "headers": {}
+          },
+          "401": {
+            "description": "未认证",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "headers": {}
+          },
+          "404": {
+            "description": "照片不存在",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      },
+      "delete": {
+        "summary": "删除照片",
+        "deprecated": false,
+        "description": "删除指定照片",
+        "tags": [
+          "照片管理"
+        ],
+        "parameters": [
+          {
+            "name": "photoId",
+            "in": "path",
+            "description": "照片ID",
+            "required": true,
+            "example": "",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "example": "Bearer {{JWT_TOKEN}}",
+            "schema": {
+              "type": "string",
+              "default": "Bearer {{JWT_TOKEN}}"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "删除成功",
+            "headers": {}
+          },
+          "401": {
+            "description": "未认证",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "headers": {}
+          },
+          "404": {
+            "description": "照片不存在",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      },
+      "put": {
+        "summary": "更新照片信息",
+        "deprecated": false,
+        "description": "更新照片的元数据信息",
+        "tags": [
+          "照片管理"
+        ],
+        "parameters": [
+          {
+            "name": "photoId",
+            "in": "path",
+            "description": "照片ID",
+            "required": true,
+            "example": "",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "example": "Bearer {{JWT_TOKEN}}",
+            "schema": {
+              "type": "string",
+              "default": "Bearer {{JWT_TOKEN}}"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PhotoUpload"
+              },
+              "example": ""
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "更新成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Photo"
+                }
+              }
+            },
+            "headers": {}
+          },
+          "400": {
+            "description": "请求无效",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "headers": {}
+          },
+          "401": {
+            "description": "未认证",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "headers": {}
+          },
+          "404": {
+            "description": "照片不存在",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      }
+    },
+    "/photos/batch": {
+      "post": {
+        "summary": "批量上传照片",
+        "deprecated": false,
+        "description": "一次上传多张照片",
+        "tags": [
+          "照片管理"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "example": "Bearer {{JWT_TOKEN}}",
+            "schema": {
+              "type": "string",
+              "default": "Bearer {{JWT_TOKEN}}"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "photos": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "format": "binary"
+                    },
+                    "description": "照片文件列表",
+                    "example": ""
+                  },
+                  "albumId": {
+                    "type": "string",
+                    "format": "uuid",
+                    "description": "要添加到的相册ID",
+                    "example": ""
+                  },
+                  "tags": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "共同标签",
+                    "example": ""
+                  }
+                },
+                "required": [
+                  "photos"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "上传成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "uploadedCount": {
+                      "type": "integer"
+                    },
+                    "photos": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Photo"
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "uploadedCount": 4,
+                  "photos": [
+                    {
+                      "title": "Screenshot_2025-03-17-20-02-05-233_com",
+                      "description": "",
+                      "filename": "43cf6db6-036a-4bc6-85f7-a5754f4e9771.jpg",
+                      "fileSize": 408383,
+                      "mimeType": "image/jpeg",
+                      "width": 1440,
+                      "height": 3200,
+                      "url": "http://47.96.227.28:3000/uploads/photos/43cf6db6-036a-4bc6-85f7-a5754f4e9771.jpg",
+                      "thumbnailUrl": "http://47.96.227.28:3000/uploads/thumbnails/thumb_43cf6db6-036a-4bc6-85f7-a5754f4e9771.jpg",
+                      "takenAt": "2025-04-09T03:07:57.133Z",
+                      "location": null,
+                      "metadata": {
+                        "format": "jpeg",
+                        "width": 1440,
+                        "height": 3200,
+                        "space": "srgb",
+                        "channels": 3,
+                        "depth": "uchar",
+                        "density": 72,
+                        "chromaSubsampling": "4:2:0",
+                        "isProgressive": false,
+                        "isPalette": false,
+                        "hasProfile": true,
+                        "hasAlpha": false,
+                        "orientation": 1,
+                        "autoOrient": {
+                          "width": 1440,
+                          "height": 3200
+                        },
+                        "exif": {
+                          "type": "Buffer",
+                          "data": [
+                            69,
+                            120,
+                            105,
+                            102,
+                            0,
+                            0,
+                            77,
+                            77,
+                            0,
+                            42,
+                            0,
+                            0,
+                            0,
+                            8,
+                            0,
+                            4,
+                            1,
+                            0,
+                            0,
+                            4,
+                            0,
+                            0,
+                            0,
+                            1,
+                            0,
+                            0,
+                            5,
+                            160,
+                            1,
+                            1,
+                            0,
+                            4,
+                            0,
+                            0,
+                            0,
+                            1,
+                            0,
+                            0,
+                            12,
+                            128,
+                            1,
+                            18,
+                            0,
+                            3,
+                            0,
+                            0,
+                            0,
+                            1,
+                            0,
+                            1,
+                            0,
+                            0,
+                            135,
+                            105,
+                            0,
+                            4,
+                            0,
+                            0,
+                            0,
+                            1,
+                            0,
+                            0,
+                            0,
+                            62,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0
+                          ]
+                        },
+                        "icc": {
+                          "type": "Buffer",
+                          "data": [
+                            0,
+                            0,
+                            2,
+                            8,
+                            0,
+                            0,
+                            0,
+                            0,
+                            4,
+                            48,
+                            0,
+                            0,
+                            109,
+                            110,
+                            116,
+                            114,
+                            82,
+                            71,
+                            66,
+                            32,
+                            88,
+                            89,
+                            90,
+                            32,
+                            7,
+                            224,
+                            0,
+                            1,
+                            0,
+                            1,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            97,
+                            99,
+                            115,
+                            112,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            1,
+                            0,
+                            0,
+                            246,
+                            214,
+                            0,
+                            1,
+                            0,
+                            0,
+                            0,
+                            0,
+                            211,
+                            45,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            9,
+                            100,
+                            101,
+                            115,
+                            99,
+                            0,
+                            0,
+                            0,
+                            240,
+                            0,
+                            0,
+                            0,
+                            100,
+                            114,
+                            88,
+                            89,
+                            90,
+                            0,
+                            0,
+                            1,
+                            84,
+                            0,
+                            0,
+                            0,
+                            20,
+                            103,
+                            88,
+                            89,
+                            90,
+                            0,
+                            0,
+                            1,
+                            104,
+                            0,
+                            0,
+                            0,
+                            20,
+                            98,
+                            88,
+                            89,
+                            90,
+                            0,
+                            0,
+                            1,
+                            124,
+                            0,
+                            0,
+                            0,
+                            20,
+                            119,
+                            116,
+                            112,
+                            116,
+                            0,
+                            0,
+                            1,
+                            144,
+                            0,
+                            0,
+                            0,
+                            20,
+                            114,
+                            84,
+                            82,
+                            67,
+                            0,
+                            0,
+                            1,
+                            164,
+                            0,
+                            0,
+                            0,
+                            40,
+                            103,
+                            84,
+                            82,
+                            67,
+                            0,
+                            0,
+                            1,
+                            164,
+                            0,
+                            0,
+                            0,
+                            40,
+                            98,
+                            84,
+                            82,
+                            67,
+                            0,
+                            0,
+                            1,
+                            164,
+                            0,
+                            0,
+                            0,
+                            40,
+                            99,
+                            112,
+                            114,
+                            116,
+                            0,
+                            0,
+                            1,
+                            204,
+                            0,
+                            0,
+                            0,
+                            60,
+                            109,
+                            108,
+                            117,
+                            99,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            1,
+                            0,
+                            0,
+                            0,
+                            12,
+                            101,
+                            110,
+                            85,
+                            83,
+                            0,
+                            0,
+                            0,
+                            70,
+                            0,
+                            0,
+                            0,
+                            28,
+                            0,
+                            68,
+                            0,
+                            105,
+                            0,
+                            115,
+                            0,
+                            112,
+                            0,
+                            108,
+                            0,
+                            97,
+                            0,
+                            121,
+                            0,
+                            32,
+                            0,
+                            80,
+                            0,
+                            51,
+                            0,
+                            32,
+                            0,
+                            71,
+                            0,
+                            97,
+                            0,
+                            109,
+                            0,
+                            117,
+                            0,
+                            116,
+                            0,
+                            32,
+                            0,
+                            119,
+                            0,
+                            105,
+                            0,
+                            116,
+                            0,
+                            104,
+                            0,
+                            32,
+                            0,
+                            115,
+                            0,
+                            82,
+                            0,
+                            71,
+                            0,
+                            66,
+                            0,
+                            32,
+                            0,
+                            84,
+                            0,
+                            114,
+                            0,
+                            97,
+                            0,
+                            110,
+                            0,
+                            115,
+                            0,
+                            102,
+                            0,
+                            101,
+                            0,
+                            114,
+                            0,
+                            0,
+                            88,
+                            89,
+                            90,
+                            32,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            131,
+                            221,
+                            0,
+                            0,
+                            61,
+                            190,
+                            255,
+                            255,
+                            255,
+                            187,
+                            88,
+                            89,
+                            90,
+                            32,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            74,
+                            191,
+                            0,
+                            0,
+                            177,
+                            55,
+                            0,
+                            0,
+                            10,
+                            185,
+                            88,
+                            89,
+                            90,
+                            32,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            40,
+                            59,
+                            0,
+                            0,
+                            17,
+                            11,
+                            0,
+                            0,
+                            200,
+                            203,
+                            88,
+                            89,
+                            90,
+                            32,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            246,
+                            214,
+                            0,
+                            1,
+                            0,
+                            0,
+                            0,
+                            0,
+                            211,
+                            45,
+                            112,
+                            97,
+                            114,
+                            97,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            4,
+                            0,
+                            0,
+                            0,
+                            2,
+                            102,
+                            102,
+                            0,
+                            0,
+                            242,
+                            167,
+                            0,
+                            0,
+                            13,
+                            89,
+                            0,
+                            0,
+                            19,
+                            208,
+                            0,
+                            0,
+                            10,
+                            91,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            109,
+                            108,
+                            117,
+                            99,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            1,
+                            0,
+                            0,
+                            0,
+                            12,
+                            101,
+                            110,
+                            85,
+                            83,
+                            0,
+                            0,
+                            0,
+                            32,
+                            0,
+                            0,
+                            0,
+                            28,
+                            0,
+                            71,
+                            0,
+                            111,
+                            0,
+                            111,
+                            0,
+                            103,
+                            0,
+                            108,
+                            0,
+                            101,
+                            0,
+                            32,
+                            0,
+                            73,
+                            0,
+                            110,
+                            0,
+                            99,
+                            0,
+                            46,
+                            0,
+                            32,
+                            0,
+                            50,
+                            0,
+                            48,
+                            0,
+                            49,
+                            0,
+                            54
+                          ]
+                        },
+                        "originalName": "Screenshot_2025-03-17-20-02-05-233_com.helper.west2ol.fzuhelper.jpg"
+                      },
+                      "user": "67f5dff03a3861b032ba9b98",
+                      "albums": [],
+                      "tags": [],
+                      "createdAt": "2025-04-09T03:07:57.136Z",
+                      "updatedAt": "2025-04-09T03:07:57.140Z",
+                      "id": "67f5e48d98e879815b924c63"
+                    },
+                    {
+                      "title": "Screenshot_2025-03-17-22-48-35-695_com",
+                      "description": "",
+                      "filename": "b734ccee-ac40-4673-b129-4df8105840a3.jpg",
+                      "fileSize": 480056,
+                      "mimeType": "image/jpeg",
+                      "width": 1440,
+                      "height": 3200,
+                      "url": "http://47.96.227.28:3000/uploads/photos/b734ccee-ac40-4673-b129-4df8105840a3.jpg",
+                      "thumbnailUrl": "http://47.96.227.28:3000/uploads/thumbnails/thumb_b734ccee-ac40-4673-b129-4df8105840a3.jpg",
+                      "takenAt": "2025-04-09T03:07:57.198Z",
+                      "location": null,
+                      "metadata": {
+                        "format": "jpeg",
+                        "width": 1440,
+                        "height": 3200,
+                        "space": "srgb",
+                        "channels": 3,
+                        "depth": "uchar",
+                        "density": 72,
+                        "chromaSubsampling": "4:2:0",
+                        "isProgressive": false,
+                        "isPalette": false,
+                        "hasProfile": true,
+                        "hasAlpha": false,
+                        "orientation": 1,
+                        "autoOrient": {
+                          "width": 1440,
+                          "height": 3200
+                        },
+                        "exif": {
+                          "type": "Buffer",
+                          "data": [
+                            69,
+                            120,
+                            105,
+                            102,
+                            0,
+                            0,
+                            77,
+                            77,
+                            0,
+                            42,
+                            0,
+                            0,
+                            0,
+                            8,
+                            0,
+                            4,
+                            1,
+                            0,
+                            0,
+                            4,
+                            0,
+                            0,
+                            0,
+                            1,
+                            0,
+                            0,
+                            5,
+                            160,
+                            1,
+                            1,
+                            0,
+                            4,
+                            0,
+                            0,
+                            0,
+                            1,
+                            0,
+                            0,
+                            12,
+                            128,
+                            1,
+                            18,
+                            0,
+                            3,
+                            0,
+                            0,
+                            0,
+                            1,
+                            0,
+                            1,
+                            0,
+                            0,
+                            135,
+                            105,
+                            0,
+                            4,
+                            0,
+                            0,
+                            0,
+                            1,
+                            0,
+                            0,
+                            0,
+                            62,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0
+                          ]
+                        },
+                        "icc": {
+                          "type": "Buffer",
+                          "data": [
+                            0,
+                            0,
+                            2,
+                            8,
+                            0,
+                            0,
+                            0,
+                            0,
+                            4,
+                            48,
+                            0,
+                            0,
+                            109,
+                            110,
+                            116,
+                            114,
+                            82,
+                            71,
+                            66,
+                            32,
+                            88,
+                            89,
+                            90,
+                            32,
+                            7,
+                            224,
+                            0,
+                            1,
+                            0,
+                            1,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            97,
+                            99,
+                            115,
+                            112,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            1,
+                            0,
+                            0,
+                            246,
+                            214,
+                            0,
+                            1,
+                            0,
+                            0,
+                            0,
+                            0,
+                            211,
+                            45,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            9,
+                            100,
+                            101,
+                            115,
+                            99,
+                            0,
+                            0,
+                            0,
+                            240,
+                            0,
+                            0,
+                            0,
+                            100,
+                            114,
+                            88,
+                            89,
+                            90,
+                            0,
+                            0,
+                            1,
+                            84,
+                            0,
+                            0,
+                            0,
+                            20,
+                            103,
+                            88,
+                            89,
+                            90,
+                            0,
+                            0,
+                            1,
+                            104,
+                            0,
+                            0,
+                            0,
+                            20,
+                            98,
+                            88,
+                            89,
+                            90,
+                            0,
+                            0,
+                            1,
+                            124,
+                            0,
+                            0,
+                            0,
+                            20,
+                            119,
+                            116,
+                            112,
+                            116,
+                            0,
+                            0,
+                            1,
+                            144,
+                            0,
+                            0,
+                            0,
+                            20,
+                            114,
+                            84,
+                            82,
+                            67,
+                            0,
+                            0,
+                            1,
+                            164,
+                            0,
+                            0,
+                            0,
+                            40,
+                            103,
+                            84,
+                            82,
+                            67,
+                            0,
+                            0,
+                            1,
+                            164,
+                            0,
+                            0,
+                            0,
+                            40,
+                            98,
+                            84,
+                            82,
+                            67,
+                            0,
+                            0,
+                            1,
+                            164,
+                            0,
+                            0,
+                            0,
+                            40,
+                            99,
+                            112,
+                            114,
+                            116,
+                            0,
+                            0,
+                            1,
+                            204,
+                            0,
+                            0,
+                            0,
+                            60,
+                            109,
+                            108,
+                            117,
+                            99,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            1,
+                            0,
+                            0,
+                            0,
+                            12,
+                            101,
+                            110,
+                            85,
+                            83,
+                            0,
+                            0,
+                            0,
+                            70,
+                            0,
+                            0,
+                            0,
+                            28,
+                            0,
+                            68,
+                            0,
+                            105,
+                            0,
+                            115,
+                            0,
+                            112,
+                            0,
+                            108,
+                            0,
+                            97,
+                            0,
+                            121,
+                            0,
+                            32,
+                            0,
+                            80,
+                            0,
+                            51,
+                            0,
+                            32,
+                            0,
+                            71,
+                            0,
+                            97,
+                            0,
+                            109,
+                            0,
+                            117,
+                            0,
+                            116,
+                            0,
+                            32,
+                            0,
+                            119,
+                            0,
+                            105,
+                            0,
+                            116,
+                            0,
+                            104,
+                            0,
+                            32,
+                            0,
+                            115,
+                            0,
+                            82,
+                            0,
+                            71,
+                            0,
+                            66,
+                            0,
+                            32,
+                            0,
+                            84,
+                            0,
+                            114,
+                            0,
+                            97,
+                            0,
+                            110,
+                            0,
+                            115,
+                            0,
+                            102,
+                            0,
+                            101,
+                            0,
+                            114,
+                            0,
+                            0,
+                            88,
+                            89,
+                            90,
+                            32,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            131,
+                            221,
+                            0,
+                            0,
+                            61,
+                            190,
+                            255,
+                            255,
+                            255,
+                            187,
+                            88,
+                            89,
+                            90,
+                            32,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            74,
+                            191,
+                            0,
+                            0,
+                            177,
+                            55,
+                            0,
+                            0,
+                            10,
+                            185,
+                            88,
+                            89,
+                            90,
+                            32,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            40,
+                            59,
+                            0,
+                            0,
+                            17,
+                            11,
+                            0,
+                            0,
+                            200,
+                            203,
+                            88,
+                            89,
+                            90,
+                            32,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            246,
+                            214,
+                            0,
+                            1,
+                            0,
+                            0,
+                            0,
+                            0,
+                            211,
+                            45,
+                            112,
+                            97,
+                            114,
+                            97,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            4,
+                            0,
+                            0,
+                            0,
+                            2,
+                            102,
+                            102,
+                            0,
+                            0,
+                            242,
+                            167,
+                            0,
+                            0,
+                            13,
+                            89,
+                            0,
+                            0,
+                            19,
+                            208,
+                            0,
+                            0,
+                            10,
+                            91,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            109,
+                            108,
+                            117,
+                            99,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            1,
+                            0,
+                            0,
+                            0,
+                            12,
+                            101,
+                            110,
+                            85,
+                            83,
+                            0,
+                            0,
+                            0,
+                            32,
+                            0,
+                            0,
+                            0,
+                            28,
+                            0,
+                            71,
+                            0,
+                            111,
+                            0,
+                            111,
+                            0,
+                            103,
+                            0,
+                            108,
+                            0,
+                            101,
+                            0,
+                            32,
+                            0,
+                            73,
+                            0,
+                            110,
+                            0,
+                            99,
+                            0,
+                            46,
+                            0,
+                            32,
+                            0,
+                            50,
+                            0,
+                            48,
+                            0,
+                            49,
+                            0,
+                            54
+                          ]
+                        },
+                        "originalName": "Screenshot_2025-03-17-22-48-35-695_com.helper.west2ol.fzuhelper.jpg"
+                      },
+                      "user": "67f5dff03a3861b032ba9b98",
+                      "albums": [],
+                      "tags": [],
+                      "createdAt": "2025-04-09T03:07:57.199Z",
+                      "updatedAt": "2025-04-09T03:07:57.200Z",
+                      "id": "67f5e48d98e879815b924c65"
+                    },
+                    {
+                      "title": "Screenshot_2025-03-17-22-48-56-265_com",
+                      "description": "",
+                      "filename": "0d3e2774-6612-4507-b044-5fe2038df111.jpg",
+                      "fileSize": 480056,
+                      "mimeType": "image/jpeg",
+                      "width": 1440,
+                      "height": 3200,
+                      "url": "http://47.96.227.28:3000/uploads/photos/0d3e2774-6612-4507-b044-5fe2038df111.jpg",
+                      "thumbnailUrl": "http://47.96.227.28:3000/uploads/thumbnails/thumb_0d3e2774-6612-4507-b044-5fe2038df111.jpg",
+                      "takenAt": "2025-04-09T03:07:57.253Z",
+                      "location": null,
+                      "metadata": {
+                        "format": "jpeg",
+                        "width": 1440,
+                        "height": 3200,
+                        "space": "srgb",
+                        "channels": 3,
+                        "depth": "uchar",
+                        "density": 72,
+                        "chromaSubsampling": "4:2:0",
+                        "isProgressive": false,
+                        "isPalette": false,
+                        "hasProfile": true,
+                        "hasAlpha": false,
+                        "orientation": 1,
+                        "autoOrient": {
+                          "width": 1440,
+                          "height": 3200
+                        },
+                        "exif": {
+                          "type": "Buffer",
+                          "data": [
+                            69,
+                            120,
+                            105,
+                            102,
+                            0,
+                            0,
+                            77,
+                            77,
+                            0,
+                            42,
+                            0,
+                            0,
+                            0,
+                            8,
+                            0,
+                            4,
+                            1,
+                            0,
+                            0,
+                            4,
+                            0,
+                            0,
+                            0,
+                            1,
+                            0,
+                            0,
+                            5,
+                            160,
+                            1,
+                            1,
+                            0,
+                            4,
+                            0,
+                            0,
+                            0,
+                            1,
+                            0,
+                            0,
+                            12,
+                            128,
+                            1,
+                            18,
+                            0,
+                            3,
+                            0,
+                            0,
+                            0,
+                            1,
+                            0,
+                            1,
+                            0,
+                            0,
+                            135,
+                            105,
+                            0,
+                            4,
+                            0,
+                            0,
+                            0,
+                            1,
+                            0,
+                            0,
+                            0,
+                            62,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0
+                          ]
+                        },
+                        "icc": {
+                          "type": "Buffer",
+                          "data": [
+                            0,
+                            0,
+                            2,
+                            8,
+                            0,
+                            0,
+                            0,
+                            0,
+                            4,
+                            48,
+                            0,
+                            0,
+                            109,
+                            110,
+                            116,
+                            114,
+                            82,
+                            71,
+                            66,
+                            32,
+                            88,
+                            89,
+                            90,
+                            32,
+                            7,
+                            224,
+                            0,
+                            1,
+                            0,
+                            1,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            97,
+                            99,
+                            115,
+                            112,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            1,
+                            0,
+                            0,
+                            246,
+                            214,
+                            0,
+                            1,
+                            0,
+                            0,
+                            0,
+                            0,
+                            211,
+                            45,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            9,
+                            100,
+                            101,
+                            115,
+                            99,
+                            0,
+                            0,
+                            0,
+                            240,
+                            0,
+                            0,
+                            0,
+                            100,
+                            114,
+                            88,
+                            89,
+                            90,
+                            0,
+                            0,
+                            1,
+                            84,
+                            0,
+                            0,
+                            0,
+                            20,
+                            103,
+                            88,
+                            89,
+                            90,
+                            0,
+                            0,
+                            1,
+                            104,
+                            0,
+                            0,
+                            0,
+                            20,
+                            98,
+                            88,
+                            89,
+                            90,
+                            0,
+                            0,
+                            1,
+                            124,
+                            0,
+                            0,
+                            0,
+                            20,
+                            119,
+                            116,
+                            112,
+                            116,
+                            0,
+                            0,
+                            1,
+                            144,
+                            0,
+                            0,
+                            0,
+                            20,
+                            114,
+                            84,
+                            82,
+                            67,
+                            0,
+                            0,
+                            1,
+                            164,
+                            0,
+                            0,
+                            0,
+                            40,
+                            103,
+                            84,
+                            82,
+                            67,
+                            0,
+                            0,
+                            1,
+                            164,
+                            0,
+                            0,
+                            0,
+                            40,
+                            98,
+                            84,
+                            82,
+                            67,
+                            0,
+                            0,
+                            1,
+                            164,
+                            0,
+                            0,
+                            0,
+                            40,
+                            99,
+                            112,
+                            114,
+                            116,
+                            0,
+                            0,
+                            1,
+                            204,
+                            0,
+                            0,
+                            0,
+                            60,
+                            109,
+                            108,
+                            117,
+                            99,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            1,
+                            0,
+                            0,
+                            0,
+                            12,
+                            101,
+                            110,
+                            85,
+                            83,
+                            0,
+                            0,
+                            0,
+                            70,
+                            0,
+                            0,
+                            0,
+                            28,
+                            0,
+                            68,
+                            0,
+                            105,
+                            0,
+                            115,
+                            0,
+                            112,
+                            0,
+                            108,
+                            0,
+                            97,
+                            0,
+                            121,
+                            0,
+                            32,
+                            0,
+                            80,
+                            0,
+                            51,
+                            0,
+                            32,
+                            0,
+                            71,
+                            0,
+                            97,
+                            0,
+                            109,
+                            0,
+                            117,
+                            0,
+                            116,
+                            0,
+                            32,
+                            0,
+                            119,
+                            0,
+                            105,
+                            0,
+                            116,
+                            0,
+                            104,
+                            0,
+                            32,
+                            0,
+                            115,
+                            0,
+                            82,
+                            0,
+                            71,
+                            0,
+                            66,
+                            0,
+                            32,
+                            0,
+                            84,
+                            0,
+                            114,
+                            0,
+                            97,
+                            0,
+                            110,
+                            0,
+                            115,
+                            0,
+                            102,
+                            0,
+                            101,
+                            0,
+                            114,
+                            0,
+                            0,
+                            88,
+                            89,
+                            90,
+                            32,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            131,
+                            221,
+                            0,
+                            0,
+                            61,
+                            190,
+                            255,
+                            255,
+                            255,
+                            187,
+                            88,
+                            89,
+                            90,
+                            32,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            74,
+                            191,
+                            0,
+                            0,
+                            177,
+                            55,
+                            0,
+                            0,
+                            10,
+                            185,
+                            88,
+                            89,
+                            90,
+                            32,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            40,
+                            59,
+                            0,
+                            0,
+                            17,
+                            11,
+                            0,
+                            0,
+                            200,
+                            203,
+                            88,
+                            89,
+                            90,
+                            32,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            246,
+                            214,
+                            0,
+                            1,
+                            0,
+                            0,
+                            0,
+                            0,
+                            211,
+                            45,
+                            112,
+                            97,
+                            114,
+                            97,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            4,
+                            0,
+                            0,
+                            0,
+                            2,
+                            102,
+                            102,
+                            0,
+                            0,
+                            242,
+                            167,
+                            0,
+                            0,
+                            13,
+                            89,
+                            0,
+                            0,
+                            19,
+                            208,
+                            0,
+                            0,
+                            10,
+                            91,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            109,
+                            108,
+                            117,
+                            99,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            1,
+                            0,
+                            0,
+                            0,
+                            12,
+                            101,
+                            110,
+                            85,
+                            83,
+                            0,
+                            0,
+                            0,
+                            32,
+                            0,
+                            0,
+                            0,
+                            28,
+                            0,
+                            71,
+                            0,
+                            111,
+                            0,
+                            111,
+                            0,
+                            103,
+                            0,
+                            108,
+                            0,
+                            101,
+                            0,
+                            32,
+                            0,
+                            73,
+                            0,
+                            110,
+                            0,
+                            99,
+                            0,
+                            46,
+                            0,
+                            32,
+                            0,
+                            50,
+                            0,
+                            48,
+                            0,
+                            49,
+                            0,
+                            54
+                          ]
+                        },
+                        "originalName": "Screenshot_2025-03-17-22-48-56-265_com.helper.west2ol.fzuhelper.jpg"
+                      },
+                      "user": "67f5dff03a3861b032ba9b98",
+                      "albums": [],
+                      "tags": [],
+                      "createdAt": "2025-04-09T03:07:57.254Z",
+                      "updatedAt": "2025-04-09T03:07:57.254Z",
+                      "id": "67f5e48d98e879815b924c67"
+                    },
+                    {
+                      "title": "Screenshot_2025-03-23-00-21-48-087_com",
+                      "description": "",
+                      "filename": "4d32db5f-1c70-451b-bbb3-217198ccc08d.jpg",
+                      "fileSize": 511606,
+                      "mimeType": "image/jpeg",
+                      "width": 1440,
+                      "height": 3200,
+                      "url": "http://47.96.227.28:3000/uploads/photos/4d32db5f-1c70-451b-bbb3-217198ccc08d.jpg",
+                      "thumbnailUrl": "http://47.96.227.28:3000/uploads/thumbnails/thumb_4d32db5f-1c70-451b-bbb3-217198ccc08d.jpg",
+                      "takenAt": "2025-04-09T03:07:57.308Z",
+                      "location": null,
+                      "metadata": {
+                        "format": "jpeg",
+                        "width": 1440,
+                        "height": 3200,
+                        "space": "srgb",
+                        "channels": 3,
+                        "depth": "uchar",
+                        "density": 72,
+                        "chromaSubsampling": "4:2:0",
+                        "isProgressive": false,
+                        "isPalette": false,
+                        "hasProfile": true,
+                        "hasAlpha": false,
+                        "orientation": 1,
+                        "autoOrient": {
+                          "width": 1440,
+                          "height": 3200
+                        },
+                        "exif": {
+                          "type": "Buffer",
+                          "data": [
+                            69,
+                            120,
+                            105,
+                            102,
+                            0,
+                            0,
+                            77,
+                            77,
+                            0,
+                            42,
+                            0,
+                            0,
+                            0,
+                            8,
+                            0,
+                            4,
+                            1,
+                            0,
+                            0,
+                            4,
+                            0,
+                            0,
+                            0,
+                            1,
+                            0,
+                            0,
+                            5,
+                            160,
+                            1,
+                            1,
+                            0,
+                            4,
+                            0,
+                            0,
+                            0,
+                            1,
+                            0,
+                            0,
+                            12,
+                            128,
+                            1,
+                            18,
+                            0,
+                            3,
+                            0,
+                            0,
+                            0,
+                            1,
+                            0,
+                            1,
+                            0,
+                            0,
+                            135,
+                            105,
+                            0,
+                            4,
+                            0,
+                            0,
+                            0,
+                            1,
+                            0,
+                            0,
+                            0,
+                            62,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0
+                          ]
+                        },
+                        "icc": {
+                          "type": "Buffer",
+                          "data": [
+                            0,
+                            0,
+                            2,
+                            8,
+                            0,
+                            0,
+                            0,
+                            0,
+                            4,
+                            48,
+                            0,
+                            0,
+                            109,
+                            110,
+                            116,
+                            114,
+                            82,
+                            71,
+                            66,
+                            32,
+                            88,
+                            89,
+                            90,
+                            32,
+                            7,
+                            224,
+                            0,
+                            1,
+                            0,
+                            1,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            97,
+                            99,
+                            115,
+                            112,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            1,
+                            0,
+                            0,
+                            246,
+                            214,
+                            0,
+                            1,
+                            0,
+                            0,
+                            0,
+                            0,
+                            211,
+                            45,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            9,
+                            100,
+                            101,
+                            115,
+                            99,
+                            0,
+                            0,
+                            0,
+                            240,
+                            0,
+                            0,
+                            0,
+                            100,
+                            114,
+                            88,
+                            89,
+                            90,
+                            0,
+                            0,
+                            1,
+                            84,
+                            0,
+                            0,
+                            0,
+                            20,
+                            103,
+                            88,
+                            89,
+                            90,
+                            0,
+                            0,
+                            1,
+                            104,
+                            0,
+                            0,
+                            0,
+                            20,
+                            98,
+                            88,
+                            89,
+                            90,
+                            0,
+                            0,
+                            1,
+                            124,
+                            0,
+                            0,
+                            0,
+                            20,
+                            119,
+                            116,
+                            112,
+                            116,
+                            0,
+                            0,
+                            1,
+                            144,
+                            0,
+                            0,
+                            0,
+                            20,
+                            114,
+                            84,
+                            82,
+                            67,
+                            0,
+                            0,
+                            1,
+                            164,
+                            0,
+                            0,
+                            0,
+                            40,
+                            103,
+                            84,
+                            82,
+                            67,
+                            0,
+                            0,
+                            1,
+                            164,
+                            0,
+                            0,
+                            0,
+                            40,
+                            98,
+                            84,
+                            82,
+                            67,
+                            0,
+                            0,
+                            1,
+                            164,
+                            0,
+                            0,
+                            0,
+                            40,
+                            99,
+                            112,
+                            114,
+                            116,
+                            0,
+                            0,
+                            1,
+                            204,
+                            0,
+                            0,
+                            0,
+                            60,
+                            109,
+                            108,
+                            117,
+                            99,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            1,
+                            0,
+                            0,
+                            0,
+                            12,
+                            101,
+                            110,
+                            85,
+                            83,
+                            0,
+                            0,
+                            0,
+                            70,
+                            0,
+                            0,
+                            0,
+                            28,
+                            0,
+                            68,
+                            0,
+                            105,
+                            0,
+                            115,
+                            0,
+                            112,
+                            0,
+                            108,
+                            0,
+                            97,
+                            0,
+                            121,
+                            0,
+                            32,
+                            0,
+                            80,
+                            0,
+                            51,
+                            0,
+                            32,
+                            0,
+                            71,
+                            0,
+                            97,
+                            0,
+                            109,
+                            0,
+                            117,
+                            0,
+                            116,
+                            0,
+                            32,
+                            0,
+                            119,
+                            0,
+                            105,
+                            0,
+                            116,
+                            0,
+                            104,
+                            0,
+                            32,
+                            0,
+                            115,
+                            0,
+                            82,
+                            0,
+                            71,
+                            0,
+                            66,
+                            0,
+                            32,
+                            0,
+                            84,
+                            0,
+                            114,
+                            0,
+                            97,
+                            0,
+                            110,
+                            0,
+                            115,
+                            0,
+                            102,
+                            0,
+                            101,
+                            0,
+                            114,
+                            0,
+                            0,
+                            88,
+                            89,
+                            90,
+                            32,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            131,
+                            221,
+                            0,
+                            0,
+                            61,
+                            190,
+                            255,
+                            255,
+                            255,
+                            187,
+                            88,
+                            89,
+                            90,
+                            32,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            74,
+                            191,
+                            0,
+                            0,
+                            177,
+                            55,
+                            0,
+                            0,
+                            10,
+                            185,
+                            88,
+                            89,
+                            90,
+                            32,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            40,
+                            59,
+                            0,
+                            0,
+                            17,
+                            11,
+                            0,
+                            0,
+                            200,
+                            203,
+                            88,
+                            89,
+                            90,
+                            32,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            246,
+                            214,
+                            0,
+                            1,
+                            0,
+                            0,
+                            0,
+                            0,
+                            211,
+                            45,
+                            112,
+                            97,
+                            114,
+                            97,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            4,
+                            0,
+                            0,
+                            0,
+                            2,
+                            102,
+                            102,
+                            0,
+                            0,
+                            242,
+                            167,
+                            0,
+                            0,
+                            13,
+                            89,
+                            0,
+                            0,
+                            19,
+                            208,
+                            0,
+                            0,
+                            10,
+                            91,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            109,
+                            108,
+                            117,
+                            99,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            1,
+                            0,
+                            0,
+                            0,
+                            12,
+                            101,
+                            110,
+                            85,
+                            83,
+                            0,
+                            0,
+                            0,
+                            32,
+                            0,
+                            0,
+                            0,
+                            28,
+                            0,
+                            71,
+                            0,
+                            111,
+                            0,
+                            111,
+                            0,
+                            103,
+                            0,
+                            108,
+                            0,
+                            101,
+                            0,
+                            32,
+                            0,
+                            73,
+                            0,
+                            110,
+                            0,
+                            99,
+                            0,
+                            46,
+                            0,
+                            32,
+                            0,
+                            50,
+                            0,
+                            48,
+                            0,
+                            49,
+                            0,
+                            54
+                          ]
+                        },
+                        "originalName": "Screenshot_2025-03-23-00-21-48-087_com.helper.west2ol.fzuhelper.jpg"
+                      },
+                      "user": "67f5dff03a3861b032ba9b98",
+                      "albums": [],
+                      "tags": [],
+                      "createdAt": "2025-04-09T03:07:57.308Z",
+                      "updatedAt": "2025-04-09T03:07:57.309Z",
+                      "id": "67f5e48d98e879815b924c69"
+                    }
+                  ]
+                }
+              }
+            },
+            "headers": {}
+          },
+          "400": {
+            "description": "请求无效",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "headers": {}
+          },
+          "401": {
+            "description": "未认证",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      }
+    },
+    "/timeline": {
+      "get": {
+        "summary": "获取照片时间轴",
+        "deprecated": false,
+        "description": "按照时间轴返回照片，可以按年/月/日分组",
+        "tags": [
+          "照片管理"
+        ],
+        "parameters": [
+          {
+            "name": "groupBy",
+            "in": "query",
+            "description": "分组方式",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "year",
+                "month",
+                "day"
+              ],
+              "default": "month"
+            }
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "description": "开始日期",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "description": "结束日期",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "example": "Bearer {{JWT_TOKEN}}",
+            "schema": {
+              "type": "string",
+              "default": "Bearer {{JWT_TOKEN}}"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "date": {
+                        "type": "string",
+                        "description": "分组日期，格式根据groupBy参数变化"
+                      },
+                      "count": {
+                        "type": "integer",
+                        "description": "该日期下的照片数量"
+                      },
+                      "photos": {
+                        "type": "array",
+                        "items": {
+                          "$ref": "#/components/schemas/Photo"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "headers": {}
+          },
+          "401": {
+            "description": "未认证",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      }
+    },
+    "/tags": {
+      "get": {
+        "summary": "获取所有标签",
+        "deprecated": false,
+        "description": "返回当前用户所有照片中使用的标签",
+        "tags": [
+          "标签管理"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "example": "Bearer {{JWT_TOKEN}}",
+            "schema": {
+              "type": "string",
+              "default": "Bearer {{JWT_TOKEN}}"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Tag"
+                  }
+                }
+              }
+            },
+            "headers": {}
+          },
+          "401": {
+            "description": "未认证",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      }
+    },
+    "/tags/{tagId}": {
+      "get": {
+        "summary": "获取带有指定标签的照片",
+        "deprecated": false,
+        "description": "返回带有指定标签的所有照片",
+        "tags": [
+          "标签管理",
+          "照片管理"
+        ],
+        "parameters": [
+          {
+            "name": "tagId",
+            "in": "path",
+            "description": "标签ID",
+            "required": true,
+            "example": "",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "页码",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 1
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "每页数量",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 50
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "example": "Bearer {{JWT_TOKEN}}",
+            "schema": {
+              "type": "string",
+              "default": "Bearer {{JWT_TOKEN}}"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/PaginationResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/Photo"
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            },
+            "headers": {}
+          },
+          "401": {
+            "description": "未认证",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "headers": {}
+          },
+          "404": {
+            "description": "标签不存在",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      }
+    },
+    "/albums": {
+      "get": {
+        "summary": "获取相册列表",
+        "deprecated": false,
+        "description": "返回当前用户的所有相册",
+        "tags": [
+          "相册管理"
+        ],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "description": "页码",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 1
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "每页数量",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 20
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "排序字段",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "name",
+                "createdAt",
+                "updatedAt"
+              ],
+              "default": "createdAt"
+            }
+          },
+          {
+            "name": "order",
+            "in": "query",
+            "description": "排序方向",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "asc",
+                "desc"
+              ],
+              "default": "desc"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "example": "Bearer {{JWT_TOKEN}}",
+            "schema": {
+              "type": "string",
+              "default": "Bearer {{JWT_TOKEN}}"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/PaginationResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/Album"
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            },
+            "headers": {}
+          },
+          "401": {
+            "description": "未认证",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      },
+      "post": {
+        "summary": "创建新相册",
+        "deprecated": false,
+        "description": "创建一个新的相册",
+        "tags": [
+          "相册管理"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "example": "Bearer {{JWT_TOKEN}}",
+            "schema": {
+              "type": "string",
+              "default": "Bearer {{JWT_TOKEN}}"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AlbumCreate"
+              },
+              "example": ""
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "相册创建成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Album"
+                }
+              }
+            },
+            "headers": {}
+          },
+          "400": {
+            "description": "请求无效",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "headers": {}
+          },
+          "401": {
+            "description": "未认证",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "headers": {}
+          },
+          "x-400:错误：重名相册": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "code",
+                    "message"
+                  ]
+                },
+                "example": {
+                  "code": 400,
+                  "message": "已存在同名相册，请使用其他名称"
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      }
+    },
+    "/albums/{albumId}": {
+      "get": {
+        "summary": "获取相册详情",
+        "deprecated": false,
+        "description": "返回指定相册的详细信息",
+        "tags": [
+          "相册管理"
+        ],
+        "parameters": [
+          {
+            "name": "albumId",
+            "in": "path",
+            "description": "相册ID",
+            "required": true,
+            "example": "",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "example": "Bearer {{JWT_TOKEN}}",
+            "schema": {
+              "type": "string",
+              "default": "Bearer {{JWT_TOKEN}}"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Album"
+                }
+              }
+            },
+            "headers": {}
+          },
+          "401": {
+            "description": "未认证",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "headers": {}
+          },
+          "404": {
+            "description": "相册不存在",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      },
+      "put": {
+        "summary": "更新相册",
+        "deprecated": false,
+        "description": "更新相册信息",
+        "tags": [
+          "相册管理"
+        ],
+        "parameters": [
+          {
+            "name": "albumId",
+            "in": "path",
+            "description": "相册ID",
+            "required": true,
+            "example": "",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "example": "Bearer {{JWT_TOKEN}}",
+            "schema": {
+              "type": "string",
+              "default": "Bearer {{JWT_TOKEN}}"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AlbumCreate"
+              },
+              "example": ""
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "更新成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Album"
+                }
+              }
+            },
+            "headers": {}
+          },
+          "400": {
+            "description": "请求无效",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "headers": {}
+          },
+          "401": {
+            "description": "未认证",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "headers": {}
+          },
+          "404": {
+            "description": "相册不存在",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      },
+      "delete": {
+        "summary": "删除相册",
+        "deprecated": false,
+        "description": "删除指定相册（不会删除相册中的照片）",
+        "tags": [
+          "相册管理"
+        ],
+        "parameters": [
+          {
+            "name": "albumId",
+            "in": "path",
+            "description": "相册ID",
+            "required": true,
+            "example": "",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "example": "Bearer {{JWT_TOKEN}}",
+            "schema": {
+              "type": "string",
+              "default": "Bearer {{JWT_TOKEN}}"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "删除成功",
+            "headers": {}
+          },
+          "401": {
+            "description": "未认证",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "headers": {}
+          },
+          "404": {
+            "description": "相册不存在",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      }
+    },
+    "/albums/{albumId}/photos": {
+      "get": {
+        "summary": "获取相册中的照片",
+        "deprecated": false,
+        "description": "返回指定相册中的所有照片",
+        "tags": [
+          "相册管理",
+          "照片管理"
+        ],
+        "parameters": [
+          {
+            "name": "albumId",
+            "in": "path",
+            "description": "相册ID",
+            "required": true,
+            "example": "",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "页码",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 1
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "每页数量",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 50
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "排序字段",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "title",
+                "takenAt",
+                "createdAt"
+              ],
+              "default": "takenAt"
+            }
+          },
+          {
+            "name": "order",
+            "in": "query",
+            "description": "排序方向",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "asc",
+                "desc"
+              ],
+              "default": "desc"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "example": "Bearer {{JWT_TOKEN}}",
+            "schema": {
+              "type": "string",
+              "default": "Bearer {{JWT_TOKEN}}"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/PaginationResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/Photo"
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            },
+            "headers": {}
+          },
+          "401": {
+            "description": "未认证",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "headers": {}
+          },
+          "404": {
+            "description": "相册不存在",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      }
+    },
+    "/albums/{albumId}/photos/{photoId}": {
+      "post": {
+        "summary": "添加照片到相册",
+        "deprecated": false,
+        "description": "将已有照片添加到指定相册",
+        "tags": [
+          "相册管理"
+        ],
+        "parameters": [
+          {
+            "name": "albumId",
+            "in": "path",
+            "description": "相册ID",
+            "required": true,
+            "example": "",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "photoId",
+            "in": "path",
+            "description": "照片ID",
+            "required": true,
+            "example": "",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "example": "Bearer {{JWT_TOKEN}}",
+            "schema": {
+              "type": "string",
+              "default": "Bearer {{JWT_TOKEN}}"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "添加成功",
+            "headers": {}
+          },
+          "401": {
+            "description": "未认证",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "headers": {}
+          },
+          "404": {
+            "description": "相册或照片不存在",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      },
+      "delete": {
+        "summary": "从相册中移除照片",
+        "deprecated": false,
+        "description": "将照片从指定相册中移除（不会删除照片）",
+        "tags": [
+          "相册管理"
+        ],
+        "parameters": [
+          {
+            "name": "albumId",
+            "in": "path",
+            "description": "相册ID",
+            "required": true,
+            "example": "",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "photoId",
+            "in": "path",
+            "description": "照片ID",
+            "required": true,
+            "example": "",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "example": "Bearer {{JWT_TOKEN}}",
+            "schema": {
+              "type": "string",
+              "default": "Bearer {{JWT_TOKEN}}"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "移除成功",
+            "headers": {}
+          },
+          "401": {
+            "description": "未认证",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "headers": {}
+          },
+          "404": {
+            "description": "相册或照片不存在",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Error": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer"
+          },
+          "message": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "code",
+          "message"
+        ]
+      },
+      "User": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "username": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string",
+            "format": "email"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "id",
+          "username",
+          "email"
+        ]
+      },
+      "UserCredentials": {
+        "type": "object",
+        "properties": {
+          "emailOrUsername": {
+            "type": "string",
+            "format": "email",
+            "description": "可填写邮箱或用户名"
+          },
+          "password": {
+            "type": "string",
+            "format": "password"
+          }
+        },
+        "required": [
+          "emailOrUsername",
+          "password"
+        ]
+      },
+      "UserRegistration": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string",
+            "format": "email"
+          },
+          "password": {
+            "type": "string",
+            "format": "password"
+          }
+        },
+        "required": [
+          "username",
+          "email",
+          "password"
+        ]
+      },
+      "AuthResponse": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string"
+          },
+          "user": {
+            "$ref": "#/components/schemas/User"
+          }
+        },
+        "required": [
+          "token",
+          "user"
+        ]
+      },
+      "Album": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "coverPhotoId": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uuid"
+          },
+          "photoCount": {
+            "type": "integer"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "createdAt"
+        ]
+      },
+      "AlbumCreate": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "coverPhotoId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
+      "Photo": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "ID"
+          },
+          "title": {
+            "type": "string",
+            "title": "标题",
+            "description": "原文件文件名（不含后缀）"
+          },
+          "description": {
+            "type": "string",
+            "title": "描述"
+          },
+          "filename": {
+            "type": "string",
+            "title": "文件名",
+            "description": "系统生成的文件名"
+          },
+          "fileSize": {
+            "type": "integer",
+            "description": "字节",
+            "title": "文件大小"
+          },
+          "mimeType": {
+            "type": "string",
+            "title": "文件类型"
+          },
+          "width": {
+            "type": "integer",
+            "title": "宽度"
+          },
+          "height": {
+            "type": "integer",
+            "title": "高度"
+          },
+          "url": {
+            "type": "string",
+            "format": "uri",
+            "title": "原图 url"
+          },
+          "thumbnailUrl": {
+            "type": "string",
+            "format": "uri",
+            "title": "缩略图 url"
+          },
+          "takenAt": {
+            "type": "string",
+            "format": "date-time",
+            "title": "拍摄时间"
+          },
+          "location": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/GeoLocation"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "位置"
+          },
+          "metadata": {
+            "type": "object",
+            "properties": {},
+            "title": "元数据"
+          },
+          "albums": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "title": "相册"
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "title": "标签"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "title": "创建时间"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "title": "更新时间"
+          }
+        },
+        "required": [
+          "id",
+          "filename",
+          "url",
+          "mimeType"
+        ]
+      },
+      "GeoLocation": {
+        "type": "object",
+        "properties": {
+          "latitude": {
+            "type": "number",
+            "format": "float",
+            "title": "维度"
+          },
+          "longitude": {
+            "type": "number",
+            "format": "float",
+            "title": "经度"
+          },
+          "name": {
+            "type": "string",
+            "title": "位置名称"
+          }
+        },
+        "required": [
+          "latitude",
+          "longitude"
+        ],
+        "title": "位置"
+      },
+      "PhotoUpload": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "albumIds": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "title"
+        ]
+      },
+      "Tag": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string"
+          },
+          "photoCount": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "id",
+          "name"
+        ]
+      },
+      "PaginationResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {}
+            }
+          },
+          "total": {
+            "type": "integer"
+          },
+          "page": {
+            "type": "integer"
+          },
+          "limit": {
+            "type": "integer"
+          },
+          "totalPages": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "data",
+          "total",
+          "page",
+          "limit",
+          "totalPages"
+        ]
+      }
+    },
+    "securitySchemes": {}
+  },
+  "servers": [],
+  "security": []
+}

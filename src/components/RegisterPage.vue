@@ -47,6 +47,7 @@
 
 <script>
 import axios from 'axios';
+import { authService } from '../api';
 
 export default {
   name: 'RegisterPage',
@@ -91,11 +92,18 @@ export default {
       
       try {
         this.loading = true;
-        const response = await axios.post('http://120.55.78.33:3000/auth/register', this.formData);
-        alert('注册成功！');
+        await authService.register(this.formData);
+        this.$notify({
+          title: '成功',
+          message: '注册成功！请登录',
+          type: 'success'
+        });
         this.$router.push('/login');
       } catch (error) {
-        alert(error.response?.data?.message || '注册失败，请重试');
+        this.$notify.error({
+          title: '注册失败',
+          message: error.response?.data?.message || '注册失败，请重试'
+        });
       } finally {
         this.loading = false;
       }

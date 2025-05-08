@@ -3,9 +3,9 @@
     <!-- 顶部导航栏 -->
     <nav class="app-navbar">
       <div class="navbar-brand">
-        <router-link to="/" class="logo-link">
+        <router-link to="/photowall" class="logo-link">
           <i class="logo-icon">📷</i>
-          <span class="logo-text">PhotoWall</span>
+          <span class="logo-text">ShotMeld</span>
         </router-link>
       </div>
       <div class="navbar-actions">
@@ -13,12 +13,23 @@
           <i class="fas fa-calendar-alt"></i>
           <span>时间轴</span>
         </router-link>
+        <button @click="showUploadModal = true" class="nav-button">
+          <i class="fas fa-cloud-upload-alt"></i>
+          <span>上传照片</span>
+        </button>
+        <button @click="showAlbumForm = true" class="nav-button">
+          <i class="fas fa-folder-plus"></i>
+          <span>新建相册</span>
+        </button>
         <div class="user-dropdown">
           <button class="user-button">
             <i class="fas fa-user-circle"></i>
             <span>{{ userName }}</span>
           </button>
           <div class="dropdown-menu">
+            <router-link to="/profile" class="dropdown-item">
+              <i class="fas fa-user"></i> 个人资料
+            </router-link>
             <button @click="handleLogout" class="dropdown-item">
               <i class="fas fa-sign-out-alt"></i> 登出
             </button>
@@ -29,178 +40,442 @@
 
     <!-- 主内容区 -->
     <main class="photo-wall-main">
-      <div class="search-section">
+      <!-- 过滤和搜索区 -->
+      <div class="filters-section">
         <div class="search-container">
           <i class="fas fa-search search-icon"></i>
           <input 
-            v-model="photoId" 
+            v-model="searchQuery" 
             type="text" 
-            placeholder="输入照片ID..." 
+            placeholder="搜索照片..." 
             class="search-input"
-            @keyup.enter="fetchPhoto"
+            @input="debouncedSearch"
           >
-          <button 
-            @click="fetchPhoto" 
-            :disabled="loading" 
-            class="search-button"
-          >
-            <span v-if="loading" class="button-loader"></span>
-            <span v-else>搜索</span>
-          </button>
-            <div class="action-bar">
-        <button @click="showAlbumForm = true" class="create-album-button">
-          <i class="fas fa-plus"></i> 创建相册
-        </button>
-      </div>
+        </div>
+        <div class="filter-controls">
+          <div class="filter-item">
+            <label>相册:</label>
+            <el-select v-model="filters.albumId" placeholder="全部相册" clearable @change="fetchPhotos">
+              <el-option
+                v-for="album in albums"
+                :key="album.id"
+                :label="album.name"
+                :value="album.id">
+              </el-option>
+            </el-select>
+          </div>
+          <div class="filter-item">
+            <label>标签:</label>
+            <el-select 
+              v-model="filters.tags" 
+              multiple 
+              collapse-tags 
+              placeholder="选择标签" 
+              @change="fetchPhotos">
+              <el-option
+                v-for="tag in tags"
+                :key="tag.id"
+                :label="tag.name"
+                :value="tag.id">
+              </el-option>
+            </el-select>
+          </div>
+          <div class="filter-item">
+            <label>日期范围:</label>
+            <el-date-picker
+              v-model="dateRange"
+              type="daterange"
+              range-separator="至"
+              start-placeholder="开始日期"
+              end-placeholder="结束日期"
+              format="YYYY-MM-DD"
+              value-format="YYYY-MM-DD"
+              @change="handleDateRangeChange">
+            </el-date-picker>
+          </div>
+          <div class="filter-item">
+            <label>排序:</label>
+            <el-select v-model="filters.sort" @change="fetchPhotos">
+              <el-option label="拍摄时间" value="takenAt"></el-option>
+              <el-option label="上传时间" value="createdAt"></el-option>
+              <el-option label="标题" value="title"></el-option>
+            </el-select>
+            <el-select v-model="filters.order" style="margin-left: 5px;" @change="fetchPhotos">
+              <el-option label="降序" value="desc"></el-option>
+              <el-option label="升序" value="asc"></el-option>
+            </el-select>
+          </div>
         </div>
       </div>
 
-      <!-- 照片详情卡片 -->
-      <transition name="fade">
-        <div v-if="currentPhoto" class="photo-card-container">
-          <div class="photo-card">
-            <div class="photo-image-container">
-              <img 
-                :src="currentPhoto.url" 
-                :alt="currentPhoto.title" 
-                class="photo-image"
-                @load="imageLoaded = true"
-              >
-              <div v-if="!imageLoaded" class="image-loading">
-                <i class="fas fa-spinner fa-spin"></i>
-              </div>
+      <!-- 照片网格 -->
+      <div v-if="!loading" class="photos-grid">
+        <div v-if="photos.length === 0" class="no-photos">
+          <i class="fas fa-image no-photos-icon"></i>
+          <p>没有照片。上传一些照片开始使用吧！</p>
+          <button @click="showUploadModal = true" class="upload-btn">上传照片</button>
+        </div>
+        <div v-for="photo in photos" :key="photo.id" class="photo-item" @click="openPhotoDetail(photo)">
+          <div class="photo-thumbnail">
+            <img :src="photo.thumbnailUrl || photo.url" :alt="photo.title" />
+          </div>
+          <div class="photo-info">
+            <h3>{{ photo.title || '无标题' }}</h3>
+            <p class="photo-date">{{ formatDate(photo.takenAt) }}</p>
+          </div>
+        </div>
+      </div>
+      <div v-else class="loading-container">
+        <el-spinner></el-spinner>
+        <p>正在加载照片...</p>
+      </div>
+      
+      <!-- 分页 -->
+      <div class="pagination-container" v-if="totalPhotos > 0">
+        <el-pagination
+          v-model:currentPage="pagination.page"
+          v-model:pageSize="pagination.limit"
+          :page-sizes="[20, 50, 100]"
+          :total="totalPhotos"
+          layout="total, sizes, prev, pager, next"
+          @size-change="handleSizeChange"
+          @current-change="handlePageChange">
+        </el-pagination>
+      </div>
+
+      <!-- 照片详情模态框 -->
+      <transition name="modal">
+        <div v-if="currentPhoto" class="modal-overlay" @click.self="closePhotoDetail">
+          <div class="photo-detail-modal">
+            <div class="photo-detail-header">
+              <h2>{{ currentPhoto.title || '无标题照片' }}</h2>
+              <button @click="closePhotoDetail" class="close-button">
+                <i class="fas fa-times"></i>
+              </button>
             </div>
-            
-            <div class="photo-details">
-              <div class="photo-header">
-                <h2 class="photo-title">{{ currentPhoto.title || '未命名照片' }}</h2>
-                <div class="photo-meta">
-                  <span class="meta-item">
-                    <i class="fas fa-calendar"></i>
-                    {{ formatDate(currentPhoto.takenAt || currentPhoto.createdAt) }}
-                  </span>
-                  <span v-if="currentPhoto.location" class="meta-item">
-                    <i class="fas fa-map-marker-alt"></i>
-                    {{ currentPhoto.location.name || '未知位置' }}
-                  </span>
+            <div class="photo-detail-content">
+              <div class="photo-detail-image">
+                <img :src="currentPhoto.url" :alt="currentPhoto.title" @load="imageLoaded = true" />
+                <div v-if="!imageLoaded" class="image-loading">
+                  <el-spinner></el-spinner>
                 </div>
               </div>
-              
-              <p v-if="currentPhoto.description" class="photo-description">
-                {{ currentPhoto.description }}
-              </p>
-              
-              <div class="photo-stats">
-                <div class="stat-item">
-                  <span class="stat-label">尺寸</span>
-                  <span class="stat-value">{{ currentPhoto.width }} × {{ currentPhoto.height }} px</span>
-                </div>
-                <div class="stat-item">
-                  <span class="stat-label">文件大小</span>
-                  <span class="stat-value">{{ formatFileSize(currentPhoto.fileSize) }}</span>
-                </div>
-                <div v-if="currentPhoto.tags && currentPhoto.tags.length" class="stat-item">
-                  <span class="stat-label">标签</span>
-                  <div class="tags">
-                    <span v-for="tag in currentPhoto.tags" :key="tag" class="tag">
-                      #{{ tag }}
-                    </span>
+              <div class="photo-detail-info">
+                <div class="info-group">
+                  <h3>照片信息</h3>
+                  <div class="info-item">
+                    <span class="info-label">标题:</span>
+                    <span class="info-value">{{ currentPhoto.title || '无标题' }}</span>
+                  </div>
+                  <div class="info-item">
+                    <span class="info-label">拍摄时间:</span>
+                    <span class="info-value">{{ formatDate(currentPhoto.takenAt) }}</span>
+                  </div>
+                  <div class="info-item">
+                    <span class="info-label">文件大小:</span>
+                    <span class="info-value">{{ formatFileSize(currentPhoto.fileSize) }}</span>
+                  </div>
+                  <div class="info-item">
+                    <span class="info-label">尺寸:</span>
+                    <span class="info-value">{{ currentPhoto.width || 0 }}×{{ currentPhoto.height || 0 }}</span>
                   </div>
                 </div>
-              </div>
-              
-              <div class="photo-actions">
-                <button class="action-button edit-button">
-                  <i class="fas fa-edit"></i> 编辑
-                </button>
-                <button 
-                  @click="handleDelete(currentPhoto.id)" 
-                  class="action-button delete-button"
-                >
-                  <i class="fas fa-trash-alt"></i> 删除
-                </button>
+
+                <div class="info-group">
+                  <h3>标签</h3>
+                  <div class="photo-tags">
+                    <div v-if="currentPhoto.tags && currentPhoto.tags.length > 0" class="tags-container">
+                      <span class="photo-tag" v-for="tag in currentPhoto.tags" :key="tag.id">
+                        {{ tag.name }}
+                      </span>
+                    </div>
+                    <div v-else class="no-tags">没有标签</div>
+                  </div>
+                </div>
+
+                <div class="info-group">
+                  <h3>相册</h3>
+                  <div class="photo-albums">
+                    <div v-if="currentPhoto.albums && currentPhoto.albums.length > 0" class="albums-container">
+                      <span class="photo-album" v-for="album in currentPhoto.albums" :key="album.id">
+                        {{ album.name }}
+                      </span>
+                    </div>
+                    <div v-else class="no-albums">不在任何相册中</div>
+                  </div>
+                </div>
+
+                <div class="photo-actions">
+                  <el-button type="primary" @click="downloadPhoto(currentPhoto)">
+                    <i class="fas fa-download"></i> 下载
+                  </el-button>
+                  <el-button type="danger" @click="confirmDeletePhoto">
+                    <i class="fas fa-trash"></i> 删除
+                  </el-button>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </transition>
 
-      <!-- 空状态 -->
-      <div v-if="!currentPhoto && !loading" class="empty-state">
-        <div class="empty-icon">
-          <i class="fas fa-camera"></i>
-        </div>
-        <h3 class="empty-title">没有找到照片</h3>
-        <p class="empty-message">请输入照片ID搜索或上传新照片</p>
-      </div>
-
-      <!-- 加载状态 -->
-      <div v-if="loading" class="loading-state">
-        <i class="fas fa-spinner fa-spin"></i>
-        <span>加载中...</span>
-      </div>
-
-      <!-- 错误提示 -->
-      <transition name="slide-down">
-        <div v-if="error" class="error-alert">
-          <i class="fas fa-exclamation-circle"></i>
-          <span>{{ error }}</span>
-          <button @click="error = ''" class="close-button">
-            <i class="fas fa-times"></i>
-          </button>
-        </div>
-      </transition>
-<transition name="modal">
-        <div v-if="showAlbumForm" class="modal-overlay">
+      <!-- 上传照片模态框 -->
+      <transition name="modal">
+        <div v-if="showUploadModal" class="modal-overlay">
           <div class="modal-container">
-            <AlbumForm 
-              @success="handleAlbumCreated"
-              @cancel="showAlbumForm = false"
-              @close="showAlbumForm = false"
-            />
+            <div class="modal-header">
+              <h2>上传照片</h2>
+              <button @click="showUploadModal = false" class="close-button">
+                <i class="fas fa-times"></i>
+              </button>
+            </div>
+            <div class="modal-body">
+              <PhotoUpload @upload-success="handlePhotoUploaded" />
+            </div>
           </div>
         </div>
       </transition>
+
+      <!-- 相册表单模态框 -->
+      <transition name="modal">
+        <div v-if="showAlbumForm" class="modal-overlay">
+          <div class="modal-container">
+            <div class="modal-header">
+              <h2>创建相册</h2>
+              <button @click="showAlbumForm = false" class="close-button">
+                <i class="fas fa-times"></i>
+              </button>
+            </div>
+            <div class="modal-body">
+              <AlbumForm 
+                @success="handleAlbumCreated"
+                @cancel="showAlbumForm = false"
+                @close="showAlbumForm = false"
+              />
+            </div>
+          </div>
+        </div>
+      </transition>
+
+      <!-- 删除确认对话框 -->
+      <el-dialog
+        v-model="showDeleteConfirm"
+        title="确认删除"
+        width="30%"
+        :show-close="false">
+        <span>确定要删除这张照片吗？此操作不可恢复。</span>
+        <template #footer>
+          <span class="dialog-footer">
+            <el-button @click="showDeleteConfirm = false">取消</el-button>
+            <el-button type="danger" @click="deletePhoto">确认</el-button>
+          </span>
+        </template>
+      </el-dialog>
     </main>
   </div>
 </template>
 
 <script>
-import axios from 'axios'
-import AlbumForm from '../components/AlbumForm.vue'
+import axios from 'axios';
+import AlbumForm from './AlbumForm.vue';
+import PhotoUpload from './PhotoUpload.vue';
+import { photoService, albumService, tagService } from '../api';
+import debounce from 'lodash/debounce';
 
 export default {
   name: 'PhotoWall',
   components: {
     AlbumForm,
+    PhotoUpload
   },
   data() {
     return {
-      photoId: '',
+      photos: [],
+      totalPhotos: 0,
+      loading: true,
+      searchQuery: '',
       currentPhoto: null,
-      error: '',
-      loading: false,
-      userName: '',
       imageLoaded: false,
+      showUploadModal: false,
       showAlbumForm: false,
+      showDeleteConfirm: false,
+      userName: '',
+      albums: [],
+      tags: [],
+      dateRange: [],
+      filters: {
+        albumId: null,
+        tags: [],
+        sort: 'takenAt',
+        order: 'desc',
+        q: '',
+        startDate: null,
+        endDate: null
+      },
+      pagination: {
+        page: 1,
+        limit: 50
+      }
     }
   },
   created() {
+    this.debouncedSearch = debounce(() => {
+      this.filters.q = this.searchQuery;
+      this.fetchPhotos();
+    }, 500);
+
+    // 获取用户信息
     const user = JSON.parse(localStorage.getItem('user'))
     if (user) {
-      this.userName = user.name || user.email
+      this.userName = user.username || user.email
     }
+    
+    // 初始化数据
+    this.fetchPhotos();
+    this.fetchAlbums();
+    this.fetchTags();
   },
   methods: {
-     handleAlbumCreated(newAlbum) {
-      this.showAlbumForm = false
+    async fetchPhotos() {
+      this.loading = true;
+      
+      try {
+        const params = {
+          page: this.pagination.page,
+          limit: this.pagination.limit,
+          sort: this.filters.sort,
+          order: this.filters.order
+        };
+        
+        if (this.filters.q) params.q = this.filters.q;
+        if (this.filters.albumId) params.albumId = this.filters.albumId;
+        if (this.filters.tags.length > 0) params.tags = this.filters.tags;
+        if (this.filters.startDate) params.startDate = this.filters.startDate;
+        if (this.filters.endDate) params.endDate = this.filters.endDate;
+        
+        const response = await photoService.getPhotos(params);
+        
+        this.photos = response.data.data || [];
+        this.totalPhotos = response.data.total || 0;
+      } catch (error) {
+        console.error('获取照片列表失败:', error);
+        this.$notify.error({
+          title: '获取照片失败',
+          message: '无法加载照片列表，请重试'
+        });
+      } finally {
+        this.loading = false;
+      }
+    },
+    
+    async fetchAlbums() {
+      try {
+        const response = await albumService.getAlbums();
+        this.albums = response.data || [];
+      } catch (error) {
+        console.error('获取相册列表失败:', error);
+      }
+    },
+    
+    async fetchTags() {
+      try {
+        const response = await tagService.getTags();
+        this.tags = response.data || [];
+      } catch (error) {
+        console.error('获取标签列表失败:', error);
+      }
+    },
+    
+    openPhotoDetail(photo) {
+      this.currentPhoto = photo;
+      this.imageLoaded = false;
+    },
+    
+    closePhotoDetail() {
+      this.currentPhoto = null;
+    },
+    
+    handlePhotoUploaded(uploadedPhotos) {
+      this.showUploadModal = false;
+      this.fetchPhotos();
+      
+      this.$notify({
+        title: '上传成功',
+        message: `已成功上传 ${uploadedPhotos.length || 1} 张照片`,
+        type: 'success'
+      });
+    },
+    
+    handleAlbumCreated(newAlbum) {
+      this.showAlbumForm = false;
+      this.fetchAlbums();
+      
       this.$notify({
         title: '成功',
         message: `相册"${newAlbum.name}"已创建`,
         type: 'success'
-      })
-      // 这里可以添加逻辑来更新相册列表
+      });
     },
+    
+    handleDateRangeChange(dates) {
+      if (dates && dates.length === 2) {
+        this.filters.startDate = dates[0];
+        this.filters.endDate = dates[1];
+      } else {
+        this.filters.startDate = null;
+        this.filters.endDate = null;
+      }
+      
+      this.fetchPhotos();
+    },
+    
+    handlePageChange(page) {
+      this.pagination.page = page;
+      this.fetchPhotos();
+    },
+    
+    handleSizeChange(size) {
+      this.pagination.limit = size;
+      this.pagination.page = 1;
+      this.fetchPhotos();
+    },
+    
+    downloadPhoto(photo) {
+      const link = document.createElement('a');
+      link.href = photo.url;
+      link.download = photo.filename || 'photo.jpg';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    },
+    
+    confirmDeletePhoto() {
+      this.showDeleteConfirm = true;
+    },
+    
+    async deletePhoto() {
+      try {
+        await photoService.deletePhoto(this.currentPhoto.id);
+        
+        this.$notify({
+          title: '成功',
+          message: '照片已删除',
+          type: 'success'
+        });
+        
+        // 移除已删除的照片
+        this.photos = this.photos.filter(p => p.id !== this.currentPhoto.id);
+        this.closePhotoDetail();
+        this.showDeleteConfirm = false;
+      } catch (error) {
+        console.error('删除照片失败:', error);
+        this.$notify.error({
+          title: '删除失败',
+          message: error.response?.data?.message || '无法删除照片，请重试'
+        });
+      }
+    },
+    
     formatDate(dateString) {
       if (!dateString) return '未知日期'
       const date = new Date(dateString)
@@ -212,6 +487,7 @@ export default {
         minute: '2-digit'
       })
     },
+    
     formatFileSize(bytes) {
       if (bytes === 0) return '0 Bytes'
       const k = 1024
@@ -219,49 +495,7 @@ export default {
       const i = Math.floor(Math.log(bytes) / Math.log(k))
       return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]
     },
-    async fetchPhoto() {
-      if (!this.photoId) {
-        this.error = '请输入照片ID'
-        return
-      }
-
-      this.error = ''
-      this.currentPhoto = null
-      this.loading = true
-      this.imageLoaded = false
-
-      try {
-        const token = localStorage.getItem('token')
-        const response = await axios.get(`http://120.55.78.33:3000/photos/${this.photoId}`, {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        })
-        this.currentPhoto = response.data
-      } catch (err) {
-        console.error('获取照片失败:', err)
-        if (err.response && err.response.status === 401) {
-          this.error = '认证失效，请重新登录'
-          this.handleLogout()
-        } else {
-          this.error = err.response?.data?.message || '获取照片失败，请检查ID是否正确'
-        }
-      } finally {
-        this.loading = false
-      }
-    },
-    handleDelete(photoId) {
-      if (confirm('确定要删除这张照片吗？')) {
-        // 这里添加删除逻辑
-        this.$notify({
-          title: '成功',
-          message: '照片已删除',
-          type: 'success'
-        })
-        this.currentPhoto = null
-        this.photoId = ''
-      }
-    },
+    
     handleLogout() {
       localStorage.removeItem('token')
       localStorage.removeItem('user')
@@ -407,7 +641,7 @@ body {
   text-align: left;
   color: var(--dark-color);
   cursor: pointer;
-  transition: var(--transition);
+  transition: var (--transition);
 }
 
 .dropdown-item:hover {
@@ -834,5 +1068,298 @@ body {
 .modal-enter .modal-container,
 .modal-leave-to .modal-container {
   transform: translateY(-20px);
+}
+
+/* 添加新样式 */
+.filters-section {
+  margin-bottom: 20px;
+  background-color: white;
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+  padding: 16px;
+}
+
+.filter-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.filter-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.filter-item label {
+  font-weight: 500;
+  color: var(--gray-color);
+}
+
+.photos-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.photo-item {
+  background-color: white;
+  border-radius: var(--border-radius);
+  overflow: hidden;
+  box-shadow: var(--box-shadow);
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.photo-item:hover {
+  transform: translateY(-5px);
+}
+
+.photo-thumbnail {
+  height: 180px;
+  overflow: hidden;
+}
+
+.photo-thumbnail img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.photo-info {
+  padding: 12px;
+}
+
+.photo-info h3 {
+  margin: 0;
+  font-size: 14px;
+  margin-bottom: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.photo-date {
+  color: var(--gray-color);
+  font-size: 12px;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  backdrop-filter: blur(5px);
+}
+
+.modal-container {
+  background-color: white;
+  border-radius: var(--border-radius);
+  width: 90%;
+  max-width: 800px;
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: 20px;
+  position: relative;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.modal-header h2 {
+  margin: 0;
+}
+
+.close-button {
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  color: var(--gray-color);
+}
+
+.photo-detail-modal {
+  background-color: white;
+  border-radius: var(--border-radius);
+  width: 95%;
+  max-width: 1200px;
+  max-height: 95vh;
+  overflow-y: auto;
+}
+
+.photo-detail-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  border-bottom: 1px solid #ebeef5;
+}
+
+.photo-detail-content {
+  display: flex;
+  flex-direction: column;
+}
+
+@media (min-width: 768px) {
+  .photo-detail-content {
+    flex-direction: row;
+    height: calc(95vh - 60px);
+  }
+
+  .photo-detail-image {
+    flex: 2;
+    border-right: 1px solid #ebeef5;
+  }
+
+  .photo-detail-info {
+    flex: 1;
+    overflow-y: auto;
+  }
+}
+
+.photo-detail-image {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f5f7fa;
+  position: relative;
+  height: 100%;
+  min-height: 300px;
+}
+
+.photo-detail-image img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.image-loading {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.photo-detail-info {
+  padding: 16px;
+}
+
+.info-group {
+  margin-bottom: 24px;
+}
+
+.info-group h3 {
+  font-size: 16px;
+  border-bottom: 1px solid #ebeef5;
+  padding-bottom: 8px;
+  margin-bottom: 12px;
+}
+
+.info-item {
+  display: flex;
+  margin-bottom: 8px;
+}
+
+.info-label {
+  font-weight: 500;
+  width: 100px;
+  color: var(--gray-color);
+}
+
+.photo-tags, .photo-albums {
+  margin-top: 8px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.photo-tag, .photo-album {
+  background-color: rgba(64, 158, 255, 0.1);
+  color: #409eff;
+  border-radius: 16px;
+  padding: 4px 12px;
+  font-size: 12px;
+}
+
+.photo-album {
+  background-color: rgba(103, 194, 58, 0.1);
+  color: #67c23a;
+}
+
+.no-tags, .no-albums {
+  color: var (--gray-color);
+  font-style: italic;
+}
+
+.photo-actions {
+  margin-top: 24px;
+  display: flex;
+  gap: 12px;
+}
+
+.pagination-container {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+}
+
+.no-photos {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 40px;
+}
+
+.no-photos-icon {
+  font-size: 64px;
+  color: var(--gray-color);
+  margin-bottom: 16px;
+}
+
+.upload-btn {
+  margin-top: 16px;
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  padding: 8px 20px;
+  border-radius: 20px;
+  cursor: pointer;
+}
+
+.loading-container {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 40px;
+}
+
+/* 动画效果 */
+.modal-enter-active, .modal-leave-active {
+  transition: all 0.3s ease;
+}
+
+.modal-enter-from, .modal-leave-to {
+  opacity: 0;
+}
+
+.modal-enter-from .modal-container,
+.modal-enter-from .photo-detail-modal,
+.modal-leave-to .modal-container,
+.modal-leave-to .photo-detail-modal {
+  transform: scale(0.9);
 }
 </style>
