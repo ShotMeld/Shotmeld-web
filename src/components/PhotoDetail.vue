@@ -1,46 +1,63 @@
 <template>
   <div class="photo-detail">
-    <div class="photo-view">
-      <img :src="photo.url" :alt="photo.title" class="main-photo">
-      <img v-if="photo.thumbnailUrl" :src="photo.thumbnailUrl" alt="缩略图" class="thumbnail">
-    </div>
-    
-    <div class="photo-meta">
-      <h2>{{ photo.title || '未命名照片' }}</h2>
-      <p class="description">{{ photo.description }}</p>
-      
-      <div class="meta-grid">
-        <div class="meta-item">
-          <span class="meta-label">文件信息:</span>
-          <span>{{ photo.filename }} ({{ formatFileSize(photo.fileSize) }})</span>
-        </div>
-        
-        <div class="meta-item">
-          <span class="meta-label">尺寸:</span>
-          <span>{{ photo.width }} × {{ photo.height }} 像素</span>
-        </div>
-        
-        <div class="meta-item">
-          <span class="meta-label">拍摄时间:</span>
-          <span>{{ formatDate(photo.takenAt) }}</span>
-        </div>
-        
-        <div class="meta-item" v-if="photo.location && photo.location.name">
-          <span class="meta-label">位置:</span>
-          <span>{{ photo.location.name }}</span>
-        </div>
-        
-        <div class="meta-item" v-if="photo.tags && photo.tags.length">
-          <span class="meta-label">标签:</span>
-          <div class="tags">
-            <span v-for="tag in photo.tags" :key="tag" class="tag">{{ tag }}</span>
-          </div>
+    <div class="photo-detail-content">
+      <div class="photo-detail-image">
+        <img 
+          :src="photo.url" 
+          :alt="photo.title" 
+          @load="imageLoaded = true" 
+        />
+        <div v-if="!imageLoaded" class="image-loading">
+          <div class="spinner"></div>
         </div>
       </div>
-      
-      <div class="action-buttons">
-        <button @click="startEditing" class="edit-button">编辑信息</button>
-        <button @click="handleDelete" class="delete-button">删除照片</button>
+      <div class="photo-detail-info">
+        <div class="info-group">
+          <h3 class="info-group-title">照片信息</h3>
+          <div class="info-item">
+            <span class="info-label">标题:</span>
+            <span class="info-value">{{ photo.title || '无标题' }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">拍摄时间:</span>
+            <span class="info-value">{{ formatDate(photo.takenAt) }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">文件大小:</span>
+            <span class="info-value">{{ formatFileSize(photo.fileSize) }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">尺寸:</span>
+            <span class="info-value">{{ photo.width || 0 }}×{{ photo.height || 0 }}</span>
+          </div>
+          <div class="info-item" v-if="photo.description">
+            <span class="info-label">描述:</span>
+            <span class="info-value">{{ photo.description }}</span>
+          </div>
+          <div class="info-item" v-if="photo.location && photo.location.name">
+            <span class="info-label">位置:</span>
+            <span class="info-value">{{ photo.location.name }}</span>
+          </div>
+        </div>
+        
+        <div class="info-group" v-if="photo.tags && photo.tags.length > 0">
+          <h3 class="info-group-title">标签</h3>
+          <div class="photo-tags">
+            <span v-for="tag in photo.tags" :key="tag" class="detail-tag">{{ tag }}</span>
+          </div>
+        </div>
+        
+        <div class="info-group" v-if="photo.albums && photo.albums.length > 0">
+          <h3 class="info-group-title">所属相册</h3>
+          <div class="photo-albums">
+            <span v-for="album in photo.albums" :key="album.id" class="detail-album">{{ album.name }}</span>
+          </div>
+        </div>
+        
+        <div class="photo-actions">
+          <button @click="startEditing" class="edit-button">编辑信息</button>
+          <button @click="handleDelete" class="delete-button">删除照片</button>
+        </div>
       </div>
     </div>
   </div>
@@ -54,6 +71,11 @@ export default {
       required: true
     }
   },
+  data() {
+    return {
+      imageLoaded: false
+    }
+  },
   methods: {
     formatDate(dateString) {
       if (!dateString) return '未知'
@@ -61,7 +83,7 @@ export default {
       return date.toLocaleString()
     },
     formatFileSize(bytes) {
-      if (bytes === 0) return '0 Bytes'
+      if (!bytes || bytes === 0) return '0 Bytes'
       const k = 1024
       const sizes = ['Bytes', 'KB', 'MB', 'GB']
       const i = Math.floor(Math.log(bytes) / Math.log(k))
@@ -75,94 +97,137 @@ export default {
         this.$emit('photo-deleted', this.photo.id)
       }
     }
+  },
+  watch: {
+    photo() {
+      // 当照片变更时，重置加载状态
+      this.imageLoaded = false;
+    }
   }
 }
 </script>
 
 <style scoped>
 .photo-detail {
-  margin-top: 30px;
-  border: 1px solid #e0e0e0;
+  width: 100%;
+  background: white;
   border-radius: 12px;
   overflow: hidden;
-  background: white;
-}
-
-.photo-view {
-  position: relative;
-  background: #f5f5f5;
-  text-align: center;
-  padding: 20px;
-}
-
-.main-photo {
-  max-width: 100%;
-  max-height: 500px;
-  border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.1);
 }
 
-.thumbnail {
-  position: absolute;
-  bottom: 10px;
-  right: 10px;
-  width: 80px;
-  height: 80px;
-  border: 2px solid white;
-  border-radius: 4px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-}
-
-.photo-meta {
-  padding: 20px;
-}
-
-h2 {
-  margin: 0 0 10px 0;
-  color: #333;
-}
-
-.description {
-  color: #666;
-  margin-bottom: 20px;
-  line-height: 1.6;
-}
-
-.meta-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 15px;
-  margin-bottom: 20px;
-}
-
-.meta-item {
+.photo-detail-content {
   display: flex;
   flex-direction: column;
 }
 
-.meta-label {
-  font-weight: bold;
-  color: #555;
-  margin-bottom: 4px;
+.photo-detail-image {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f8f9fa;
+  position: relative;
+  min-height: 300px;
+  border-radius: 12px 12px 0 0;
+  overflow: hidden;
 }
 
-.tags {
+.photo-detail-image img {
+  max-width: 100%;
+  max-height: 500px;
+  object-fit: contain;
+}
+
+.image-loading {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba(0, 122, 255, 0.1);
+  border-top-color: #6750a4;
+  border-radius: 50%;
+  animation: spin 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite;
+}
+
+.photo-detail-info {
+  padding: 20px;
+}
+
+.info-group {
+  margin-bottom: 20px;
+  animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.info-group-title {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 15px;
+  padding-bottom: 5px;
+  border-bottom: 1px solid #e0e0e0;
+  color: #333;
+}
+
+.info-item {
+  display: flex;
+  margin-bottom: 10px;
+  font-size: 14px;
+}
+
+.info-label {
+  width: 100px;
+  color: #666;
+  font-weight: 500;
+}
+
+.info-value {
+  flex: 1;
+  color: #333;
+}
+
+.photo-tags, .photo-albums {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
+  gap: 8px;
 }
 
-.tag {
+.detail-tag, .detail-album {
   background: #e0e0e0;
-  padding: 2px 8px;
+  padding: 2px 10px;
   border-radius: 4px;
   font-size: 0.8em;
+  margin-bottom: 8px;
+  transition: transform 0.2s;
 }
 
-.action-buttons {
+.detail-tag:hover, .detail-album:hover {
+  transform: translateY(-2px);
+}
+
+.photo-actions {
   display: flex;
-  gap: 10px;
-  margin-top: 20px;
+  gap: 15px;
+  margin-top: 25px;
 }
 
 .edit-button, .delete-button {
@@ -171,6 +236,7 @@ h2 {
   border-radius: 4px;
   cursor: pointer;
   transition: background-color 0.2s;
+  font-size: 14px;
 }
 
 .edit-button {
@@ -191,12 +257,28 @@ h2 {
   background-color: #cc0000;
 }
 
-@media (max-width: 600px) {
-  .meta-grid {
-    grid-template-columns: 1fr;
+/* 响应式设计 */
+@media (min-width: 768px) {
+  .photo-detail-content {
+    flex-direction: row;
+    min-height: 500px;
   }
   
-  .action-buttons {
+  .photo-detail-image {
+    flex: 2;
+    border-right: 1px solid #e0e0e0;
+    border-radius: 12px 0 0 12px;
+  }
+  
+  .photo-detail-info {
+    flex: 1;
+    overflow-y: auto;
+    max-height: 500px;
+  }
+}
+
+@media (max-width: 768px) {
+  .photo-actions {
     flex-direction: column;
   }
   

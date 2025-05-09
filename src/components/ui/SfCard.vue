@@ -51,9 +51,10 @@ export default {
 <style scoped>
 .sf-card {
   background-color: var(--bg-primary);
-  border-radius: var(--radius-medium);
+  border-radius: var(--radius-large);
   overflow: hidden;
   transition: transform var(--transition-base), box-shadow var(--transition-base);
+  border: 0;
 }
 
 .sf-card--none {
@@ -62,20 +63,20 @@ export default {
 }
 
 .sf-card--small {
-  box-shadow: var(--shadow-small);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04), 0 4px 12px rgba(0, 0, 0, 0.04);
 }
 
 .sf-card--medium {
-  box-shadow: var(--shadow-medium);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05), 0 8px 16px rgba(0, 0, 0, 0.05);
 }
 
 .sf-card--large {
-  box-shadow: var(--shadow-large);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06), 0 16px 32px rgba(0, 0, 0, 0.06);
 }
 
 .sf-card--hoverable:hover {
   transform: translateY(-4px);
-  box-shadow: var(--shadow-large);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.07), 0 20px 48px rgba(0, 0, 0, 0.06);
 }
 
 .sf-card-header {

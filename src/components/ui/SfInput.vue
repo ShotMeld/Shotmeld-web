@@ -120,39 +120,49 @@ export default {
 
 <style scoped>
 .sf-input-wrapper {
+  display: flex;
+  flex-direction: column;
   margin-bottom: var(--spacing-md);
 }
 
 .sf-input-label {
-  display: block;
-  margin-bottom: var(--spacing-xs);
   font-size: var(--font-size-sm);
   font-weight: var(--font-weight-medium);
   color: var(--text-secondary);
-  transition: color var(--transition-fast);
+  margin-bottom: var(--spacing-xs);
 }
 
 .sf-input-container {
-  position: relative;
   display: flex;
   align-items: center;
-  background-color: var(--bg-primary);
-  border: var(--border-width) solid var(--border-color);
-  border-radius: var(--radius-medium);
-  transition: all var(--transition-fast);
+  background-color: var(--bg-secondary);
+  border-radius: var(--radius-round);
+  border: 2px solid transparent;
+  transition: all var(--transition-base);
+  overflow: hidden;
+}
+
+.sf-input-wrapper--focused .sf-input-container {
+  border-color: var(--color-primary);
+  background-color: var(--color-white);
+  box-shadow: 0 0 0 2px rgba(0, 122, 255, 0.15);
+}
+
+.sf-input-wrapper--error .sf-input-container {
+  border-color: var(--color-danger);
+  box-shadow: 0 0 0 2px rgba(255, 59, 48, 0.15);
 }
 
 .sf-input {
   flex: 1;
-  width: 100%;
-  height: 44px;
-  padding: var(--spacing-xs) var(--spacing-md);
+  padding: var(--spacing-sm) var(--spacing-md);
   color: var(--text-primary);
   font-family: var(--font-family);
   font-size: var(--font-size-base);
   background-color: transparent;
   border: none;
   outline: none;
+  width: 100%;
 }
 
 .sf-input-wrapper--with-prefix .sf-input {
@@ -176,18 +186,19 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0 var(--spacing-md);
+  padding: 0 var(--spacing-xs);
   cursor: pointer;
   color: var(--text-tertiary);
+  transition: color var(--transition-fast);
+}
+
+.sf-input-clear:hover {
+  color: var(--text-primary);
 }
 
 .sf-input-clear-icon {
   font-size: 18px;
   line-height: 1;
-}
-
-.sf-input-clear:hover {
-  color: var(--text-secondary);
 }
 
 .sf-input-error {

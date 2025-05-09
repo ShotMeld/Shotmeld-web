@@ -77,6 +77,16 @@ export default {
   overflow: hidden;
   user-select: none;
   outline: none;
+  background-color: var(--color-primary);
+  color: var(--color-white);
+  border-radius: var(--radius-medium);
+  padding: var(--spacing-xs) var(--spacing-lg);
+  box-shadow: var(--shadow-small);
+}
+
+.sf-button:hover {
+  background-color: var(--color-secondary);
+  box-shadow: var(--shadow-medium);
 }
 
 .sf-button:focus {
@@ -85,6 +95,7 @@ export default {
 
 .sf-button:active {
   transform: scale(0.98);
+  box-shadow: var(--shadow-small);
 }
 
 .sf-button--small {
@@ -129,100 +140,17 @@ export default {
   padding: var(--spacing-sm);
 }
 
-/* Button styles by type */
-.sf-button--primary {
-  background-color: var(--color-primary);
-  color: var(--color-white);
-}
-
-.sf-button--primary:hover:not(:disabled) {
-  background-color: rgba(0, 122, 255, 0.9);
-}
-
-.sf-button--secondary {
-  background-color: rgba(0, 122, 255, 0.1);
-  color: var(--color-primary);
-}
-
-.sf-button--secondary:hover:not(:disabled) {
-  background-color: rgba(0, 122, 255, 0.2);
-}
-
-.sf-button--tertiary {
-  background-color: var(--bg-tertiary);
-  color: var(--text-secondary);
-}
-
-.sf-button--tertiary:hover:not(:disabled) {
-  background-color: var(--bg-secondary);
-  color: var(--text-primary);
-}
-
-.sf-button--danger {
-  background-color: var(--color-danger);
-  color: var(--color-white);
-}
-
-.sf-button--danger:hover:not(:disabled) {
-  background-color: rgba(255, 59, 48, 0.9);
-}
-
-.sf-button--success {
-  background-color: var(--color-success);
-  color: var(--color-white);
-}
-
-.sf-button--success:hover:not(:disabled) {
-  background-color: rgba(52, 199, 89, 0.9);
-}
-
-.sf-button--warning {
-  background-color: var(--color-warning);
-  color: var(--color-white);
-}
-
-.sf-button--warning:hover:not(:disabled) {
-  background-color: rgba(255, 149, 0, 0.9);
-}
-
-.sf-button--info {
-  background-color: var(--color-info);
-  color: var(--color-white);
-}
-
-.sf-button--info:hover:not(:disabled) {
-  background-color: rgba(88, 86, 214, 0.9);
-}
-
-.sf-button--text {
-  background-color: transparent;
-  color: var(--color-primary);
-  padding-left: var(--spacing-xs);
-  padding-right: var(--spacing-xs);
-}
-
-.sf-button--text:hover:not(:disabled) {
-  color: rgba(0, 122, 255, 0.8);
-  background-color: rgba(0, 122, 255, 0.05);
-}
-
-.sf-button:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
-  transform: none;
-}
-
 .sf-button--loading {
-  cursor: default;
-  transform: none;
+  cursor: wait;
+  opacity: 0.7;
 }
 
 .sf-button__loader {
+  border: 2px solid var(--color-white);
+  border-top: 2px solid var(--color-primary);
+  border-radius: 50%;
   width: 16px;
   height: 16px;
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  border-top-color: var(--color-white);
-  border-radius: 50%;
   animation: spin 1s linear infinite;
 }
 
@@ -239,7 +167,10 @@ export default {
 }
 
 @keyframes spin {
-  to {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
     transform: rotate(360deg);
   }
 }

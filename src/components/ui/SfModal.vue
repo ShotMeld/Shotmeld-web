@@ -111,16 +111,38 @@ export default {
   padding: var(--spacing-md);
 }
 
+.sf-modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: var(--spacing-lg);
+}
+
 .sf-modal {
   background-color: var(--bg-primary);
   border-radius: var(--radius-large);
-  box-shadow: var(--shadow-large);
-  max-height: calc(100vh - var(--spacing-2xl));
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
+  position: relative;
+  width: 100%;
+  max-width: 600px;
+  max-height: calc(100vh - 40px);
   display: flex;
   flex-direction: column;
-  width: 100%;
-  max-width: 500px;
-  overflow: hidden;
+  animation: modalFadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes modalFadeIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
 }
 
 .sf-modal--small {
@@ -128,66 +150,71 @@ export default {
 }
 
 .sf-modal--default {
-  max-width: 500px;
+  max-width: 600px;
 }
 
 .sf-modal--large {
-  max-width: 800px;
+  max-width: 900px;
+}
+
+.sf-modal--extra-large {
+  max-width: 1200px;
 }
 
 .sf-modal--full {
-  max-width: 95%;
-  height: 95%;
+  max-width: 95vw;
+  height: 95vh;
 }
 
 .sf-modal-header {
-  padding: var(--spacing-md) var(--spacing-lg);
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  border-bottom: var(--border-width) solid var(--border-color);
+  justify-content: space-between;
+  padding: var(--spacing-md) var(--spacing-lg);
+  border-bottom: 1px solid var(--border-color);
 }
 
 .sf-modal-title {
   font-size: var(--font-size-lg);
   font-weight: var(--font-weight-medium);
   color: var(--text-primary);
+  margin: 0;
+  padding: 0;
+  line-height: 1.4;
 }
 
 .sf-modal-close {
+  background: none;
   border: none;
-  background: transparent;
   cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   width: 32px;
   height: 32px;
   border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   color: var(--text-secondary);
-  transition: background-color var(--transition-fast);
+  transition: all var(--transition-fast);
 }
 
 .sf-modal-close:hover {
   background-color: var(--bg-secondary);
-}
-
-.sf-modal-close-icon {
-  font-size: 24px;
-  line-height: 1;
+  color: var(--text-primary);
 }
 
 .sf-modal-body {
-  padding: var(--spacing-lg);
   flex: 1;
   overflow-y: auto;
+  padding: var(--spacing-lg);
+  -webkit-overflow-scrolling: touch; /* 提升 iOS 滚动体验 */
 }
 
 .sf-modal-footer {
-  padding: var(--spacing-md) var(--spacing-lg);
-  border-top: var(--border-width) solid var(--border-color);
   display: flex;
+  align-items: center;
   justify-content: flex-end;
+  padding: var(--spacing-md) var(--spacing-lg);
+  border-top: 1px solid var(--border-color);
   gap: var(--spacing-sm);
 }
 

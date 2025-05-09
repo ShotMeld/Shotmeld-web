@@ -60,7 +60,7 @@
     <main class="photo-wall-main">
       <!-- 过滤和搜索区 -->
       <div class="filters-section">
-        <SfCard class="search-card">
+        <SfCard class="search-card" shadow="medium">
           <div class="search-container">
             <SfInput
               v-model="searchQuery"
@@ -76,60 +76,72 @@
           
           <div class="filter-controls">
             <div class="filter-item">
-              <label class="filter-label">相册:</label>
-              <el-select v-model="filters.albumId" placeholder="全部相册" clearable @change="fetchPhotos">
-                <el-option
-                  v-for="album in albums"
-                  :key="album.id"
-                  :label="album.name"
-                  :value="album.id">
-                </el-option>
-              </el-select>
+              <label class="filter-label">相册</label>
+              <div class="apple-select-wrapper">
+                <el-select v-model="filters.albumId" placeholder="全部相册" clearable @change="fetchPhotos" class="apple-select">
+                  <el-option
+                    v-for="album in albums"
+                    :key="album.id"
+                    :label="album.name"
+                    :value="album.id">
+                  </el-option>
+                </el-select>
+              </div>
             </div>
             
             <div class="filter-item">
-              <label class="filter-label">标签:</label>
-              <el-select 
-                v-model="filters.tags" 
-                multiple 
-                collapse-tags 
-                placeholder="选择标签" 
-                @change="fetchPhotos">
-                <el-option
-                  v-for="tag in tags"
-                  :key="tag.id"
-                  :label="tag.name"
-                  :value="tag.id">
-                </el-option>
-              </el-select>
+              <label class="filter-label">标签</label>
+              <div class="apple-select-wrapper">
+                <el-select 
+                  v-model="filters.tags" 
+                  multiple 
+                  collapse-tags 
+                  placeholder="选择标签" 
+                  @change="fetchPhotos"
+                  class="apple-select">
+                  <el-option
+                    v-for="tag in tags"
+                    :key="tag.id"
+                    :label="tag.name"
+                    :value="tag.id">
+                  </el-option>
+                </el-select>
+              </div>
             </div>
             
             <div class="filter-item">
-              <label class="filter-label">日期范围:</label>
-              <el-date-picker
-                v-model="dateRange"
-                type="daterange"
-                range-separator="至"
-                start-placeholder="开始日期"
-                end-placeholder="结束日期"
-                format="YYYY-MM-DD"
-                value-format="YYYY-MM-DD"
-                @change="handleDateRangeChange">
-              </el-date-picker>
+              <label class="filter-label">日期范围</label>
+              <div class="apple-datepicker-wrapper">
+                <el-date-picker
+                  v-model="dateRange"
+                  type="daterange"
+                  range-separator="至"
+                  start-placeholder="开始日期"
+                  end-placeholder="结束日期"
+                  format="YYYY-MM-DD"
+                  value-format="YYYY-MM-DD"
+                  @change="handleDateRangeChange"
+                  class="apple-datepicker">
+                </el-date-picker>
+              </div>
             </div>
             
             <div class="filter-item">
-              <label class="filter-label">排序:</label>
+              <label class="filter-label">排序</label>
               <div class="sort-controls">
-                <el-select v-model="filters.sort" @change="fetchPhotos">
-                  <el-option label="拍摄时间" value="takenAt"></el-option>
-                  <el-option label="上传时间" value="createdAt"></el-option>
-                  <el-option label="标题" value="title"></el-option>
-                </el-select>
-                <el-select v-model="filters.order" @change="fetchPhotos">
-                  <el-option label="降序" value="desc"></el-option>
-                  <el-option label="升序" value="asc"></el-option>
-                </el-select>
+                <div class="apple-select-wrapper sort-field">
+                  <el-select v-model="filters.sort" @change="fetchPhotos" class="apple-select">
+                    <el-option label="拍摄时间" value="takenAt"></el-option>
+                    <el-option label="上传时间" value="createdAt"></el-option>
+                    <el-option label="标题" value="title"></el-option>
+                  </el-select>
+                </div>
+                <div class="apple-select-wrapper sort-order">
+                  <el-select v-model="filters.order" @change="fetchPhotos" class="apple-select">
+                    <el-option label="降序" value="desc"></el-option>
+                    <el-option label="升序" value="asc"></el-option>
+                  </el-select>
+                </div>
               </div>
             </div>
           </div>
@@ -342,13 +354,15 @@ import { useRouter } from 'vue-router';
 import axios from 'axios';
 import AlbumForm from './AlbumForm.vue';
 import PhotoUpload from './PhotoUpload.vue';
+import PhotoDetail from './PhotoDetail.vue';
 import { photoService, albumService, tagService } from '../api';
 
 export default {
   name: 'PhotoWall',
   components: {
     AlbumForm,
-    PhotoUpload
+    PhotoUpload,
+    PhotoDetail
   },
   data() {
     return {
@@ -589,8 +603,8 @@ export default {
   right: 0;
   top: 100%;
   background-color: var(--bg-primary);
-  border-radius: var(--radius-medium);
-  box-shadow: var(--shadow-medium);
+  border-radius: var(--radius-large);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06), 0 16px 32px rgba(0, 0, 0, 0.06);
   min-width: 200px;
   opacity: 0;
   visibility: hidden;
@@ -612,7 +626,10 @@ export default {
 }
 
 .search-card {
-  padding: var(--spacing-md);
+  padding: var(--spacing-lg);
+  background-color: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 
 .search-container {
@@ -626,7 +643,7 @@ export default {
 .filter-controls {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--spacing-md);
+  gap: var(--spacing-lg);
 }
 
 .filter-item {
@@ -638,48 +655,115 @@ export default {
 
 .filter-label {
   font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-medium);
-  color: var(--text-secondary);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
   margin-bottom: var(--spacing-xs);
+  letter-spacing: 0.01em;
 }
 
 .sort-controls {
   display: flex;
-  gap: var(--spacing-xs);
+  gap: var(--spacing-sm);
 }
 
-.sort-controls > :first-child {
+.sort-field {
   flex: 2;
 }
 
-.sort-controls > :last-child {
+.sort-order {
   flex: 1;
+}
+
+/* Apple 风格的 Select 组件 */
+.apple-select-wrapper {
+  position: relative;
+}
+
+:deep(.apple-select) {
+  width: 100%;
+}
+
+:deep(.apple-select .el-input__wrapper) {
+  background-color: var(--bg-secondary);
+  border-radius: var(--radius-round);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  box-shadow: none;
+  border: 2px solid transparent;
+  transition: all var(--transition-base);
+}
+
+:deep(.apple-select .el-input__wrapper:hover) {
+  background-color: var(--bg-tertiary);
+}
+
+:deep(.apple-select .el-input__wrapper.is-focus) {
+  background-color: var(--color-white);
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px rgba(0, 122, 255, 0.15);
+}
+
+:deep(.apple-select .el-input__inner) {
+  color: var(--text-primary);
+  font-family: var(--font-family);
+  font-size: var(--font-size-base);
+}
+
+:deep(.apple-datepicker) {
+  width: 100%;
+}
+
+:deep(.apple-datepicker .el-input__wrapper) {
+  background-color: var(--bg-secondary);
+  border-radius: var(--radius-round);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  box-shadow: none;
+  border: 2px solid transparent;
+  transition: all var(--transition-base);
+}
+
+:deep(.apple-datepicker .el-input__wrapper:hover) {
+  background-color: var(--bg-tertiary);
+}
+
+:deep(.apple-datepicker .el-input__wrapper.is-focus) {
+  background-color: var(--color-white);
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px rgba(0, 122, 255, 0.15);
 }
 
 /* 照片网格 */
 .photos-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: var(--spacing-md);
+  gap: var(--spacing-lg);
   margin-bottom: var(--spacing-xl);
 }
 
 .photo-card {
   overflow: hidden;
   cursor: pointer;
+  background-color: rgba(255, 255, 255, 0.8);
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), 
+              box-shadow 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.photo-card:hover {
+  transform: scale(1.02) translateY(-5px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.07), 0 20px 48px rgba(0, 0, 0, 0.06);
 }
 
 .photo-thumbnail {
   height: 220px;
   overflow: hidden;
   background-color: var(--bg-tertiary);
+  border-radius: var(--radius-medium) var(--radius-medium) 0 0;
 }
 
 .photo-thumbnail img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform var(--transition-base);
+  transition: transform 0.5s cubic-bezier(0.33, 1, 0.68, 1);
 }
 
 .photo-card:hover .photo-thumbnail img {
@@ -687,16 +771,17 @@ export default {
 }
 
 .photo-info {
-  padding: var(--spacing-md);
+  padding: var(--spacing-md) var(--spacing-lg);
 }
 
 .photo-title {
   font-size: var(--font-size-base);
-  font-weight: var(--font-weight-medium);
+  font-weight: var(--font-weight-semibold);
   margin-bottom: var(--spacing-2xs);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  color: var(--text-primary);
 }
 
 .photo-date {
@@ -716,6 +801,64 @@ export default {
   margin-right: var(--spacing-2xs);
 }
 
+/* 无照片状态 */
+.no-photos {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: var(--spacing-3xl);
+  background: var(--bg-primary);
+  border-radius: var(--radius-large);
+  box-shadow: var(--shadow-small);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-md);
+}
+
+.no-photos-icon {
+  font-size: 64px;
+  color: var(--text-tertiary);
+  margin-bottom: var(--spacing-md);
+}
+
+/* 加载状态 */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-3xl);
+  color: var(--text-secondary);
+  gap: var(--spacing-md);
+  background-color: rgba(255, 255, 255, 0.8);
+  border-radius: var(--radius-large);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba(0, 122, 255, 0.1);
+  border-top-color: var(--color-primary);
+  border-radius: 50%;
+  animation: spin 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite;
+}
+
+.image-loading {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+}
+
 /* 照片详情模态框 */
 .photo-detail-content {
   display: flex;
@@ -729,6 +872,8 @@ export default {
   background-color: var(--bg-tertiary);
   position: relative;
   min-height: 300px;
+  border-radius: var(--radius-medium);
+  overflow: hidden;
 }
 
 .photo-detail-image img {
@@ -743,19 +888,27 @@ export default {
 
 .info-group {
   margin-bottom: var(--spacing-lg);
+  animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .info-group-title {
   font-size: var(--font-size-lg);
-  font-weight: var(--font-weight-medium);
+  font-weight: var(--font-weight-semibold);
   margin-bottom: var(--spacing-md);
   padding-bottom: var(--spacing-2xs);
   border-bottom: var(--border-width) solid var(--border-color);
+  color: var(--text-primary);
 }
 
 .info-item {
   display: flex;
   margin-bottom: var(--spacing-sm);
+  font-size: var(--font-size-base);
 }
 
 .info-label {
@@ -766,6 +919,7 @@ export default {
 
 .info-value {
   flex: 1;
+  color: var(--text-primary);
 }
 
 .photo-tags, .photo-albums {
@@ -776,6 +930,11 @@ export default {
 
 .detail-tag, .detail-album {
   margin-bottom: var(--spacing-xs);
+  transition: transform var(--transition-base);
+}
+
+.detail-tag:hover, .detail-album:hover {
+  transform: translateY(-2px);
 }
 
 .photo-actions {
@@ -784,51 +943,12 @@ export default {
   margin-top: var(--spacing-xl);
 }
 
-/* 无照片状态 */
-.no-photos {
-  grid-column: 1 / -1;
-  text-align: center;
-  padding: var(--spacing-3xl);
-  background: var(--bg-primary);
-  border-radius: var(--radius-large);
-  box-shadow: var(--shadow-small);
-}
-
-.no-photos-icon {
-  font-size: 64px;
-  color: var(--text-tertiary);
-  margin-bottom: var(--spacing-lg);
-}
-
-/* 加载状态 */
-.loading-container {
+/* 确认对话框 */
+.dialog-footer {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: var(--spacing-3xl);
-  color: var(--text-secondary);
-  gap: var(--spacing-md);
-}
-
-.spinner {
-  width: 40px;
-  height: 40px;
-  border: 3px solid rgba(0, 122, 255, 0.1);
-  border-top-color: var(--color-primary);
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-}
-
-.image-loading {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  justify-content: flex-end;
+  gap: var(--spacing-sm);
+  margin-top: var(--spacing-md);
 }
 
 /* 分页 */
@@ -836,14 +956,34 @@ export default {
   display: flex;
   justify-content: center;
   margin: var(--spacing-xl) 0;
+  padding: var(--spacing-md);
+  background-color: rgba(255, 255, 255, 0.8);
+  border-radius: var(--radius-large);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: var(--shadow-small);
 }
 
-/* 确认对话框 */
-.dialog-footer {
-  display: flex;
-  justify-content: flex-end;
-  gap: var(--spacing-sm);
-  margin-top: var(--spacing-md);
+:deep(.el-pagination) {
+  --el-pagination-font-size: var(--font-size-base);
+  --el-pagination-button-color: var(--text-primary);
+  --el-pagination-button-bg-color: transparent;
+  --el-pagination-button-disabled-color: var(--text-disabled);
+  --el-pagination-button-disabled-bg-color: transparent;
+  --el-pagination-hover-color: var(--color-primary);
+}
+
+:deep(.el-pagination .el-pager li) {
+  border-radius: var(--radius-round);
+  min-width: 32px;
+  height: 32px;
+  font-weight: var(--font-weight-medium);
+  transition: all var(--transition-fast);
+}
+
+:deep(.el-pagination .el-pager li.is-active) {
+  background-color: var(--color-primary);
+  color: var(--color-white);
 }
 
 /* 响应式设计 */
@@ -856,6 +996,7 @@ export default {
   .photo-detail-image {
     flex: 2;
     border-right: var(--border-width) solid var(--border-color);
+    border-radius: var(--radius-medium) 0 0 var(--radius-medium);
   }
   
   .photo-detail-info {

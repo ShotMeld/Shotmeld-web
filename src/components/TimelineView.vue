@@ -80,50 +80,19 @@
       <!-- 照片详情模态框 -->
       <transition name="modal">
         <div v-if="currentPhoto" class="modal-overlay" @click.self="closePhotoDetail">
-          <div class="photo-detail-modal">
-            <div class="photo-detail-header">
+          <div class="modal-container">
+            <div class="modal-header">
               <h2>{{ currentPhoto.title || '无标题照片' }}</h2>
               <button @click="closePhotoDetail" class="close-button">
                 <i class="fas fa-times"></i>
               </button>
             </div>
-            <div class="photo-detail-content">
-              <div class="photo-detail-image">
-                <img :src="currentPhoto.url" :alt="currentPhoto.title" @load="imageLoaded = true" />
-                <div v-if="!imageLoaded" class="image-loading">
-                  <el-spinner></el-spinner>
-                </div>
-              </div>
-              <div class="photo-detail-info">
-                <div class="info-group">
-                  <h3>照片信息</h3>
-                  <div class="info-item">
-                    <span class="info-label">标题:</span>
-                    <span class="info-value">{{ currentPhoto.title || '无标题' }}</span>
-                  </div>
-                  <div class="info-item">
-                    <span class="info-label">拍摄时间:</span>
-                    <span class="info-value">{{ formatDate(currentPhoto.takenAt) }}</span>
-                  </div>
-                  <div class="info-item">
-                    <span class="info-label">文件大小:</span>
-                    <span class="info-value">{{ formatFileSize(currentPhoto.fileSize) }}</span>
-                  </div>
-                  <div class="info-item">
-                    <span class="info-label">尺寸:</span>
-                    <span class="info-value">{{ currentPhoto.width || 0 }}×{{ currentPhoto.height || 0 }}</span>
-                  </div>
-                </div>
-
-                <div class="photo-actions">
-                  <el-button type="primary" @click="downloadPhoto(currentPhoto)">
-                    <i class="fas fa-download"></i> 下载
-                  </el-button>
-                  <el-button type="danger" @click="confirmDeletePhoto">
-                    <i class="fas fa-trash"></i> 删除
-                  </el-button>
-                </div>
-              </div>
+            <div class="modal-body">
+              <PhotoDetail 
+                :photo="currentPhoto"
+                @edit-photo="startEditingPhoto"
+                @photo-deleted="handlePhotoDeleted"
+              />
             </div>
           </div>
         </div>
@@ -168,11 +137,13 @@
 import axios from 'axios';
 import { photoService } from '../api';
 import PhotoUpload from './PhotoUpload.vue';
+import PhotoDetail from './PhotoDetail.vue';
 
 export default {
   name: 'TimelineView',
   components: {
-    PhotoUpload
+    PhotoUpload,
+    PhotoDetail
   },
   data() {
     return {
@@ -268,6 +239,18 @@ export default {
       this.currentPhoto = null;
     },
     
+    startEditingPhoto(photo) {
+      // 实现编辑照片功能，可以打开一个编辑表单
+      console.log('编辑照片:', photo);
+      // TODO: 实现编辑照片的功能
+      alert('编辑照片功能将在后续版本实现');
+    },
+    
+    handlePhotoDeleted(photoId) {
+      // 这个方法会被 PhotoDetail 组件调用
+      this.deletePhoto(photoId);
+    },
+    
     handlePhotoUploaded(uploadedPhotos) {
       this.showUploadModal = false;
       this.fetchTimeline();
@@ -283,9 +266,12 @@ export default {
       this.showDeleteConfirm = true;
     },
     
-    async deletePhoto() {
+    async deletePhoto(photoId) {
       try {
-        await photoService.deletePhoto(this.currentPhoto.id);
+        const idToDelete = photoId || (this.currentPhoto && this.currentPhoto.id);
+        if (!idToDelete) return;
+        
+        await photoService.deletePhoto(idToDelete);
         
         this.$notify({
           title: '成功',
@@ -294,7 +280,7 @@ export default {
         });
         
         // 从列表中移除已删除的照片
-        this.photos = this.photos.filter(p => p.id !== this.currentPhoto.id);
+        this.photos = this.photos.filter(p => p.id !== idToDelete);
         // 重新分组
         this.groupPhotosByDate();
         
@@ -638,7 +624,7 @@ export default {
   z-index: 1000;
 }
 
-.photo-detail-modal {
+.modal-container {
   background-color: white;
   border-radius: 12px;
   width: 95%;
@@ -647,7 +633,7 @@ export default {
   overflow-y: auto;
 }
 
-.photo-detail-header {
+.modal-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -663,75 +649,7 @@ export default {
   color: #6c757d;
 }
 
-.photo-detail-content {
-  display: flex;
-  flex-direction: column;
-}
-
-@media (min-width: 768px) {
-  .photo-detail-content {
-    flex-direction: row;
-    height: calc(95vh - 60px);
-  }
-
-  .photo-detail-image {
-    flex: 2;
-    border-right: 1px solid #e9ecef;
-  }
-
-  .photo-detail-info {
-    flex: 1;
-    overflow-y: auto;
-  }
-}
-
-.photo-detail-image {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: #f8f9fa;
-  position: relative;
-  height: 100%;
-  min-height: 300px;
-}
-
-.photo-detail-image img {
-  max-width: 100%;
-  max-height: 100%;
-  object-fit: contain;
-}
-
-.photo-detail-info {
-  padding: 1rem;
-}
-
-.info-group {
-  margin-bottom: 1.5rem;
-}
-
-.info-group h3 {
-  font-size: 1.1rem;
-  border-bottom: 1px solid #e9ecef;
-  padding-bottom: 0.5rem;
-  margin-bottom: 0.75rem;
-}
-
-.info-item {
-  display: flex;
-  margin-bottom: 0.5rem;
-}
-
-.info-label {
-  font-weight: 500;
-  width: 100px;
-  color: #6c757d;
-}
-
-.photo-actions {
-  margin-top: 1.5rem;
-  display: flex;
-  gap: 0.75rem;
-}
+/* 移除这些样式，现在使用 PhotoDetail 组件的样式 */
 
 .modal-container {
   background-color: white;
@@ -751,7 +669,7 @@ export default {
 }
 
 .modal-body {
-  padding: 1rem;
+  padding: 0; /* 不需要内边距，因为 PhotoDetail 组件已有内边距 */
 }
 
 /* 动画效果 */
@@ -763,9 +681,7 @@ export default {
   opacity: 0;
 }
 
-.modal-enter-from .photo-detail-modal,
 .modal-enter-from .modal-container,
-.modal-leave-to .photo-detail-modal,
 .modal-leave-to .modal-container {
   transform: scale(0.9);
 }
