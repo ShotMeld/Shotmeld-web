@@ -1,10 +1,13 @@
 <template>
   <SfNavbar title="ShotMeld" transparent>
-    <!-- 添加移动端菜单按钮 -->
-    <template #aside>
-      <button class="mobile-menu-button" @click="isMobileMenuOpen = !isMobileMenuOpen">
-        <i class="fas fa-bars"></i>
-      </button>
+    <template #brand>
+      <!-- 移动端菜单按钮和标题 -->
+      <div class="navbar-brand">
+        <button class="mobile-menu-button" @click="isMobileMenuOpen = !isMobileMenuOpen">
+          <i class="fas fa-bars"></i>
+        </button>
+        <router-link to="/" class="navbar-title">ShotMeld</router-link>
+      </div>
     </template>
     
     <template #actions>
@@ -96,6 +99,21 @@ export default {
 </script>
 
 <style scoped>
+
+/* 导航栏标题和品牌区域 */
+.navbar-brand {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.navbar-title {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+  text-decoration: none;
+}
+
 /* 导航栏按钮样式 */
 .navbar-button {
   display: flex;
@@ -159,7 +177,9 @@ export default {
 /* 移动端适配 */
 @media (max-width: 768px) {
   .mobile-menu-button {
-    display: block;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .nav-actions {
