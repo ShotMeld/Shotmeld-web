@@ -174,17 +174,23 @@ export default {
         });
       } catch (error) {
         let errorMessage = '注册失败，请重试';
-          if (error.response) {
-          errorMessage = error.response.data.message || errorMessage;
+            if (error.response) {
+            errorMessage = error.response.data.message || errorMessage;
+            
+            const matchesErrorType = (message, keywords) => {
+              const lowerMessage = message.toLowerCase();
+              return keywords.some(keyword => 
+              lowerMessage.includes(keyword.toLowerCase())
+              );
+            };
+
             // 根据错误类型显示不同的错误提示
-          if (errorMessage.toLowerCase().includes('email') || errorMessage.includes('邮箱') || errorMessage.includes('该邮箱已被注册')) {
-            this.errors.email = errorMessage;
-          } else if ((errorMessage.toLowerCase().includes('username') || 
-                     errorMessage.toLowerCase().includes('用户名')) &&
-                     !errorMessage.includes('该邮箱已被注册')) {
-            this.errors.username = errorMessage;
-          } else if (errorMessage.toLowerCase().includes('password') || 
-                     errorMessage.toLowerCase().includes('密码')) {
+            if (matchesErrorType(errorMessage, ['email', '邮箱', '该邮箱已被注册'])) {
+              this.errors.email = errorMessage;
+            } else if (matchesErrorType(errorMessage, ['username', '用户名']) && 
+                  !errorMessage.includes('该邮箱已被注册')) {
+              this.errors.username = errorMessage;
+            } else if (matchesErrorType(errorMessage, ['password', '密码'])) {
             this.errors.password = errorMessage;
           } else {
             // 如果无法确定错误类型，根据字段名显示在对应位置
