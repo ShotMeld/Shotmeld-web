@@ -174,17 +174,41 @@ export default {
         });
       } catch (error) {
         let errorMessage = '注册失败，请重试';
-        
-        if (error.response) {
-          errorMessage = error.response.data.message || errorMessage;
-          
-          // 根据错误类型显示不同的错误提示
-          if (errorMessage.includes('email')) {
-            this.errors.email = errorMessage;
-          } else if (errorMessage.includes('username')) {
-            this.errors.username = errorMessage;
+            if (error.response) {
+            errorMessage = error.response.data.message || errorMessage;
+            
+            const matchesErrorType = (message, keywords) => {
+              const lowerMessage = message.toLowerCase();
+              return keywords.some(keyword => 
+              lowerMessage.includes(keyword.toLowerCase())
+              );
+            };
+
+            // 根据错误类型显示不同的错误提示
+            if (matchesErrorType(errorMessage, ['email', '邮箱', '该邮箱已被注册'])) {
+              this.errors.email = errorMessage;
+            } else if (matchesErrorType(errorMessage, ['username', '用户名']) && 
+                  !errorMessage.includes('该邮箱已被注册')) {
+              this.errors.username = errorMessage;
+            } else if (matchesErrorType(errorMessage, ['password', '密码'])) {
+            this.errors.password = errorMessage;
           } else {
-            this.errors.email = errorMessage;
+            // 如果无法确定错误类型，根据字段名显示在对应位置
+            if (error.response.data.field === 'username') {
+              this.errors.username = errorMessage;
+            } else if (error.response.data.field === 'email') {
+              this.errors.email = errorMessage;
+            } else if (error.response.data.field === 'password') {
+              this.errors.password = errorMessage;
+            } else {
+              // 默认不再显示在email，而是显示在用户输入有问题的地方
+              this.errors = {
+                ...this.errors,
+                [Object.keys(this.formData).find(key => 
+                  errorMessage.toLowerCase().includes(key.toLowerCase())
+                ) || 'username']: errorMessage
+              };
+            }
           }
         }
         
