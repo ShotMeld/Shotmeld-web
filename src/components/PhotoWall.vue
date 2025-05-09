@@ -754,12 +754,66 @@ export default {
     padding: var(--spacing-md);
   }
   
-  .filter-controls {
-    flex-direction: column;
+  .search-card {
+    padding: var(--spacing-md);
   }
   
-  .photo-actions {
+  .search-container {
+    margin-bottom: var(--spacing-md);
+  }
+  
+  .filter-controls {
+    gap: var(--spacing-md);
+  }
+  
+  .filter-item {
+    flex: 1 1 100%;
+  }
+  
+  .sort-controls {
     flex-direction: column;
+    gap: var(--spacing-xs);
+  }
+  
+  .sort-field,
+  .sort-order {
+    flex: 1;
+    width: 100%;
+  }
+  
+  :deep(.apple-select),
+  :deep(.apple-datepicker) {
+    width: 100%;
+  }
+  
+  :deep(.el-date-editor.el-input) {
+    width: 100%;
+  }
+  
+  :deep(.el-date-editor--daterange) {
+    width: 100% !important;
+  }
+  
+  .filter-label {
+    margin-bottom: var(--spacing-2xs);
+  }
+}
+
+@media (max-width: 480px) {
+  .photo-wall-main {
+    padding: var(--spacing-sm);
+  }
+  
+  .search-card {
+    padding: var(--spacing-sm);
+  }
+  
+  .filter-controls {
+    gap: var(--spacing-sm);
+  }
+  
+  :deep(.el-date-picker) {
+    width: 100%;
   }
 }
 

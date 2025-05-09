@@ -1,54 +1,64 @@
 <template>
   <SfNavbar title="ShotMeld" transparent>
+    <!-- 添加移动端菜单按钮 -->
+    <template #aside>
+      <button class="mobile-menu-button" @click="isMobileMenuOpen = !isMobileMenuOpen">
+        <i class="fas fa-bars"></i>
+      </button>
+    </template>
+    
     <template #actions>
-      <SfNavLink :to="currentPage === 'timeline' ? '/photowall' : '/timeline'">
-        <template #icon>
-          <i :class="currentPage === 'timeline' ? 'fas fa-th' : 'fas fa-calendar-alt'"></i>
-        </template>
-        {{ currentPage === 'timeline' ? '照片墙' : '时间轴' }}
-      </SfNavLink>
-      
-      <SfButton 
-        type="secondary" 
-        @click="$emit('show-upload')"
-        class="navbar-button"
-      >
-        <template #prefix>
-          <i class="fas fa-cloud-upload-alt"></i>
-        </template>
-        上传照片
-      </SfButton>
-      
-      <SfButton 
-        type="secondary" 
-        @click="$emit('show-album-form')"
-        class="navbar-button"
-      >
-        <template #prefix>
-          <i class="fas fa-folder-plus"></i>
-        </template>
-        新建相册
-      </SfButton>
-      
-      <div class="user-dropdown">
-        <SfAvatar 
-          :text="userName" 
-          size="small" 
-          class="user-avatar"
-        />
-        <div class="dropdown-menu">
-          <SfNavLink to="/profile">
-            <template #icon>
-              <i class="fas fa-user"></i>
-            </template>
-            个人资料
-          </SfNavLink>
-          <SfNavLink href="#" @click="handleLogout">
-            <template #icon>
-              <i class="fas fa-sign-out-alt"></i>
-            </template>
-            退出登录
-          </SfNavLink>
+      <!-- 导航菜单容器 -->
+      <div class="nav-actions" :class="{ 'is-mobile-open': isMobileMenuOpen }">
+        <SfNavLink :to="currentPage === 'timeline' ? '/photowall' : '/timeline'" class="nav-item">
+          <template #icon>
+            <i :class="currentPage === 'timeline' ? 'fas fa-th' : 'fas fa-calendar-alt'"></i>
+          </template>
+          {{ currentPage === 'timeline' ? '照片墙' : '时间轴' }}
+        </SfNavLink>
+        
+        <SfButton 
+          type="secondary" 
+          @click="$emit('show-upload')"
+          class="navbar-button nav-item"
+        >
+          <template #prefix>
+            <i class="fas fa-cloud-upload-alt"></i>
+          </template>
+          上传照片
+        </SfButton>
+        
+        <SfButton 
+          type="secondary" 
+          @click="$emit('show-album-form')"
+          class="navbar-button nav-item"
+        >
+          <template #prefix>
+            <i class="fas fa-folder-plus"></i>
+          </template>
+          新建相册
+        </SfButton>
+        
+        <div class="user-dropdown nav-item">
+          <SfAvatar 
+            :text="userName" 
+            size="small" 
+            class="user-avatar"
+          />
+          <div class="dropdown-menu">
+            <SfNavLink to="/profile">
+              <template #icon>
+                <i class="fas fa-user"></i>
+              </template>
+              个人资料
+            </SfNavLink>
+            <SfNavLink href="#" @click="handleLogout">
+              <template #icon>
+                <i class="fas fa-sign-out-alt"></i>
+              </template>
+              退出登录
+            </SfNavLink>
+          </div>
         </div>
       </div>
     </template>
@@ -67,6 +77,11 @@ export default {
       type: String,
       default: 'photowall',
       validator: (value) => ['photowall', 'timeline'].includes(value)
+    }
+  },
+  data() {
+    return {
+      isMobileMenuOpen: false
     }
   },
   emits: ['show-upload', 'show-album-form'],
@@ -89,6 +104,24 @@ export default {
 
 .navbar-button :deep(.sf-button__text) {
   margin-left: var(--spacing-sm);
+}
+
+/* 移动端菜单按钮 */
+.mobile-menu-button {
+  display: none;
+  background: none;
+  border: none;
+  color: var(--text-primary);
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: var(--spacing-xs);
+}
+
+/* 导航项容器 */
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
 }
 
 /* 用户下拉菜单 */
@@ -121,5 +154,45 @@ export default {
   opacity: 1;
   visibility: visible;
   transform: translateY(var(--spacing-2xs));
+}
+
+/* 移动端适配 */
+@media (max-width: 768px) {
+  .mobile-menu-button {
+    display: block;
+  }
+
+  .nav-actions {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    flex-direction: column;
+    background-color: var(--bg-primary);
+    padding: var(--spacing-sm);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    display: none;
+  }
+
+  .nav-actions.is-mobile-open {
+    display: flex;
+  }
+
+  .nav-item {
+    width: 100%;
+  }
+
+  .user-dropdown {
+    margin: 0;
+  }
+
+  .dropdown-menu {
+    position: static;
+    box-shadow: none;
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+    margin-top: var(--spacing-xs);
+  }
 }
 </style>
