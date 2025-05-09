@@ -71,52 +71,130 @@ export default {
   font-family: var(--font-family);
   font-weight: var(--font-weight-medium);
   cursor: pointer;
-  border: none;
-  transition: all var(--transition-base);
+  border: 1px solid transparent;
+  transition: all var(--transition-fast);
   white-space: nowrap;
   overflow: hidden;
   user-select: none;
   outline: none;
+  border-radius: var(--radius-medium);
+  padding: var(--spacing-xs) var(--spacing-md);
+}
+
+/* Primary Button Style */
+.sf-button--primary {
   background-color: var(--color-primary);
   color: var(--color-white);
-  border-radius: var(--radius-medium);
-  padding: var(--spacing-xs) var(--spacing-lg);
-  box-shadow: var(--shadow-small);
+  border-color: var(--color-primary);
 }
 
-.sf-button:hover {
-  background-color: var(--color-secondary);
-  box-shadow: var(--shadow-medium);
+.sf-button--primary:hover {
+  background-color: var(--color-primary-dark, #005ecb);
+  border-color: var(--color-primary-dark, #005ecb);
 }
 
-.sf-button:focus {
-  box-shadow: 0 0 0 2px var(--color-primary), 0 0 0 4px rgba(0, 122, 255, 0.3);
+/* Secondary Button Style */
+.sf-button--secondary {
+  background-color: var(--bg-secondary, #f2f2f7);
+  color: var(--color-primary);
+  border: 1px solid var(--border-color, #d1d1d6);
 }
 
-.sf-button:active {
-  transform: scale(0.98);
-  box-shadow: var(--shadow-small);
+.sf-button--secondary:hover {
+  background-color: var(--bg-tertiary, #e5e5ea);
 }
 
+/* Tertiary/Text Button Style */
+.sf-button--tertiary,
+.sf-button--text {
+  background-color: transparent;
+  color: var(--color-primary);
+  border-color: transparent;
+  padding: var(--spacing-xs) var(--spacing-sm);
+}
+
+.sf-button--tertiary:hover,
+.sf-button--text:hover {
+  background-color: rgba(0, 122, 255, 0.05);
+}
+
+/* Danger Button Style */
+.sf-button--danger {
+  background-color: var(--color-danger, #ff3b30);
+  color: var(--color-white);
+  border-color: var(--color-danger, #ff3b30);
+}
+
+.sf-button--danger:hover {
+  background-color: var(--color-danger-dark, #d92c23);
+  border-color: var(--color-danger-dark, #d92c23);
+}
+
+/* Success Button Style */
+.sf-button--success {
+  background-color: var(--color-success, #34c759);
+  color: var(--color-white);
+  border-color: var(--color-success, #34c759);
+}
+
+.sf-button--success:hover {
+  background-color: var(--color-success-dark, #2ca349);
+  border-color: var(--color-success-dark, #2ca349);
+}
+
+/* Warning Button Style */
+.sf-button--warning {
+  background-color: var(--color-warning, #ff9500);
+  color: var(--color-white);
+  border-color: var(--color-warning, #ff9500);
+}
+
+.sf-button--warning:hover {
+  background-color: var(--color-warning-dark, #d97f00);
+  border-color: var(--color-warning-dark, #d97f00);
+}
+
+/* Info Button Style */
+.sf-button--info {
+  background-color: var(--color-info, #5ac8fa);
+  color: var(--color-white);
+  border-color: var(--color-info, #5ac8fa);
+}
+
+.sf-button--info:hover {
+  background-color: var(--color-info-dark, #49a9d1);
+  border-color: var(--color-info-dark, #49a9d1);
+}
+
+.sf-button:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+/* Disabled state */
+.sf-button:disabled,
+.sf-button--loading {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.sf-button--loading {
+  cursor: wait;
+}
+
+/* Size Variants */
 .sf-button--small {
-  padding: var(--spacing-2xs) var(--spacing-sm);
+  padding: var(--spacing-2xs) var(--spacing-xs);
   font-size: var(--font-size-sm);
-  border-radius: var(--radius-small);
-  min-height: 32px;
 }
 
 .sf-button--default {
-  padding: var(--spacing-xs) var(--spacing-lg);
   font-size: var(--font-size-base);
-  border-radius: var(--radius-medium);
-  min-height: 40px;
 }
 
 .sf-button--large {
-  padding: var(--spacing-sm) var(--spacing-xl);
+  padding: var(--spacing-sm) var(--spacing-lg);
   font-size: var(--font-size-lg);
-  border-radius: var(--radius-large);
-  min-height: 48px;
 }
 
 .sf-button--rounded {
@@ -132,38 +210,28 @@ export default {
   aspect-ratio: 1 / 1;
 }
 
-.sf-button--icon-only.sf-button--small {
-  padding: var(--spacing-2xs);
-}
-
-.sf-button--icon-only.sf-button--large {
-  padding: var(--spacing-sm);
-}
-
-.sf-button--loading {
-  cursor: wait;
-  opacity: 0.7;
-}
-
 .sf-button__loader {
-  border: 2px solid var(--color-white);
-  border-top: 2px solid var(--color-primary);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: white;
   border-radius: 50%;
   width: 16px;
   height: 16px;
-  animation: spin 1s linear infinite;
+  animation: spin 0.8s linear infinite;
 }
 
+/* Loader for light background buttons */
 .sf-button--secondary .sf-button__loader,
 .sf-button--tertiary .sf-button__loader,
 .sf-button--text .sf-button__loader {
-  border: 2px solid rgba(0, 122, 255, 0.3);
+  border: 2px solid rgba(0, 122, 255, 0.2);
   border-top-color: var(--color-primary);
 }
 
 .sf-button__text {
   position: relative;
-  z-index: 1;
+  display: inherit;
+  align-items: center;
+  gap: var(--spacing-2xs);
 }
 
 @keyframes spin {
@@ -172,6 +240,16 @@ export default {
   }
   100% {
     transform: rotate(360deg);
+  }
+}
+
+@media (max-width: 768px) {
+  .sf-button {
+    padding: var(--spacing-2xs) var(--spacing-sm);
+  }
+  
+  .sf-button--large {
+    padding: var(--spacing-xs) var(--spacing-md);
   }
 }
 </style>

@@ -1,60 +1,12 @@
 <template>
   <div class="photo-wall-container">
     <!-- 顶部导航栏 -->
-    <SfNavbar title="ShotMeld" transparent>
-      <template #actions>
-        <SfNavLink to="/timeline">
-          <template #icon>
-            <i class="fas fa-calendar-alt"></i>
-          </template>
-          时间轴
-        </SfNavLink>
-        
-        <SfButton 
-          type="secondary" 
-          @click="showUploadModal = true"
-          size="small"
-        >
-          <template #prefix>
-            <i class="fas fa-cloud-upload-alt"></i>
-          </template>
-          上传照片
-        </SfButton>
-        
-        <SfButton 
-          type="secondary" 
-          @click="showAlbumForm = true"
-          size="small"
-        >
-          <template #prefix>
-            <i class="fas fa-folder-plus"></i>
-          </template>
-          新建相册
-        </SfButton>
-        
-        <div class="user-dropdown">
-          <SfAvatar 
-            :text="userName" 
-            size="small" 
-            class="user-avatar"
-          />
-          <div class="dropdown-menu">
-            <SfNavLink to="/profile">
-              <template #icon>
-                <i class="fas fa-user"></i>
-              </template>
-              个人资料
-            </SfNavLink>
-            <SfNavLink href="#" @click="handleLogout">
-              <template #icon>
-                <i class="fas fa-sign-out-alt"></i>
-              </template>
-              退出登录
-            </SfNavLink>
-          </div>
-        </div>
-      </template>
-    </SfNavbar>
+    <AppNavbar 
+      :userName="userName"
+      currentPage="photowall"
+      @show-upload="showUploadModal = true"
+      @show-album-form="showAlbumForm = true"
+    />
 
     <!-- 主内容区 -->
     <main class="photo-wall-main">
@@ -243,8 +195,6 @@
       >
         <AlbumForm @album-created="handleAlbumCreated" />
       </SfModal>
-
-      <!-- 删除确认对话框已移至PhotoDetail组件 -->
     </main>
   </div>
 </template>
@@ -253,6 +203,7 @@
 import AlbumForm from './AlbumForm.vue';
 import PhotoUpload from './PhotoUpload.vue';
 import PhotoDetail from './PhotoDetail.vue';
+import AppNavbar from './AppNavbar.vue';
 import { photoService, albumService, tagService } from '../api';
 
 export default {
@@ -260,7 +211,8 @@ export default {
   components: {
     AlbumForm,
     PhotoUpload,
-    PhotoDetail
+    PhotoDetail,
+    AppNavbar
   },
   data() {
     return {
@@ -461,6 +413,16 @@ export default {
 .photo-wall-container {
   min-height: 100vh;
   background-color: var(--bg-secondary);
+}
+
+/* 导航栏按钮样式 */
+.navbar-button {
+  display: flex;
+  align-items: center;
+}
+
+.navbar-button :deep(.sf-button__text) {
+  margin-left: var(--spacing-sm);
 }
 
 .photo-wall-main {
@@ -786,7 +748,6 @@ export default {
 }
 
 /* 响应式设计 */
-/* 照片详情媒体查询样式已移至PhotoDetail组件 */
 
 @media (max-width: 768px) {
   .photo-wall-main {

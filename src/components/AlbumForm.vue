@@ -1,6 +1,5 @@
 <template>
   <div class="album-form-container">
-    <h2 class="form-title">{{ editingAlbum ? '编辑相册' : '创建新相册' }}</h2>
     
     <form @submit.prevent="handleSubmit">
       <div class="form-group">
@@ -135,10 +134,7 @@ export default {
 
 <style scoped>
 .album-form-container {
-  background-color: white;
-  border-radius: 12px;
-  padding: 24px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  padding: 8px;
   max-width: 500px;
   margin: 0 auto;
 }

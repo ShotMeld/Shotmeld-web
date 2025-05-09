@@ -1,37 +1,12 @@
 <template>
   <div class="timeline-container">
     <!-- 顶部导航栏 -->
-    <nav class="app-navbar">
-      <div class="navbar-brand">
-        <router-link to="/photowall" class="logo-link">
-          <span class="logo-text">ShotMeld</span>
-        </router-link>
-      </div>
-      <div class="navbar-actions">
-        <router-link to="/photowall" class="nav-button">
-          <i class="fas fa-th"></i>
-          <span>照片墙</span>
-        </router-link>
-        <button @click="showUploadModal = true" class="nav-button">
-          <i class="fas fa-cloud-upload-alt"></i>
-          <span>上传照片</span>
-        </button>
-        <div class="user-dropdown">
-          <button class="user-button">
-            <i class="fas fa-user-circle"></i>
-            <span>{{ userName }}</span>
-          </button>
-          <div class="dropdown-menu">
-            <router-link to="/profile" class="dropdown-item">
-              <i class="fas fa-user"></i> 个人资料
-            </router-link>
-            <button @click="handleLogout" class="dropdown-item">
-              <i class="fas fa-sign-out-alt"></i> 登出
-            </button>
-          </div>
-        </div>
-      </div>
-    </nav>
+    <AppNavbar 
+      :userName="userName" 
+      currentPage="timeline"
+      @show-upload="showUploadModal = true" 
+      @show-album-form="showAlbumForm = true"
+    />
 
     <main class="timeline-content">
       <h1 class="timeline-title">照片时间轴</h1>
@@ -139,12 +114,14 @@ import axios from 'axios';
 import { photoService } from '../api';
 import PhotoUpload from './PhotoUpload.vue';
 import PhotoDetail from './PhotoDetail.vue';
+import AppNavbar from './AppNavbar.vue';
 
 export default {
   name: 'TimelineView',
   components: {
     PhotoUpload,
-    PhotoDetail
+    PhotoDetail,
+    AppNavbar
   },
   data() {
     return {
@@ -156,6 +133,7 @@ export default {
       showDeleteConfirm: false,
       showUploadModal: false,
       showPhotoDetailModal: false,
+      showAlbumForm: false,
       userName: '',
       timelineGroups: [] // 按年月分组后的照片数据
     }
@@ -346,126 +324,6 @@ export default {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-}
-
-.app-navbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1rem 2rem;
-  background-color: white;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  position: sticky;
-  top: 0;
-  z-index: 1000;
-}
-
-.navbar-brand {
-  display: flex;
-  align-items: center;
-}
-
-.logo-link {
-  display: flex;
-  align-items: center;
-  text-decoration: none;
-  color: #4361ee;
-  font-weight: 700;
-  font-size: 1.5rem;
-}
-
-.logo-icon {
-  font-size: 1.8rem;
-  margin-right: 0.5rem;
-}
-
-.navbar-actions {
-  display: flex;
-  align-items: center;
-  gap: 1.5rem;
-}
-
-.nav-button {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem 1rem;
-  border-radius: 12px;
-  color: #6c757d;
-  text-decoration: none;
-  transition: all 0.3s ease;
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-size: 1rem;
-}
-
-.nav-button:hover {
-  color: #4361ee;
-  background-color: rgba(67, 97, 238, 0.1);
-}
-
-.user-dropdown {
-  position: relative;
-}
-
-.user-button {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  background: none;
-  border: none;
-  cursor: pointer;
-  color: #212529;
-  padding: 0.5rem 1rem;
-  border-radius: 12px;
-  transition: all 0.3s ease;
-}
-
-.user-button:hover {
-  background-color: rgba(0, 0, 0, 0.05);
-}
-
-.dropdown-menu {
-  position: absolute;
-  right: 0;
-  top: 100%;
-  background-color: white;
-  border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-  padding: 0.5rem 0;
-  min-width: 180px;
-  opacity: 0;
-  visibility: hidden;
-  transform: translateY(10px);
-  transition: all 0.3s ease;
-  z-index: 100;
-}
-
-.user-dropdown:hover .dropdown-menu {
-  opacity: 1;
-  visibility: visible;
-  transform: translateY(0);
-}
-
-.dropdown-item {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  width: 100%;
-  padding: 0.75rem 1.5rem;
-  background: none;
-  border: none;
-  text-align: left;
-  color: #212529;
-  text-decoration: none;
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
-
-.dropdown-item:hover {
-  background-color: #f8f9fa;
-  color: #4361ee;
 }
 
 .timeline-content {
