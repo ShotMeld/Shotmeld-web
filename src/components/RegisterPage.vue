@@ -40,7 +40,8 @@
         </SfInput>
         
         <SfButton 
-          type="primary" 
+          type="primary"
+          htmlType="submit"
           rounded 
           full-width
           :loading="loading"

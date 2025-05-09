@@ -11,7 +11,7 @@
     ]"
     :disabled="disabled || loading"
     @click="$emit('click', $event)"
-    type="button"
+    :type="htmlType"
   >
     <span v-if="loading" class="sf-button__loader"></span>
     <slot v-else-if="iconOnly"></slot>
@@ -31,6 +31,11 @@ export default {
       type: String,
       default: 'primary',
       validator: value => ['primary', 'secondary', 'tertiary', 'danger', 'success', 'warning', 'info', 'text'].includes(value)
+    },
+    htmlType: {
+      type: String,
+      default: 'button',
+      validator: value => ['button', 'submit', 'reset'].includes(value)
     },
     size: {
       type: String,
