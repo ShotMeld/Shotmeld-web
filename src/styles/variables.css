@@ -1,0 +1,86 @@
+:root {
+  /* Apple风格颜色系统 */
+  --color-primary: #007AFF;  /* Apple蓝色 */
+  --color-secondary: #5AC8FA; /* 浅蓝色 */
+  --color-success: #34C759;  /* Apple绿色 */
+  --color-warning: #FF9500;  /* Apple橙色 */
+  --color-danger: #FF3B30;   /* Apple红色 */
+  --color-info: #5856D6;     /* Apple紫色 */
+  
+  /* 中性色调 */
+  --color-black: #000000;
+  --color-dark-gray: #1D1D1F; /* Apple深灰色 */
+  --color-gray: #86868B;      /* Apple中灰色 */
+  --color-light-gray: #F5F5F7; /* Apple浅灰色 */
+  --color-white: #FFFFFF;
+  
+  /* 背景颜色 */
+  --bg-primary: var(--color-white);
+  --bg-secondary: var(--color-light-gray);
+  --bg-tertiary: #FAFAFC;     /* 更浅的灰色背景 */
+  
+  /* 文字颜色 */
+  --text-primary: var(--color-dark-gray);
+  --text-secondary: var(--color-gray);
+  --text-tertiary: #AEAEB2;   /* 更淡的文字颜色 */
+  --text-disabled: rgba(60, 60, 67, 0.3);
+  
+  /* 边框和分割线 */
+  --border-color: rgba(60, 60, 67, 0.15);
+  --border-width: 0.5px;
+  
+  /* 圆角 */
+  --radius-small: 6px;
+  --radius-medium: 10px;
+  --radius-large: 18px;
+  --radius-extra-large: 24px;
+  --radius-round: 100px;
+  
+  /* 阴影 */
+  --shadow-small: 0px 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-medium: 0px 2px 4px rgba(0, 0, 0, 0.1);
+  --shadow-large: 0px 4px 8px rgba(0, 0, 0, 0.12);
+  --shadow-extra-large: 0px 8px 16px rgba(0, 0, 0, 0.15);
+  
+  /* 字体 */
+  --font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", sans-serif;
+  
+  /* 字体大小 */
+  --font-size-xs: 11px;
+  --font-size-sm: 13px;
+  --font-size-base: 15px;
+  --font-size-lg: 17px;
+  --font-size-xl: 20px;
+  --font-size-2xl: 22px;
+  --font-size-3xl: 28px;
+  --font-size-4xl: 34px;
+  
+  /* 字体粗细 */
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  
+  /* 间距 */
+  --spacing-2xs: 4px;
+  --spacing-xs: 8px;
+  --spacing-sm: 12px;
+  --spacing-md: 16px;
+  --spacing-lg: 20px;
+  --spacing-xl: 24px;
+  --spacing-2xl: 32px;
+  --spacing-3xl: 40px;
+  --spacing-4xl: 48px;
+  
+  /* 动画 */
+  --transition-fast: 0.2s cubic-bezier(0.25, 0.1, 0.25, 1);
+  --transition-base: 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+  --transition-slow: 0.4s cubic-bezier(0.25, 0.1, 0.25, 1);
+  --transition-bounce: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  
+  /* 容器宽度 */
+  --container-sm: 640px;
+  --container-md: 768px;
+  --container-lg: 1024px;
+  --container-xl: 1280px;
+}

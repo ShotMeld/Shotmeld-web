@@ -45,8 +45,15 @@ if (token) {
   axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
 }
 
-// 使用Element Plus
+// 导入全局样式
+import './styles/variables.css'
+
+// 导入UI组件库
+import SfUI from './components/ui'
+
+// 使用Element Plus (逐步替换为SfUI)
 app.use(ElementPlus)
+app.use(SfUI)
 app.use(router)
 
 // 修改网站标题

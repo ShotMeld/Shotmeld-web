@@ -1,42 +1,54 @@
 <template>
   <div class="page-container">
-    <div class="card">
-      <h1>注册账号</h1>
+    <div class="register-card">
+      <h1 class="register-title">注册账号</h1>
       <form @submit.prevent="handleRegister">
-        <div class="input-group">
-          <input
-            type="email"
-            v-model="formData.email"
-            required
-            class="md-input"
-            :class="{ 'error-input': emailError }"
-          />
-          <label>邮箱地址</label>
-          <span v-if="emailError" class="error-message">{{ emailError }}</span>
-        </div>
-        <div class="input-group">
-          <input
-            type="text"
-            v-model="formData.username"
-            required
-            class="md-input"
-            :class="{ 'error-input': usernameError }"
-          />
-          <label>用户名</label>
-          <span v-if="usernameError" class="error-message">{{ usernameError }}</span>
-        </div>
-        <div class="input-group">
-          <input
-            type="password"
-            v-model="formData.password"
-            required
-            class="md-input"
-          />
-          <label>密码</label>
-        </div>
-        <button type="submit" :disabled="loading" class="md-button">
-          <span class="button-content">{{ loading ? '注册中...' : '注册' }}</span>
-        </button>
+        <SfInput
+          v-model="formData.email"
+          type="email"
+          label="邮箱地址"
+          required
+          :error="errors.email"
+        >
+          <template #prefix>
+            <i class="sf-icon">✉️</i>
+          </template>
+        </SfInput>
+        
+        <SfInput
+          v-model="formData.username"
+          label="用户名"
+          required
+          :error="errors.username"
+        >
+          <template #prefix>
+            <i class="sf-icon">👤</i>
+          </template>
+        </SfInput>
+        
+        <SfInput
+          v-model="formData.password"
+          type="password"
+          label="密码"
+          required
+          :error="errors.password"
+          hint="密码至少包含6个字符"
+        >
+          <template #prefix>
+            <i class="sf-icon">🔒</i>
+          </template>
+        </SfInput>
+        
+        <SfButton 
+          type="primary" 
+          rounded 
+          full-width
+          :loading="loading"
+          class="register-button"
+        >
+          {{ loading ? '注册中...' : '注册' }}
+        </SfButton>
+        
         <div class="additional-links">
           <router-link to="/login" class="text-link">已有账号？立即登录</router-link>
         </div>
@@ -58,52 +70,124 @@ export default {
         username: '',
         password: ''
       },
-      loading: false,
-      usernameError: '',
-      emailError: ''
+      errors: {
+        email: '',
+        username: '',
+        password: ''
+      },
+      loading: false
     }
   },
   watch: {
-    'formData.username'(newVal) {
-      this.usernameError = this.validateUsername(newVal);
+    'formData.username'() {
+      if (this.errors.username) {
+        this.validateUsername();
+      }
     },
-    'formData.email'(newVal) {
-      this.emailError = this.validateEmail(newVal);
+    'formData.email'() {
+      if (this.errors.email) {
+        this.validateEmail();
+      }
+    },
+    'formData.password'() {
+      if (this.errors.password) {
+        this.validatePassword();
+      }
     }
   },
   methods: {
-    validateUsername(username) {
-      return username.includes('@') ? '用户名不能包含@符号' : '';
-    },
-    validateEmail(email) {
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      return email && !emailRegex.test(email) ? '请输入有效的邮箱地址' : '';
-    },
-    async handleRegister() {
-      if (this.usernameError || this.emailError) {
-        return;
+    validateUsername() {
+      this.errors.username = '';
+      
+      if (!this.formData.username) {
+        this.errors.username = '请输入用户名';
+        return false;
       }
-      // 验证用户名
-      const usernameError = this.validateUsername(this.formData.username);
-      if (usernameError) {
-        alert(usernameError);
+      
+      if (this.formData.username.includes('@')) {
+        this.errors.username = '用户名不能包含@符号';
+        return false;
+      }
+      
+      if (this.formData.username.length < 3) {
+        this.errors.username = '用户名至少需要3个字符';
+        return false;
+      }
+      
+      return true;
+    },
+    
+    validateEmail() {
+      this.errors.email = '';
+      
+      if (!this.formData.email) {
+        this.errors.email = '请输入邮箱地址';
+        return false;
+      }
+      
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(this.formData.email)) {
+        this.errors.email = '请输入有效的邮箱地址';
+        return false;
+      }
+      
+      return true;
+    },
+    
+    validatePassword() {
+      this.errors.password = '';
+      
+      if (!this.formData.password) {
+        this.errors.password = '请输入密码';
+        return false;
+      }
+      
+      if (this.formData.password.length < 6) {
+        this.errors.password = '密码至少需要6个字符';
+        return false;
+      }
+      
+      return true;
+    },
+    
+    validateForm() {
+      const isUsernameValid = this.validateUsername();
+      const isEmailValid = this.validateEmail();
+      const isPasswordValid = this.validatePassword();
+      
+      return isUsernameValid && isEmailValid && isPasswordValid;
+    },
+    
+    async handleRegister() {
+      if (!this.validateForm()) {
         return;
       }
       
       try {
         this.loading = true;
         await authService.register(this.formData);
-        this.$notify({
-          title: '成功',
-          message: '注册成功！请登录',
-          type: 'success'
+        
+        this.$router.push({
+          path: '/login',
+          query: { registered: 'success' }
         });
-        this.$router.push('/login');
       } catch (error) {
-        this.$notify.error({
-          title: '注册失败',
-          message: error.response?.data?.message || '注册失败，请重试'
-        });
+        let errorMessage = '注册失败，请重试';
+        
+        if (error.response) {
+          errorMessage = error.response.data.message || errorMessage;
+          
+          // 根据错误类型显示不同的错误提示
+          if (errorMessage.includes('email')) {
+            this.errors.email = errorMessage;
+          } else if (errorMessage.includes('username')) {
+            this.errors.username = errorMessage;
+          } else {
+            this.errors.email = errorMessage;
+          }
+        }
+        
+        console.error('注册失败:', error);
       } finally {
         this.loading = false;
       }
@@ -118,152 +202,99 @@ export default {
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  padding: 16px;
+  padding: var(--spacing-md);
   background-image: url('../assets/photo-bg.jpg');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
+  position: relative;
 }
 
-.card {
-  background-color: rgba(255, 255, 255, 0.8);
+.page-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.3);
   backdrop-filter: blur(10px);
-  border-radius: 28px;
-  padding: 32px;
+  z-index: 0;
+}
+
+.register-card {
+  position: relative;
+  z-index: 1;
+  background-color: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(20px);
+  border-radius: var(--radius-large);
+  padding: var(--spacing-2xl);
   width: 100%;
   max-width: 400px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
-  transition: box-shadow 0.2s;
+  box-shadow: var(--shadow-large);
+  transition: transform var(--transition-base), box-shadow var(--transition-base);
+  animation: card-appear 0.5s var(--transition-bounce);
 }
 
-.card:hover {
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.5);
+.register-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-extra-large);
 }
 
-h1 {
-  color: #1f1f1f;
-  font-size: 2rem;
-  margin-bottom: 32px;
-  font-weight: 500;
+.register-title {
+  color: var(--text-primary);
+  font-size: var(--font-size-2xl);
+  margin-bottom: var(--spacing-xl);
+  font-weight: var(--font-weight-semibold);
   text-align: center;
 }
 
-.input-group {
-  position: relative;
-  margin-bottom: 40px;
+.register-button {
+  margin-top: var(--spacing-lg);
 }
 
-.md-input {
-  width: 100%;
-  padding: 12px 16px;
-  font-size: 1rem;
-  border: 2px solid #4b4b4b8a;
-  border-radius: 12px;
-  background: transparent;
-  transition: border-color 0.2s, box-shadow 0.2s;
-  outline: none;
-}
-
-.md-input:focus {
-  border-color: #6750a4;
-  box-shadow: 0 0 0 4px rgba(103, 80, 164, 0.1);
-}
-
-.md-input + label {
-  position: absolute;
-  left: 16px;
-  top: -20px;
-  transform: scale(0.8);
-  transform-origin: left;
-  pointer-events: none;
-}
-
-.md-input:focus + label,
-.md-input:not(:placeholder-shown) + label {
-  top: -20px;
-  transform: scale(0.8);
-  transform-origin: left;
-}
-
-label {
-  position: absolute;
-  left: 16px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: #666;
-  transition: all 0.2s;
-  pointer-events: none;
-  font-size: 1rem;
-  background: transparent;
-}
-
-.md-input:focus + label,
-.md-input:not(:placeholder-shown) + label {
-  top: -25px;
-  transform: scale(0.8);
-  background: transparent;
-  color: #6750a4;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
-}
-
-.md-button {
-  width: 100%;
-  padding: 14px 24px;
-  background: #6750a4;
-  color: white;
-  border: none;
-  border-radius: 100px;
-  font-size: 1rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background 0.2s, transform 0.1s;
-  position: relative;
-  overflow: hidden;
-}
-
-.md-button:hover {
-  background: #7c63b9;
-}
-
-.md-button:active {
-  transform: scale(0.98);
-}
-
-.md-button:disabled {
-  background: #e0e0e0;
-  cursor: not-allowed;
-}
-
-.button-content {
-  position: relative;
-  z-index: 1;
+.sf-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-style: normal;
 }
 
 .additional-links {
-  margin-top: 24px;
+  margin-top: var(--spacing-xl);
   text-align: center;
 }
 
 .text-link {
-  color: #6750a4;
+  color: var(--color-primary);
   text-decoration: none;
-  font-weight: 500;
-  transition: color 0.2s;
+  font-weight: var(--font-weight-medium);
+  transition: color var(--transition-fast);
 }
 
 .text-link:hover {
-  color: #7c63b9;
+  color: rgba(0, 122, 255, 0.8);
 }
 
-.error-input {
-  border-color: #dc3545 !important;
+@keyframes card-appear {
+  0% {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
-.error-message {
-  color: #dc3545;
-  font-size: 0.875rem;
-  position: absolute;
-  bottom: -22px;
-  left: 16px;
+@media (max-width: 480px) {
+  .register-card {
+    padding: var(--spacing-xl);
+    margin: 0 var(--spacing-md);
+  }
+  
+  .register-title {
+    font-size: var(--font-size-xl);
+  }
 }
 </style>

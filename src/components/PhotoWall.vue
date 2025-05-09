@@ -1,110 +1,139 @@
 <template>
   <div class="photo-wall-container">
     <!-- 顶部导航栏 -->
-    <nav class="app-navbar">
-      <div class="navbar-brand">
-        <router-link to="/photowall" class="logo-link">
-          <span class="logo-text">ShotMeld</span>
-        </router-link>
-      </div>
-      <div class="navbar-actions">
-        <router-link to="/timeline" class="nav-button">
-          <i class="fas fa-calendar-alt"></i>
-          <span>时间轴</span>
-        </router-link>
-        <button @click="showUploadModal = true" class="nav-button">
-          <i class="fas fa-cloud-upload-alt"></i>
-          <span>上传照片</span>
-        </button>
-        <button @click="showAlbumForm = true" class="nav-button">
-          <i class="fas fa-folder-plus"></i>
-          <span>新建相册</span>
-        </button>
+    <SfNavbar title="ShotMeld" transparent>
+      <template #actions>
+        <SfNavLink to="/timeline">
+          <template #icon>
+            <i class="fas fa-calendar-alt"></i>
+          </template>
+          时间轴
+        </SfNavLink>
+        
+        <SfButton 
+          type="secondary" 
+          @click="showUploadModal = true"
+          size="small"
+        >
+          <template #prefix>
+            <i class="fas fa-cloud-upload-alt"></i>
+          </template>
+          上传照片
+        </SfButton>
+        
+        <SfButton 
+          type="secondary" 
+          @click="showAlbumForm = true"
+          size="small"
+        >
+          <template #prefix>
+            <i class="fas fa-folder-plus"></i>
+          </template>
+          新建相册
+        </SfButton>
+        
         <div class="user-dropdown">
-          <button class="user-button">
-            <i class="fas fa-user-circle"></i>
-            <span>{{ userName }}</span>
-          </button>
+          <SfAvatar 
+            :text="userName" 
+            size="small" 
+            class="user-avatar"
+          />
           <div class="dropdown-menu">
-            <router-link to="/profile" class="dropdown-item">
-              <i class="fas fa-user"></i> 个人资料
-            </router-link>
-            <button @click="handleLogout" class="dropdown-item">
-              <i class="fas fa-sign-out-alt"></i> 登出
-            </button>
+            <SfNavLink to="/profile">
+              <template #icon>
+                <i class="fas fa-user"></i>
+              </template>
+              个人资料
+            </SfNavLink>
+            <SfNavLink href="#" @click="handleLogout">
+              <template #icon>
+                <i class="fas fa-sign-out-alt"></i>
+              </template>
+              退出登录
+            </SfNavLink>
           </div>
         </div>
-      </div>
-    </nav>
+      </template>
+    </SfNavbar>
 
     <!-- 主内容区 -->
     <main class="photo-wall-main">
       <!-- 过滤和搜索区 -->
       <div class="filters-section">
-        <div class="search-container">
-          <i class="fas fa-search search-icon"></i>
-          <input 
-            v-model="searchQuery" 
-            type="text" 
-            placeholder="搜索照片..." 
-            class="search-input"
-            @input="debouncedSearch"
-          >
-        </div>
-        <div class="filter-controls">
-          <div class="filter-item">
-            <label>相册:</label>
-            <el-select v-model="filters.albumId" placeholder="全部相册" clearable @change="fetchPhotos">
-              <el-option
-                v-for="album in albums"
-                :key="album.id"
-                :label="album.name"
-                :value="album.id">
-              </el-option>
-            </el-select>
+        <SfCard class="search-card">
+          <div class="search-container">
+            <SfInput
+              v-model="searchQuery"
+              placeholder="搜索照片..."
+              @input="debouncedSearch"
+              class="search-input"
+            >
+              <template #prefix>
+                <i class="fas fa-search"></i>
+              </template>
+            </SfInput>
           </div>
-          <div class="filter-item">
-            <label>标签:</label>
-            <el-select 
-              v-model="filters.tags" 
-              multiple 
-              collapse-tags 
-              placeholder="选择标签" 
-              @change="fetchPhotos">
-              <el-option
-                v-for="tag in tags"
-                :key="tag.id"
-                :label="tag.name"
-                :value="tag.id">
-              </el-option>
-            </el-select>
+          
+          <div class="filter-controls">
+            <div class="filter-item">
+              <label class="filter-label">相册:</label>
+              <el-select v-model="filters.albumId" placeholder="全部相册" clearable @change="fetchPhotos">
+                <el-option
+                  v-for="album in albums"
+                  :key="album.id"
+                  :label="album.name"
+                  :value="album.id">
+                </el-option>
+              </el-select>
+            </div>
+            
+            <div class="filter-item">
+              <label class="filter-label">标签:</label>
+              <el-select 
+                v-model="filters.tags" 
+                multiple 
+                collapse-tags 
+                placeholder="选择标签" 
+                @change="fetchPhotos">
+                <el-option
+                  v-for="tag in tags"
+                  :key="tag.id"
+                  :label="tag.name"
+                  :value="tag.id">
+                </el-option>
+              </el-select>
+            </div>
+            
+            <div class="filter-item">
+              <label class="filter-label">日期范围:</label>
+              <el-date-picker
+                v-model="dateRange"
+                type="daterange"
+                range-separator="至"
+                start-placeholder="开始日期"
+                end-placeholder="结束日期"
+                format="YYYY-MM-DD"
+                value-format="YYYY-MM-DD"
+                @change="handleDateRangeChange">
+              </el-date-picker>
+            </div>
+            
+            <div class="filter-item">
+              <label class="filter-label">排序:</label>
+              <div class="sort-controls">
+                <el-select v-model="filters.sort" @change="fetchPhotos">
+                  <el-option label="拍摄时间" value="takenAt"></el-option>
+                  <el-option label="上传时间" value="createdAt"></el-option>
+                  <el-option label="标题" value="title"></el-option>
+                </el-select>
+                <el-select v-model="filters.order" @change="fetchPhotos">
+                  <el-option label="降序" value="desc"></el-option>
+                  <el-option label="升序" value="asc"></el-option>
+                </el-select>
+              </div>
+            </div>
           </div>
-          <div class="filter-item">
-            <label>日期范围:</label>
-            <el-date-picker
-              v-model="dateRange"
-              type="daterange"
-              range-separator="至"
-              start-placeholder="开始日期"
-              end-placeholder="结束日期"
-              format="YYYY-MM-DD"
-              value-format="YYYY-MM-DD"
-              @change="handleDateRangeChange">
-            </el-date-picker>
-          </div>
-          <div class="filter-item">
-            <label>排序:</label>
-            <el-select v-model="filters.sort" @change="fetchPhotos">
-              <el-option label="拍摄时间" value="takenAt"></el-option>
-              <el-option label="上传时间" value="createdAt"></el-option>
-              <el-option label="标题" value="title"></el-option>
-            </el-select>
-            <el-select v-model="filters.order" style="margin-left: 5px;" @change="fetchPhotos">
-              <el-option label="降序" value="desc"></el-option>
-              <el-option label="升序" value="asc"></el-option>
-            </el-select>
-          </div>
-        </div>
+        </SfCard>
       </div>
 
       <!-- 照片网格 -->
@@ -112,20 +141,56 @@
         <div v-if="photos.length === 0" class="no-photos">
           <i class="fas fa-image no-photos-icon"></i>
           <p>没有照片。上传一些照片开始使用吧！</p>
-          <button @click="showUploadModal = true" class="upload-btn">上传照片</button>
+          <SfButton 
+            @click="showUploadModal = true" 
+            type="primary"
+            rounded
+          >
+            <template #prefix>
+              <i class="fas fa-cloud-upload-alt"></i>
+            </template>
+            上传照片
+          </SfButton>
         </div>
-        <div v-for="photo in photos" :key="photo.id" class="photo-item" @click="openPhotoDetail(photo)">
+        
+        <SfCard 
+          v-for="photo in photos" 
+          :key="photo.id" 
+          class="photo-card" 
+          hoverable 
+          shadow="small"
+          @click="openPhotoDetail(photo)"
+        >
           <div class="photo-thumbnail">
-            <img :src="photo.thumbnailUrl || photo.url" :alt="photo.title" />
+            <img :src="photo.thumbnailUrl || photo.url" :alt="photo.title" loading="lazy" />
           </div>
           <div class="photo-info">
-            <h3>{{ photo.title || '无标题' }}</h3>
+            <h3 class="photo-title">{{ photo.title || '无标题' }}</h3>
             <p class="photo-date">{{ formatDate(photo.takenAt) }}</p>
+            <div class="photo-tags-container" v-if="photo.tags && photo.tags.length > 0">
+              <SfBadge 
+                v-for="tag in photo.tags.slice(0, 2)" 
+                :key="tag.id"
+                type="secondary"
+                size="small"
+                class="photo-tag-badge"
+              >
+                {{ tag.name }}
+              </SfBadge>
+              <SfBadge 
+                v-if="photo.tags.length > 2" 
+                type="neutral"
+                size="small"
+              >
+                +{{ photo.tags.length - 2 }}
+              </SfBadge>
+            </div>
           </div>
-        </div>
+        </SfCard>
       </div>
+      
       <div v-else class="loading-container">
-        <el-spinner></el-spinner>
+        <div class="spinner"></div>
         <p>正在加载照片...</p>
       </div>
       
@@ -143,118 +208,114 @@
       </div>
 
       <!-- 照片详情模态框 -->
-      <transition name="modal">
-        <div v-if="currentPhoto" class="modal-overlay" @click.self="closePhotoDetail">
-          <div class="photo-detail-modal">
-            <div class="photo-detail-header">
-              <h2>{{ currentPhoto.title || '无标题照片' }}</h2>
-              <button @click="closePhotoDetail" class="close-button">
-                <i class="fas fa-times"></i>
-              </button>
+      <SfModal
+        v-model="showPhotoDetail"
+        :title="currentPhoto?.title || '无标题照片'"
+        size="large"
+      >
+        <div class="photo-detail-content">
+          <div class="photo-detail-image">
+            <img 
+              v-if="currentPhoto" 
+              :src="currentPhoto.url" 
+              :alt="currentPhoto.title" 
+              @load="imageLoaded = true" 
+            />
+            <div v-if="!imageLoaded" class="image-loading">
+              <div class="spinner"></div>
             </div>
-            <div class="photo-detail-content">
-              <div class="photo-detail-image">
-                <img :src="currentPhoto.url" :alt="currentPhoto.title" @load="imageLoaded = true" />
-                <div v-if="!imageLoaded" class="image-loading">
-                  <el-spinner></el-spinner>
-                </div>
+          </div>
+          <div class="photo-detail-info">
+            <div class="info-group">
+              <h3 class="info-group-title">照片信息</h3>
+              <div class="info-item">
+                <span class="info-label">标题:</span>
+                <span class="info-value">{{ currentPhoto?.title || '无标题' }}</span>
               </div>
-              <div class="photo-detail-info">
-                <div class="info-group">
-                  <h3>照片信息</h3>
-                  <div class="info-item">
-                    <span class="info-label">标题:</span>
-                    <span class="info-value">{{ currentPhoto.title || '无标题' }}</span>
-                  </div>
-                  <div class="info-item">
-                    <span class="info-label">拍摄时间:</span>
-                    <span class="info-value">{{ formatDate(currentPhoto.takenAt) }}</span>
-                  </div>
-                  <div class="info-item">
-                    <span class="info-label">文件大小:</span>
-                    <span class="info-value">{{ formatFileSize(currentPhoto.fileSize) }}</span>
-                  </div>
-                  <div class="info-item">
-                    <span class="info-label">尺寸:</span>
-                    <span class="info-value">{{ currentPhoto.width || 0 }}×{{ currentPhoto.height || 0 }}</span>
-                  </div>
-                </div>
-
-                <div class="info-group">
-                  <h3>标签</h3>
-                  <div class="photo-tags">
-                    <div v-if="currentPhoto.tags && currentPhoto.tags.length > 0" class="tags-container">
-                      <span class="photo-tag" v-for="tag in currentPhoto.tags" :key="tag.id">
-                        {{ tag.name }}
-                      </span>
-                    </div>
-                    <div v-else class="no-tags">没有标签</div>
-                  </div>
-                </div>
-
-                <div class="info-group">
-                  <h3>相册</h3>
-                  <div class="photo-albums">
-                    <div v-if="currentPhoto.albums && currentPhoto.albums.length > 0" class="albums-container">
-                      <span class="photo-album" v-for="album in currentPhoto.albums" :key="album.id">
-                        {{ album.name }}
-                      </span>
-                    </div>
-                    <div v-else class="no-albums">不在任何相册中</div>
-                  </div>
-                </div>
-
-                <div class="photo-actions">
-                  <el-button type="primary" @click="downloadPhoto(currentPhoto)">
-                    <i class="fas fa-download"></i> 下载
-                  </el-button>
-                  <el-button type="danger" @click="confirmDeletePhoto">
-                    <i class="fas fa-trash"></i> 删除
-                  </el-button>
-                </div>
+              <div class="info-item">
+                <span class="info-label">拍摄时间:</span>
+                <span class="info-value">{{ formatDate(currentPhoto?.takenAt) }}</span>
               </div>
+              <div class="info-item">
+                <span class="info-label">文件大小:</span>
+                <span class="info-value">{{ formatFileSize(currentPhoto?.fileSize) }}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">尺寸:</span>
+                <span class="info-value">{{ currentPhoto?.width || 0 }}×{{ currentPhoto?.height || 0 }}</span>
+              </div>
+            </div>
+            
+            <div class="info-group" v-if="currentPhoto?.tags && currentPhoto.tags.length > 0">
+              <h3 class="info-group-title">标签</h3>
+              <div class="photo-tags">
+                <SfBadge
+                  v-for="tag in currentPhoto.tags"
+                  :key="tag.id"
+                  type="secondary"
+                  class="detail-tag"
+                >
+                  {{ tag.name }}
+                </SfBadge>
+              </div>
+            </div>
+            
+            <div class="info-group" v-if="currentPhoto?.albums && currentPhoto.albums.length > 0">
+              <h3 class="info-group-title">所属相册</h3>
+              <div class="photo-albums">
+                <SfBadge
+                  v-for="album in currentPhoto.albums"
+                  :key="album.id"
+                  type="success"
+                  class="detail-album"
+                >
+                  {{ album.name }}
+                </SfBadge>
+              </div>
+            </div>
+            
+            <div class="photo-actions">
+              <SfButton 
+                type="primary" 
+                @click="downloadPhoto(currentPhoto)"
+              >
+                <template #prefix>
+                  <i class="fas fa-download"></i>
+                </template>
+                下载
+              </SfButton>
+              
+              <SfButton 
+                type="danger" 
+                @click="confirmDeletePhoto"
+              >
+                <template #prefix>
+                  <i class="fas fa-trash"></i>
+                </template>
+                删除
+              </SfButton>
             </div>
           </div>
         </div>
-      </transition>
+      </SfModal>
 
       <!-- 上传照片模态框 -->
-      <transition name="modal">
-        <div v-if="showUploadModal" class="modal-overlay">
-          <div class="modal-container">
-            <div class="modal-header">
-              <h2>上传照片</h2>
-              <button @click="showUploadModal = false" class="close-button">
-                <i class="fas fa-times"></i>
-              </button>
-            </div>
-            <div class="modal-body">
-              <PhotoUpload @upload-success="handlePhotoUploaded" />
-            </div>
-          </div>
-        </div>
-      </transition>
+      <SfModal
+        v-model="showUploadModal"
+        title="上传照片"
+        size="default"
+      >
+        <PhotoUpload @upload-success="handlePhotoUploaded" />
+      </SfModal>
 
       <!-- 相册表单模态框 -->
-      <transition name="modal">
-        <div v-if="showAlbumForm" class="modal-overlay">
-          <div class="modal-container">
-            <div class="modal-header">
-              <h2>创建相册</h2>
-              <button @click="showAlbumForm = false" class="close-button">
-                <i class="fas fa-times"></i>
-              </button>
-            </div>
-            <div class="modal-body">
-              <AlbumForm 
-                @success="handleAlbumCreated"
-                @cancel="showAlbumForm = false"
-                @close="showAlbumForm = false"
-              />
-            </div>
-          </div>
-        </div>
-      </transition>
+      <SfModal
+        v-model="showAlbumForm"
+        title="新建相册"
+        size="default"
+      >
+        <AlbumForm @album-created="handleAlbumCreated" />
+      </SfModal>
 
       <!-- 删除确认对话框 -->
       <el-dialog
@@ -262,11 +323,11 @@
         title="确认删除"
         width="30%"
         :show-close="false">
-        <span>确定要删除这张照片吗？此操作不可恢复。</span>
+        <p>确定要删除这张照片吗？此操作无法撤销。</p>
         <template #footer>
           <span class="dialog-footer">
-            <el-button @click="showDeleteConfirm = false">取消</el-button>
-            <el-button type="danger" @click="deletePhoto">确认</el-button>
+            <SfButton type="tertiary" @click="showDeleteConfirm = false">取消</SfButton>
+            <SfButton type="danger" @click="deletePhoto">确认删除</SfButton>
           </span>
         </template>
       </el-dialog>
@@ -275,11 +336,13 @@
 </template>
 
 <script>
+// 保持原有的导入项
+import { ref, computed, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
 import axios from 'axios';
 import AlbumForm from './AlbumForm.vue';
 import PhotoUpload from './PhotoUpload.vue';
 import { photoService, albumService, tagService } from '../api';
-import debounce from 'lodash/debounce';
 
 export default {
   name: 'PhotoWall',
@@ -290,51 +353,46 @@ export default {
   data() {
     return {
       photos: [],
-      totalPhotos: 0,
+      albums: [],
+      tags: [],
       loading: true,
-      searchQuery: '',
       currentPhoto: null,
-      imageLoaded: false,
+      showPhotoDetail: false,
       showUploadModal: false,
       showAlbumForm: false,
       showDeleteConfirm: false,
-      userName: '',
-      albums: [],
-      tags: [],
-      dateRange: [],
+      imageLoaded: false,
+      totalPhotos: 0,
+      dateRange: null,
+      searchQuery: '',
+      pagination: {
+        page: 1,
+        limit: 20
+      },
       filters: {
         albumId: null,
         tags: [],
-        sort: 'takenAt',
-        order: 'desc',
-        q: '',
         startDate: null,
-        endDate: null
-      },
-      pagination: {
-        page: 1,
-        limit: 50
+        endDate: null,
+        sort: 'takenAt',
+        order: 'desc'
       }
     }
   },
-  created() {
-    this.debouncedSearch = debounce(() => {
-      this.filters.q = this.searchQuery;
-      this.fetchPhotos();
-    }, 500);
-
-    // 获取用户信息
-    const user = JSON.parse(localStorage.getItem('user'))
-    if (user) {
-      this.userName = user.username || user.email
+  computed: {
+    userName() {
+      const user = JSON.parse(localStorage.getItem('user') || '{}');
+      return user.username || '用户';
     }
-    
-    // 初始化数据
+  },
+  created() {
     this.fetchPhotos();
     this.fetchAlbums();
     this.fetchTags();
   },
   methods: {
+    // 保持原有方法，确保它们正常工作
+    // 添加必要的方法调整
     async fetchPhotos() {
       this.loading = true;
       
@@ -388,32 +446,24 @@ export default {
     openPhotoDetail(photo) {
       this.currentPhoto = photo;
       this.imageLoaded = false;
+      this.showPhotoDetail = true;
     },
     
     closePhotoDetail() {
-      this.currentPhoto = null;
+      this.showPhotoDetail = false;
+      setTimeout(() => {
+        this.currentPhoto = null;
+      }, 300);
     },
     
-    handlePhotoUploaded(uploadedPhotos) {
-      this.showUploadModal = false;
+    handlePageChange(page) {
+      this.pagination.page = page;
       this.fetchPhotos();
-      
-      this.$notify({
-        title: '上传成功',
-        message: `已成功上传 ${uploadedPhotos.length || 1} 张照片`,
-        type: 'success'
-      });
     },
     
-    handleAlbumCreated(newAlbum) {
-      this.showAlbumForm = false;
-      this.fetchAlbums();
-      
-      this.$notify({
-        title: '成功',
-        message: `相册"${newAlbum.name}"已创建`,
-        type: 'success'
-      });
+    handleSizeChange(size) {
+      this.pagination.limit = size;
+      this.fetchPhotos();
     },
     
     handleDateRangeChange(dates) {
@@ -428,15 +478,22 @@ export default {
       this.fetchPhotos();
     },
     
-    handlePageChange(page) {
-      this.pagination.page = page;
+    debouncedSearch() {
+      clearTimeout(this.searchTimeout);
+      this.searchTimeout = setTimeout(() => {
+        this.pagination.page = 1;
+        this.fetchPhotos();
+      }, 500);
+    },
+    
+    handlePhotoUploaded() {
+      this.showUploadModal = false;
       this.fetchPhotos();
     },
     
-    handleSizeChange(size) {
-      this.pagination.limit = size;
-      this.pagination.page = 1;
-      this.fetchPhotos();
+    handleAlbumCreated() {
+      this.showAlbumForm = false;
+      this.fetchAlbums();
     },
     
     downloadPhoto(photo) {
@@ -488,7 +545,7 @@ export default {
     },
     
     formatFileSize(bytes) {
-      if (bytes === 0) return '0 Bytes'
+      if (!bytes || bytes === 0) return '0 Bytes'
       const k = 1024
       const sizes = ['Bytes', 'KB', 'MB', 'GB']
       const i = Math.floor(Math.log(bytes) / Math.log(k))
@@ -498,7 +555,6 @@ export default {
     handleLogout() {
       localStorage.removeItem('token')
       localStorage.removeItem('user')
-      delete axios.defaults.headers.common['Authorization']
       this.$router.push('/login')
     }
   }
@@ -506,742 +562,262 @@ export default {
 </script>
 
 <style scoped>
-/* 基础样式 */
-:root {
-  --primary-color: #4361ee;
-  --secondary-color: #3f37c9;
-  --accent-color: #4895ef;
-  --danger-color: #f72585;
-  --light-color: #f8f9fa;
-  --dark-color: #212529;
-  --gray-color: #6c757d;
-  --border-radius: 12px;
-  --box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-  --transition: all 0.3s ease;
+/* 基础布局 */
+.photo-wall-container {
+  min-height: 100vh;
+  background-color: var(--bg-secondary);
 }
 
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
+.photo-wall-main {
+  max-width: var(--container-xl);
+  margin: 0 auto;
+  padding: var(--spacing-xl);
 }
 
-body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  line-height: 1.6;
-  color: var(--dark-color);
-  background-color: #f5f7fa;
-}
-
-/* 导航栏样式 */
-.app-navbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1rem 2rem;
-  background-color: white;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  position: sticky;
-  top: 0;
-  z-index: 1000;
-}
-
-.logo-link {
-  display: flex;
-  align-items: center;
-  text-decoration: none;
-  color: var(--primary-color);
-  font-weight: 700;
-  font-size: 1.5rem;
-}
-
-.logo-icon {
-  font-size: 1.8rem;
-  margin-right: 0.5rem;
-}
-
-.navbar-actions {
-  display: flex;
-  align-items: center;
-  gap: 1.5rem;
-}
-
-.nav-button {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem 1rem;
-  border-radius: var(--border-radius);
-  color: var(--gray-color);
-  text-decoration: none;
-  transition: var(--transition);
-}
-
-.nav-button:hover {
-  color: var(--primary-color);
-  background-color: rgba(67, 97, 238, 0.1);
-}
-
-.nav-button i {
-  font-size: 1.1rem;
-}
-
+/* 用户下拉菜单 */
 .user-dropdown {
   position: relative;
+  margin-left: var(--spacing-sm);
 }
 
-.user-button {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  background: none;
-  border: none;
+.user-avatar {
   cursor: pointer;
-  color: var(--dark-color);
-  padding: 0.5rem 1rem;
-  border-radius: var(--border-radius);
-  transition: var(--transition);
-}
-
-.user-button:hover {
-  background-color: rgba(0, 0, 0, 0.05);
 }
 
 .dropdown-menu {
   position: absolute;
   right: 0;
   top: 100%;
-  background-color: white;
-  border-radius: var(--border-radius);
-  box-shadow: var(--box-shadow);
-  padding: 0.5rem 0;
-  min-width: 180px;
+  background-color: var(--bg-primary);
+  border-radius: var(--radius-medium);
+  box-shadow: var(--shadow-medium);
+  min-width: 200px;
   opacity: 0;
   visibility: hidden;
-  transform: translateY(10px);
-  transition: var(--transition);
-  z-index: 100;
+  transform: translateY(var(--spacing-xs));
+  transition: all var(--transition-fast);
+  overflow: hidden;
+  z-index: 10;
 }
 
 .user-dropdown:hover .dropdown-menu {
   opacity: 1;
   visibility: visible;
-  transform: translateY(0);
+  transform: translateY(var(--spacing-2xs));
 }
 
-.dropdown-item {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  width: 100%;
-  padding: 0.75rem 1.5rem;
-  background: none;
-  border: none;
-  text-align: left;
-  color: var(--dark-color);
-  cursor: pointer;
-  transition: var (--transition);
+/* 搜索和过滤区 */
+.filters-section {
+  margin-bottom: var(--spacing-xl);
 }
 
-.dropdown-item:hover {
-  background-color: rgba(0, 0, 0, 0.05);
-  color: var(--primary-color);
-}
-
-.dropdown-item i {
-  width: 1.25rem;
-  text-align: center;
-}
-
-/* 主内容区样式 */
-.photo-wall-main {
-  max-width: 1200px;
-  margin: 2rem auto;
-  padding: 0 2rem;
-}
-
-.search-section {
-  margin-bottom: 2rem;
+.search-card {
+  padding: var(--spacing-md);
 }
 
 .search-container {
-  display: flex;
-  align-items: center;
-  background-color: white;
-  border-radius: var(--border-radius);
-  box-shadow: var(--box-shadow);
-  padding: 0.5rem;
-  transition: var(--transition);
-}
-
-.search-container:focus-within {
-  box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
-}
-
-.search-icon {
-  padding: 0 1rem;
-  color: var(--gray-color);
+  margin-bottom: var(--spacing-lg);
 }
 
 .search-input {
-  flex: 1;
-  border: none;
-  outline: none;
-  padding: 0.75rem 0;
-  font-size: 1rem;
-}
-
-.search-button {
-  padding: 0.75rem 1.5rem;
-  background-color: var(--primary-color);
-  color: white;
-  border: none;
-  border-radius: calc(var(--border-radius) - 2px);
-  cursor: pointer;
-  font-weight: 600;
-  transition: var(--transition);
-}
-
-.search-button:hover {
-  background-color: var(--secondary-color);
-}
-
-.search-button:disabled {
-  background-color: var(--gray-color);
-  cursor: not-allowed;
-}
-
-.button-loader {
-  display: inline-block;
-  width: 1rem;
-  height: 1rem;
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  border-radius: 50%;
-  border-top-color: white;
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
-
-/* 照片卡片样式 */
-.photo-card-container {
-  margin-top: 2rem;
-}
-
-.photo-card {
-  display: flex;
-  background-color: white;
-  border-radius: var(--border-radius);
-  box-shadow: var(--box-shadow);
-  overflow: hidden;
-}
-
-.photo-image-container {
-  flex: 1;
-  min-height: 400px;
-  position: relative;
-  background-color: #f8f9fa;
-}
-
-.photo-image {
   width: 100%;
-  height: 100%;
-  object-fit: contain;
-  display: block;
-}
-
-.image-loading {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--gray-color);
-  font-size: 2rem;
-}
-
-.photo-details {
-  flex: 0 0 350px;
-  padding: 1.5rem;
-  display: flex;
-  flex-direction: column;
-}
-
-.photo-header {
-  margin-bottom: 1.5rem;
-}
-
-.photo-title {
-  font-size: 1.5rem;
-  margin-bottom: 0.5rem;
-  color: var(--dark-color);
-}
-
-.photo-meta {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
-  font-size: 0.9rem;
-  color: var(--gray-color);
-}
-
-.meta-item {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.photo-description {
-  margin-bottom: 1.5rem;
-  color: var(--dark-color);
-  line-height: 1.7;
-}
-
-.photo-stats {
-  margin-bottom: 1.5rem;
-}
-
-.stat-item {
-  margin-bottom: 1rem;
-}
-
-.stat-label {
-  display: block;
-  font-size: 0.8rem;
-  color: var(--gray-color);
-  margin-bottom: 0.25rem;
-}
-
-.stat-value {
-  font-weight: 500;
-}
-
-.tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  margin-top: 0.5rem;
-}
-
-.tag {
-  background-color: rgba(67, 97, 238, 0.1);
-  color: var(--primary-color);
-  padding: 0.25rem 0.75rem;
-  border-radius: 1rem;
-  font-size: 0.8rem;
-}
-
-.photo-actions {
-  margin-top: auto;
-  display: flex;
-  gap: 1rem;
-}
-
-.action-button {
-  flex: 1;
-  padding: 0.75rem;
-  border: none;
-  border-radius: var(--border-radius);
-  cursor: pointer;
-  font-weight: 600;
-  transition: var(--transition);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-}
-
-.edit-button {
-  background-color: var(--primary-color);
-  color: white;
-}
-
-.edit-button:hover {
-  background-color: var(--secondary-color);
-}
-
-.delete-button {
-  background-color: white;
-  color: var(--danger-color);
-  border: 1px solid var(--danger-color);
-}
-
-.delete-button:hover {
-  background-color: var(--danger-color);
-  color: white;
-}
-
-/* 空状态样式 */
-.empty-state {
-  text-align: center;
-  padding: 4rem 0;
-}
-
-.empty-icon {
-  font-size: 3rem;
-  color: var(--gray-color);
-  margin-bottom: 1.5rem;
-}
-
-.empty-title {
-  font-size: 1.5rem;
-  margin-bottom: 0.5rem;
-  color: var(--dark-color);
-}
-
-.empty-message {
-  color: var(--gray-color);
-}
-
-/* 加载状态样式 */
-.loading-state {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 1rem;
-  padding: 2rem;
-  color: var(--gray-color);
-}
-
-.loading-state i {
-  font-size: 1.5rem;
-}
-
-/* 错误提示样式 */
-.error-alert {
-  position: fixed;
-  top: 1rem;
-  left: 50%;
-  transform: translateX(-50%);
-  background-color: #fff3f3;
-  color: var(--danger-color);
-  padding: 1rem 1.5rem;
-  border-radius: var(--border-radius);
-  box-shadow: var(--box-shadow);
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  z-index: 1000;
-}
-
-.error-alert i {
-  font-size: 1.2rem;
-}
-
-.close-button {
-  background: none;
-  border: none;
-  color: inherit;
-  cursor: pointer;
-  margin-left: 1rem;
-  opacity: 0.7;
-  transition: var(--transition);
-}
-
-.close-button:hover {
-  opacity: 1;
-}
-
-/* 过渡动画 */
-.fade-enter-active, .fade-leave-active {
-  transition: opacity 0.5s;
-}
-.fade-enter, .fade-leave-to {
-  opacity: 0;
-}
-
-.slide-down-enter-active, .slide-down-leave-active {
-  transition: all 0.3s ease;
-}
-.slide-down-enter, .slide-down-leave-to {
-  opacity: 0;
-  transform: translateY(-20px);
-}
-
-/* 响应式设计 */
-@media (max-width: 992px) {
-  .photo-card {
-    flex-direction: column;
-  }
-  
-  .photo-details {
-    flex: 1;
-  }
-}
-
-@media (max-width: 768px) {
-  .app-navbar {
-    padding: 1rem;
-  }
-  
-  .photo-wall-main {
-    padding: 0 1rem;
-  }
-  
-  .search-container {
-    flex-direction: column;
-    align-items: stretch;
-  }
-  
-  .search-input {
-    padding: 0.75rem;
-  }
-  
-  .search-button {
-    width: 100%;
-    margin-top: 0.5rem;
-  }
-  
-  .photo-actions {
-    flex-direction: column;
-  }
-}
-.action-bar {
-  display: flex;
-  justify-content: flex-end;
-  margin-bottom: 20px;
-}
-
-.create-album-button {
-  background-color: #4361ee;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  padding: 10px 16px;
-  font-size: 0.95rem;
-  font-weight: 500;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  transition: background-color 0.3s;
-}
-
-.create-album-button:hover {
-  background-color: #3a56d4;
-}
-
-.create-album-button i {
-  font-size: 0.9rem;
-}
-
-/* 模态框样式 */
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-}
-
-.modal-container {
-  background-color: white;
-  border-radius: 12px;
-  max-width: 90%;
-  max-height: 90vh;
-  overflow-y: auto;
-}
-
-/* 模态框过渡动画 */
-.modal-enter-active, .modal-leave-active {
-  transition: opacity 0.3s;
-}
-.modal-enter, .modal-leave-to {
-  opacity: 0;
-}
-
-.modal-enter-active .modal-container,
-.modal-leave-active .modal-container {
-  transition: transform 0.3s;
-}
-.modal-enter .modal-container,
-.modal-leave-to .modal-container {
-  transform: translateY(-20px);
-}
-
-/* 添加新样式 */
-.filters-section {
-  margin-bottom: 20px;
-  background-color: white;
-  border-radius: var(--border-radius);
-  box-shadow: var(--box-shadow);
-  padding: 16px;
 }
 
 .filter-controls {
   display: flex;
   flex-wrap: wrap;
-  gap: 16px;
-  margin-top: 16px;
+  gap: var(--spacing-md);
 }
 
 .filter-item {
+  flex: 1 1 240px;
+  min-width: 0;
   display: flex;
-  align-items: center;
-  gap: 8px;
+  flex-direction: column;
 }
 
-.filter-item label {
-  font-weight: 500;
-  color: var(--gray-color);
+.filter-label {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--text-secondary);
+  margin-bottom: var(--spacing-xs);
 }
 
+.sort-controls {
+  display: flex;
+  gap: var(--spacing-xs);
+}
+
+.sort-controls > :first-child {
+  flex: 2;
+}
+
+.sort-controls > :last-child {
+  flex: 1;
+}
+
+/* 照片网格 */
 .photos-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 16px;
-  margin-bottom: 20px;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-xl);
 }
 
-.photo-item {
-  background-color: white;
-  border-radius: var(--border-radius);
+.photo-card {
   overflow: hidden;
-  box-shadow: var(--box-shadow);
   cursor: pointer;
-  transition: transform 0.3s ease;
-}
-
-.photo-item:hover {
-  transform: translateY(-5px);
 }
 
 .photo-thumbnail {
-  height: 180px;
+  height: 220px;
   overflow: hidden;
+  background-color: var(--bg-tertiary);
 }
 
 .photo-thumbnail img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  transition: transform var(--transition-base);
+}
+
+.photo-card:hover .photo-thumbnail img {
+  transform: scale(1.05);
 }
 
 .photo-info {
-  padding: 12px;
+  padding: var(--spacing-md);
 }
 
-.photo-info h3 {
-  margin: 0;
-  font-size: 14px;
-  margin-bottom: 4px;
+.photo-title {
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-medium);
+  margin-bottom: var(--spacing-2xs);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
 .photo-date {
-  color: var(--gray-color);
-  font-size: 12px;
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  margin-bottom: var(--spacing-sm);
 }
 
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
+.photo-tags-container {
   display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-  backdrop-filter: blur(5px);
+  flex-wrap: wrap;
+  gap: var(--spacing-2xs);
+  margin-top: var(--spacing-xs);
 }
 
-.modal-container {
-  background-color: white;
-  border-radius: var(--border-radius);
-  width: 90%;
-  max-width: 800px;
-  max-height: 90vh;
-  overflow-y: auto;
-  padding: 20px;
-  position: relative;
+.photo-tag-badge {
+  margin-right: var(--spacing-2xs);
 }
 
-.modal-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
-}
-
-.modal-header h2 {
-  margin: 0;
-}
-
-.close-button {
-  background: none;
-  border: none;
-  font-size: 20px;
-  cursor: pointer;
-  color: var(--gray-color);
-}
-
-.photo-detail-modal {
-  background-color: white;
-  border-radius: var(--border-radius);
-  width: 95%;
-  max-width: 1200px;
-  max-height: 95vh;
-  overflow-y: auto;
-}
-
-.photo-detail-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 16px;
-  border-bottom: 1px solid #ebeef5;
-}
-
+/* 照片详情模态框 */
 .photo-detail-content {
   display: flex;
   flex-direction: column;
-}
-
-@media (min-width: 768px) {
-  .photo-detail-content {
-    flex-direction: row;
-    height: calc(95vh - 60px);
-  }
-
-  .photo-detail-image {
-    flex: 2;
-    border-right: 1px solid #ebeef5;
-  }
-
-  .photo-detail-info {
-    flex: 1;
-    overflow-y: auto;
-  }
 }
 
 .photo-detail-image {
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #f5f7fa;
+  background-color: var(--bg-tertiary);
   position: relative;
-  height: 100%;
   min-height: 300px;
 }
 
 .photo-detail-image img {
   max-width: 100%;
-  max-height: 100%;
+  max-height: 500px;
   object-fit: contain;
+}
+
+.photo-detail-info {
+  padding: var(--spacing-lg);
+}
+
+.info-group {
+  margin-bottom: var(--spacing-lg);
+}
+
+.info-group-title {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-medium);
+  margin-bottom: var(--spacing-md);
+  padding-bottom: var(--spacing-2xs);
+  border-bottom: var(--border-width) solid var(--border-color);
+}
+
+.info-item {
+  display: flex;
+  margin-bottom: var(--spacing-sm);
+}
+
+.info-label {
+  width: 100px;
+  color: var(--text-secondary);
+  font-weight: var(--font-weight-medium);
+}
+
+.info-value {
+  flex: 1;
+}
+
+.photo-tags, .photo-albums {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-xs);
+}
+
+.detail-tag, .detail-album {
+  margin-bottom: var(--spacing-xs);
+}
+
+.photo-actions {
+  display: flex;
+  gap: var(--spacing-md);
+  margin-top: var(--spacing-xl);
+}
+
+/* 无照片状态 */
+.no-photos {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: var(--spacing-3xl);
+  background: var(--bg-primary);
+  border-radius: var(--radius-large);
+  box-shadow: var(--shadow-small);
+}
+
+.no-photos-icon {
+  font-size: 64px;
+  color: var(--text-tertiary);
+  margin-bottom: var(--spacing-lg);
+}
+
+/* 加载状态 */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-3xl);
+  color: var(--text-secondary);
+  gap: var(--spacing-md);
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba(0, 122, 255, 0.1);
+  border-top-color: var(--color-primary);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
 }
 
 .image-loading {
@@ -1255,110 +831,55 @@ body {
   justify-content: center;
 }
 
-.photo-detail-info {
-  padding: 16px;
-}
-
-.info-group {
-  margin-bottom: 24px;
-}
-
-.info-group h3 {
-  font-size: 16px;
-  border-bottom: 1px solid #ebeef5;
-  padding-bottom: 8px;
-  margin-bottom: 12px;
-}
-
-.info-item {
-  display: flex;
-  margin-bottom: 8px;
-}
-
-.info-label {
-  font-weight: 500;
-  width: 100px;
-  color: var(--gray-color);
-}
-
-.photo-tags, .photo-albums {
-  margin-top: 8px;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
-.photo-tag, .photo-album {
-  background-color: rgba(64, 158, 255, 0.1);
-  color: #409eff;
-  border-radius: 16px;
-  padding: 4px 12px;
-  font-size: 12px;
-}
-
-.photo-album {
-  background-color: rgba(103, 194, 58, 0.1);
-  color: #67c23a;
-}
-
-.no-tags, .no-albums {
-  color: var (--gray-color);
-  font-style: italic;
-}
-
-.photo-actions {
-  margin-top: 24px;
-  display: flex;
-  gap: 12px;
-}
-
+/* 分页 */
 .pagination-container {
-  margin-top: 20px;
   display: flex;
   justify-content: center;
+  margin: var(--spacing-xl) 0;
 }
 
-.no-photos {
-  grid-column: 1 / -1;
-  text-align: center;
-  padding: 40px;
+/* 确认对话框 */
+.dialog-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--spacing-sm);
+  margin-top: var(--spacing-md);
 }
 
-.no-photos-icon {
-  font-size: 64px;
-  color: var(--gray-color);
-  margin-bottom: 16px;
+/* 响应式设计 */
+@media (min-width: 768px) {
+  .photo-detail-content {
+    flex-direction: row;
+    min-height: 500px;
+  }
+  
+  .photo-detail-image {
+    flex: 2;
+    border-right: var(--border-width) solid var(--border-color);
+  }
+  
+  .photo-detail-info {
+    flex: 1;
+    overflow-y: auto;
+    max-height: 600px;
+  }
 }
 
-.upload-btn {
-  margin-top: 16px;
-  background-color: var(--primary-color);
-  color: white;
-  border: none;
-  padding: 8px 20px;
-  border-radius: 20px;
-  cursor: pointer;
+@media (max-width: 768px) {
+  .photo-wall-main {
+    padding: var(--spacing-md);
+  }
+  
+  .filter-controls {
+    flex-direction: column;
+  }
+  
+  .photo-actions {
+    flex-direction: column;
+  }
 }
 
-.loading-container {
-  grid-column: 1 / -1;
-  text-align: center;
-  padding: 40px;
-}
-
-/* 动画效果 */
-.modal-enter-active, .modal-leave-active {
-  transition: all 0.3s ease;
-}
-
-.modal-enter-from, .modal-leave-to {
-  opacity: 0;
-}
-
-.modal-enter-from .modal-container,
-.modal-enter-from .photo-detail-modal,
-.modal-leave-to .modal-container,
-.modal-leave-to .photo-detail-modal {
-  transform: scale(0.9);
+@keyframes spin {
+  to { transform: rotate(360deg); }
 }
 </style>
