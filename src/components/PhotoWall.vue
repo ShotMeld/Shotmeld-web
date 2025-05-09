@@ -219,97 +219,12 @@
         </el-pagination>
       </div>
 
-      <!-- 照片详情模态框 -->
-      <SfModal
+      <!-- 照片详情组件 -->
+      <PhotoDetail
         v-model="showPhotoDetail"
-        :title="currentPhoto?.title || '无标题照片'"
-        size="large"
-      >
-        <div class="photo-detail-content">
-          <div class="photo-detail-image">
-            <img 
-              v-if="currentPhoto" 
-              :src="currentPhoto.url" 
-              :alt="currentPhoto.title" 
-              @load="imageLoaded = true" 
-            />
-            <div v-if="!imageLoaded" class="image-loading">
-              <div class="spinner"></div>
-            </div>
-          </div>
-          <div class="photo-detail-info">
-            <div class="info-group">
-              <h3 class="info-group-title">照片信息</h3>
-              <div class="info-item">
-                <span class="info-label">标题:</span>
-                <span class="info-value">{{ currentPhoto?.title || '无标题' }}</span>
-              </div>
-              <div class="info-item">
-                <span class="info-label">拍摄时间:</span>
-                <span class="info-value">{{ formatDate(currentPhoto?.takenAt) }}</span>
-              </div>
-              <div class="info-item">
-                <span class="info-label">文件大小:</span>
-                <span class="info-value">{{ formatFileSize(currentPhoto?.fileSize) }}</span>
-              </div>
-              <div class="info-item">
-                <span class="info-label">尺寸:</span>
-                <span class="info-value">{{ currentPhoto?.width || 0 }}×{{ currentPhoto?.height || 0 }}</span>
-              </div>
-            </div>
-            
-            <div class="info-group" v-if="currentPhoto?.tags && currentPhoto.tags.length > 0">
-              <h3 class="info-group-title">标签</h3>
-              <div class="photo-tags">
-                <SfBadge
-                  v-for="tag in currentPhoto.tags"
-                  :key="tag.id"
-                  type="secondary"
-                  class="detail-tag"
-                >
-                  {{ tag.name }}
-                </SfBadge>
-              </div>
-            </div>
-            
-            <div class="info-group" v-if="currentPhoto?.albums && currentPhoto.albums.length > 0">
-              <h3 class="info-group-title">所属相册</h3>
-              <div class="photo-albums">
-                <SfBadge
-                  v-for="album in currentPhoto.albums"
-                  :key="album.id"
-                  type="success"
-                  class="detail-album"
-                >
-                  {{ album.name }}
-                </SfBadge>
-              </div>
-            </div>
-            
-            <div class="photo-actions">
-              <SfButton 
-                type="primary" 
-                @click="downloadPhoto(currentPhoto)"
-              >
-                <template #prefix>
-                  <i class="fas fa-download"></i>
-                </template>
-                下载
-              </SfButton>
-              
-              <SfButton 
-                type="danger" 
-                @click="confirmDeletePhoto"
-              >
-                <template #prefix>
-                  <i class="fas fa-trash"></i>
-                </template>
-                删除
-              </SfButton>
-            </div>
-          </div>
-        </div>
-      </SfModal>
+        :photo="currentPhoto"
+        @photo-deleted="deletePhoto"
+      />
 
       <!-- 上传照片模态框 -->
       <SfModal
@@ -329,29 +244,12 @@
         <AlbumForm @album-created="handleAlbumCreated" />
       </SfModal>
 
-      <!-- 删除确认对话框 -->
-      <el-dialog
-        v-model="showDeleteConfirm"
-        title="确认删除"
-        width="30%"
-        :show-close="false">
-        <p>确定要删除这张照片吗？此操作无法撤销。</p>
-        <template #footer>
-          <span class="dialog-footer">
-            <SfButton type="tertiary" @click="showDeleteConfirm = false">取消</SfButton>
-            <SfButton type="danger" @click="deletePhoto">确认删除</SfButton>
-          </span>
-        </template>
-      </el-dialog>
+      <!-- 删除确认对话框已移至PhotoDetail组件 -->
     </main>
   </div>
 </template>
 
 <script>
-// 保持原有的导入项
-import { ref, computed, onMounted } from 'vue';
-import { useRouter } from 'vue-router';
-import axios from 'axios';
 import AlbumForm from './AlbumForm.vue';
 import PhotoUpload from './PhotoUpload.vue';
 import PhotoDetail from './PhotoDetail.vue';
@@ -374,8 +272,6 @@ export default {
       showPhotoDetail: false,
       showUploadModal: false,
       showAlbumForm: false,
-      showDeleteConfirm: false,
-      imageLoaded: false,
       totalPhotos: 0,
       dateRange: null,
       searchQuery: '',
@@ -459,7 +355,6 @@ export default {
     
     openPhotoDetail(photo) {
       this.currentPhoto = photo;
-      this.imageLoaded = false;
       this.showPhotoDetail = true;
     },
     
@@ -510,22 +405,9 @@ export default {
       this.fetchAlbums();
     },
     
-    downloadPhoto(photo) {
-      const link = document.createElement('a');
-      link.href = photo.url;
-      link.download = photo.filename || 'photo.jpg';
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    },
-    
-    confirmDeletePhoto() {
-      this.showDeleteConfirm = true;
-    },
-    
-    async deletePhoto() {
+    async deletePhoto(photoId) {
       try {
-        await photoService.deletePhoto(this.currentPhoto.id);
+        await photoService.deletePhoto(photoId);
         
         this.$notify({
           title: '成功',
@@ -534,9 +416,8 @@ export default {
         });
         
         // 移除已删除的照片
-        this.photos = this.photos.filter(p => p.id !== this.currentPhoto.id);
+        this.photos = this.photos.filter(p => p.id !== photoId);
         this.closePhotoDetail();
-        this.showDeleteConfirm = false;
       } catch (error) {
         console.error('删除照片失败:', error);
         this.$notify.error({
@@ -859,89 +740,7 @@ export default {
   -webkit-backdrop-filter: blur(5px);
 }
 
-/* 照片详情模态框 */
-.photo-detail-content {
-  display: flex;
-  flex-direction: column;
-}
-
-.photo-detail-image {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: var(--bg-tertiary);
-  position: relative;
-  min-height: 300px;
-  border-radius: var(--radius-medium);
-  overflow: hidden;
-}
-
-.photo-detail-image img {
-  max-width: 100%;
-  max-height: 500px;
-  object-fit: contain;
-}
-
-.photo-detail-info {
-  padding: var(--spacing-lg);
-}
-
-.info-group {
-  margin-bottom: var(--spacing-lg);
-  animation: fadeIn 0.5s ease-out;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.info-group-title {
-  font-size: var(--font-size-lg);
-  font-weight: var(--font-weight-semibold);
-  margin-bottom: var(--spacing-md);
-  padding-bottom: var(--spacing-2xs);
-  border-bottom: var(--border-width) solid var(--border-color);
-  color: var(--text-primary);
-}
-
-.info-item {
-  display: flex;
-  margin-bottom: var(--spacing-sm);
-  font-size: var(--font-size-base);
-}
-
-.info-label {
-  width: 100px;
-  color: var(--text-secondary);
-  font-weight: var(--font-weight-medium);
-}
-
-.info-value {
-  flex: 1;
-  color: var(--text-primary);
-}
-
-.photo-tags, .photo-albums {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--spacing-xs);
-}
-
-.detail-tag, .detail-album {
-  margin-bottom: var(--spacing-xs);
-  transition: transform var(--transition-base);
-}
-
-.detail-tag:hover, .detail-album:hover {
-  transform: translateY(-2px);
-}
-
-.photo-actions {
-  display: flex;
-  gap: var(--spacing-md);
-  margin-top: var(--spacing-xl);
-}
+/* 照片详情样式已移至PhotoDetail组件 */
 
 /* 确认对话框 */
 .dialog-footer {
@@ -987,24 +786,7 @@ export default {
 }
 
 /* 响应式设计 */
-@media (min-width: 768px) {
-  .photo-detail-content {
-    flex-direction: row;
-    min-height: 500px;
-  }
-  
-  .photo-detail-image {
-    flex: 2;
-    border-right: var(--border-width) solid var(--border-color);
-    border-radius: var(--radius-medium) 0 0 var(--radius-medium);
-  }
-  
-  .photo-detail-info {
-    flex: 1;
-    overflow-y: auto;
-    max-height: 600px;
-  }
-}
+/* 照片详情媒体查询样式已移至PhotoDetail组件 */
 
 @media (max-width: 768px) {
   .photo-wall-main {

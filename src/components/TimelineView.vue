@@ -79,7 +79,7 @@
 
       <!-- 照片详情模态框 -->
       <transition name="modal">
-        <div v-if="currentPhoto" class="modal-overlay" @click.self="closePhotoDetail">
+        <div v-if="currentPhoto && showPhotoDetailModal" class="modal-overlay" @click.self="closePhotoDetail">
           <div class="modal-container">
             <div class="modal-header">
               <h2>{{ currentPhoto.title || '无标题照片' }}</h2>
@@ -89,6 +89,7 @@
             </div>
             <div class="modal-body">
               <PhotoDetail 
+                v-model="showPhotoDetailModal"
                 :photo="currentPhoto"
                 @edit-photo="startEditingPhoto"
                 @photo-deleted="handlePhotoDeleted"
@@ -154,6 +155,7 @@ export default {
       imageLoaded: false,
       showDeleteConfirm: false,
       showUploadModal: false,
+      showPhotoDetailModal: false,
       userName: '',
       timelineGroups: [] // 按年月分组后的照片数据
     }
@@ -233,10 +235,14 @@ export default {
     showPhotoDetail(photo) {
       this.currentPhoto = photo;
       this.imageLoaded = false;
+      this.showPhotoDetailModal = true;
     },
     
     closePhotoDetail() {
-      this.currentPhoto = null;
+      this.showPhotoDetailModal = false;
+      setTimeout(() => {
+        this.currentPhoto = null;
+      }, 300); // 等待模态框关闭动画完成后再清空照片数据
     },
     
     startEditingPhoto(photo) {
@@ -284,6 +290,7 @@ export default {
         // 重新分组
         this.groupPhotosByDate();
         
+        this.showPhotoDetailModal = false;
         this.closePhotoDetail();
         this.showDeleteConfirm = false;
       } catch (error) {
