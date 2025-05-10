@@ -184,6 +184,7 @@ export default {
 }
 
 .sf-modal-close {
+  font-size: 24px;
   background: none;
   border: none;
   cursor: pointer;

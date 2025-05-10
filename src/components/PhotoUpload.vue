@@ -1,20 +1,11 @@
 <template>
   <div class="upload-component">
-    <div class="upload-container" 
-         @dragover.prevent="handleDragOver"
-         @dragleave.prevent="isDragging = false"
-         @drop.prevent="handleDrop"
-         :class="{'is-dragging': isDragging}">
+    <div class="upload-container" @dragover.prevent="handleDragOver" @dragleave.prevent="isDragging = false"
+      @drop.prevent="handleDrop" :class="{ 'is-dragging': isDragging }">
       <div class="upload-inner" v-if="!loading">
         <i class="el-icon-upload-fill"></i>
-        <el-upload
-          class="upload-area"
-          :action="actionUrl"
-          :auto-upload="false"
-          :show-file-list="false"
-          :on-change="handleFileChange"
-          :multiple="multiple"
-          :accept="acceptTypes">
+        <el-upload class="upload-area" :action="actionUrl" :auto-upload="false" :show-file-list="false"
+          :on-change="handleFileChange" :multiple="multiple" :accept="acceptTypes">
           <div class="upload-content">
             <div class="upload-icon">
               <i class="el-icon-upload"></i>
@@ -31,7 +22,7 @@
         <div class="upload-status">{{ uploadStatus }}</div>
       </div>
     </div>
-    
+
     <div class="selected-files" v-if="selectedFiles.length > 0">
       <div class="selected-files-header">
         <div class="selected-count">已选择 {{ selectedFiles.length }} 个文件</div>
@@ -53,27 +44,17 @@
       <div class="upload-options" v-if="showAlbumOption">
         <div class="option-item">
           <label>添加到相册:</label>
-          <el-select v-model="albumId" placeholder="选择相册" clearable>
-            <el-option
-              v-for="album in albums"
-              :key="album.id"
-              :label="album.name"
-              :value="album.id">
+          <el-select v-model="albumId" placeholder="选择相册" clearable popper-class="album-select-dropdown" teleported
+            popper-append-to-body>
+            <el-option v-for="album in albums" :key="album.id" :label="album.name" :value="album.id">
             </el-option>
           </el-select>
         </div>
         <div class="option-item">
           <label>添加标签:</label>
-          <el-select
-            v-model="selectedTags"
-            multiple
-            collapse-tags
-            placeholder="添加标签">
-            <el-option
-              v-for="tag in tags"
-              :key="tag.id"
-              :label="tag.name"
-              :value="tag.id">
+          <el-select v-model="selectedTags" multiple collapse-tags placeholder="添加标签" popper-class="tag-select-dropdown"
+            teleported popper-append-to-body>
+            <el-option v-for="tag in tags" :key="tag.id" :label="tag.name" :value="tag.id">
             </el-option>
           </el-select>
         </div>
@@ -130,8 +111,8 @@ export default {
           albumService.getAlbums(),
           tagService.getTags()
         ]);
-        
-        this.albums = albumsResponse.data || [];
+
+        this.albums = albumsResponse.data.data || [];
         this.tags = tagsResponse.data || [];
       } catch (error) {
         console.error('获取相册或标签列表失败:', error);
@@ -146,7 +127,7 @@ export default {
       this.isDragging = false;
       const files = event.dataTransfer.files;
       if (!files || files.length === 0) return;
-      
+
       if (this.multiple) {
         for (let i = 0; i < files.length; i++) {
           if (this.isValidFile(files[i])) {
@@ -159,7 +140,7 @@ export default {
     },
     handleFileChange(file) {
       if (!file || !this.isValidFile(file.raw)) return;
-      
+
       if (this.multiple) {
         this.selectedFiles.push(file.raw);
       } else {
@@ -168,12 +149,12 @@ export default {
     },
     isValidFile(file) {
       if (!file) return false;
-      
+
       // 检查文件类型
       if (this.acceptTypes && this.acceptTypes !== '*') {
         const fileType = file.type;
         const acceptedTypes = this.acceptTypes.split(',');
-        
+
         let isValid = false;
         for (const type of acceptedTypes) {
           if (type.endsWith('/*')) {
@@ -187,10 +168,10 @@ export default {
             break;
           }
         }
-        
+
         if (!isValid) return false;
       }
-      
+
       return true;
     },
     isImageFile(file) {
@@ -198,7 +179,7 @@ export default {
     },
     getFilePreview(file) {
       if (!this.isImageFile(file)) return '';
-      
+
       return URL.createObjectURL(file);
     },
     truncateFilename(filename) {
@@ -231,11 +212,11 @@ export default {
         });
         return;
       }
-      
+
       this.loading = true;
       this.uploadProgress = 0;
       this.uploadStatus = '正在上传...';
-      
+
       try {
         if (this.multiple && this.selectedFiles.length > 1) {
           // 批量上传
@@ -244,7 +225,7 @@ export default {
             this.albumId,
             this.selectedTags
           );
-          
+
           this.$emit('upload-success', response.data);
           this.$notify({
             title: '成功',
@@ -257,11 +238,11 @@ export default {
             title: this.selectedFiles[0].name.split('.')[0],
             description: '',
             tags: this.selectedTags,
-            albumId: this.albumId
+            albumIds: this.albumId ? [this.albumId] : []
           };
-          
+
           const response = await photoService.uploadPhoto(this.selectedFiles[0], metadata);
-          
+
           this.$emit('upload-success', [response.data]);
           this.$notify({
             title: '成功',
@@ -269,7 +250,7 @@ export default {
             type: 'success'
           });
         }
-        
+
         this.clearFiles();
       } catch (error) {
         console.error('上传失败:', error);
@@ -290,6 +271,46 @@ export default {
   width: 100%;
   max-width: 800px;
   margin: 0 auto;
+}
+
+/* 全局样式，确保Element Plus的下拉菜单显示在最上层 */
+:global(.el-select__popper) {
+  z-index: 10002 !important;
+}
+
+/* 相册和标签下拉菜单样式 */
+:deep(.album-select-dropdown),
+:deep(.tag-select-dropdown) {
+  position: fixed !important;
+  margin-top: 5px !important;
+  z-index: 10001 !important;
+  /* 确保下拉菜单显示在模态框之上(SfModal的z-index为9999) */
+  max-width: 100% !important;
+  width: auto !important;
+  transform-origin: center top !important;
+  overflow: visible !important;
+}
+
+/* 确保下拉菜单的父容器不会限制其位置 */
+.option-item .el-select {
+  width: 100%;
+}
+
+/* 确保下拉菜单的弹出层不受限制 */
+:deep(.el-select-dropdown) {
+  overflow: visible !important;
+  z-index: 10001 !important;
+  /* 确保下拉菜单显示在模态框之上 */
+}
+
+/* 使用teleport确保下拉菜单渲染到body */
+:deep(.el-select) {
+  --el-select-dropdown-border-color: var(--border-color);
+}
+
+:deep(.el-popper) {
+  z-index: 10001 !important;
+  /* 确保所有弹出层都在模态框之上 */
 }
 
 .upload-container {

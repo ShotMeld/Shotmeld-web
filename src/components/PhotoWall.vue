@@ -291,7 +291,6 @@ export default {
       try {
         const response = await albumService.getAlbums();
         this.albums = response.data.data || [];
-        console.log('获取到的相册列表:', this.albums);
       } catch (error) {
         console.error('获取相册列表失败:', error);
       }
@@ -301,7 +300,6 @@ export default {
       try {
         const response = await tagService.getTags();
         this.tags = response.data.data || [];
-        console.log('获取到的标签列表:', this.tags);
       } catch (error) {
         console.error('获取标签列表失败:', error);
       }
@@ -601,7 +599,7 @@ export default {
   height: 220px;
   overflow: hidden;
   background-color: var(--bg-tertiary);
-  border-radius: var(--radius-medium) var(--radius-medium) 0 0;
+  border-radius: var(--radius-medium);
 }
 
 .photo-thumbnail img {
