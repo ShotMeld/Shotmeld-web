@@ -1,18 +1,9 @@
 <template>
-  <SfModal
-    :modelValue="modelValue"
-    @update:modelValue="$emit('update:modelValue', $event)"
-    :title="photo?.title || '无标题照片'"
-    size="large"
-  >
+  <SfModal :modelValue="modelValue" @update:modelValue="$emit('update:modelValue', $event)"
+    :title="photo?.title || '无标题照片'" size="large">
     <div class="photo-detail-content">
       <div class="photo-detail-image">
-        <img 
-          v-if="photo" 
-          :src="photo.url" 
-          :alt="photo.title" 
-          @load="imageLoaded = true" 
-        />
+        <img v-if="photo" :src="photo.url" :alt="photo.title" @load="imageLoaded = true" />
         <div v-if="!imageLoaded" class="image-loading">
           <div class="spinner"></div>
         </div>
@@ -37,50 +28,34 @@
             <span class="info-value">{{ photo?.width || 0 }}×{{ photo?.height || 0 }}</span>
           </div>
         </div>
-        
+
         <div class="info-group" v-if="photo?.tags && photo.tags.length > 0">
           <h3 class="info-group-title">标签</h3>
           <div class="photo-tags">
-            <SfBadge
-              v-for="tag in photo.tags"
-              :key="tag.id"
-              type="secondary"
-              class="detail-tag"
-            >
+            <SfBadge v-for="tag in photo.tags" :key="tag.id" type="secondary" class="detail-tag">
               {{ tag.name }}
             </SfBadge>
           </div>
         </div>
-        
+
         <div class="info-group" v-if="photo?.albums && photo.albums.length > 0">
           <h3 class="info-group-title">所属相册</h3>
           <div class="photo-albums">
-            <SfBadge
-              v-for="album in photo.albums"
-              :key="album.id"
-              type="success"
-              class="detail-album"
-            >
+            <SfBadge v-for="album in photo.albums" :key="album.id" type="success" class="detail-album">
               {{ album.name }}
             </SfBadge>
           </div>
         </div>
-        
+
         <div class="photo-actions">
-          <SfButton 
-            type="primary" 
-            @click="downloadPhoto"
-          >
+          <SfButton type="primary" @click="downloadPhoto">
             <template #prefix>
               <i class="fas fa-download"></i>
             </template>
             下载
           </SfButton>
-          
-          <SfButton 
-            type="danger" 
-            @click="confirmDelete"
-          >
+
+          <SfButton type="danger" @click="confirmDelete">
             <template #prefix>
               <i class="fas fa-trash"></i>
             </template>
@@ -92,11 +67,7 @@
   </SfModal>
 
   <!-- 删除确认对话框 -->
-  <el-dialog
-    v-model="showDeleteConfirm"
-    title="确认删除"
-    width="30%"
-    :show-close="false">
+  <el-dialog v-model="showDeleteConfirm" title="确认删除" width="30%" :show-close="false">
     <p>确定要删除这张照片吗？此操作无法撤销。</p>
     <template #footer>
       <span class="dialog-footer">
@@ -137,7 +108,7 @@ export default {
   methods: {
     downloadPhoto() {
       if (!this.photo) return;
-      
+
       const link = document.createElement('a');
       link.href = this.photo.url;
       link.download = this.photo.filename || 'photo.jpg';
@@ -145,16 +116,16 @@ export default {
       link.click();
       document.body.removeChild(link);
     },
-    
+
     confirmDelete() {
       this.showDeleteConfirm = true;
     },
-    
+
     deletePhoto() {
       this.$emit('photo-deleted', this.photo.id);
       this.showDeleteConfirm = false;
     },
-    
+
     formatDate(dateString) {
       if (!dateString) return '未知日期'
       const date = new Date(dateString)
@@ -166,7 +137,7 @@ export default {
         minute: '2-digit'
       })
     },
-    
+
     formatFileSize(bytes) {
       if (!bytes || bytes === 0) return '0 Bytes'
       const k = 1024
@@ -212,11 +183,11 @@ export default {
     flex-direction: row;
     gap: var(--spacing-xl);
   }
-  
+
   .photo-detail-image {
     flex: 1.5;
   }
-  
+
   .photo-detail-info {
     flex: 1;
     overflow-y: auto;
@@ -229,7 +200,7 @@ export default {
     flex-direction: column;
     width: 100%;
   }
-  
+
   .photo-actions .sf-button {
     width: 100%;
   }
@@ -241,8 +212,15 @@ export default {
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .info-group-title {
@@ -271,14 +249,16 @@ export default {
   font-weight: var(--font-weight-medium);
 }
 
-.photo-tags, .photo-albums {
+.photo-tags,
+.photo-albums {
   display: flex;
   flex-wrap: wrap;
   gap: var(--spacing-xs);
   margin-top: var(--spacing-xs);
 }
 
-.detail-tag, .detail-album {
+.detail-tag,
+.detail-album {
   margin-bottom: var(--spacing-xs);
 }
 
@@ -299,7 +279,9 @@ export default {
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .image-loading {

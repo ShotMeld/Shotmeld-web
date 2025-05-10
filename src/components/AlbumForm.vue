@@ -1,55 +1,29 @@
 <template>
   <div class="album-form-container">
-    
+
     <form @submit.prevent="handleSubmit">
       <div class="form-group">
         <label for="album-name">相册名称*</label>
-        <input
-          id="album-name"
-          v-model="formData.name"
-          type="text"
-          required
-          placeholder="输入相册名称"
-          class="form-input"
-        >
+        <input id="album-name" v-model="formData.name" type="text" required placeholder="输入相册名称" class="form-input">
       </div>
-      
+
       <div class="form-group">
         <label for="album-description">相册描述</label>
-        <textarea
-          id="album-description"
-          v-model="formData.description"
-          placeholder="输入相册描述"
-          class="form-textarea"
-          rows="3"
-        ></textarea>
+        <textarea id="album-description" v-model="formData.description" placeholder="输入相册描述" class="form-textarea"
+          rows="3"></textarea>
       </div>
-      
+
       <div class="form-group">
         <label for="cover-photo">封面照片ID</label>
-        <input
-          id="cover-photo"
-          v-model="formData.coverPhotoId"
-          type="text"
-          placeholder="输入封面照片ID"
-          class="form-input"
-        >
+        <input id="cover-photo" v-model="formData.coverPhotoId" type="text" placeholder="输入封面照片ID" class="form-input">
         <p class="form-hint">可选，输入照片ID作为相册封面</p>
       </div>
-      
+
       <div class="form-actions">
-        <button
-          type="button"
-          @click="$emit('cancel')"
-          class="cancel-button"
-        >
+        <button type="button" @click="$emit('cancel')" class="cancel-button">
           取消
         </button>
-        <button
-          type="submit"
-          :disabled="submitting"
-          class="submit-button"
-        >
+        <button type="submit" :disabled="submitting" class="submit-button">
           <span v-if="submitting" class="button-loader"></span>
           {{ submitting ? '提交中...' : '确认' }}
         </button>
@@ -89,14 +63,14 @@ export default {
   methods: {
     async handleSubmit() {
       this.submitting = true
-      
+
       try {
         const payload = {
           name: this.formData.name,
           description: this.formData.description,
           coverPhotoId: this.formData.coverPhotoId || null
         }
-        
+
         if (this.editingAlbum) {
           // 编辑相册逻辑
           await this.$http.put(`/albums/${this.editingAlbum.id}`, payload)
@@ -116,7 +90,7 @@ export default {
             type: 'success'
           })
         }
-        
+
         this.$emit('close')
       } catch (error) {
         console.error('操作失败:', error)
@@ -157,7 +131,8 @@ export default {
   color: #444;
 }
 
-.form-input, .form-textarea {
+.form-input,
+.form-textarea {
   width: 100%;
   padding: 10px 12px;
   border: 1px solid #ddd;
@@ -166,7 +141,8 @@ export default {
   transition: border-color 0.3s;
 }
 
-.form-input:focus, .form-textarea:focus {
+.form-input:focus,
+.form-textarea:focus {
   border-color: #4361ee;
   outline: none;
   box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
@@ -190,7 +166,8 @@ export default {
   margin-top: 24px;
 }
 
-.cancel-button, .submit-button {
+.cancel-button,
+.submit-button {
   padding: 10px 20px;
   border-radius: 8px;
   font-weight: 500;
@@ -239,6 +216,8 @@ export default {
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 </style>

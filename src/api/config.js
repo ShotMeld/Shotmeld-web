@@ -14,13 +14,15 @@ export const API_ENDPOINTS = {
   PHOTOS: {
     BASE: '/photos',
     DETAIL: (id) => `/photos/${id}`,
-    BATCH: '/photos/batch'
+    BATCH: '/photos/batch',
+    TIMELINE: '/timeline'
   },
   
   // 标签管理
   TAGS: {
     BASE: '/tags',
-    DETAIL: (id) => `/tags/${id}`
+    DETAIL: (id) => `/tags/${id}`,
+    PHOTOS: (id) => `/tags/${id}`
   },
   
   // 相册管理

@@ -7,7 +7,7 @@ import ElementPlus from 'element-plus'
 import 'element-plus/dist/index.css'
 
 // 保留原有axios配置以避免影响现有功能，后续逐步迁移到apiClient
-axios.defaults.baseURL = 'http://47.96.227.28:3000'
+axios.defaults.baseURL = import.meta.env.VITE_API_BASE_URL || 'http://47.96.227.28:3000'
 
 // 请求拦截器 - 添加token
 axios.interceptors.request.use(config => {

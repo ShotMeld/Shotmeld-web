@@ -6,10 +6,10 @@
         <button class="mobile-menu-button" @click="isMobileMenuOpen = !isMobileMenuOpen">
           <i class="fas fa-bars"></i>
         </button>
-        <router-link to="/" class="navbar-title">ShotMeld</router-link>
+        <router-link to="/photowall" class="navbar-title">ShotMeld</router-link>
       </div>
     </template>
-    
+
     <template #actions>
       <!-- 导航菜单容器 -->
       <div class="nav-actions" :class="{ 'is-mobile-open': isMobileMenuOpen }">
@@ -19,35 +19,25 @@
           </template>
           {{ currentPage === 'timeline' ? '照片墙' : '时间轴' }}
         </SfNavLink>
-        
-        <SfButton 
-          type="secondary" 
-          @click="$emit('show-upload')"
-          class="navbar-button nav-item"
-        >
+
+        <SfButton v-if="currentPage !== 'timeline'" type="secondary" @click="$emit('show-upload')"
+          class="navbar-button nav-item">
           <template #prefix>
             <i class="fas fa-cloud-upload-alt"></i>
           </template>
           上传照片
         </SfButton>
-        
-        <SfButton 
-          type="secondary" 
-          @click="$emit('show-album-form')"
-          class="navbar-button nav-item"
-        >
+
+        <SfButton v-if="currentPage !== 'timeline'" type="secondary" @click="$emit('show-album-form')"
+          class="navbar-button nav-item">
           <template #prefix>
             <i class="fas fa-folder-plus"></i>
           </template>
           新建相册
         </SfButton>
-        
+
         <div class="user-dropdown nav-item">
-          <SfAvatar 
-            :text="userName" 
-            size="small" 
-            class="user-avatar"
-          />
+          <SfAvatar :text="userName" size="small" class="user-avatar" />
           <div class="dropdown-menu">
             <SfNavLink to="/profile">
               <template #icon>
@@ -99,7 +89,6 @@ export default {
 </script>
 
 <style scoped>
-
 /* 导航栏标题和品牌区域 */
 .navbar-brand {
   display: flex;

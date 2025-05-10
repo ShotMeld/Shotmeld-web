@@ -3,40 +3,22 @@
     <div class="login-card">
       <h1 class="login-title">登录</h1>
       <form @submit.prevent="handleLogin">
-        <SfInput
-          v-model="formData.emailOrUsername"
-          label="用户名或邮箱地址"
-          required
-          :error="errors.emailOrUsername"
-        >
+        <SfInput v-model="formData.emailOrUsername" label="用户名或邮箱地址" required :error="errors.emailOrUsername">
           <template #prefix>
             <i class="sf-icon">@</i>
           </template>
         </SfInput>
-        
-        <SfInput
-          v-model="formData.password"
-          label="密码"
-          type="password"
-          required
-          :error="errors.password"
-        >
+
+        <SfInput v-model="formData.password" label="密码" type="password" required :error="errors.password">
           <template #prefix>
             <i class="sf-icon">🔒</i>
           </template>
         </SfInput>
-        
-        <SfButton 
-          type="primary"
-          rounded 
-          full-width 
-          :loading="loading"
-          class="login-button"
-          @click="handleLogin"
-        >
+
+        <SfButton type="primary" rounded full-width :loading="loading" class="login-button" @click="handleLogin">
           {{ loading ? '登录中...' : '登录' }}
         </SfButton>
-        
+
         <div class="additional-links">
           <router-link to="/register" class="text-link">没有账号？立即注册</router-link>
         </div>
@@ -71,25 +53,25 @@ export default {
         emailOrUsername: '',
         password: ''
       };
-      
+
       if (!this.formData.emailOrUsername) {
         this.errors.emailOrUsername = '请输入用户名或邮箱地址';
         isValid = false;
       }
-      
+
       if (!this.formData.password) {
         this.errors.password = '请输入密码';
         isValid = false;
       }
-      
+
       return isValid;
     },
     async handleLogin() {
       try {
         if (!this.validateForm()) return;
-        
+
         this.loading = true;
-        
+
         const response = await authService.login({
           emailOrUsername: this.formData.emailOrUsername,
           password: this.formData.password
@@ -106,12 +88,12 @@ export default {
 
         // 跳转到照片墙页面
         this.$router.push({ path: '/photowall', replace: true });
-        
+
       } catch (error) {
         let errorMessage = '登录失败，请重试';
         if (error.response) {
           errorMessage = error.response.data.message || errorMessage;
-          
+
           // 处理特定错误
           if (error.response.status === 401) {
             this.errors.password = '用户名或密码错误';
@@ -215,6 +197,7 @@ export default {
     opacity: 0;
     transform: translateY(20px) scale(0.95);
   }
+
   100% {
     opacity: 1;
     transform: translateY(0) scale(1);
@@ -226,7 +209,7 @@ export default {
     padding: var(--spacing-xl);
     margin: 0 var(--spacing-md);
   }
-  
+
   .login-title {
     font-size: var(--font-size-xl);
   }

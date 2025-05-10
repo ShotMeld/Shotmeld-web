@@ -1,43 +1,49 @@
 <template>
   <div class="timeline-container">
     <!-- 顶部导航栏 -->
-    <AppNavbar 
-      :userName="userName" 
-      currentPage="timeline"
-      @show-upload="showUploadModal = true" 
-      @show-album-form="showAlbumForm = true"
-    />
+    <AppNavbar :userName="userName" currentPage="timeline" @show-upload="showUploadModal = true"
+      @show-album-form="showAlbumForm = true" />
 
     <main class="timeline-content">
       <h1 class="timeline-title">照片时间轴</h1>
-      
+
       <div v-if="loading" class="loading-container">
         <el-spinner></el-spinner>
         <p>正在加载时间轴...</p>
       </div>
-      
+
       <div v-else-if="error" class="error-message">
         <i class="fas fa-exclamation-circle"></i>
         <p>{{ error }}</p>
         <button @click="fetchTimeline" class="retry-button">重试</button>
       </div>
-      
+
       <template v-else>
         <div v-if="timelineGroups.length === 0" class="empty-timeline">
           <i class="fas fa-calendar-times"></i>
           <p>暂无照片，请先上传照片</p>
-          <button @click="showUploadModal = true" class="upload-btn">上传照片</button>
+          <div class="empty-actions">
+            <button @click="showUploadModal = true" class="upload-btn">上传照片</button>
+          </div>
         </div>
-        
+
         <div v-else class="timeline">
           <div v-for="(yearGroup, yearIndex) in timelineGroups" :key="yearIndex" class="timeline-year">
-            <h2 class="year-header">{{ yearGroup.year }}年</h2>
-            
-            <div v-for="(monthGroup, monthIndex) in yearGroup.months" :key="`${yearIndex}-${monthIndex}`" class="timeline-month">
-              <h3 class="month-header">{{ monthGroup.month }}月</h3>
-              
+            <h2 class="year-header">
+              {{ yearGroup.year }}年
+              <span class="year-photo-count">{{ getYearPhotoCount(yearGroup) }}张照片</span>
+            </h2>
+
+            <div v-for="(monthGroup, monthIndex) in yearGroup.months" :key="`${yearIndex}-${monthIndex}`"
+              class="timeline-month">
+              <h3 class="month-header">
+                {{ monthGroup.month }}月
+                <span class="month-photo-count">{{ monthGroup.photos.length }}张照片</span>
+              </h3>
+
               <div class="photos-grid">
-                <div v-for="photo in monthGroup.photos" :key="photo.id" class="photo-card" @click="showPhotoDetail(photo)">
+                <div v-for="photo in monthGroup.photos" :key="photo.id" class="photo-card"
+                  @click="showPhotoDetail(photo)">
                   <div class="photo-thumbnail">
                     <img :src="photo.thumbnailUrl || photo.url" :alt="photo.title">
                   </div>
@@ -56,19 +62,9 @@
       <transition name="modal">
         <div v-if="currentPhoto && showPhotoDetailModal" class="modal-overlay" @click.self="closePhotoDetail">
           <div class="modal-container">
-            <div class="modal-header">
-              <h2>{{ currentPhoto.title || '无标题照片' }}</h2>
-              <button @click="closePhotoDetail" class="close-button">
-                <i class="fas fa-times"></i>
-              </button>
-            </div>
             <div class="modal-body">
-              <PhotoDetail 
-                v-model="showPhotoDetailModal"
-                :photo="currentPhoto"
-                @edit-photo="startEditingPhoto"
-                @photo-deleted="handlePhotoDeleted"
-              />
+              <PhotoDetail v-model="showPhotoDetailModal" :photo="currentPhoto" @edit-photo="startEditingPhoto"
+                @photo-deleted="handlePhotoDeleted" />
             </div>
           </div>
         </div>
@@ -92,11 +88,7 @@
       </transition>
 
       <!-- 删除确认对话框 -->
-      <el-dialog
-        v-model="showDeleteConfirm"
-        title="确认删除"
-        width="30%"
-        :show-close="false">
+      <el-dialog v-model="showDeleteConfirm" title="确认删除" width="30%" :show-close="false">
         <span>确定要删除这张照片吗？此操作不可恢复。</span>
         <template #footer>
           <span class="dialog-footer">
@@ -144,24 +136,31 @@ export default {
     if (user) {
       this.userName = user.username || user.email
     }
-    
+
     this.fetchTimeline();
   },
   methods: {
     async fetchTimeline() {
       this.loading = true;
       this.error = null;
-      
+
       try {
-        // 获取所有照片
-        const response = await photoService.getPhotos({
-          limit: 1000, // 尽可能获取所有照片
-          sort: 'takenAt',
-          order: 'desc'
+        // 构建API参数
+        const params = { groupBy: 'month' }; // 按月分组
+
+        // 使用新的时间轴API
+        const response = await photoService.getPhotoTimeline(params);
+
+        this.photos = [];
+        const timelineData = response.data || [];
+
+        // 从时间轴数据中提取所有照片
+        timelineData.forEach(group => {
+          if (group.photos && Array.isArray(group.photos)) {
+            this.photos = [...this.photos, ...group.photos];
+          }
         });
-        
-        this.photos = response.data.data || [];
-        
+
         // 将照片按年月分组
         this.groupPhotosByDate();
       } catch (error) {
@@ -171,27 +170,27 @@ export default {
         this.loading = false;
       }
     },
-    
+
     groupPhotosByDate() {
       // 按年月对照片进行分组
       const groupedByYear = {};
-      
+
       this.photos.forEach(photo => {
         const date = new Date(photo.takenAt || photo.createdAt);
         const year = date.getFullYear();
         const month = date.getMonth() + 1; // getMonth返回0-11
-        
+
         if (!groupedByYear[year]) {
           groupedByYear[year] = {};
         }
-        
+
         if (!groupedByYear[year][month]) {
           groupedByYear[year][month] = [];
         }
-        
+
         groupedByYear[year][month].push(photo);
       });
-      
+
       // 转换为组件需要的数据结构
       this.timelineGroups = Object.keys(groupedByYear)
         .sort((a, b) => b - a) // 年份降序
@@ -202,72 +201,73 @@ export default {
               month,
               photos: groupedByYear[year][month]
             }));
-          
+
           return {
             year,
             months
           };
         });
     },
-    
+
     showPhotoDetail(photo) {
       this.currentPhoto = photo;
       this.imageLoaded = false;
       this.showPhotoDetailModal = true;
     },
-    
+
     closePhotoDetail() {
       this.showPhotoDetailModal = false;
       setTimeout(() => {
         this.currentPhoto = null;
       }, 300); // 等待模态框关闭动画完成后再清空照片数据
     },
-    
+
     startEditingPhoto(photo) {
       // 实现编辑照片功能，可以打开一个编辑表单
       console.log('编辑照片:', photo);
       // TODO: 实现编辑照片的功能
       alert('编辑照片功能将在后续版本实现');
     },
-    
+
     handlePhotoDeleted(photoId) {
       // 这个方法会被 PhotoDetail 组件调用
       this.deletePhoto(photoId);
     },
-    
+
     handlePhotoUploaded(uploadedPhotos) {
       this.showUploadModal = false;
       this.fetchTimeline();
-      
+
       this.$notify({
         title: '上传成功',
         message: `已成功上传 ${uploadedPhotos.length || 1} 张照片`,
         type: 'success'
       });
     },
-    
+
     confirmDeletePhoto() {
       this.showDeleteConfirm = true;
     },
-    
+
     async deletePhoto(photoId) {
       try {
         const idToDelete = photoId || (this.currentPhoto && this.currentPhoto.id);
         if (!idToDelete) return;
-        
+
+        // 使用更新后的deletePhoto方法，底层已调整为使用批量删除API
         await photoService.deletePhoto(idToDelete);
-        
+
         this.$notify({
           title: '成功',
           message: '照片已删除',
           type: 'success'
         });
-        
+
         // 从列表中移除已删除的照片
         this.photos = this.photos.filter(p => p.id !== idToDelete);
         // 重新分组
         this.groupPhotosByDate();
-        
+
         this.showPhotoDetailModal = false;
         this.closePhotoDetail();
         this.showDeleteConfirm = false;
@@ -279,7 +279,7 @@ export default {
         });
       }
     },
-    
+
     downloadPhoto(photo) {
       const link = document.createElement('a');
       link.href = photo.url;
@@ -288,7 +288,20 @@ export default {
       link.click();
       document.body.removeChild(link);
     },
-    
+
+    // 计算一个年份分组中的照片总数
+    getYearPhotoCount(yearGroup) {
+      let count = 0;
+      if (yearGroup && yearGroup.months) {
+        yearGroup.months.forEach(month => {
+          if (month.photos) {
+            count += month.photos.length;
+          }
+        });
+      }
+      return count;
+    },
+
     formatDate(dateString) {
       if (!dateString) return '未知日期';
       const date = new Date(dateString);
@@ -300,7 +313,7 @@ export default {
         minute: '2-digit'
       });
     },
-    
+
     formatFileSize(bytes) {
       if (!bytes || bytes === 0) return '0 Bytes';
       const k = 1024;
@@ -308,7 +321,7 @@ export default {
       const i = Math.floor(Math.log(bytes) / Math.log(k));
       return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
     },
-    
+
     handleLogout() {
       localStorage.removeItem('token');
       localStorage.removeItem('user');
@@ -351,6 +364,15 @@ export default {
   border-bottom: 2px solid #4361ee;
   padding-bottom: 0.5rem;
   color: #4361ee;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.year-photo-count {
+  font-size: 0.9rem;
+  color: #6c757d;
+  font-weight: normal;
 }
 
 .timeline-month {
@@ -361,6 +383,15 @@ export default {
   font-size: 1.4rem;
   margin-bottom: 1rem;
   color: #6c757d;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.month-photo-count {
+  font-size: 0.8rem;
+  color: #adb5bd;
+  font-weight: normal;
 }
 
 .photos-grid {
@@ -454,11 +485,21 @@ export default {
   min-height: 300px;
   gap: 1rem;
   color: #6c757d;
+  background-color: white;
+  border-radius: 12px;
+  padding: 3rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 }
 
 .empty-timeline i {
   font-size: 4rem;
   color: #adb5bd;
+}
+
+.empty-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
 }
 
 .upload-btn {
@@ -534,15 +575,18 @@ export default {
 }
 
 .modal-body {
-  padding: 0; /* 不需要内边距，因为 PhotoDetail 组件已有内边距 */
+  padding: 0;
+  /* 不需要内边距，因为 PhotoDetail 组件已有内边距 */
 }
 
 /* 动画效果 */
-.modal-enter-active, .modal-leave-active {
+.modal-enter-active,
+.modal-leave-active {
   transition: all 0.3s ease;
 }
 
-.modal-enter-from, .modal-leave-to {
+.modal-enter-from,
+.modal-leave-to {
   opacity: 0;
 }
 

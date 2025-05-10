@@ -68,7 +68,7 @@ export const authService = {
 };
 
 export const photoService = {
-  // 获取照片列表
+  // 获取照片列表（支持分页、排序和多种过滤条件）
   getPhotos(params = {}) {
     return apiClient.get(API_ENDPOINTS.PHOTOS.BASE, { params });
   },
@@ -106,8 +106,11 @@ export const photoService = {
       formData.append('albumId', albumId);
     }
     
-    if (tags.length > 0) {
-      formData.append('tags', JSON.stringify(tags));
+    if (tags && tags.length > 0) {
+      // 按照API文档，tags应该是一个字符串数组，不需要额外的JSON.stringify
+      tags.forEach(tag => {
+        formData.append('tags', tag);
+      });
     }
     
     return apiClient.post(API_ENDPOINTS.PHOTOS.BATCH, formData, {
@@ -122,9 +125,24 @@ export const photoService = {
     return apiClient.put(API_ENDPOINTS.PHOTOS.DETAIL(id), photoData);
   },
   
-  // 删除照片
+  // 批量删除照片
+  deletePhotos(photoIds, dryRun = false) {
+    return apiClient.delete(API_ENDPOINTS.PHOTOS.BASE, { 
+      data: { 
+        photoIds,
+        dry_run: dryRun 
+      } 
+    });
+  },
+  
+  // 单个删除照片（兼容旧代码）
   deletePhoto(id) {
-    return apiClient.delete(API_ENDPOINTS.PHOTOS.DETAIL(id));
+    return this.deletePhotos([id]);
+  },
+  
+  // 获取照片时间轴
+  getPhotoTimeline(params = {}) {
+    return apiClient.get(API_ENDPOINTS.PHOTOS.TIMELINE, { params });
   }
 };
 
@@ -134,9 +152,9 @@ export const tagService = {
     return apiClient.get(API_ENDPOINTS.TAGS.BASE);
   },
   
-  // 创建标签
-  createTag(tagData) {
-    return apiClient.post(API_ENDPOINTS.TAGS.BASE, tagData);
+  // 根据标签ID获取对应的照片列表
+  getPhotosByTagId(id, params = {}) {
+    return apiClient.get(API_ENDPOINTS.TAGS.PHOTOS(id), { params });
   },
   
   // 更新标签
@@ -151,9 +169,9 @@ export const tagService = {
 };
 
 export const albumService = {
-  // 获取所有相册
-  getAlbums() {
-    return apiClient.get(API_ENDPOINTS.ALBUMS.BASE);
+  // 获取相册列表（支持分页和排序）
+  getAlbums(params = {}) {
+    return apiClient.get(API_ENDPOINTS.ALBUMS.BASE, { params });
   },
   
   // 获取单个相册
@@ -176,19 +194,31 @@ export const albumService = {
     return apiClient.delete(API_ENDPOINTS.ALBUMS.DETAIL(id));
   },
   
-  // 获取相册中的照片
+  // 获取相册中的照片（支持分页和排序）
   getAlbumPhotos(id, params = {}) {
     return apiClient.get(API_ENDPOINTS.ALBUMS.PHOTOS(id), { params });
   },
   
-  // 添加照片到相册
-  addPhotoToAlbum(albumId, photoId) {
-    return apiClient.post(API_ENDPOINTS.ALBUMS.PHOTOS(albumId), { photoId });
+  // 批量添加照片到相册
+  addPhotosToAlbum(albumId, photoIds) {
+    return apiClient.post(API_ENDPOINTS.ALBUMS.PHOTOS(albumId), { photoIds });
   },
   
-  // 从相册中移除照片
+  // 批量从相册中移除照片
+  removePhotosFromAlbum(albumId, photoIds) {
+    return apiClient.delete(API_ENDPOINTS.ALBUMS.PHOTOS(albumId), { 
+      data: { photoIds } 
+    });
+  },
+  
+  // 添加单张照片到相册（兼容旧代码）
+  addPhotoToAlbum(albumId, photoId) {
+    return this.addPhotosToAlbum(albumId, [photoId]);
+  },
+  
+  // 从相册中移除单张照片（兼容旧代码）
   removePhotoFromAlbum(albumId, photoId) {
-    return apiClient.delete(`${API_ENDPOINTS.ALBUMS.PHOTOS(albumId)}/${photoId}`);
+    return this.removePhotosFromAlbum(albumId, [photoId]);
   }
 };
 

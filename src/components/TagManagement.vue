@@ -6,23 +6,23 @@
         <i class="fas fa-plus"></i> 添加标签
       </button>
     </div>
-    
+
     <div v-if="loading" class="loading-container">
       <el-spinner></el-spinner>
       <p>加载中...</p>
     </div>
-    
+
     <div v-else-if="error" class="error-message">
       {{ error }}
       <button @click="fetchTags" class="retry-button">重试</button>
     </div>
-    
+
     <div v-else-if="tags.length === 0" class="empty-message">
       <i class="fas fa-tags"></i>
       <p>暂无标签</p>
       <p class="empty-hint">点击右上方"添加标签"按钮创建第一个标签</p>
     </div>
-    
+
     <div v-else class="tags-list">
       <div v-for="tag in tags" :key="tag.id" class="tag-item">
         <div class="tag-color" :style="{ backgroundColor: tag.color || '#4361ee' }"></div>
@@ -41,70 +41,42 @@
         </div>
       </div>
     </div>
-    
+
     <!-- 添加/编辑标签表单 -->
     <transition name="slide">
       <div v-if="showAddForm || editingTag" class="tag-form-overlay">
         <div class="tag-form">
           <h3>{{ editingTag ? '编辑标签' : '添加标签' }}</h3>
-          
+
           <div class="form-group">
             <label for="tag-name">标签名称</label>
-            <input 
-              type="text" 
-              id="tag-name" 
-              v-model="formData.name" 
-              placeholder="输入标签名称"
-              required
-            />
+            <input type="text" id="tag-name" v-model="formData.name" placeholder="输入标签名称" required />
           </div>
-          
+
           <div class="form-group">
             <label for="tag-description">描述</label>
-            <textarea 
-              id="tag-description" 
-              v-model="formData.description" 
-              placeholder="输入标签描述（可选）"
-              rows="3"
-            ></textarea>
+            <textarea id="tag-description" v-model="formData.description" placeholder="输入标签描述（可选）" rows="3"></textarea>
           </div>
-          
+
           <div class="form-group">
             <label for="tag-color">标签颜色</label>
-            <input 
-              type="color" 
-              id="tag-color" 
-              v-model="formData.color"
-            />
+            <input type="color" id="tag-color" v-model="formData.color" />
           </div>
-          
+
           <div class="form-actions">
-            <button 
-              type="button" 
-              class="cancel-button" 
-              @click="cancelForm"
-            >
+            <button type="button" class="cancel-button" @click="cancelForm">
               取消
             </button>
-            <button 
-              type="button" 
-              class="save-button" 
-              @click="saveTag"
-              :disabled="submitting"
-            >
+            <button type="button" class="save-button" @click="saveTag" :disabled="submitting">
               {{ submitting ? '保存中...' : '保存' }}
             </button>
           </div>
         </div>
       </div>
     </transition>
-    
+
     <!-- 删除确认对话框 -->
-    <el-dialog
-      v-model="showDeleteConfirm"
-      title="确认删除"
-      width="30%"
-      :before-close="cancelDelete">
+    <el-dialog v-model="showDeleteConfirm" title="确认删除" width="30%" :before-close="cancelDelete">
       <span>确定要删除标签"{{ tagToDelete?.name || '' }}"吗？此操作不可恢复。</span>
       <template #footer>
         <span class="dialog-footer">
@@ -151,7 +123,7 @@ export default {
     async fetchTags() {
       this.loading = true;
       this.error = null;
-      
+
       try {
         const response = await tagService.getTags();
         this.tags = response.data || [];
@@ -162,7 +134,7 @@ export default {
         this.loading = false;
       }
     },
-    
+
     editTag(tag) {
       this.editingTag = tag;
       this.formData = {
@@ -171,23 +143,23 @@ export default {
         color: tag.color || '#4361ee'
       };
     },
-    
+
     confirmDeleteTag(tag) {
       this.tagToDelete = tag;
       this.showDeleteConfirm = true;
     },
-    
+
     cancelForm() {
       this.showAddForm = false;
       this.editingTag = null;
       this.resetForm();
     },
-    
+
     cancelDelete() {
       this.showDeleteConfirm = false;
       this.tagToDelete = null;
     },
-    
+
     resetForm() {
       this.formData = {
         name: '',
@@ -195,7 +167,7 @@ export default {
         color: '#4361ee'
       };
     },
-    
+
     async saveTag() {
       if (!this.formData.name.trim()) {
         this.$notify.warning({
@@ -204,40 +176,44 @@ export default {
         });
         return;
       }
-      
+
       this.submitting = true;
-      
+
       try {
         if (this.editingTag) {
           // 更新标签
           const response = await tagService.updateTag(this.editingTag.id, this.formData);
-          
+
           // 更新本地列表
           const index = this.tags.findIndex(t => t.id === this.editingTag.id);
           if (index !== -1) {
             this.tags[index] = response.data;
           }
-          
+
           this.$notify({
             title: '成功',
             message: '标签已更新',
             type: 'success'
           });
         } else {
-          // 创建新标签
-          const response = await tagService.createTag(this.formData);
-          this.tags.push(response.data);
-          
+          // 新的API不支持直接创建标签，需要提示用户在上传或编辑照片时添加标签
           this.$notify({
-            title: '成功',
-            message: '标签已创建',
-            type: 'success'
+            title: '提示',
+            message: '标签需要在上传或编辑照片时添加。请在照片上传或编辑界面创建新标签。',
+            type: 'info',
+            duration: 5000
           });
+
+          // 或者可以引导用户去上传照片页面
+          if (confirm('需要在照片上添加标签才能创建新标签。是否前往上传照片页面？')) {
+            this.$router.push('/upload');
+          }
+          return;
         }
-        
+
         // 通知父组件更新
         this.$emit('tag-updated');
-        
+
         // 关闭表单
         this.cancelForm();
       } catch (error) {
@@ -250,27 +226,27 @@ export default {
         this.submitting = false;
       }
     },
-    
+
     async deleteTag() {
       if (!this.tagToDelete) return;
-      
+
       this.submitting = true;
-      
+
       try {
         await tagService.deleteTag(this.tagToDelete.id);
-        
+
         // 从列表中移除
         this.tags = this.tags.filter(t => t.id !== this.tagToDelete.id);
-        
+
         // 通知父组件更新
         this.$emit('tag-updated');
-        
+
         this.$notify({
           title: '成功',
           message: '标签已删除',
           type: 'success'
         });
-        
+
         this.cancelDelete();
       } catch (error) {
         console.error('删除标签失败:', error);

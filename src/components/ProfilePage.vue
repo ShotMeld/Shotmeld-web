@@ -73,7 +73,7 @@ export default {
   padding: 32px;
   width: 100%;
   max-width: 500px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
   align-items: center;

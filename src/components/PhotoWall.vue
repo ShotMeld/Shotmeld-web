@@ -1,12 +1,8 @@
 <template>
   <div class="photo-wall-container">
     <!-- 顶部导航栏 -->
-    <AppNavbar 
-      :userName="userName"
-      currentPage="photowall"
-      @show-upload="showUploadModal = true"
-      @show-album-form="showAlbumForm = true"
-    />
+    <AppNavbar :userName="userName" currentPage="photowall" @show-upload="showUploadModal = true"
+      @show-album-form="showAlbumForm = true" />
 
     <!-- 主内容区 -->
     <main class="photo-wall-main">
@@ -14,70 +10,46 @@
       <div class="filters-section">
         <SfCard class="search-card" shadow="medium">
           <div class="search-container">
-            <SfInput
-              v-model="searchQuery"
-              placeholder="搜索照片..."
-              @input="debouncedSearch"
-              class="search-input"
-            >
+            <SfInput v-model="searchQuery" placeholder="搜索照片..." @input="debouncedSearch" class="search-input">
               <template #prefix>
                 <i class="fas fa-search"></i>
               </template>
             </SfInput>
           </div>
-          
+
           <div class="filter-controls">
             <div class="filter-item">
               <label class="filter-label">相册</label>
               <div class="apple-select-wrapper">
-                <el-select v-model="filters.albumId" placeholder="全部相册" clearable @change="fetchPhotos" class="apple-select">
-                  <el-option
-                    v-for="album in albums"
-                    :key="album.id"
-                    :label="album.name"
-                    :value="album.id">
+                <el-select v-model="filters.albumId" placeholder="全部相册" clearable @change="fetchPhotos"
+                  class="apple-select">
+                  <el-option v-for="album in albums" :key="album.id" :label="album.name" :value="album.id">
                   </el-option>
                 </el-select>
               </div>
             </div>
-            
+
             <div class="filter-item">
               <label class="filter-label">标签</label>
               <div class="apple-select-wrapper">
-                <el-select 
-                  v-model="filters.tags" 
-                  multiple 
-                  collapse-tags 
-                  placeholder="选择标签" 
-                  @change="fetchPhotos"
+                <el-select v-model="filters.tags" multiple collapse-tags placeholder="选择标签" @change="fetchPhotos"
                   class="apple-select">
-                  <el-option
-                    v-for="tag in tags"
-                    :key="tag.id"
-                    :label="tag.name"
-                    :value="tag.id">
+                  <el-option v-for="tag in tags" :key="tag.id" :label="tag.name" :value="tag.id">
                   </el-option>
                 </el-select>
               </div>
             </div>
-            
+
             <div class="filter-item">
               <label class="filter-label">日期范围</label>
               <div class="apple-datepicker-wrapper">
-                <el-date-picker
-                  v-model="dateRange"
-                  type="daterange"
-                  range-separator="至"
-                  start-placeholder="开始日期"
-                  end-placeholder="结束日期"
-                  format="YYYY-MM-DD"
-                  value-format="YYYY-MM-DD"
-                  @change="handleDateRangeChange"
+                <el-date-picker v-model="dateRange" type="daterange" range-separator="至" start-placeholder="开始日期"
+                  end-placeholder="结束日期" format="YYYY-MM-DD" value-format="YYYY-MM-DD" @change="handleDateRangeChange"
                   class="apple-datepicker">
                 </el-date-picker>
               </div>
             </div>
-            
+
             <div class="filter-item">
               <label class="filter-label">排序</label>
               <div class="sort-controls">
@@ -105,26 +77,16 @@
         <div v-if="photos.length === 0" class="no-photos">
           <i class="fas fa-image no-photos-icon"></i>
           <p>没有照片。上传一些照片开始使用吧！</p>
-          <SfButton 
-            @click="showUploadModal = true" 
-            type="primary"
-            rounded
-          >
+          <SfButton @click="showUploadModal = true" type="primary" rounded>
             <template #prefix>
               <i class="fas fa-cloud-upload-alt"></i>
             </template>
             上传照片
           </SfButton>
         </div>
-        
-        <SfCard 
-          v-for="photo in photos" 
-          :key="photo.id" 
-          class="photo-card" 
-          hoverable 
-          shadow="small"
-          @click="openPhotoDetail(photo)"
-        >
+
+        <SfCard v-for="photo in photos" :key="photo.id" class="photo-card" hoverable shadow="small"
+          @click="openPhotoDetail(photo)">
           <div class="photo-thumbnail">
             <img :src="photo.thumbnailUrl || photo.url" :alt="photo.title" loading="lazy" />
           </div>
@@ -132,67 +94,50 @@
             <h3 class="photo-title">{{ photo.title || '无标题' }}</h3>
             <p class="photo-date">{{ formatDate(photo.takenAt) }}</p>
             <div class="photo-tags-container" v-if="photo.tags && photo.tags.length > 0">
-              <SfBadge 
-                v-for="tag in photo.tags.slice(0, 2)" 
-                :key="tag.id"
-                type="secondary"
-                size="small"
-                class="photo-tag-badge"
-              >
+              <SfBadge v-for="tag in photo.tags.slice(0, 2)" :key="tag.id" type="secondary" size="small"
+                class="photo-tag-badge">
                 {{ tag.name }}
               </SfBadge>
-              <SfBadge 
-                v-if="photo.tags.length > 2" 
-                type="neutral"
-                size="small"
-              >
+              <SfBadge v-if="photo.tags.length > 2" type="neutral" size="small">
                 +{{ photo.tags.length - 2 }}
               </SfBadge>
             </div>
           </div>
         </SfCard>
       </div>
-      
+
       <div v-else class="loading-container">
         <div class="spinner"></div>
         <p>正在加载照片...</p>
       </div>
-      
+
       <!-- 分页 -->
       <div class="pagination-container" v-if="totalPhotos > 0">
-        <el-pagination
-          v-model:currentPage="pagination.page"
-          v-model:pageSize="pagination.limit"
-          :page-sizes="[20, 50, 100]"
-          :total="totalPhotos"
-          layout="total, sizes, prev, pager, next"
-          @size-change="handleSizeChange"
-          @current-change="handlePageChange">
+        <el-pagination v-model:currentPage="pagination.page" v-model:pageSize="pagination.limit"
+          :page-sizes="[20, 50, 100]" :total="totalPhotos" layout="total, sizes, prev, pager, next"
+          @size-change="handleSizeChange" @current-change="handlePageChange">
         </el-pagination>
       </div>
 
-      <!-- 照片详情组件 -->
-      <PhotoDetail
-        v-model="showPhotoDetail"
-        :photo="currentPhoto"
-        @photo-deleted="deletePhoto"
-      />
+      <!-- 照片详情模态框 -->
+      <transition name="modal">
+        <div v-if="currentPhoto && showPhotoDetail" class="modal-overlay" @click.self="closePhotoDetail">
+          <div class="modal-container">
+            <div class="modal-body">
+              <PhotoDetail v-model="showPhotoDetail" :photo="currentPhoto" @edit-photo="startEditingPhoto"
+                @photo-deleted="deletePhoto" />
+            </div>
+          </div>
+        </div>
+      </transition>
 
       <!-- 上传照片模态框 -->
-      <SfModal
-        v-model="showUploadModal"
-        title="上传照片"
-        size="default"
-      >
+      <SfModal v-model="showUploadModal" title="上传照片" size="default">
         <PhotoUpload @upload-success="handlePhotoUploaded" />
       </SfModal>
 
       <!-- 相册表单模态框 -->
-      <SfModal
-        v-model="showAlbumForm"
-        title="新建相册"
-        size="default"
-      >
+      <SfModal v-model="showAlbumForm" title="新建相册" size="default">
         <AlbumForm @album-created="handleAlbumCreated" />
       </SfModal>
     </main>
@@ -257,7 +202,7 @@ export default {
     // 添加必要的方法调整
     async fetchPhotos() {
       this.loading = true;
-      
+
       try {
         const params = {
           page: this.pagination.page,
@@ -265,15 +210,15 @@ export default {
           sort: this.filters.sort,
           order: this.filters.order
         };
-        
+
         if (this.filters.q) params.q = this.filters.q;
         if (this.filters.albumId) params.albumId = this.filters.albumId;
         if (this.filters.tags.length > 0) params.tags = this.filters.tags;
         if (this.filters.startDate) params.startDate = this.filters.startDate;
         if (this.filters.endDate) params.endDate = this.filters.endDate;
-        
+
         const response = await photoService.getPhotos(params);
-        
+
         this.photos = response.data.data || [];
         this.totalPhotos = response.data.total || 0;
       } catch (error) {
@@ -286,7 +231,7 @@ export default {
         this.loading = false;
       }
     },
-    
+
     async fetchAlbums() {
       try {
         const response = await albumService.getAlbums();
@@ -295,7 +240,7 @@ export default {
         console.error('获取相册列表失败:', error);
       }
     },
-    
+
     async fetchTags() {
       try {
         const response = await tagService.getTags();
@@ -304,29 +249,36 @@ export default {
         console.error('获取标签列表失败:', error);
       }
     },
-    
+
     openPhotoDetail(photo) {
       this.currentPhoto = photo;
       this.showPhotoDetail = true;
     },
-    
+
     closePhotoDetail() {
       this.showPhotoDetail = false;
       setTimeout(() => {
         this.currentPhoto = null;
       }, 300);
     },
-    
+
+    startEditingPhoto(photo) {
+      // 实现编辑照片功能，可以打开一个编辑表单
+      console.log('编辑照片:', photo);
+      // TODO: 实现编辑照片的功能
+      alert('编辑照片功能将在后续版本实现');
+    },
+
     handlePageChange(page) {
       this.pagination.page = page;
       this.fetchPhotos();
     },
-    
+
     handleSizeChange(size) {
       this.pagination.limit = size;
       this.fetchPhotos();
     },
-    
+
     handleDateRangeChange(dates) {
       if (dates && dates.length === 2) {
         this.filters.startDate = dates[0];
@@ -335,10 +287,10 @@ export default {
         this.filters.startDate = null;
         this.filters.endDate = null;
       }
-      
+
       this.fetchPhotos();
     },
-    
+
     debouncedSearch() {
       clearTimeout(this.searchTimeout);
       this.searchTimeout = setTimeout(() => {
@@ -346,27 +298,27 @@ export default {
         this.fetchPhotos();
       }, 500);
     },
-    
+
     handlePhotoUploaded() {
       this.showUploadModal = false;
       this.fetchPhotos();
     },
-    
+
     handleAlbumCreated() {
       this.showAlbumForm = false;
       this.fetchAlbums();
     },
-    
+
     async deletePhoto(photoId) {
       try {
         await photoService.deletePhoto(photoId);
-        
+
         this.$notify({
           title: '成功',
           message: '照片已删除',
           type: 'success'
         });
-        
+
         // 移除已删除的照片
         this.photos = this.photos.filter(p => p.id !== photoId);
         this.closePhotoDetail();
@@ -378,7 +330,7 @@ export default {
         });
       }
     },
-    
+
     formatDate(dateString) {
       if (!dateString) return '未知日期'
       const date = new Date(dateString)
@@ -390,7 +342,7 @@ export default {
         minute: '2-digit'
       })
     },
-    
+
     formatFileSize(bytes) {
       if (!bytes || bytes === 0) return '0 Bytes'
       const k = 1024
@@ -398,7 +350,7 @@ export default {
       const i = Math.floor(Math.log(bytes) / Math.log(k))
       return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]
     },
-    
+
     handleLogout() {
       localStorage.removeItem('token')
       localStorage.removeItem('user')
@@ -586,8 +538,8 @@ export default {
   overflow: hidden;
   cursor: pointer;
   background-color: rgba(255, 255, 255, 0.8);
-  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), 
-              box-shadow 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
+    box-shadow 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .photo-card:hover {
@@ -753,47 +705,47 @@ export default {
   .photo-wall-main {
     padding: var(--spacing-md);
   }
-  
+
   .search-card {
     padding: var(--spacing-md);
   }
-  
+
   .search-container {
     margin-bottom: var(--spacing-md);
   }
-  
+
   .filter-controls {
     gap: var(--spacing-md);
   }
-  
+
   .filter-item {
     flex: 1 1 100%;
   }
-  
+
   .sort-controls {
     flex-direction: column;
     gap: var(--spacing-xs);
   }
-  
+
   .sort-field,
   .sort-order {
     flex: 1;
     width: 100%;
   }
-  
+
   :deep(.apple-select),
   :deep(.apple-datepicker) {
     width: 100%;
   }
-  
+
   :deep(.el-date-editor.el-input) {
     width: 100%;
   }
-  
+
   :deep(.el-date-editor--daterange) {
     width: 100% !important;
   }
-  
+
   .filter-label {
     margin-bottom: var(--spacing-2xs);
   }
@@ -803,21 +755,23 @@ export default {
   .photo-wall-main {
     padding: var(--spacing-sm);
   }
-  
+
   .search-card {
     padding: var(--spacing-sm);
   }
-  
+
   .filter-controls {
     gap: var(--spacing-sm);
   }
-  
+
   :deep(.el-date-picker) {
     width: 100%;
   }
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 </style>
