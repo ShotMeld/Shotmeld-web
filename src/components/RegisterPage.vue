@@ -1,17 +1,16 @@
-<template>
-  <div class="page-container">
+<template>  <div class="page-container">
     <div class="register-card">
       <h1 class="register-title">注册账号</h1>
       <form @submit.prevent="handleRegister">
-        <SfInput v-model="formData.email" type="email" label="邮箱地址" required :error="errors.email">
-          <template #prefix>
-            <i class="sf-icon">✉️</i>
-          </template>
-        </SfInput>
-
         <SfInput v-model="formData.username" label="用户名" required :error="errors.username">
           <template #prefix>
             <i class="sf-icon">👤</i>
+          </template>
+        </SfInput>
+
+        <SfInput v-model="formData.email" type="email" label="邮箱地址" required :error="errors.email">
+          <template #prefix>
+            <i class="sf-icon">✉️</i>
           </template>
         </SfInput>
 
