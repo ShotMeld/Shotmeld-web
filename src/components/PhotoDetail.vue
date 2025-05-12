@@ -1,6 +1,6 @@
 <template>
   <SfModal :modelValue="modelValue" @update:modelValue="$emit('update:modelValue', $event)"
-    :title="photo?.title || '无标题照片'" size="large">
+    :title="photo?.title || '无标题照片'" size="large" class="photo-detail-modal">
     <div class="photo-detail-content">
       <div class="photo-detail-image">
         <img v-if="photo" :src="photo.url" :alt="photo.title" @load="imageLoaded = true" />
@@ -12,23 +12,23 @@
         <div class="info-group">
           <h3 class="info-group-title">照片信息</h3>
           <div class="info-item">
-            <span class="info-label">标题:</span>
-            <span class="info-value">{{ photo?.title || '无标题' }}</span>
+            <span class="info-label">标题</span>
+            <span class="info-value title-value">{{ photo?.title || '无标题' }}</span>
           </div>
           <div class="info-item">
-            <span class="info-label">拍摄时间:</span>
+            <span class="info-label">拍摄时间</span>
             <span class="info-value">{{ formatDate(photo?.takenAt) }}</span>
           </div>
           <div class="info-item">
-            <span class="info-label">文件大小:</span>
+            <span class="info-label">文件大小</span>
             <span class="info-value">{{ formatFileSize(photo?.fileSize) }}</span>
           </div>
           <div class="info-item">
-            <span class="info-label">尺寸:</span>
+            <span class="info-label">尺寸</span>
             <span class="info-value">{{ photo?.width || 0 }}×{{ photo?.height || 0 }} 像素</span>
           </div>
           <div class="info-item" v-if="photo?.metadata?.density">
-            <span class="info-label">分辨率:</span>
+            <span class="info-label">分辨率</span>
             <span class="info-value">{{ photo.metadata.density }} dpi</span>
           </div>
         </div>
@@ -37,24 +37,24 @@
         <div class="info-group" v-if="photo?.location?.latitude && photo?.location?.longitude">
           <h3 class="info-group-title">位置信息</h3>
           <div class="info-item">
-            <span class="info-label">经度:</span>
+            <span class="info-label">经度</span>
             <span class="info-value">{{ formatCoordinate(photo.location.longitude, 'lng') }}</span>
           </div>
           <div class="info-item">
-            <span class="info-label">纬度:</span>
+            <span class="info-label">纬度</span>
             <span class="info-value">{{ formatCoordinate(photo.location.latitude, 'lat') }}</span>
           </div>
-          <div class="location-map" @click="openMap" v-if="photo?.location?.latitude && photo?.location?.longitude">
-            <i class="fas fa-map-marker-alt"></i>
-            <span>在地图中查看</span>
-          </div>
+          <SfLinkButton icon="fas fa-map-marker-alt" @click="openMap"
+            v-if="photo?.location?.latitude && photo?.location?.longitude">
+            在地图中查看
+          </SfLinkButton>
         </div>
 
         <!-- 相机参数 -->
         <div class="info-group" v-if="hasExifData">
           <h3 class="info-group-title">相机参数</h3>
           <div class="info-item" v-if="photo?.metadata?.exif?.make || photo?.metadata?.exif?.model">
-            <span class="info-label">设备:</span>
+            <span class="info-label">设备</span>
             <span class="info-value">{{ photo.metadata.exif.model }}</span>
           </div>
           <div class="exif-grid">
@@ -97,7 +97,7 @@
         </div>
 
         <div class="info-group" v-if="photo?.albums && photo.albums.length > 0">
-          <h3 class="info-group-title">所属相册</h3>
+          <h3 class="info-group-title">相册</h3>
           <div class="photo-albums">
             <SfBadge v-for="album in photo.albums" :key="album.id" type="success" class="detail-album">
               {{ album.name }}
@@ -106,37 +106,32 @@
         </div>
 
         <div class="photo-actions">
-          <SfButton type="primary" @click="downloadPhoto">
-            <template #prefix>
-              <i class="fas fa-download"></i>
-            </template>
-            下载
-          </SfButton>
+          <SfLinkButton icon="fas fa-download" @click="downloadPhoto">
+            下载照片
+          </SfLinkButton>
 
-          <SfButton type="danger" @click="confirmDelete">
-            <template #prefix>
-              <i class="fas fa-trash"></i>
-            </template>
-            删除
-          </SfButton>
+          <SfLinkButton icon="fas fa-trash" type="danger" @click="confirmDelete">
+            删除照片
+          </SfLinkButton>
         </div>
       </div>
     </div>
   </SfModal>
 
-  <!-- 删除确认对话框 -->
-  <el-dialog v-model="showDeleteConfirm" title="确认删除" width="30%" :show-close="false">
-    <p>确定要删除这张照片吗？此操作无法撤销。</p>
-    <template #footer>
-      <span class="dialog-footer">
+  <SfModal :modelValue="showDeleteConfirm" @update:modelValue="showDeleteConfirm = $event" title="确认删除" size="small">
+    <div class="delete-confirm-content">
+      <p>确定要删除这张照片吗？此操作无法撤销。</p>
+      <div class="delete-confirm-actions">
         <SfButton type="tertiary" @click="showDeleteConfirm = false">取消</SfButton>
         <SfButton type="danger" @click="deletePhoto">确认删除</SfButton>
-      </span>
-    </template>
-  </el-dialog>
+      </div>
+    </div>
+  </SfModal>
 </template>
 
 <script>
+import { SfLinkButton } from '../components/ui';
+
 export default {
   name: 'PhotoDetail',
   props: {
@@ -214,26 +209,26 @@ export default {
       // 将小数转换为分数表示法
       if (time < 0.1) {
         const denominator = Math.round(1 / time);
-        return `1/${denominator}秒`;
+        return `1/${denominator}s`;
       }
-      return `${time.toFixed(2)}秒`;
+      return `${time.toFixed(2)}s`;
     },
-    
+
     formatCoordinate(coord, type) {
       if (typeof coord !== 'number') return '';
-      
+
       const degrees = Math.floor(coord);
       const minutesValue = (coord - degrees) * 60;
       const minutes = Math.floor(minutesValue);
       const seconds = ((minutesValue - minutes) * 60).toFixed(2);
-      
-      const direction = type === 'lat' 
-        ? (coord >= 0 ? 'N' : 'S') 
+
+      const direction = type === 'lat'
+        ? (coord >= 0 ? 'N' : 'S')
         : (coord >= 0 ? 'E' : 'W');
-      
+
       return `${Math.abs(degrees)}° ${minutes}' ${seconds}" ${direction}`;
     },
-    
+
     formatDepth(depth) {
       // 转换位深度表示
       const depthMap = {
@@ -246,13 +241,13 @@ export default {
         'float': '32位浮点',
         'double': '64位浮点'
       };
-      
+
       return depthMap[depth] || depth;
     },
-    
+
     openMap() {
       if (!this.photo?.location?.latitude || !this.photo?.location?.longitude) return;
-      
+
       // 使用系统地图应用打开位置
       const mapUrl = `https://maps.apple.com/?q=${this.photo.location.latitude},${this.photo.location.longitude}`;
       window.open(mapUrl, '_blank');
@@ -266,6 +261,34 @@ export default {
 .photo-detail-content {
   display: flex;
   flex-direction: column;
+}
+
+.photo-detail-info::-webkit-scrollbar {
+  display: none;
+}
+
+.photo-detail-info {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* 标题自动换行样式 */
+.title-value {
+  word-wrap: break-word;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  white-space: normal;
+  max-width: 100%;
+}
+
+:deep(.photo-detail-modal .sf-modal-title) {
+  word-wrap: break-word;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  white-space: normal;
+  max-width: calc(100% - 40px); /* 留出关闭按钮空间 */
+  line-height: 1.3;
+  padding-right: 8px;
 }
 
 .photo-detail-image {
@@ -303,8 +326,8 @@ export default {
 
   .photo-detail-info {
     flex: 1;
-    overflow-y: auto;
-    max-height: 600px;
+    overflow-y: visible;
+    max-height: none;
   }
 }
 
@@ -312,10 +335,12 @@ export default {
   .photo-actions {
     flex-direction: column;
     width: 100%;
+    gap: var(--spacing-sm);
   }
 
-  .photo-actions .sf-button {
+  :deep(.link-button) {
     width: 100%;
+    justify-content: center;
   }
 }
 
@@ -383,12 +408,6 @@ export default {
   margin-bottom: var(--spacing-xs);
 }
 
-.photo-actions {
-  display: flex;
-  gap: var(--spacing-md);
-  margin-top: var(--spacing-xl);
-}
-
 /* 加载状态 */
 .spinner {
   width: 40px;
@@ -419,12 +438,11 @@ export default {
   -webkit-backdrop-filter: blur(5px);
 }
 
-/* Apple 风格的相机参数网格 */
+/* 相机参数网格 */
 .exif-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
   gap: var(--spacing-md);
-  margin: var(--spacing-md) 0;
   padding: var(--spacing-sm) 0;
 }
 
@@ -453,27 +471,31 @@ export default {
   font-weight: var(--font-weight-normal);
 }
 
-/* 位置地图链接 */
-.location-map {
-  display: inline-flex;
-  align-items: center;
-  margin-top: var(--spacing-md);
-  padding: var(--spacing-xs) var(--spacing-sm);
-  background-color: var(--color-primary-subtle);
-  color: var(--color-primary);
-  border-radius: 20px;
-  font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-medium);
-  cursor: pointer;
-  transition: all 0.2s ease;
+/* 操作按钮布局 */
+.photo-actions {
+  display: flex;
+  gap: var(--spacing-md);
 }
 
-.location-map i {
-  margin-right: 6px;
+/* 删除确认对话框样式 */
+.delete-confirm-content {
+  padding: var(--spacing-md) 0;
 }
 
-.location-map:hover {
-  background-color: var(--color-primary-light);
-  transform: translateY(-1px);
+.delete-confirm-content p {
+  margin-bottom: var(--spacing-lg);
+  font-size: var(--font-size-md);
+  color: var(--text-primary);
+}
+
+.delete-confirm-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--spacing-md);
+}
+
+/* 标题自动换行 */
+.title-value {
+  word-break: break-word;
 }
 </style>

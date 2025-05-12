@@ -20,7 +20,7 @@
       </div>
 
       <div class="form-actions">
-        <button type="button" @click="$emit('cancel')" class="cancel-button">
+        <button type="button" @click="$emit('cancel'); $emit('close')" class="cancel-button">
           取消
         </button>
         <button type="submit" :disabled="submitting" class="submit-button">
@@ -92,6 +92,8 @@ export default {
         }
 
         this.$emit('close')
+        this.$emit('album-created')
+        this.$emit('update:modelValue', false)
       } catch (error) {
         console.error('操作失败:', error)
         this.$notify.error({

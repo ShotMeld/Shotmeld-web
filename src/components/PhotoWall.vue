@@ -120,16 +120,8 @@
       </div>
 
       <!-- 照片详情模态框 -->
-      <transition name="modal">
-        <div v-if="currentPhoto && showPhotoDetail" class="modal-overlay" @click.self="closePhotoDetail">
-          <div class="modal-container">
-            <div class="modal-body">
-              <PhotoDetail v-model="showPhotoDetail" :photo="currentPhoto" @edit-photo="startEditingPhoto"
-                @photo-deleted="deletePhoto" />
-            </div>
-          </div>
-        </div>
-      </transition>
+      <PhotoDetail v-if="currentPhoto" v-model="showPhotoDetail" :photo="currentPhoto"
+        @photo-deleted="deletePhoto" />
 
       <!-- 上传照片模态框 -->
       <SfModal v-model="showUploadModal" title="上传照片" size="default">
@@ -138,7 +130,7 @@
 
       <!-- 相册表单模态框 -->
       <SfModal v-model="showAlbumForm" title="新建相册" size="default">
-        <AlbumForm @album-created="handleAlbumCreated" />
+        <AlbumForm @success="handleAlbumCreated" @close="showAlbumForm = false" @cancel="showAlbumForm = false" />
       </SfModal>
     </main>
   </div>

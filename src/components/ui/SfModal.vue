@@ -222,7 +222,7 @@ export default {
 /* Modal transitions */
 .sf-modal-enter-active,
 .sf-modal-leave-active {
-  transition: all var(--transition-base);
+  transition: opacity var(--transition-base);
 }
 
 .sf-modal-enter-from,
@@ -230,9 +230,9 @@ export default {
   opacity: 0;
 }
 
-.sf-modal-enter-from .sf-modal,
-.sf-modal-leave-to .sf-modal {
+.sf-modal-enter-from .sf-modal {
   transform: scale(0.9);
+  transition: transform var(--transition-base);
 }
 
 @media (max-width: 640px) {

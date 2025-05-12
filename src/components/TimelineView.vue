@@ -58,35 +58,6 @@
         </div>
       </template>
 
-      <!-- 照片详情模态框 -->
-      <transition name="modal">
-        <div v-if="currentPhoto && showPhotoDetailModal" class="modal-overlay" @click.self="closePhotoDetail">
-          <div class="modal-container">
-            <div class="modal-body">
-              <PhotoDetail v-model="showPhotoDetailModal" :photo="currentPhoto" @edit-photo="startEditingPhoto"
-                @photo-deleted="handlePhotoDeleted" />
-            </div>
-          </div>
-        </div>
-      </transition>
-
-      <!-- 上传照片模态框 -->
-      <transition name="modal">
-        <div v-if="showUploadModal" class="modal-overlay">
-          <div class="modal-container">
-            <div class="modal-header">
-              <h2>上传照片</h2>
-              <button @click="showUploadModal = false" class="close-button">
-                <i class="fas fa-times"></i>
-              </button>
-            </div>
-            <div class="modal-body">
-              <PhotoUpload @upload-success="handlePhotoUploaded" />
-            </div>
-          </div>
-        </div>
-      </transition>
-
       <!-- 删除确认对话框 -->
       <el-dialog v-model="showDeleteConfirm" title="确认删除" width="30%" :show-close="false">
         <span>确定要删除这张照片吗？此操作不可恢复。</span>
@@ -97,6 +68,10 @@
           </span>
         </template>
       </el-dialog>
+
+      <!-- 照片详情模态框 -->
+      <PhotoDetail v-if="currentPhoto" v-model="showPhotoDetailModal" :photo="currentPhoto"
+        @photo-deleted="handlePhotoDeleted" />
     </main>
   </div>
 </template>
@@ -107,13 +82,17 @@ import { photoService } from '../api';
 import PhotoUpload from './PhotoUpload.vue';
 import PhotoDetail from './PhotoDetail.vue';
 import AppNavbar from './AppNavbar.vue';
+import AlbumForm from './AlbumForm.vue';
+import { SfModal } from './ui';
 
 export default {
   name: 'TimelineView',
   components: {
     PhotoUpload,
     PhotoDetail,
-    AppNavbar
+    AppNavbar,
+    AlbumForm,
+    SfModal
   },
   data() {
     return {
@@ -327,6 +306,11 @@ export default {
       localStorage.removeItem('user');
       delete axios.defaults.headers.common['Authorization'];
       this.$router.push('/login');
+    },
+
+    handleAlbumCreated() {
+      this.showAlbumForm = false;
+      // 如果需要，可以刷新某些数据
     }
   }
 }
@@ -555,8 +539,6 @@ export default {
   color: #6c757d;
 }
 
-/* 移除这些样式，现在使用 PhotoDetail 组件的样式 */
-
 .modal-container {
   background-color: white;
   border-radius: 12px;
@@ -576,7 +558,6 @@ export default {
 
 .modal-body {
   padding: 0;
-  /* 不需要内边距，因为 PhotoDetail 组件已有内边距 */
 }
 
 /* 动画效果 */

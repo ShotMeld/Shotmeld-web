@@ -6,6 +6,7 @@ import SfAvatar from './SfAvatar.vue';
 import SfBadge from './SfBadge.vue';
 import SfNavbar from './SfNavbar.vue';
 import SfNavLink from './SfNavLink.vue';
+import SfLinkButton from './SfLinkButton.vue';
 
 export {
   SfButton,
@@ -15,7 +16,8 @@ export {
   SfAvatar,
   SfBadge,
   SfNavbar,
-  SfNavLink
+  SfNavLink,
+  SfLinkButton
 };
 
 export default {
@@ -28,5 +30,6 @@ export default {
     app.component('SfBadge', SfBadge);
     app.component('SfNavbar', SfNavbar);
     app.component('SfNavLink', SfNavLink);
+    app.component('SfLinkButton', SfLinkButton);
   }
 };
