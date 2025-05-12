@@ -25,8 +25,66 @@
           </div>
           <div class="info-item">
             <span class="info-label">尺寸:</span>
-            <span class="info-value">{{ photo?.width || 0 }}×{{ photo?.height || 0 }}</span>
+            <span class="info-value">{{ photo?.width || 0 }}×{{ photo?.height || 0 }} 像素</span>
           </div>
+          <div class="info-item" v-if="photo?.metadata?.density">
+            <span class="info-label">分辨率:</span>
+            <span class="info-value">{{ photo.metadata.density }} dpi</span>
+          </div>
+        </div>
+
+        <!-- 位置信息 -->
+        <div class="info-group" v-if="photo?.location?.latitude && photo?.location?.longitude">
+          <h3 class="info-group-title">位置信息</h3>
+          <div class="info-item">
+            <span class="info-label">经度:</span>
+            <span class="info-value">{{ formatCoordinate(photo.location.longitude, 'lng') }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">纬度:</span>
+            <span class="info-value">{{ formatCoordinate(photo.location.latitude, 'lat') }}</span>
+          </div>
+          <div class="location-map" @click="openMap" v-if="photo?.location?.latitude && photo?.location?.longitude">
+            <i class="fas fa-map-marker-alt"></i>
+            <span>在地图中查看</span>
+          </div>
+        </div>
+
+        <!-- 相机参数 -->
+        <div class="info-group" v-if="hasExifData">
+          <h3 class="info-group-title">相机参数</h3>
+          <div class="info-item" v-if="photo?.metadata?.exif?.make || photo?.metadata?.exif?.model">
+            <span class="info-label">设备:</span>
+            <span class="info-value">{{ photo.metadata.exif.model }}</span>
+          </div>
+          <div class="exif-grid">
+            <div class="exif-item" v-if="photo?.metadata?.exif?.exposureTime">
+              <div class="exif-value">{{ formatExposureTime(photo.metadata.exif.exposureTime) }}</div>
+              <div class="exif-label">曝光时间</div>
+            </div>
+            <div class="exif-item" v-if="photo?.metadata?.exif?.fNumber">
+              <div class="exif-value">f/{{ photo.metadata.exif.fNumber }}</div>
+              <div class="exif-label">光圈</div>
+            </div>
+            <div class="exif-item" v-if="photo?.metadata?.exif?.isoSpeedRatings">
+              <div class="exif-value">ISO {{ photo.metadata.exif.isoSpeedRatings }}</div>
+              <div class="exif-label">感光度</div>
+            </div>
+            <div class="exif-item" v-if="photo?.metadata?.exif?.focalLength">
+              <div class="exif-value">{{ photo.metadata.exif.focalLength }}mm</div>
+              <div class="exif-label">焦距</div>
+            </div>
+            <div class="exif-item" v-if="photo?.metadata?.depth">
+              <div class="exif-value">{{ formatDepth(photo.metadata.depth) }}</div>
+              <div class="exif-label">位深度</div>
+
+            </div>
+            <div class="exif-item" v-if="photo?.metadata?.channels">
+              <div class="exif-value">{{ photo.metadata.channels }}</div>
+              <div class="exif-label">通道数</div>
+            </div>
+          </div>
+
         </div>
 
         <div class="info-group" v-if="photo?.tags && photo.tags.length > 0">
@@ -98,6 +156,11 @@ export default {
       showDeleteConfirm: false
     }
   },
+  computed: {
+    hasExifData() {
+      return !!(this.photo?.metadata?.exif)
+    }
+  },
   watch: {
     modelValue(newVal) {
       if (newVal) {
@@ -144,6 +207,55 @@ export default {
       const sizes = ['Bytes', 'KB', 'MB', 'GB']
       const i = Math.floor(Math.log(bytes) / Math.log(k))
       return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]
+    },
+
+    formatExposureTime(time) {
+      if (!time) return '';
+      // 将小数转换为分数表示法
+      if (time < 0.1) {
+        const denominator = Math.round(1 / time);
+        return `1/${denominator}秒`;
+      }
+      return `${time.toFixed(2)}秒`;
+    },
+    
+    formatCoordinate(coord, type) {
+      if (typeof coord !== 'number') return '';
+      
+      const degrees = Math.floor(coord);
+      const minutesValue = (coord - degrees) * 60;
+      const minutes = Math.floor(minutesValue);
+      const seconds = ((minutesValue - minutes) * 60).toFixed(2);
+      
+      const direction = type === 'lat' 
+        ? (coord >= 0 ? 'N' : 'S') 
+        : (coord >= 0 ? 'E' : 'W');
+      
+      return `${Math.abs(degrees)}° ${minutes}' ${seconds}" ${direction}`;
+    },
+    
+    formatDepth(depth) {
+      // 转换位深度表示
+      const depthMap = {
+        'uchar': '8位',
+        'char': '8位',
+        'ushort': '16位',
+        'short': '16位',
+        'uint': '32位',
+        'int': '32位',
+        'float': '32位浮点',
+        'double': '64位浮点'
+      };
+      
+      return depthMap[depth] || depth;
+    },
+    
+    openMap() {
+      if (!this.photo?.location?.latitude || !this.photo?.location?.longitude) return;
+      
+      // 使用系统地图应用打开位置
+      const mapUrl = `https://maps.apple.com/?q=${this.photo.location.latitude},${this.photo.location.longitude}`;
+      window.open(mapUrl, '_blank');
     }
   }
 }
@@ -175,6 +287,7 @@ export default {
 
 .photo-detail-info {
   padding: var(--spacing-lg);
+  font-family: -apple-system, BlinkMacSystemFont, 'San Francisco', 'Helvetica Neue', sans-serif;
 }
 
 /* 响应式设计 */
@@ -209,6 +322,12 @@ export default {
 .info-group {
   margin-bottom: var(--spacing-lg);
   animation: fadeIn 0.5s ease-out;
+  padding-bottom: var(--spacing-sm);
+  border-bottom: 1px solid var(--border-color-subtle);
+}
+
+.info-group:last-of-type {
+  border-bottom: none;
 }
 
 @keyframes fadeIn {
@@ -225,23 +344,25 @@ export default {
 
 .info-group-title {
   font-size: var(--font-size-lg);
-  font-weight: var(--font-weight-semibold);
+  font-weight: var(--font-weight-medium);
   margin-bottom: var(--spacing-md);
   padding-bottom: var(--spacing-2xs);
-  border-bottom: var(--border-width) solid var(--border-color);
   color: var(--text-primary);
+  letter-spacing: -0.01em;
 }
 
 .info-item {
   display: flex;
   margin-bottom: var(--spacing-sm);
   font-size: var(--font-size-base);
+  line-height: 1.5;
 }
 
 .info-label {
   width: 100px;
   color: var(--text-secondary);
   flex-shrink: 0;
+  font-weight: var(--font-weight-normal);
 }
 
 .info-value {
@@ -296,5 +417,63 @@ export default {
   background-color: rgba(255, 255, 255, 0.5);
   backdrop-filter: blur(5px);
   -webkit-backdrop-filter: blur(5px);
+}
+
+/* Apple 风格的相机参数网格 */
+.exif-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+  gap: var(--spacing-md);
+  margin: var(--spacing-md) 0;
+  padding: var(--spacing-sm) 0;
+}
+
+.exif-item {
+  text-align: center;
+  background-color: var(--bg-secondary);
+  border-radius: 12px;
+  padding: var(--spacing-sm) var(--spacing-xs);
+  transition: transform 0.2s ease;
+}
+
+.exif-item:hover {
+  transform: scale(1.02);
+}
+
+.exif-value {
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-medium);
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+
+.exif-label {
+  font-size: var(--font-size-xs);
+  color: var(--text-secondary);
+  font-weight: var(--font-weight-normal);
+}
+
+/* 位置地图链接 */
+.location-map {
+  display: inline-flex;
+  align-items: center;
+  margin-top: var(--spacing-md);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  background-color: var(--color-primary-subtle);
+  color: var(--color-primary);
+  border-radius: 20px;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.location-map i {
+  margin-right: 6px;
+}
+
+.location-map:hover {
+  background-color: var(--color-primary-light);
+  transform: translateY(-1px);
 }
 </style>
