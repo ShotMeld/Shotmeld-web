@@ -15,7 +15,7 @@
         </SfInput>
 
         <SfInput v-model="formData.password" type="password" label="密码" required :error="errors.password"
-          hint="密码至少包含6个字符">
+          hint="密码至少包含8个字符">
           <template #prefix>
             <i class="sf-icon">🔒</i>
           </template>
@@ -119,7 +119,7 @@ export default {
       }
 
       if (this.formData.password.length < 6) {
-        this.errors.password = '密码至少需要6个字符';
+        this.errors.password = '密码至少需要8个字符';
         return false;
       }
 
