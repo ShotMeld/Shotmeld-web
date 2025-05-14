@@ -22,6 +22,9 @@
         <div class="additional-links">
           <router-link to="/register" class="text-link">没有账号？立即注册</router-link>
         </div>
+        
+        <!-- ICP备案信息 -->
+        <IcpFooter />
       </form>
     </div>
   </div>
@@ -29,9 +32,13 @@
 
 <script>
 import { authService } from '../api';
+import IcpFooter from './layout/IcpFooter.vue';
 
 export default {
   name: 'LoginPage',
+  components: {
+    IcpFooter
+  },
   data() {
     return {
       formData: {

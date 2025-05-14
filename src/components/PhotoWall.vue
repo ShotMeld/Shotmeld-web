@@ -132,6 +132,9 @@
       <SfModal v-model="showAlbumForm" title="新建相册" size="default">
         <AlbumForm @success="handleAlbumCreated" @close="showAlbumForm = false" @cancel="showAlbumForm = false" />
       </SfModal>
+      
+      <!-- ICP备案信息 -->
+      <IcpFooter />
     </main>
   </div>
 </template>
@@ -141,6 +144,7 @@ import AlbumForm from './AlbumForm.vue';
 import PhotoUpload from './PhotoUpload.vue';
 import PhotoDetail from './PhotoDetail.vue';
 import AppNavbar from './AppNavbar.vue';
+import IcpFooter from './layout/IcpFooter.vue';
 import { photoService, albumService, tagService } from '../api';
 
 export default {
@@ -149,7 +153,8 @@ export default {
     AlbumForm,
     PhotoUpload,
     PhotoDetail,
-    AppNavbar
+    AppNavbar,
+    IcpFooter
   },
   data() {
     return {

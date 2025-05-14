@@ -72,6 +72,9 @@
       <!-- 照片详情模态框 -->
       <PhotoDetail v-if="currentPhoto" v-model="showPhotoDetailModal" :photo="currentPhoto"
         @photo-deleted="handlePhotoDeleted" />
+      
+      <!-- ICP备案信息 -->
+      <IcpFooter />
     </main>
   </div>
 </template>
@@ -83,6 +86,7 @@ import PhotoUpload from './PhotoUpload.vue';
 import PhotoDetail from './PhotoDetail.vue';
 import AppNavbar from './AppNavbar.vue';
 import AlbumForm from './AlbumForm.vue';
+import IcpFooter from './layout/IcpFooter.vue';
 import { SfModal } from './ui';
 
 export default {
@@ -92,6 +96,7 @@ export default {
     PhotoDetail,
     AppNavbar,
     AlbumForm,
+    IcpFooter,
     SfModal
   },
   data() {

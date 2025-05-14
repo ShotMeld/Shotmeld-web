@@ -1,4 +1,5 @@
-<template>  <div class="page-container">
+<template>
+  <div class="page-container">
     <div class="register-card">
       <h1 class="register-title">注册账号</h1>
       <form @submit.prevent="handleRegister">
@@ -28,6 +29,9 @@
         <div class="additional-links">
           <router-link to="/login" class="text-link">已有账号？立即登录</router-link>
         </div>
+        
+        <!-- ICP备案信息 -->
+        <IcpFooter />
       </form>
     </div>
   </div>
@@ -35,9 +39,13 @@
 
 <script>
 import { authService } from '../api';
+import IcpFooter from './layout/IcpFooter.vue';
 
 export default {
   name: 'RegisterPage',
+  components: {
+    IcpFooter
+  },
   data() {
     return {
       formData: {
