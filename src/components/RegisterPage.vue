@@ -34,7 +34,6 @@
 </template>
 
 <script>
-import axios from 'axios';
 import { authService } from '../api';
 
 export default {

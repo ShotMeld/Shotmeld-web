@@ -1,5 +1,5 @@
 // API配置文件
-export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://47.96.227.28:3000';
+export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://api.shotmeld.seeridia.top';
 
 // API端点
 export const API_ENDPOINTS = {

@@ -77,8 +77,8 @@
 </template>
 
 <script>
-import axios from 'axios';
 import { photoService } from '../api';
+import apiClient from '../api';
 import PhotoUpload from './PhotoUpload.vue';
 import PhotoDetail from './PhotoDetail.vue';
 import AppNavbar from './AppNavbar.vue';
@@ -304,7 +304,7 @@ export default {
     handleLogout() {
       localStorage.removeItem('token');
       localStorage.removeItem('user');
-      delete axios.defaults.headers.common['Authorization'];
+      delete apiClient.defaults.headers.common['Authorization'];
       this.$router.push('/login');
     },
 
