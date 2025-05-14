@@ -10,12 +10,7 @@ export default defineConfig({
       '/api': {
         target: process.env.VITE_API_BASE_URL || 'https://api.shotmeld.seeridia.top',
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api/, ''),
-        secure: false, // 忽略HTTPS证书验证
-        headers: {
-          // 模拟来自允许的源的请求
-          'Origin': 'https://shotmeld.seeridia.top'
-        }
+        rewrite: (path) => path.replace(/^\/api/, '')
       }
     }
   }
