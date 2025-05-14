@@ -1,8 +1,5 @@
 // API配置文件
-// 确保总是使用HTTPS地址，防止混合内容错误
-const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'https://api.shotmeld.seeridia.top';
-// 如果API地址是HTTP，转换为HTTPS
-export const API_BASE_URL = apiBaseUrl.replace('http://', 'https://');
+export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://api.shotmeld.seeridia.top';
 
 // API端点
 export const API_ENDPOINTS = {
