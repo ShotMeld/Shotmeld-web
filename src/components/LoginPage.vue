@@ -125,7 +125,7 @@ export default {
   align-items: center;
   min-height: 100vh;
   padding: var(--spacing-md);
-  background-image: url('../assets/photo-bg.jpg');
+  background-image: url('https://www.loliapi.com/acg/');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
