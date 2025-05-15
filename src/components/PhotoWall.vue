@@ -93,15 +93,6 @@
           <div class="photo-info">
             <h3 class="photo-title">{{ photo.title || '无标题' }}</h3>
             <p class="photo-date">{{ formatDate(photo.takenAt) }}</p>
-            <div class="photo-tags-container" v-if="photo.tags && photo.tags.length > 0">
-              <SfBadge v-for="tag in photo.tags.slice(0, 2)" :key="tag.id" type="secondary" size="small"
-                class="photo-tag-badge">
-                {{ tag.name }}
-              </SfBadge>
-              <SfBadge v-if="photo.tags.length > 2" type="neutral" size="small">
-                +{{ photo.tags.length - 2 }}
-              </SfBadge>
-            </div>
           </div>
         </SfCard>
       </div>

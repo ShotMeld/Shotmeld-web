@@ -1,6 +1,6 @@
 <template>
   <SfModal :modelValue="modelValue" @update:modelValue="$emit('update:modelValue', $event)"
-    :title="photo?.title || '无标题照片'" size="large" class="photo-detail-modal">
+    :title="photo?.title || '无标题照片'" size="large">
     <div class="photo-detail-content">
       <div class="photo-detail-image">
         <img v-if="photo" :src="photo.url" :alt="photo.title" @load="imageLoaded = true" />
@@ -90,18 +90,25 @@
         <div class="info-group" v-if="photo?.tags && photo.tags.length > 0">
           <h3 class="info-group-title">标签</h3>
           <div class="photo-tags">
-            <SfBadge v-for="tag in photo.tags" :key="tag.id" type="secondary" class="detail-tag">
-              {{ tag.name }}
-            </SfBadge>
+            <div
+              v-for="tag in photo.tags" 
+              :key="tag" 
+              class="apple-tag"
+              @click="handleTagClick(tag)"
+            >
+              <span class="tag-icon">#</span>
+              <span class="tag-name">{{ tag }}</span>
+            </div>
           </div>
         </div>
 
         <div class="info-group" v-if="photo?.albums && photo.albums.length > 0">
           <h3 class="info-group-title">相册</h3>
           <div class="photo-albums">
-            <SfBadge v-for="album in photo.albums" :key="album.id" type="success" class="detail-album">
-              {{ album.name }}
-            </SfBadge>
+            <div v-for="album in photo.albums" :key="album" class="apple-album">
+              <span class="album-icon">📁</span>
+              <span class="album-name">{{ album }}</span>
+            </div>
           </div>
         </div>
 
@@ -131,6 +138,7 @@
 
 <script>
 import { SfLinkButton } from '../components/ui';
+import { albumService } from '../api'; // 导入相册服务
 
 export default {
   name: 'PhotoDetail',
@@ -144,11 +152,12 @@ export default {
       default: null
     }
   },
-  emits: ['update:modelValue', 'photo-deleted'],
+  emits: ['update:modelValue', 'photo-deleted', 'tag-clicked'],
   data() {
     return {
       imageLoaded: false,
-      showDeleteConfirm: false
+      showDeleteConfirm: false,
+      albumsMap: {} // 用于存储相册ID到相册名称的映射
     }
   },
   computed: {
@@ -160,6 +169,14 @@ export default {
     modelValue(newVal) {
       if (newVal) {
         this.imageLoaded = false;
+      }
+    },
+    'photo.albums': {
+      immediate: true,
+      handler(albumIds) {
+        if (albumIds && albumIds.length > 0) {
+          this.fetchAlbumsInfo(albumIds);
+        }
       }
     }
   },
@@ -251,7 +268,48 @@ export default {
       // 使用系统地图应用打开位置
       const mapUrl = `https://maps.apple.com/?q=${this.photo.location.latitude},${this.photo.location.longitude}`;
       window.open(mapUrl, '_blank');
-    }
+    },
+
+    handleTagClick(tag) {
+      // 触发一个事件，允许父组件处理标签点击
+      // tag 现在是字符串而不是对象
+      this.$emit('tag-clicked', tag);
+      
+      // 可以添加一些视觉反馈
+      const tagElement = event.currentTarget;
+      if (tagElement) {
+        tagElement.style.transition = 'transform 0.1s ease';
+        tagElement.style.transform = 'scale(0.95)';
+        
+        setTimeout(() => {
+          tagElement.style.transform = '';
+        }, 150);
+      }
+    },
+
+    fetchAlbumsInfo(albumIds) {
+      // 过滤掉已经获取过的相册ID
+      const idsToFetch = albumIds.filter(id => !this.albumsMap[id]);
+      
+      if (idsToFetch.length === 0) return;
+      
+      // 为每个相册ID发起请求
+      const promises = idsToFetch.map(id => 
+        albumService.getAlbum(id)
+          .then(response => {
+            this.albumsMap[id] = response.data.name;
+          })
+          .catch(err => {
+            console.error(`获取相册信息失败: ${id}`, err);
+            this.albumsMap[id] = '未知相册';
+          })
+      );
+      
+      // 等待所有请求完成
+      Promise.all(promises).catch(err => {
+        console.error('获取相册信息时出错:', err);
+      });
+    },
   }
 }
 </script>
@@ -281,7 +339,7 @@ export default {
   max-width: 100%;
 }
 
-:deep(.photo-detail-modal .sf-modal-title) {
+:deep(.sf-modal-title) {
   word-wrap: break-word;
   word-break: break-word;
   overflow-wrap: break-word;
@@ -403,10 +461,14 @@ export default {
   margin-top: var(--spacing-xs);
 }
 
-.detail-tag,
-.detail-album {
-  margin-bottom: var(--spacing-xs);
+.photo-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-sm);
+  margin-top: var(--spacing-sm);
 }
+
+/* 移除不再使用的类名 */
 
 /* 加载状态 */
 .spinner {
@@ -497,5 +559,82 @@ export default {
 /* 标题自动换行 */
 .title-value {
   word-break: break-word;
+}
+
+/* Apple 设计规范标签样式 */
+.apple-tag {
+  display: flex;
+  align-items: center;
+  padding: 6px 12px;
+  border-radius: var(--radius-round);
+  background-color: rgba(0, 122, 255, 0.08);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  user-select: none;
+  -webkit-user-select: none;
+  gap: 4px;
+  color: var(--text-primary);
+}
+
+.apple-tag:hover {
+  background-color: rgba(0, 122, 255, 0.12);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-small);
+}
+
+.apple-tag:active {
+  transform: translateY(0);
+  background-color: rgba(0, 122, 255, 0.16);
+}
+
+.tag-icon {
+  color: var(--color-primary);
+  opacity: 0.7;
+  font-weight: var(--font-weight-semibold);
+}
+
+.tag-name {
+  color: var(--color-primary);
+  font-weight: var(--font-weight-medium);
+}
+
+.apple-album {
+  display: flex;
+  align-items: center;
+  padding: 6px 12px;
+  border-radius: var(--radius-round);
+  background-color: rgba(52, 199, 89, 0.08); /* Apple 绿色的淡化版 */
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  user-select: none;
+  -webkit-user-select: none;
+  gap: 4px;
+  color: var(--text-primary);
+}
+
+.apple-album:hover {
+  background-color: rgba(52, 199, 89, 0.12);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-small);
+}
+
+.apple-album:active {
+  transform: translateY(0);
+  background-color: rgba(52, 199, 89, 0.16);
+}
+
+.album-icon {
+  color: var(--color-success);
+  opacity: 0.8;
+  font-weight: var(--font-weight-medium);
+}
+
+.album-name {
+  color: var(--color-success);
+  font-weight: var(--font-weight-medium);
 }
 </style>
