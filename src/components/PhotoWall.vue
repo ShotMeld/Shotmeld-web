@@ -17,24 +17,12 @@
             </SfInput>
           </div>
 
-          <div class="filter-controls">
-            <div class="filter-item">
+          <div class="filter-controls">            <div class="filter-item">
               <label class="filter-label">相册</label>
               <div class="apple-select-wrapper">
                 <el-select v-model="filters.albumId" placeholder="全部相册" clearable @change="fetchPhotos"
                   class="apple-select">
                   <el-option v-for="album in albums" :key="album.id" :label="album.name" :value="album.id">
-                  </el-option>
-                </el-select>
-              </div>
-            </div>
-
-            <div class="filter-item">
-              <label class="filter-label">标签</label>
-              <div class="apple-select-wrapper">
-                <el-select v-model="filters.tags" multiple collapse-tags placeholder="选择标签" @change="fetchPhotos"
-                  class="apple-select">
-                  <el-option v-for="tag in tags" :key="tag.id" :label="tag.name" :value="tag.id">
                   </el-option>
                 </el-select>
               </div>
@@ -136,7 +124,7 @@ import PhotoUpload from './PhotoUpload.vue';
 import PhotoDetail from './PhotoDetail.vue';
 import AppNavbar from './AppNavbar.vue';
 import IcpFooter from './layout/IcpFooter.vue';
-import { photoService, albumService, tagService } from '../api';
+import { photoService, albumService } from '../api';
 
 export default {
   name: 'PhotoWall',
@@ -147,11 +135,9 @@ export default {
     AppNavbar,
     IcpFooter
   },
-  data() {
-    return {
+  data() {    return {
       photos: [],
       albums: [],
-      tags: [],
       loading: true,
       currentPhoto: null,
       showPhotoDetail: false,
@@ -166,7 +152,6 @@ export default {
       },
       filters: {
         albumId: null,
-        tags: [],
         startDate: null,
         endDate: null,
         sort: 'takenAt',
@@ -179,11 +164,9 @@ export default {
       const user = JSON.parse(localStorage.getItem('user') || '{}');
       return user.username || '用户';
     }
-  },
-  created() {
+  },  created() {
     this.fetchPhotos();
     this.fetchAlbums();
-    this.fetchTags();
   },
   methods: {
     // 保持原有方法，确保它们正常工作
@@ -197,11 +180,8 @@ export default {
           limit: this.pagination.limit,
           sort: this.filters.sort,
           order: this.filters.order
-        };
-
-        if (this.filters.q) params.q = this.filters.q;
+        };        if (this.filters.q) params.q = this.filters.q;
         if (this.filters.albumId) params.albumId = this.filters.albumId;
-        if (this.filters.tags.length > 0) params.tags = this.filters.tags;
         if (this.filters.startDate) params.startDate = this.filters.startDate;
         if (this.filters.endDate) params.endDate = this.filters.endDate;
 
@@ -226,15 +206,6 @@ export default {
         this.albums = response.data.data || [];
       } catch (error) {
         console.error('获取相册列表失败:', error);
-      }
-    },
-
-    async fetchTags() {
-      try {
-        const response = await tagService.getTags();
-        this.tags = response.data.data || [];
-      } catch (error) {
-        console.error('获取标签列表失败:', error);
       }
     },
 
@@ -573,16 +544,7 @@ export default {
   margin-bottom: var(--spacing-sm);
 }
 
-.photo-tags-container {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--spacing-2xs);
-  margin-top: var(--spacing-xs);
-}
 
-.photo-tag-badge {
-  margin-right: var(--spacing-2xs);
-}
 
 /* 无照片状态 */
 .no-photos {
