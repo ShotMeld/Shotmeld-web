@@ -140,6 +140,8 @@ import { photoService, albumService, tagService } from '../api';
 
 export default {
   shadow
+  asdas
+  asd
   name: 'PhotoWall',
   components: {
     AlbumForm,
