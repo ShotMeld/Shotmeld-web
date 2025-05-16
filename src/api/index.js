@@ -79,7 +79,7 @@ export const photoService = {
   },
   
   // 上传照片
-  uploadPhoto(file, metadata = {}) {
+  uploadPhoto(file, metadata = {}, onProgressUpdate = null) {
     const formData = new FormData();
     formData.append('photo', file);
     
@@ -90,12 +90,19 @@ export const photoService = {
     return apiClient.post(API_ENDPOINTS.PHOTOS.BASE, formData, {
       headers: {
         'Content-Type': 'multipart/form-data'
+      },
+      onUploadProgress: progressEvent => {
+        if (onProgressUpdate && progressEvent.total) {
+          // 计算上传百分比
+          const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+          onProgressUpdate(percentCompleted);
+        }
       }
     });
   },
   
   // 批量上传照片
-  batchUploadPhotos(files, albumId = null, tags = []) {
+  batchUploadPhotos(files, albumId = null, tags = [], onProgressUpdate = null) {
     const formData = new FormData();
     
     files.forEach(file => {
@@ -116,6 +123,13 @@ export const photoService = {
     return apiClient.post(API_ENDPOINTS.PHOTOS.BATCH, formData, {
       headers: {
         'Content-Type': 'multipart/form-data'
+      },
+      onUploadProgress: progressEvent => {
+        if (onProgressUpdate && progressEvent.total) {
+          // 计算上传百分比
+          const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+          onProgressUpdate(percentCompleted);
+        }
       }
     });
   },

@@ -18,7 +18,13 @@
         </el-upload>
       </div>
       <div class="loading-container" v-else>
-        <el-progress :percentage="uploadProgress" type="circle"></el-progress>
+        <el-progress 
+          :percentage="uploadProgress" 
+          :format="percent => `${percent}%`" 
+          type="circle" 
+          :stroke-width="6"
+          :status="uploadProgress === 100 ? 'success' : ''"
+        ></el-progress>
         <div class="upload-status">{{ uploadStatus }}</div>
       </div>
     </div>
@@ -217,16 +223,25 @@ export default {
       this.uploadProgress = 0;
       this.uploadStatus = '正在上传...';
 
+      // 定义进度更新回调函数
+      const updateProgress = (percent) => {
+        this.uploadProgress = percent;
+        this.uploadStatus = `正在上传... ${percent}%`;
+      };
+
       try {
         if (this.multiple && this.selectedFiles.length > 1) {
           // 批量上传
           const response = await photoService.batchUploadPhotos(
             this.selectedFiles,
             this.albumId,
-            this.selectedTags
+            this.selectedTags,
+            updateProgress // 传入进度更新回调
           );
 
           this.$emit('upload-success', response.data);
+          this.uploadProgress = 100;
+          this.uploadStatus = '上传完成';
           this.$notify({
             title: '成功',
             message: `已成功上传 ${response.data.uploadedCount} 张照片`,
@@ -241,8 +256,14 @@ export default {
             albumIds: this.albumId ? [this.albumId] : []
           };
 
-          const response = await photoService.uploadPhoto(this.selectedFiles[0], metadata);
+          const response = await photoService.uploadPhoto(
+            this.selectedFiles[0], 
+            metadata,
+            updateProgress // 传入进度更新回调
+          );
 
+          this.uploadProgress = 100;
+          this.uploadStatus = '上传完成';
           this.$emit('upload-success', [response.data]);
           this.$notify({
             title: '成功',
@@ -259,7 +280,16 @@ export default {
           message: error.response?.data?.message || '上传失败，请重试'
         });
       } finally {
-        this.loading = false;
+        // 短暂延迟后重置状态，让用户有时间看到100%的进度
+        setTimeout(() => {
+          this.loading = false;
+          // 如果上传成功，uploadProgress会被设置为100
+          // 如果上传失败，重置进度
+          if (this.uploadProgress !== 100) {
+            this.uploadProgress = 0;
+            this.uploadStatus = '正在上传...';
+          }
+        }, 500);
       }
     }
   }
