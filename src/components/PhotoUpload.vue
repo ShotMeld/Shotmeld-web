@@ -47,20 +47,11 @@
           <button class="remove-file" @click="removeFile(index)">×</button>
         </div>
       </div>
-      <div class="upload-options" v-if="showAlbumOption">
-        <div class="option-item">
+      <div class="upload-options" v-if="showAlbumOption">        <div class="option-item">
           <label>添加到相册:</label>
           <el-select v-model="albumId" placeholder="选择相册" clearable popper-class="album-select-dropdown" teleported
             popper-append-to-body>
             <el-option v-for="album in albums" :key="album.id" :label="album.name" :value="album.id">
-            </el-option>
-          </el-select>
-        </div>
-        <div class="option-item">
-          <label>添加标签:</label>
-          <el-select v-model="selectedTags" multiple collapse-tags placeholder="添加标签" popper-class="tag-select-dropdown"
-            teleported popper-append-to-body>
-            <el-option v-for="tag in tags" :key="tag.id" :label="tag.name" :value="tag.id">
             </el-option>
           </el-select>
         </div>
@@ -73,7 +64,7 @@
 </template>
 
 <script>
-import { photoService, albumService, tagService } from '../api';
+import { photoService, albumService } from '../api';
 
 export default {
   name: 'PhotoUpload',
@@ -99,37 +90,26 @@ export default {
     return {
       isDragging: false,
       selectedFiles: [],
-      loading: false,
-      uploadProgress: 0,
+      loading: false,      uploadProgress: 0,
       uploadStatus: '正在上传...',
       albumId: null,
-      selectedTags: [],
       albums: [],
-      tags: [],
       actionUrl: '' // 不使用el-upload的自动上传功能
     }
-  },
-  async created() {
+  },  async created() {
     if (this.showAlbumOption) {
       try {
-        // 获取相册和标签列表
-        const [albumsResponse, tagsResponse] = await Promise.all([
-          albumService.getAlbums(),
-          tagService.getTags()
-        ]);
-
+        // 获取相册列表
+        const albumsResponse = await albumService.getAlbums();
         this.albums = albumsResponse.data.data || [];
-        this.tags = tagsResponse.data || [];
       } catch (error) {
-        console.error('获取相册或标签列表失败:', error);
+        console.error('获取相册列表失败:', error);
       }
     }
-  },
-  methods: {
+  },  methods: {
     handleDragOver(event) {
       this.isDragging = true;
-    },
-    handleDrop(event) {
+    },handleDrop(event) {
       this.isDragging = false;
       const files = event.dataTransfer.files;
       if (!files || files.length === 0) return;
@@ -143,8 +123,7 @@ export default {
       } else if (files.length > 0 && this.isValidFile(files[0])) {
         this.selectedFiles = [files[0]];
       }
-    },
-    handleFileChange(file) {
+    },handleFileChange(file) {
       if (!file || !this.isValidFile(file.raw)) return;
 
       if (this.multiple) {
@@ -179,10 +158,10 @@ export default {
       }
 
       return true;
-    },
-    isImageFile(file) {
+    },    isImageFile(file) {
       return file.type.startsWith('image/');
     },
+    
     getFilePreview(file) {
       if (!this.isImageFile(file)) return '';
 
@@ -230,12 +209,11 @@ export default {
       };
 
       try {
-        if (this.multiple && this.selectedFiles.length > 1) {
-          // 批量上传
+        if (this.multiple && this.selectedFiles.length > 1) {          // 批量上传
           const response = await photoService.batchUploadPhotos(
             this.selectedFiles,
             this.albumId,
-            this.selectedTags,
+            null,
             updateProgress // 传入进度更新回调
           );
 
@@ -252,7 +230,6 @@ export default {
           const metadata = {
             title: this.selectedFiles[0].name.split('.')[0],
             description: '',
-            tags: this.selectedTags,
             albumIds: this.albumId ? [this.albumId] : []
           };
 
@@ -308,9 +285,8 @@ export default {
   z-index: 10002 !important;
 }
 
-/* 相册和标签下拉菜单样式 */
-:deep(.album-select-dropdown),
-:deep(.tag-select-dropdown) {
+/* 相册下拉菜单样式 */
+:deep(.album-select-dropdown) {
   position: fixed !important;
   margin-top: 5px !important;
   z-index: 10001 !important;
