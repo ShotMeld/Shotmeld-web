@@ -6,7 +6,7 @@
     <div class="info-group" v-if="photo?.tags && photo.tags.length > 0">
         <h3 class="info-group-title">标签</h3>
         <div class="photo-tags">
-            <div v-for="tag in photo.tags" :key="tag" class="apple-tag" @click="handleTagClick(tag)">
+            <div v-for="tag in photo.tags" :key="tag" class="tag-item" @click="handleTagClick(tag, $event)">
                 <span class="tag-icon">#</span>
                 <span class="tag-name">{{ tag }}</span>
             </div>
@@ -24,7 +24,7 @@ export default {
         }
     },
     methods: {
-        handleTagClick(tag) {
+        handleTagClick(tag, event) {
             this.$emit('tag-clicked', tag);
 
             const tagElement = event.currentTarget;
@@ -81,7 +81,7 @@ export default {
     margin-top: var(--spacing-sm);
 }
 
-.apple-tag {
+.tag-item {
     display: flex;
     align-items: center;
     padding: 6px 12px;
@@ -97,13 +97,13 @@ export default {
     color: var(--text-primary);
 }
 
-.apple-tag:hover {
+.tag-item:hover {
     background-color: rgba(0, 122, 255, 0.12);
     transform: translateY(-1px);
     box-shadow: var(--shadow-small);
 }
 
-.apple-tag:active {
+.tag-item:active {
     transform: translateY(0);
     background-color: rgba(0, 122, 255, 0.16);
 }

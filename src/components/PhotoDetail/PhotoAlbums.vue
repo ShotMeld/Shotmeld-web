@@ -6,7 +6,7 @@
   <div class="info-group" v-if="photo?.albums && photo.albums.length > 0">
     <h3 class="info-group-title">相册</h3>
     <div class="photo-albums">
-      <div v-for="album in photo.albums" :key="album" class="apple-album">
+      <div v-for="album in photo.albums" :key="album" class="album-item">
         <span class="album-icon">📁</span>
         <span class="album-name">{{ getAlbumName(album) }}</span>
       </div>
@@ -75,7 +75,7 @@ export default {
   margin-top: var(--spacing-xs);
 }
 
-.apple-album {
+.album-item {
   display: flex;
   align-items: center;
   padding: 6px 12px;
@@ -91,13 +91,13 @@ export default {
   color: var(--text-primary);
 }
 
-.apple-album:hover {
+.album-item:hover {
   background-color: rgba(52, 199, 89, 0.12);
   transform: translateY(-1px);
   box-shadow: var(--shadow-small);
 }
 
-.apple-album:active {
+.album-item:active {
   transform: translateY(0);
   background-color: rgba(52, 199, 89, 0.16);
 }
