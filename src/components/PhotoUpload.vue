@@ -18,13 +18,8 @@
         </el-upload>
       </div>
       <div class="loading-container" v-else>
-        <el-progress 
-          :percentage="uploadProgress" 
-          :format="percent => `${percent}%`" 
-          type="circle" 
-          :stroke-width="6"
-          :status="uploadProgress === 100 ? 'success' : ''"
-        ></el-progress>
+        <el-progress :percentage="uploadProgress" :format="percent => `${percent}%`" type="circle" :stroke-width="6"
+          :status="uploadProgress === 100 ? 'success' : ''"></el-progress>
         <div class="upload-status">{{ uploadStatus }}</div>
       </div>
     </div>
@@ -56,14 +51,6 @@
             </el-option>
           </el-select>
         </div>
-        <div class="option-item">
-          <label>添加标签:</label>
-          <el-select v-model="selectedTags" multiple collapse-tags placeholder="添加标签" popper-class="tag-select-dropdown"
-            teleported popper-append-to-body>
-            <el-option v-for="tag in tags" :key="tag.id" :label="tag.name" :value="tag.id">
-            </el-option>
-          </el-select>
-        </div>
       </div>
       <el-button type="primary" class="upload-button" @click="uploadFiles" :loading="loading">
         {{ loading ? '上传中...' : '开始上传' }}
@@ -73,7 +60,7 @@
 </template>
 
 <script>
-import { photoService, albumService, tagService } from '../api';
+import { photoService, albumService } from '../api';
 
 export default {
   name: 'PhotoUpload',
@@ -99,37 +86,26 @@ export default {
     return {
       isDragging: false,
       selectedFiles: [],
-      loading: false,
-      uploadProgress: 0,
+      loading: false, uploadProgress: 0,
       uploadStatus: '正在上传...',
       albumId: null,
-      selectedTags: [],
       albums: [],
-      tags: [],
       actionUrl: '' // 不使用el-upload的自动上传功能
     }
-  },
-  async created() {
+  }, async created() {
     if (this.showAlbumOption) {
       try {
-        // 获取相册和标签列表
-        const [albumsResponse, tagsResponse] = await Promise.all([
-          albumService.getAlbums(),
-          tagService.getTags()
-        ]);
-
+        // 获取相册列表
+        const albumsResponse = await albumService.getAlbums();
         this.albums = albumsResponse.data.data || [];
-        this.tags = tagsResponse.data || [];
       } catch (error) {
-        console.error('获取相册或标签列表失败:', error);
+        console.error('获取相册列表失败:', error);
       }
     }
-  },
-  methods: {
+  }, methods: {
     handleDragOver(event) {
       this.isDragging = true;
-    },
-    handleDrop(event) {
+    }, handleDrop(event) {
       this.isDragging = false;
       const files = event.dataTransfer.files;
       if (!files || files.length === 0) return;
@@ -143,8 +119,7 @@ export default {
       } else if (files.length > 0 && this.isValidFile(files[0])) {
         this.selectedFiles = [files[0]];
       }
-    },
-    handleFileChange(file) {
+    }, handleFileChange(file) {
       if (!file || !this.isValidFile(file.raw)) return;
 
       if (this.multiple) {
@@ -179,10 +154,10 @@ export default {
       }
 
       return true;
-    },
-    isImageFile(file) {
+    }, isImageFile(file) {
       return file.type.startsWith('image/');
     },
+
     getFilePreview(file) {
       if (!this.isImageFile(file)) return '';
 
@@ -230,12 +205,11 @@ export default {
       };
 
       try {
-        if (this.multiple && this.selectedFiles.length > 1) {
-          // 批量上传
+        if (this.multiple && this.selectedFiles.length > 1) {          // 批量上传
           const response = await photoService.batchUploadPhotos(
             this.selectedFiles,
             this.albumId,
-            this.selectedTags,
+            null,
             updateProgress // 传入进度更新回调
           );
 
@@ -252,12 +226,11 @@ export default {
           const metadata = {
             title: this.selectedFiles[0].name.split('.')[0],
             description: '',
-            tags: this.selectedTags,
             albumIds: this.albumId ? [this.albumId] : []
           };
 
           const response = await photoService.uploadPhoto(
-            this.selectedFiles[0], 
+            this.selectedFiles[0],
             metadata,
             updateProgress // 传入进度更新回调
           );
@@ -308,9 +281,8 @@ export default {
   z-index: 10002 !important;
 }
 
-/* 相册和标签下拉菜单样式 */
-:deep(.album-select-dropdown),
-:deep(.tag-select-dropdown) {
+/* 相册下拉菜单样式 */
+:deep(.album-select-dropdown) {
   position: fixed !important;
   margin-top: 5px !important;
   z-index: 10001 !important;
