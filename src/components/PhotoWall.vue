@@ -139,6 +139,7 @@ import IcpFooter from './layout/IcpFooter.vue';
 import { photoService, albumService, tagService } from '../api';
 
 export default {
+  shadow
   name: 'PhotoWall',
   components: {
     AlbumForm,
