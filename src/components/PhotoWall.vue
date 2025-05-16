@@ -17,7 +17,8 @@
             </SfInput>
           </div>
 
-          <div class="filter-controls">            <div class="filter-item">
+          <div class="filter-controls">
+            <div class="filter-item">
               <label class="filter-label">相册</label>
               <div class="apple-select-wrapper">
                 <el-select v-model="filters.albumId" placeholder="全部相册" clearable @change="fetchPhotos"
@@ -99,8 +100,7 @@
       </div>
 
       <!-- 照片详情模态框 -->
-      <PhotoDetail v-if="currentPhoto" v-model="showPhotoDetail" :photo="currentPhoto"
-        @photo-deleted="deletePhoto" />
+      <PhotoDetail v-if="currentPhoto" v-model="showPhotoDetail" :photo="currentPhoto" @photo-deleted="deletePhoto" />
 
       <!-- 上传照片模态框 -->
       <SfModal v-model="showUploadModal" title="上传照片" size="default">
@@ -111,7 +111,7 @@
       <SfModal v-model="showAlbumForm" title="新建相册" size="default">
         <AlbumForm @success="handleAlbumCreated" @close="showAlbumForm = false" @cancel="showAlbumForm = false" />
       </SfModal>
-      
+
       <!-- ICP备案信息 -->
       <IcpFooter />
     </main>
@@ -135,7 +135,8 @@ export default {
     AppNavbar,
     IcpFooter
   },
-  data() {    return {
+  data() {
+    return {
       photos: [],
       albums: [],
       loading: true,
@@ -164,7 +165,7 @@ export default {
       const user = JSON.parse(localStorage.getItem('user') || '{}');
       return user.username || '用户';
     }
-  },  created() {
+  }, created() {
     this.fetchPhotos();
     this.fetchAlbums();
   },
@@ -180,7 +181,7 @@ export default {
           limit: this.pagination.limit,
           sort: this.filters.sort,
           order: this.filters.order
-        };        if (this.filters.q) params.q = this.filters.q;
+        }; if (this.filters.q) params.q = this.filters.q;
         if (this.filters.albumId) params.albumId = this.filters.albumId;
         if (this.filters.startDate) params.startDate = this.filters.startDate;
         if (this.filters.endDate) params.endDate = this.filters.endDate;
@@ -405,14 +406,6 @@ export default {
   min-width: 0;
   display: flex;
   flex-direction: column;
-}
-
-.filter-label {
-  font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-semibold);
-  color: var(--text-primary);
-  margin-bottom: var(--spacing-xs);
-  letter-spacing: 0.01em;
 }
 
 .sort-controls {
@@ -694,10 +687,6 @@ export default {
 
   :deep(.el-date-editor--daterange) {
     width: 100% !important;
-  }
-
-  .filter-label {
-    margin-bottom: var(--spacing-2xs);
   }
 }
 

@@ -18,13 +18,8 @@
         </el-upload>
       </div>
       <div class="loading-container" v-else>
-        <el-progress 
-          :percentage="uploadProgress" 
-          :format="percent => `${percent}%`" 
-          type="circle" 
-          :stroke-width="6"
-          :status="uploadProgress === 100 ? 'success' : ''"
-        ></el-progress>
+        <el-progress :percentage="uploadProgress" :format="percent => `${percent}%`" type="circle" :stroke-width="6"
+          :status="uploadProgress === 100 ? 'success' : ''"></el-progress>
         <div class="upload-status">{{ uploadStatus }}</div>
       </div>
     </div>
@@ -47,7 +42,8 @@
           <button class="remove-file" @click="removeFile(index)">×</button>
         </div>
       </div>
-      <div class="upload-options" v-if="showAlbumOption">        <div class="option-item">
+      <div class="upload-options" v-if="showAlbumOption">
+        <div class="option-item">
           <label>添加到相册:</label>
           <el-select v-model="albumId" placeholder="选择相册" clearable popper-class="album-select-dropdown" teleported
             popper-append-to-body>
@@ -90,13 +86,13 @@ export default {
     return {
       isDragging: false,
       selectedFiles: [],
-      loading: false,      uploadProgress: 0,
+      loading: false, uploadProgress: 0,
       uploadStatus: '正在上传...',
       albumId: null,
       albums: [],
       actionUrl: '' // 不使用el-upload的自动上传功能
     }
-  },  async created() {
+  }, async created() {
     if (this.showAlbumOption) {
       try {
         // 获取相册列表
@@ -106,10 +102,10 @@ export default {
         console.error('获取相册列表失败:', error);
       }
     }
-  },  methods: {
+  }, methods: {
     handleDragOver(event) {
       this.isDragging = true;
-    },handleDrop(event) {
+    }, handleDrop(event) {
       this.isDragging = false;
       const files = event.dataTransfer.files;
       if (!files || files.length === 0) return;
@@ -123,7 +119,7 @@ export default {
       } else if (files.length > 0 && this.isValidFile(files[0])) {
         this.selectedFiles = [files[0]];
       }
-    },handleFileChange(file) {
+    }, handleFileChange(file) {
       if (!file || !this.isValidFile(file.raw)) return;
 
       if (this.multiple) {
@@ -158,10 +154,10 @@ export default {
       }
 
       return true;
-    },    isImageFile(file) {
+    }, isImageFile(file) {
       return file.type.startsWith('image/');
     },
-    
+
     getFilePreview(file) {
       if (!this.isImageFile(file)) return '';
 
@@ -234,7 +230,7 @@ export default {
           };
 
           const response = await photoService.uploadPhoto(
-            this.selectedFiles[0], 
+            this.selectedFiles[0],
             metadata,
             updateProgress // 传入进度更新回调
           );
