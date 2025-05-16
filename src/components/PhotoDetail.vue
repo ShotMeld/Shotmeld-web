@@ -74,14 +74,13 @@
               <div class="exif-value">{{ photo.metadata.exif.focalLength }}mm</div>
               <div class="exif-label">焦距</div>
             </div>
-            <div class="exif-item" v-if="photo?.metadata?.depth">
-              <div class="exif-value">{{ formatDepth(photo.metadata.depth) }}</div>
-              <div class="exif-label">位深度</div>
-
+            <div class="exif-item" v-if="photo?.metadata?.exif?.rawExif?.BrightnessValue">
+              <div class="exif-value">{{ photo?.metadata?.exif?.rawExif?.BrightnessValue }}</div>
+              <div class="exif-label">EV</div>
             </div>
-            <div class="exif-item" v-if="photo?.metadata?.channels">
-              <div class="exif-value">{{ photo.metadata.channels }}</div>
-              <div class="exif-label">通道数</div>
+            <div class="exif-item" v-if="photo?.metadata?.exif?.rawExif?.MeteringMode">
+              <div class="exif-value">{{ formatMeteringMode(photo?.metadata?.exif?.rawExif?.MeteringMode) }}</div>
+              <div class="exif-label">测光模式</div>
             </div>
           </div>
 
@@ -231,6 +230,19 @@ export default {
       return `${time.toFixed(2)}s`;
     },
 
+    formatMeteringMode(mode) {
+      const modes = {
+        0: '未知',
+        1: '平均',
+        2: '中心加权',
+        3: '点测光',
+        4: '多区域',
+        5: '局部',
+        6: '矩阵'
+      };
+      return modes[mode] || '未知';
+    },
+
     formatCoordinate(coord, type) {
       if (typeof coord !== 'number') return '';
 
@@ -244,22 +256,6 @@ export default {
         : (coord >= 0 ? 'E' : 'W');
 
       return `${Math.abs(degrees)}° ${minutes}' ${seconds}" ${direction}`;
-    },
-
-    formatDepth(depth) {
-      // 转换位深度表示
-      const depthMap = {
-        'uchar': '8位',
-        'char': '8位',
-        'ushort': '16位',
-        'short': '16位',
-        'uint': '32位',
-        'int': '32位',
-        'float': '32位浮点',
-        'double': '64位浮点'
-      };
-
-      return depthMap[depth] || depth;
     },
 
     openMap() {
