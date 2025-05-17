@@ -10,31 +10,46 @@
       </div>
     </template>
 
+    <template #default>
+      <!-- 主导航链接容器 -->
+      <div class="main-nav">
+        <SfNavLink to="/photowall" class="nav-item">
+          照片墙
+        </SfNavLink>
+
+        <SfNavLink to="/timeline" class="nav-item">
+          时间线
+        </SfNavLink>
+
+        <SfNavLink to="/albums" class="nav-item">
+          相册
+        </SfNavLink>
+      </div>
+    </template>
+
     <template #actions>
       <!-- 导航菜单容器 -->
       <div class="nav-actions" :class="{ 'is-mobile-open': isMobileMenuOpen }">
-        <SfNavLink :to="currentPage === 'timeline' ? '/photowall' : '/timeline'" class="nav-item">
-          <template #icon>
-            <i :class="currentPage === 'timeline' ? 'fas fa-th' : 'fas fa-calendar-alt'"></i>
-          </template>
-          {{ currentPage === 'timeline' ? '照片墙' : '时间轴' }}
-        </SfNavLink>
+        <!-- 照片墙页面按钮 -->
+        <template v-if="currentPage === 'photowall'">
+          <SfButton type="secondary" @click="$emit('show-upload')" class="navbar-button nav-item">
+            上传照片
+          </SfButton>
+        </template>
 
-        <SfButton v-if="currentPage !== 'timeline'" type="secondary" @click="$emit('show-upload')"
-          class="navbar-button nav-item">
-          <template #prefix>
-            <i class="fas fa-cloud-upload-alt"></i>
-          </template>
-          上传照片
-        </SfButton>
+        <!-- 相册列表页面按钮 -->
+        <template v-if="currentPage === 'albums'">
+          <SfButton type="secondary" @click="$emit('show-album-form')" class="navbar-button nav-item">
+            新建相册
+          </SfButton>
+        </template>
 
-        <SfButton v-if="currentPage !== 'timeline'" type="secondary" @click="$emit('show-album-form')"
-          class="navbar-button nav-item">
-          <template #prefix>
-            <i class="fas fa-folder-plus"></i>
-          </template>
-          新建相册
-        </SfButton>
+        <!-- 相册详情页面按钮 -->
+        <template v-if="currentPage === 'album-detail'">
+          <SfButton type="secondary" @click="$emit('show-upload')" class="navbar-button nav-item">
+            添加照片
+          </SfButton>
+        </template>
 
         <div class="user-dropdown nav-item">
           <SfAvatar :text="userName" size="small" class="user-avatar" />
@@ -59,8 +74,16 @@
 </template>
 
 <script>
+import { SfNavbar, SfNavLink, SfButton, SfAvatar } from '../components/ui'
+
 export default {
   name: 'AppNavbar',
+  components: {
+    SfNavbar,
+    SfNavLink,
+    SfButton,
+    SfAvatar
+  },
   props: {
     userName: {
       type: String,
@@ -69,7 +92,7 @@ export default {
     currentPage: {
       type: String,
       default: 'photowall',
-      validator: (value) => ['photowall', 'timeline'].includes(value)
+      validator: (value) => ['photowall', 'timeline', 'albums', 'album-detail'].includes(value)
     }
   },
   data() {
@@ -94,6 +117,7 @@ export default {
   display: flex;
   align-items: center;
   gap: var(--spacing-sm);
+  min-width: 200px;
 }
 
 .navbar-title {
@@ -103,14 +127,25 @@ export default {
   text-decoration: none;
 }
 
+/* 主导航链接容器 */
+.main-nav {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: var(--spacing-xl);
+}
+
 /* 导航栏按钮样式 */
 .navbar-button {
   display: flex;
   align-items: center;
+  padding: var(--spacing-xs) var(--spacing-md);
+  height: 40px;
 }
 
 .navbar-button :deep(.sf-button__text) {
-  margin-left: var(--spacing-sm);
+  margin: 0;
 }
 
 /* 移动端菜单按钮 */
@@ -129,6 +164,8 @@ export default {
   display: flex;
   align-items: center;
   gap: var(--spacing-sm);
+  min-width: 200px;
+  justify-content: flex-end;
 }
 
 /* 用户下拉菜单 */
@@ -171,6 +208,14 @@ export default {
     justify-content: center;
   }
 
+  .main-nav {
+    position: static;
+    transform: none;
+    flex-direction: column;
+    width: 100%;
+    gap: var(--spacing-sm);
+  }
+
   .nav-actions {
     position: absolute;
     top: 100%;
@@ -181,6 +226,7 @@ export default {
     padding: var(--spacing-sm);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     display: none;
+    min-width: 100%;
   }
 
   .nav-actions.is-mobile-open {

@@ -35,6 +35,18 @@ const routes = [
     name: 'Timeline',
     component: () => import('../components/TimelineView.vue'),
     meta: { requiresAuth: true }
+  },
+  {
+    path: '/albums',
+    name: 'Albums',
+    component: () => import('../views/AlbumView.vue'),
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/album/:id',
+    name: 'AlbumDetail',
+    component: () => import('../views/AlbumDetailView.vue'),
+    meta: { requiresAuth: true }
   }
 ]
 
