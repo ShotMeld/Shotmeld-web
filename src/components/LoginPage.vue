@@ -1,7 +1,8 @@
 <template>
   <div class="page-container">
     <div class="login-card">
-      <h1 class="login-title">登录</h1>
+      <h1 class="brand-title">ShotMeld</h1>
+      <h2 class="login-title">登录</h2>
       <form @submit.prevent="handleLogin">
         <SfInput v-model="formData.emailOrUsername" label="用户名或邮箱地址" required :error="errors.emailOrUsername">
           <template #prefix>
@@ -161,6 +162,15 @@ export default {
 .login-card:hover {
   transform: translateY(-5px);
   box-shadow: var(--shadow-extra-large);
+}
+
+.brand-title {
+  color: var(--text-primary);
+  font-size: var(--font-size-3xl);
+  margin-bottom: var(--spacing-md);
+  font-weight: 600;
+  text-align: center;
+  font-family: "Dancing Script", cursive;
 }
 
 .login-title {

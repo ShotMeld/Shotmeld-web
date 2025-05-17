@@ -1,7 +1,8 @@
 <template>
   <div class="page-container">
     <div class="register-card">
-      <h1 class="register-title">注册账号</h1>
+      <h1 class="brand-title">ShotMeld</h1>
+      <h2 class="register-title">注册账号</h2>
       <form @submit.prevent="handleRegister">
         <SfInput v-model="formData.username" label="用户名" required :error="errors.username">
           <template #prefix>
@@ -246,6 +247,15 @@ export default {
 .register-card:hover {
   transform: translateY(-5px);
   box-shadow: var(--shadow-extra-large);
+}
+
+.brand-title {
+  color: var(--text-primary);
+  font-size: var(--font-size-3xl);
+  margin-bottom: var(--spacing-md);
+  font-weight: 600;
+  text-align: center;
+  font-family: "Dancing Script", cursive;
 }
 
 .register-title {

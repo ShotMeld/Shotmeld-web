@@ -1,6 +1,7 @@
 <template>
   <div class="album-view">
-    <AppNavbar :userName="userName" currentPage="albums" @show-upload="showUploadModal = true" @show-album-form="showCreateModal = true" />
+    <AppNavbar :userName="userName" currentPage="albums" @show-upload="showUploadModal = true"
+      @show-album-form="showCreateModal = true" />
     <div class="album-container">
       <div v-if="loading" class="album-view__loading">
         <div class="album-view__spinner"></div>
@@ -19,18 +20,14 @@
       </div>
 
       <div v-else class="album-view__grid">
-        <album-card
-          v-for="album in albums"
-          :key="album.id"
-          :album="album"
-          @click="openAlbum(album)"
-        />
+        <album-card v-for="album in albums" :key="album.id" :album="album" @click="openAlbum(album)" />
       </div>
     </div>
 
     <sf-modal v-model="showCreateModal" title="创建新相册">
       <album-form @success="handleAlbumCreated" @close="showCreateModal = false" @cancel="showCreateModal = false" />
     </sf-modal>
+    <IcpFooter />
   </div>
 </template>
 
@@ -40,6 +37,7 @@ import AppNavbar from '../components/AppNavbar.vue'
 import SfButton from '../components/ui/SfButton.vue'
 import SfModal from '../components/ui/SfModal.vue'
 import AlbumForm from '../components/AlbumForm.vue'
+import IcpFooter from '../components/layout/IcpFooter.vue';
 import { albumService } from '../api'
 
 export default {
@@ -49,7 +47,8 @@ export default {
     AppNavbar,
     SfButton,
     SfModal,
-    AlbumForm
+    AlbumForm,
+    IcpFooter
   },
   data() {
     return {
