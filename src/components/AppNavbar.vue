@@ -56,20 +56,27 @@
 
           <div class="user-profile" @click="toggleUserMenu">
             <SfAvatar :text="userName" size="small" class="user-avatar" />
-            <div class="user-dropdown" v-show="isUserMenuOpen" @click.stop>
-              <SfNavLink to="/profile" @click="closeAllMenus">
-                <template #icon>
-                  <i class="fas fa-user"></i>
-                </template>
-                个人资料
-              </SfNavLink>
-              <SfNavLink href="#" @click="handleLogout">
-                <template #icon>
-                  <i class="fas fa-sign-out-alt"></i>
-                </template>
-                退出登录
-              </SfNavLink>
-            </div>
+            <transition name="dropdown">
+              <div class="user-dropdown" v-if="isUserMenuOpen" @click.stop>
+                <div class="dropdown-header">
+                  <span class="dropdown-title">{{ userName }}</span>
+                </div>
+                <div class="dropdown-links">
+                  <SfNavLink to="/profile" @click="closeAllMenus" class="dropdown-link">
+                    <template #icon>
+                      <i class="fas fa-user"></i>
+                    </template>
+                    个人资料
+                  </SfNavLink>
+                  <SfNavLink href="#" @click="handleLogout" class="dropdown-link logout-link">
+                    <template #icon>
+                      <i class="fas fa-sign-out-alt"></i>
+                    </template>
+                    退出登录
+                  </SfNavLink>
+                </div>
+              </div>
+            </transition>
           </div>
         </div>
       </template>
@@ -199,8 +206,8 @@ export default {
     },
     handleDocumentClick(event) {
       // 如果点击的不是用户菜单区域，关闭用户菜单
-      const userDropdown = this.$el.querySelector('.user-profile')
-      if (userDropdown && !userDropdown.contains(event.target)) {
+      const userProfile = this.$el.querySelector('.user-profile')
+      if (userProfile && !userProfile.contains(event.target)) {
         this.isUserMenuOpen = false
       }
     },
@@ -219,6 +226,7 @@ export default {
     toggleUserMenu(event) {
       event.stopPropagation()
       this.isUserMenuOpen = !this.isUserMenuOpen
+      console.log("用户菜单状态:", this.isUserMenuOpen) // 添加日志帮助调试
     },
     closeAllMenus() {
       this.isMobileMenuOpen = false
@@ -379,24 +387,18 @@ export default {
 .user-dropdown {
   position: absolute;
   right: 0;
-  top: calc(100% + 8px);
+  top: calc(100% + 12px);
   background-color: var(--bg-primary);
-  border-radius: 12px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1), 0 8px 20px rgba(0, 0, 0, 0.05);
-  min-width: 200px;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08), 0 8px 16px rgba(0, 0, 0, 0.03);
+  width: auto;
   z-index: 20;
   overflow: hidden;
-  opacity: 0;
-  visibility: hidden;
-  transform: scale(0.95) translateY(-8px);
   transform-origin: top right;
-  transition: all 0.2s cubic-bezier(0.23, 1, 0.32, 1);
-}
-
-.user-dropdown:global(.shown) {
-  opacity: 1;
-  visibility: visible;
-  transform: scale(1) translateY(0);
+  transition: all 0.25s cubic-bezier(0.23, 1, 0.32, 1);
+  border: 1px solid rgba(0, 0, 0, 0.03);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 
 .user-dropdown:before {
@@ -408,7 +410,8 @@ export default {
   height: 12px;
   background-color: var(--bg-primary);
   transform: rotate(45deg);
-  border-radius: 2px;
+  border-radius: 3px;
+  box-shadow: -2px -2px 5px rgba(0, 0, 0, 0.03);
   z-index: -1;
 }
 
@@ -439,7 +442,7 @@ export default {
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
   overscroll-behavior: contain;
-  padding-top: 60px; /* 为导航栏留出空间 */
+  padding-top: 60px;
 }
 
 .mobile-drawer.active {
@@ -449,7 +452,7 @@ export default {
 .drawer-content {
   display: flex;
   flex-direction: column;
-  height: calc(100% - 60px); /* 减去导航栏高度 */
+  height: calc(100% - 60px);
   padding: var(--spacing-xl);
 }
 
@@ -545,5 +548,70 @@ export default {
   backdrop-filter: blur(3px);
   z-index: 15;
   transition: opacity 0.35s ease;
+}
+
+/* 用户下拉菜单过渡动画 */
+.dropdown-enter-active,
+.dropdown-leave-active {
+  transition: all 0.3s ease;
+}
+.dropdown-enter-from,
+.dropdown-leave-to {
+  opacity: 0;
+  transform: translateY(-10px);
+}
+
+/* 下拉菜单内部样式 */
+.dropdown-header {
+  padding: 16px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+}
+
+.dropdown-title {
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+}
+
+.dropdown-links {
+  padding: 8px 0;
+}
+
+.dropdown-link {
+  padding: 12px 16px;
+  margin: 0 8px;
+  border-radius: 10px;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.dropdown-link:hover {
+  background-color: rgba(0, 0, 0, 0.03);
+}
+
+.dropdown-link :deep(.sf-nav-link__icon) {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 12px;
+  color: var(--text-secondary);
+}
+
+.dropdown-link:hover :deep(.sf-nav-link__icon) {
+  color: var(--primary);
+}
+
+.logout-link {
+  margin-top: 4px;
+}
+
+.logout-link:hover {
+  color: var(--danger);
+}
+
+.logout-link:hover :deep(.sf-nav-link__icon) {
+  color: var(--danger);
 }
 </style>
