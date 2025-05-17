@@ -46,6 +46,7 @@
     <sf-modal v-model="showUploadModal" title="添加照片">
       <photo-upload
         :showAlbumOption="false"
+        :albumId="album.id"
         @upload-success="handlePhotoUploaded"
       />
     </sf-modal>

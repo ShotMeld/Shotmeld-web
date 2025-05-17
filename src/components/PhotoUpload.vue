@@ -45,7 +45,7 @@
       <div class="upload-options" v-if="showAlbumOption">
         <div class="option-item">
           <label>添加到相册:</label>
-          <el-select v-model="albumId" placeholder="选择相册" clearable popper-class="album-select-dropdown" teleported
+          <el-select v-model="selectedAlbumId" placeholder="选择相册" clearable popper-class="album-select-dropdown" teleported
             popper-append-to-body>
             <el-option v-for="album in albums" :key="album.id" :label="album.name" :value="album.id">
             </el-option>
@@ -80,19 +80,33 @@ export default {
     showAlbumOption: {
       type: Boolean,
       default: true
+    },
+    albumId: {
+      type: String,
+      default: null
     }
   },
   data() {
     return {
       isDragging: false,
       selectedFiles: [],
-      loading: false, uploadProgress: 0,
+      loading: false,
+      uploadProgress: 0,
       uploadStatus: '正在上传...',
-      albumId: null,
+      selectedAlbumId: null,
       albums: [],
       actionUrl: '' // 不使用el-upload的自动上传功能
     }
-  }, async created() {
+  },
+  watch: {
+    albumId: {
+      immediate: true,
+      handler(newVal) {
+        this.selectedAlbumId = newVal;
+      }
+    }
+  },
+  async created() {
     if (this.showAlbumOption) {
       try {
         // 获取相册列表
@@ -208,7 +222,7 @@ export default {
         if (this.multiple && this.selectedFiles.length > 1) {          // 批量上传
           const response = await photoService.batchUploadPhotos(
             this.selectedFiles,
-            this.albumId,
+            this.selectedAlbumId,
             null,
             updateProgress // 传入进度更新回调
           );
@@ -226,7 +240,7 @@ export default {
           const metadata = {
             title: this.selectedFiles[0].name.split('.')[0],
             description: '',
-            albumIds: this.albumId ? [this.albumId] : []
+            albumIds: this.selectedAlbumId ? [this.selectedAlbumId] : []
           };
 
           const response = await photoService.uploadPhoto(
