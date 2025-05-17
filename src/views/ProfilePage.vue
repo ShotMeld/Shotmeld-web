@@ -1,3 +1,7 @@
+<!--
+  ProfilePage.vue - 个人页
+-->
+
 <template>
   <div class="page-container">
     <div class="profile-card">

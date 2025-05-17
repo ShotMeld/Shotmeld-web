@@ -1,8 +1,5 @@
 <!--
-  PhotoDetail.vue
-  照片详情组件
-
-  具体的实现逻辑在子组件中
+  PhotoDetail.vue - 照片详情组件
 -->
 
 <template>

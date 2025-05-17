@@ -1,3 +1,7 @@
+<!--
+  LoginPage.vue - 登录页
+-->
+
 <template>
   <div class="page-container">
     <div class="login-card">
@@ -32,8 +36,8 @@
 </template>
 
 <script>
-import { authService } from '../api';
-import IcpFooter from './layout/IcpFooter.vue';
+import { authService } from '../../api';
+import IcpFooter from '../../layout/IcpFooter.vue';
 
 export default {
   name: 'LoginPage',

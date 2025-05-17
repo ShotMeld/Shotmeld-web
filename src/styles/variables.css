@@ -1,28 +1,28 @@
 :root {
-  /* Apple风格颜色系统 */
-  --color-primary: #007AFF;  /* Apple蓝色 */
+  /* 颜色系统 */
+  --color-primary: #007AFF;  /* 蓝色 */
   --color-secondary: #5AC8FA; /* 浅蓝色 */
-  --color-success: #34C759;  /* Apple绿色 */
-  --color-warning: #FF9500;  /* Apple橙色 */
-  --color-danger: #FF3B30;   /* Apple红色 */
-  --color-info: #5856D6;     /* Apple紫色 */
+  --color-success: #34C759;  /* 绿色 */
+  --color-warning: #FF9500;  /* 橙色 */
+  --color-danger: #FF3B30;   /* 红色 */
+  --color-info: #5856D6;     /* 紫色 */
   
   /* 中性色调 */
   --color-black: #000000;
-  --color-dark-gray: #1D1D1F; /* Apple深灰色 */
-  --color-gray: #86868B;      /* Apple中灰色 */
-  --color-light-gray: #F5F5F7; /* Apple浅灰色 */
+  --color-dark-gray: #1D1D1F; /* 深灰色 */
+  --color-gray: #86868B;      /* 中灰色 */
+  --color-light-gray: #F5F5F7; /* 浅灰色 */
   --color-white: #FFFFFF;
   
   /* 背景颜色 */
   --bg-primary: var(--color-white);
   --bg-secondary: var(--color-light-gray);
-  --bg-tertiary: #FAFAFC;     /* 更浅的灰色背景 */
+  --bg-tertiary: #FAFAFC;
   
   /* 文字颜色 */
   --text-primary: var(--color-dark-gray);
   --text-secondary: var(--color-gray);
-  --text-tertiary: #AEAEB2;   /* 更淡的文字颜色 */
+  --text-tertiary: #AEAEB2;
   --text-disabled: rgba(60, 60, 67, 0.3);
   
   /* 边框和分割线 */

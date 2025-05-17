@@ -1,3 +1,7 @@
+<!--
+  PhotoUpload.vue - 照片上传组件
+-->
+
 <template>
   <div class="upload-component">
     <div class="upload-container" @dragover.prevent="handleDragOver" @dragleave.prevent="isDragging = false"

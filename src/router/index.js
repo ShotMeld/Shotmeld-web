@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import LoginPage from '../components/LoginPage.vue'
-import RegisterPage from '../components/RegisterPage.vue'
-import ProfilePage from '../components/ProfilePage.vue'
+import LoginPage from '../views/auth/LoginPage.vue'
+import RegisterPage from '../views/auth/RegisterPage.vue'
+import ProfilePage from '../views/ProfilePage.vue'
 
 const routes = [
   {
@@ -21,7 +21,7 @@ const routes = [
   {
     path: '/photowall',
     name: 'PhotoWall',
-    component: () => import('../components/PhotoWall.vue'),
+    component: () => import('../views/PhotoWall.vue'),
     meta: { requiresAuth: true }
   },
   {
@@ -33,7 +33,7 @@ const routes = [
   {
     path: '/timeline',
     name: 'Timeline',
-    component: () => import('../components/TimelineView.vue'),
+    component: () => import('../views/TimelineView.vue'),
     meta: { requiresAuth: true }
   },
   {

@@ -1,3 +1,7 @@
+<!--
+  AlbumForm.vue - 相册创建组件
+-->
+
 <template>
   <div class="album-form-container">
 

@@ -4,39 +4,20 @@
 
 <template>
   <div class="photo-wall-container">
-    <AppNavbar :userName="userName" currentPage="photowall" @show-upload="showUploadModal = true" @show-album-form="showAlbumForm = true" />
+    <AppNavbar :userName="userName" currentPage="photowall" @show-upload="showUploadModal = true"
+      @show-album-form="showAlbumForm = true" />
     <main class="photo-wall-main">
-      <PhotoWallFilters
-        :searchQuery="searchQuery"
-        :filters="filters"
-        :dateRange="dateRange"
-        :albums="albums"
-        @update:searchQuery="searchQuery = $event"
-        @update:filters="filters = $event"
-        @update:dateRange="dateRange = $event"
-        @fetchPhotos="fetchPhotos"
-      />
-      <PhotoWallGrid
-        v-if="!loading"
-        :photos="photos"
-        @openPhotoDetail="openPhotoDetail"
-        @showUploadModal="showUploadModal = true"
-      />
+      <PhotoWallFilters :searchQuery="searchQuery" :filters="filters" :dateRange="dateRange" :albums="albums"
+        @update:searchQuery="searchQuery = $event" @update:filters="filters = $event"
+        @update:dateRange="dateRange = $event" @fetchPhotos="fetchPhotos" />
+      <PhotoWallGrid v-if="!loading" :photos="photos" @openPhotoDetail="openPhotoDetail"
+        @showUploadModal="showUploadModal = true" />
       <PhotoWallLoading v-else />
-      <PhotoWallPagination
-        v-if="totalPhotos > 0"
-        :currentPage="pagination.page"
-        :pageSize="pagination.limit"
-        :total="totalPhotos"
-        @sizeChange="handleSizeChange"
-        @currentChange="handlePageChange"
-      />
+      <PhotoWallPagination v-if="totalPhotos > 0" :currentPage="pagination.page" :pageSize="pagination.limit"
+        :total="totalPhotos" @sizeChange="handleSizeChange" @currentChange="handlePageChange" />
       <PhotoDetail v-if="currentPhoto" v-model="showPhotoDetail" :photo="currentPhoto" @photo-deleted="deletePhoto" />
       <SfModal v-model="showUploadModal" title="上传照片" size="default">
         <PhotoUpload @upload-success="handlePhotoUploaded" />
-      </SfModal>
-      <SfModal v-model="showAlbumForm" title="新建相册" size="default">
-        <AlbumForm @success="handleAlbumCreated" @close="showAlbumForm = false" @cancel="showAlbumForm = false" />
       </SfModal>
       <IcpFooter />
     </main>
@@ -44,15 +25,15 @@
 </template>
 
 <script>
-import AppNavbar from '../AppNavbar.vue';
+import AppNavbar from '../../layout/AppNavbar.vue';
 import PhotoWallFilters from './PhotoWallFilters.vue';
 import PhotoWallGrid from './PhotoWallGrid.vue';
 import PhotoWallLoading from './PhotoWallLoading.vue';
 import PhotoWallPagination from './PhotoWallPagination.vue';
-import PhotoDetail from '../PhotoDetail.vue';
-import PhotoUpload from '../PhotoUpload.vue';
-import AlbumForm from '../AlbumForm.vue';
-import IcpFooter from '../layout/IcpFooter.vue';
+import PhotoDetail from '../../components/PhotoDetail.vue';
+import PhotoUpload from '../../components/PhotoUpload.vue';
+import AlbumForm from '../../components/album/AlbumForm.vue';
+import IcpFooter from '../../layout/IcpFooter.vue';
 import { photoService, albumService } from '../../api';
 
 export default {
@@ -191,9 +172,10 @@ export default {
   min-height: 100vh;
   background-color: var(--bg-secondary);
 }
+
 .photo-wall-main {
   max-width: var(--container-xl);
   margin: 0 auto;
   padding: var(--spacing-xl);
 }
-</style> 
+</style>

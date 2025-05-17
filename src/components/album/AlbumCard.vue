@@ -1,3 +1,7 @@
+<!--
+  AlbumCard.vue - 相册卡片组件
+-->
+
 <template>
   <sf-card class="album-card" @click="$emit('click')">
     <div class="album-card__cover">
@@ -55,8 +59,18 @@ export default {
           return this.photoDetails[firstPhotoId].thumbnailUrl
         }
       }
-      // 否则使用默认图片
-      return '/images/default-album.jpg'
+      // 否则创建一个包含"无照片"文字和图标的SVG数据URL
+      const svg = `
+      <svg xmlns="http://www.w3.org/2000/svg" width="300" height="200" viewBox="0 0 300 200">
+        <rect width="100%" height="100%" fill="#f5f5f5"/>
+        <g transform="translate(125,65)">
+          <rect x="0" y="0" width="50" height="40" rx="4" stroke="#999" stroke-width="2" fill="none"/>
+          <circle cx="38" cy="12" r="4" fill="#999"/>
+          <polyline points="0,28 15,20 50,40" stroke="#999" stroke-width="2" fill="none"/>
+        </g>
+        <text x="150" y="130" font-family="Arial" font-size="16" fill="#999" text-anchor="middle">No Photos</text>
+      </svg>`;
+      return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
     }
   },
   watch: {

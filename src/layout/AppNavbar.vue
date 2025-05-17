@@ -1,3 +1,7 @@
+<!--
+  AppNavbar.vue - 导航栏
+-->
+
 <template>
   <div class="navbar-container">
     <SfNavbar title="ShotMeld" transparent>

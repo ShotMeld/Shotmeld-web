@@ -1,7 +1,11 @@
+<!--
+  TimelineView.vue - 时间线页
+-->
+
 <template>
   <div class="timeline-container">
     <!-- 顶部导航栏 -->
-    <AppNavbar :userName="userName" currentPage="timeline" @show-upload="showUploadModal = true"
+    <AppNavbar :userName="userName" currentPage="photowall" @show-upload="showUploadModal = true"
       @show-album-form="showAlbumForm = true" />
 
     <main class="timeline-content">
@@ -69,15 +73,12 @@
       <!-- 照片详情模态框 -->
       <PhotoDetail v-if="currentPhoto" v-model="showPhotoDetailModal" :photo="currentPhoto"
         @photo-deleted="handlePhotoDeleted" />
-      
+
       <!-- 上传照片模态框 -->
       <sf-modal v-model="showUploadModal" title="上传照片">
-        <photo-upload
-          :showAlbumOption="false"
-          @upload-success="handlePhotoUploaded"
-        />
+        <photo-upload :showAlbumOption="true" @upload-success="handlePhotoUploaded" />
       </sf-modal>
-      
+
       <!-- ICP备案信息 -->
       <IcpFooter />
     </main>
@@ -87,12 +88,12 @@
 <script>
 import { photoService } from '../api';
 import apiClient from '../api';
-import PhotoUpload from './PhotoUpload.vue';
-import PhotoDetail from './PhotoDetail.vue';
-import AppNavbar from './AppNavbar.vue';
-import AlbumForm from './AlbumForm.vue';
-import IcpFooter from './layout/IcpFooter.vue';
-import { SfModal } from './ui';
+import PhotoUpload from '../components/PhotoUpload.vue';
+import PhotoDetail from '../components/PhotoDetail.vue';
+import AppNavbar from '../layout/AppNavbar.vue';
+import AlbumForm from '../components/album/AlbumForm.vue';
+import IcpFooter from '../layout/IcpFooter.vue';
+import { SfModal } from '../components/ui';
 
 export default {
   name: 'TimelineView',
@@ -134,16 +135,13 @@ export default {
       this.error = null;
 
       try {
-        // 构建API参数
-        const params = { groupBy: 'month' }; // 按月分组
+        const params = { groupBy: 'month' };
 
-        // 使用新的时间轴API
         const response = await photoService.getPhotoTimeline(params);
 
         this.photos = [];
         const timelineData = response.data || [];
 
-        // 从时间轴数据中提取所有照片
         timelineData.forEach(group => {
           if (group.photos && Array.isArray(group.photos)) {
             this.photos = [...this.photos, ...group.photos];
@@ -208,18 +206,16 @@ export default {
       this.showPhotoDetailModal = false;
       setTimeout(() => {
         this.currentPhoto = null;
-      }, 300); // 等待模态框关闭动画完成后再清空照片数据
+      }, 300);
     },
 
     startEditingPhoto(photo) {
-      // 实现编辑照片功能，可以打开一个编辑表单
       console.log('编辑照片:', photo);
       // TODO: 实现编辑照片的功能
       alert('编辑照片功能将在后续版本实现');
     },
 
     handlePhotoDeleted(photoId) {
-      // 这个方法会被 PhotoDetail 组件调用
       this.deletePhoto(photoId);
     },
 
@@ -243,7 +239,6 @@ export default {
         const idToDelete = photoId || (this.currentPhoto && this.currentPhoto.id);
         if (!idToDelete) return;
 
-        // 使用更新后的deletePhoto方法，底层已调整为使用批量删除API
         await photoService.deletePhoto(idToDelete);
 
         this.$notify({
@@ -355,9 +350,9 @@ export default {
 .year-header {
   font-size: 1.8rem;
   margin-bottom: 1.5rem;
-  border-bottom: 2px solid #4361ee;
+  border-bottom: 2px solid var(--color-primary);
   padding-bottom: 0.5rem;
-  color: #4361ee;
+  color: var(--color-primary);
   display: flex;
   justify-content: space-between;
   align-items: baseline;
@@ -570,7 +565,6 @@ export default {
   padding: 0;
 }
 
-/* 动画效果 */
 .modal-enter-active,
 .modal-leave-active {
   transition: all 0.3s ease;

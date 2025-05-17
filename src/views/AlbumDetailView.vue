@@ -1,3 +1,7 @@
+<!--
+  AlbumDetailView.vue - 相册详情页
+-->
+
 <template>
   <div class="album-detail">
     <AppNavbar :userName="userName" currentPage="album-detail" @show-upload="showUploadModal = true" @show-album-form="showCreateModal = true" />
@@ -54,10 +58,10 @@
 </template>
 
 <script>
-import PhotoWallGrid from '../components/PhotoWall/PhotoWallGrid.vue'
+import PhotoWallGrid from './PhotoWall/PhotoWallGrid.vue'
 import PhotoDetail from '../components/PhotoDetail.vue'
 import PhotoUpload from '../components/PhotoUpload.vue'
-import AppNavbar from '../components/AppNavbar.vue'
+import AppNavbar from '../layout/AppNavbar.vue'
 import SfButton from '../components/ui/SfButton.vue'
 import SfModal from '../components/ui/SfModal.vue'
 import { albumService } from '../api'

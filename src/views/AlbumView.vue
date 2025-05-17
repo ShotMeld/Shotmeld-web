@@ -1,3 +1,7 @@
+<!--
+  AlbumView.vue - 相册页
+-->
+
 <template>
   <div class="album-view">
     <AppNavbar :userName="userName" currentPage="albums" @show-upload="showUploadModal = true"
@@ -33,11 +37,11 @@
 
 <script>
 import AlbumCard from '../components/album/AlbumCard.vue'
-import AppNavbar from '../components/AppNavbar.vue'
+import AppNavbar from '../layout/AppNavbar.vue'
 import SfButton from '../components/ui/SfButton.vue'
 import SfModal from '../components/ui/SfModal.vue'
-import AlbumForm from '../components/AlbumForm.vue'
-import IcpFooter from '../components/layout/IcpFooter.vue';
+import AlbumForm from '../components/album/AlbumForm.vue'
+import IcpFooter from '../layout/IcpFooter.vue';
 import { albumService } from '../api'
 
 export default {

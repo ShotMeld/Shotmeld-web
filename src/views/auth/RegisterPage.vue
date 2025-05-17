@@ -1,3 +1,7 @@
+<!--
+  RegisterPage.vue - 注册页
+-->
+
 <template>
   <div class="page-container">
     <div class="register-card">
@@ -39,8 +43,8 @@
 </template>
 
 <script>
-import { authService } from '../api';
-import IcpFooter from './layout/IcpFooter.vue';
+import { authService } from '../../api';
+import IcpFooter from '../../layout/IcpFooter.vue';
 
 export default {
   name: 'RegisterPage',
