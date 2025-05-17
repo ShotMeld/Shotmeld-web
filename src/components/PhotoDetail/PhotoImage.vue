@@ -43,7 +43,6 @@ export default {
 
 .photo-detail-image img {
   max-width: 100%;
-  max-height: 500px;
   object-fit: contain;
 }
 
