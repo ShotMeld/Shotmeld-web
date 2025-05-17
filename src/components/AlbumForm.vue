@@ -13,12 +13,6 @@
           rows="3"></textarea>
       </div>
 
-      <div class="form-group">
-        <label for="cover-photo">封面照片ID</label>
-        <input id="cover-photo" v-model="formData.coverPhotoId" type="text" placeholder="输入封面照片ID" class="form-input">
-        <p class="form-hint">可选，输入照片ID作为相册封面</p>
-      </div>
-
       <div class="form-actions">
         <button type="button" @click="$emit('cancel'); $emit('close')" class="cancel-button">
           取消
