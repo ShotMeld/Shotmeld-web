@@ -1,4 +1,5 @@
 import { createApp } from 'vue'
+import { createPinia } from 'pinia'
 import App from './App.vue'
 import router from './router'
 import apiClient from './api'
@@ -9,6 +10,9 @@ import 'element-plus/dist/index.css'
 
 // 创建Vue应用实例
 const app = createApp(App)
+// 创建 Pinia 实例
+const pinia = createPinia()
+
 // 全局挂载apiClient
 app.config.globalProperties.$api = apiClient
 // 向后兼容：将$http指向apiClient，以便现有组件可以继续使用$http
@@ -26,6 +30,7 @@ import SfUI from './components/ui'
 app.use(ElementPlus)
 app.use(SfUI)
 app.use(router)
+app.use(pinia)
 
 // 修改网站标题
 document.title = 'ShotMeld - 照片管理系统'

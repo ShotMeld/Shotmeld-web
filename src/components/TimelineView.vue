@@ -5,8 +5,6 @@
       @show-album-form="showAlbumForm = true" />
 
     <main class="timeline-content">
-      <h1 class="timeline-title">照片时间轴</h1>
-
       <div v-if="loading" class="loading-container">
         <el-spinner></el-spinner>
         <p>正在加载时间轴...</p>
