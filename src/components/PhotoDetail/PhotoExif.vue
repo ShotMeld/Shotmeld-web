@@ -49,7 +49,22 @@ export default {
     },
     computed: {
         hasExifData() {
-            return !!(this.photo?.metadata?.exif)
+            const exif = this.photo?.metadata?.exif;
+            if (!exif) return false;
+
+            // 检查是否至少有一项相机参数信息
+            return !!(
+                exif.make ||
+                exif.model ||
+                exif.exposureTime ||
+                exif.fNumber ||
+                exif.isoSpeedRatings ||
+                exif.focalLength ||
+                (exif.rawExif && (
+                    exif.rawExif.BrightnessValue ||
+                    exif.rawExif.MeteringMode
+                ))
+            );
         }
     },
     methods: {
