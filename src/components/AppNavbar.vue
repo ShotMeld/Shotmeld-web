@@ -25,7 +25,8 @@
             时间线
           </SfNavLink>
 
-          <SfNavLink to="/albums" class="nav-item" :class="{ active: currentPage === 'albums' || currentPage === 'album-detail' }">
+          <SfNavLink to="/albums" class="nav-item"
+            :class="{ active: currentPage === 'albums' || currentPage === 'album-detail' }">
             相册
           </SfNavLink>
         </div>
@@ -33,6 +34,13 @@
 
       <template #actions>
         <div class="nav-actions">
+          <!-- 时间线页面按钮 -->
+          <template v-if="currentPage === 'timeline' && !isMobile">
+            <SfButton type="secondary" @click="$emit('show-upload')" class="navbar-button nav-item">
+              上传照片
+            </SfButton>
+          </template>
+
           <!-- 照片墙页面按钮 -->
           <template v-if="currentPage === 'photowall' && !isMobile">
             <SfButton type="secondary" @click="$emit('show-upload')" class="navbar-button nav-item">
@@ -89,29 +97,32 @@
           <SfAvatar :text="userName" size="medium" class="drawer-avatar" />
           <p class="drawer-username">{{ userName }}</p>
         </div>
-        
+
         <div class="drawer-nav">
-          <SfNavLink to="/photowall" class="drawer-nav-item" :class="{ active: currentPage === 'photowall' }" @click="closeMobileMenu">
+          <SfNavLink to="/photowall" class="drawer-nav-item" :class="{ active: currentPage === 'photowall' }"
+            @click="closeMobileMenu">
             <template #icon>
               <i class="fas fa-th"></i>
             </template>
             照片墙
           </SfNavLink>
-          
-          <SfNavLink to="/timeline" class="drawer-nav-item" :class="{ active: currentPage === 'timeline' }" @click="closeMobileMenu">
+
+          <SfNavLink to="/timeline" class="drawer-nav-item" :class="{ active: currentPage === 'timeline' }"
+            @click="closeMobileMenu">
             <template #icon>
               <i class="fas fa-calendar-alt"></i>
             </template>
             时间线
           </SfNavLink>
-          
-          <SfNavLink to="/albums" class="drawer-nav-item" :class="{ active: currentPage === 'albums' || currentPage === 'album-detail' }" @click="closeMobileMenu">
+
+          <SfNavLink to="/albums" class="drawer-nav-item"
+            :class="{ active: currentPage === 'albums' || currentPage === 'album-detail' }" @click="closeMobileMenu">
             <template #icon>
               <i class="fas fa-book-open"></i>
             </template>
             相册
           </SfNavLink>
-          
+
           <SfNavLink to="/profile" class="drawer-nav-item" @click="closeMobileMenu">
             <template #icon>
               <i class="fas fa-user"></i>
@@ -119,7 +130,7 @@
             个人资料
           </SfNavLink>
         </div>
-        
+
         <div class="drawer-actions">
           <!-- 照片墙页面按钮 -->
           <template v-if="currentPage === 'photowall'">
@@ -141,14 +152,14 @@
               <i class="fas fa-upload"></i> 添加照片
             </SfButton>
           </template>
-          
+
           <SfButton type="secondary" @click="handleLogout" class="drawer-button logout-button">
             退出登录
           </SfButton>
         </div>
       </div>
     </div>
-    
+
     <!-- 背景遮罩 -->
     <div class="drawer-backdrop" v-show="isMobileMenuOpen" @click="closeMobileMenu"></div>
   </div>
@@ -226,7 +237,6 @@ export default {
     toggleUserMenu(event) {
       event.stopPropagation()
       this.isUserMenuOpen = !this.isUserMenuOpen
-      console.log("用户菜单状态:", this.isUserMenuOpen) // 添加日志帮助调试
     },
     closeAllMenus() {
       this.isMobileMenuOpen = false
@@ -255,7 +265,8 @@ export default {
 /* 整体容器 */
 .navbar-container {
   position: relative;
-  z-index: 30; /* 确保导航栏在抽屉菜单之上 */
+  z-index: 30;
+  /* 确保导航栏在抽屉菜单之上 */
 }
 
 /* 导航栏标题和品牌区域 */
@@ -424,6 +435,13 @@ export default {
   .main-nav {
     display: none;
   }
+
+  .user-profile {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    transform: translateY(0);
+  }
 }
 
 /* 侧边抽屉菜单样式 */
@@ -555,6 +573,7 @@ export default {
 .dropdown-leave-active {
   transition: all 0.3s ease;
 }
+
 .dropdown-enter-from,
 .dropdown-leave-to {
   opacity: 0;

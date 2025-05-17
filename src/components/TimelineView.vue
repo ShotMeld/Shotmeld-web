@@ -70,6 +70,14 @@
       <PhotoDetail v-if="currentPhoto" v-model="showPhotoDetailModal" :photo="currentPhoto"
         @photo-deleted="handlePhotoDeleted" />
       
+      <!-- 上传照片模态框 -->
+      <sf-modal v-model="showUploadModal" title="上传照片">
+        <photo-upload
+          :showAlbumOption="false"
+          @upload-success="handlePhotoUploaded"
+        />
+      </sf-modal>
+      
       <!-- ICP备案信息 -->
       <IcpFooter />
     </main>
