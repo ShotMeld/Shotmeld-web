@@ -9,7 +9,7 @@
           </template>
         </SfInput>
 
-        <SfInput v-model="formData.email" type="email" label="邮箱地址" required :error="errors.email">
+        <SfInput v-model="formData.email" type="email" label="邮箱地址" required :error="errors.email" @keyup.enter="handleRegister" >
           <template #prefix>
             <i class="sf-icon">✉️</i>
           </template>
