@@ -583,10 +583,14 @@ export default {
   border-radius: 10px;
   transition: all 0.2s ease;
   white-space: nowrap;
+  display: flex;
+  align-items: center;
 }
 
-.dropdown-link:hover {
-  background-color: rgba(0, 0, 0, 0.03);
+.dropdown-link :deep(.sf-nav-link__content) {
+  display: flex;
+  align-items: center;
+  width: 100%;
 }
 
 .dropdown-link :deep(.sf-nav-link__icon) {
@@ -597,6 +601,11 @@ export default {
   justify-content: center;
   margin-right: 12px;
   color: var(--text-secondary);
+  flex-shrink: 0;
+}
+
+.dropdown-link:hover {
+  background-color: rgba(0, 0, 0, 0.03);
 }
 
 .dropdown-link:hover :deep(.sf-nav-link__icon) {
