@@ -29,7 +29,6 @@ export default {
 </script>
 
 <style scoped>
-/* TODO: 圆角的展示貌似有点问题 */
 .photo-detail-image {
   display: flex;
   align-items: center;
