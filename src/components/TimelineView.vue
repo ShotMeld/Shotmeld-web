@@ -5,8 +5,7 @@
       @show-album-form="showAlbumForm = true" />
 
     <main class="timeline-content">
-      <div v-if="loading" class="loading-container">
-        <el-spinner></el-spinner>
+      <div v-if="loading" class="loading-container" v-loading="true">
         <p>正在加载时间轴...</p>
       </div>
 
