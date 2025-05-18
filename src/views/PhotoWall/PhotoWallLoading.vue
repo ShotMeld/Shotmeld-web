@@ -17,19 +17,21 @@ export default {
 <style scoped>
 .loading-container {
   padding: var(--spacing-xl);
-  background-color: rgba(255, 255, 255, 0.8);
+  background-color: var(--bg-primary);
   border-radius: var(--radius-large);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   box-shadow: var(--shadow-small);
+  border: var(--border-width) solid var(--border-color);
 }
 :deep(.el-skeleton) {
-  --el-skeleton-color: var(--color-gray-200);
-  --el-skeleton-to-color: var(--color-gray-100);
+  --el-skeleton-color: var(--bg-secondary);
+  --el-skeleton-to-color: var(--bg-tertiary);
 }
 :deep(.el-skeleton__item) {
   height: 200px;
   margin-bottom: var(--spacing-md);
   border-radius: var(--radius-medium);
+  background-color: var(--bg-secondary);
 }
 </style> 

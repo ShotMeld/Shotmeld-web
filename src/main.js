@@ -5,6 +5,8 @@ import router from './router'
 import apiClient from './api'
 import ElementPlus from 'element-plus'
 import 'element-plus/dist/index.css'
+import '@fortawesome/fontawesome-free/css/all.min.css'
+import { useThemeStore } from './store/theme'
 
 // apiClient已经在api/index.js中配置完成，这里不需要额外配置
 
@@ -31,6 +33,10 @@ app.use(ElementPlus)
 app.use(SfUI)
 app.use(router)
 app.use(pinia)
+
+// 初始化主题
+const themeStore = useThemeStore(pinia)
+themeStore.initTheme()
 
 // 修改网站标题
 document.title = 'ShotMeld - 照片管理系统'

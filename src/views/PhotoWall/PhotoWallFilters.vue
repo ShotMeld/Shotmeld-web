@@ -119,9 +119,10 @@ export default {
 }
 .search-card {
   padding: var(--spacing-lg);
-  background-color: rgba(255, 255, 255, 0.8);
+  background-color: var(--bg-primary);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
+  border: var(--border-width) solid var(--border-color);
 }
 .search-container {
   margin-bottom: var(--spacing-lg);
@@ -168,9 +169,9 @@ export default {
   background-color: var(--bg-tertiary);
 }
 :deep(.apple-select .el-input__wrapper.is-focus) {
-  background-color: var(--color-white);
+  background-color: var(--bg-primary);
   border-color: var(--color-primary);
-  box-shadow: 0 0 0 2px rgba(0, 122, 255, 0.15);
+  box-shadow: 0 0 0 2px rgba(var(--color-primary-rgb), 0.15);
 }
 :deep(.apple-select .el-input__inner) {
   color: var(--text-primary);
@@ -192,8 +193,8 @@ export default {
   background-color: var(--bg-tertiary);
 }
 :deep(.apple-datepicker .el-input__wrapper.is-focus) {
-  background-color: var(--color-white);
+  background-color: var(--bg-primary);
   border-color: var(--color-primary);
-  box-shadow: 0 0 0 2px rgba(0, 122, 255, 0.15);
+  box-shadow: 0 0 0 2px rgba(var(--color-primary-rgb), 0.15);
 }
 </style> 

@@ -4,8 +4,6 @@
 
 <template>
   <div class="album-view">
-    <AppNavbar :userName="userName" currentPage="albums" @show-upload="showUploadModal = true"
-      @show-album-form="showCreateModal = true" />
     <div class="album-container">
       <div v-if="loading" class="album-view__loading">
         <div class="album-view__spinner"></div>
@@ -31,28 +29,24 @@
     <sf-modal v-model="showCreateModal" title="创建新相册">
       <album-form @success="handleAlbumCreated" @close="showCreateModal = false" @cancel="showCreateModal = false" />
     </sf-modal>
-    <IcpFooter />
   </div>
 </template>
 
 <script>
 import AlbumCard from '../components/album/AlbumCard.vue'
-import AppNavbar from '../layout/AppNavbar.vue'
 import SfButton from '../components/ui/SfButton.vue'
 import SfModal from '../components/ui/SfModal.vue'
 import AlbumForm from '../components/album/AlbumForm.vue'
-import IcpFooter from '../layout/IcpFooter.vue';
 import { albumService } from '../api'
+import { eventBus } from '../utils/eventBus'
 
 export default {
   name: 'AlbumView',
   components: {
     AlbumCard,
-    AppNavbar,
     SfButton,
     SfModal,
-    AlbumForm,
-    IcpFooter
+    AlbumForm
   },
   data() {
     return {
@@ -68,6 +62,15 @@ export default {
     const user = JSON.parse(localStorage.getItem('user') || '{}')
     this.userName = user.username || '用户'
     await this.fetchAlbums()
+    
+    // 监听新建相册事件
+    eventBus.on('show-album-form', () => {
+      this.showCreateModal = true
+    })
+  },
+  beforeUnmount() {
+    // 清理事件监听
+    eventBus.off('show-album-form')
   },
   methods: {
     async fetchAlbums() {
@@ -101,8 +104,11 @@ export default {
 }
 
 .album-container {
+  min-height: calc(100vh - 64px);
   max-width: var(--container-xl);
-  margin: 0 auto;
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
   padding: var(--spacing-xl);
 }
 
@@ -177,4 +183,4 @@ export default {
     gap: var(--spacing-lg);
   }
 }
-</style> 
+</style>

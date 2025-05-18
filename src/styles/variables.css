@@ -1,10 +1,25 @@
 :root {
   /* 颜色系统 */
   --color-primary: #007AFF;  /* 蓝色 */
+  --color-primary-dark: #005ecb; /* 深蓝色 */
+  --color-primary-light: #4da3ff; /* 浅蓝色 */
+  --color-primary-subtle: rgba(0, 122, 255, 0.1); /* 淡蓝色 */
+  --color-primary-rgb: 0, 122, 255; /* RGB值 */
+  
   --color-secondary: #5AC8FA; /* 浅蓝色 */
   --color-success: #34C759;  /* 绿色 */
+  --color-success-dark: #2ca349; /* 深绿色 */
+  --color-success-light: #5cdb7a; /* 浅绿色 */
+  --color-success-subtle: rgba(52, 199, 89, 0.1); /* 淡绿色 */
+  --color-success-rgb: 52, 199, 89; /* RGB值 */
+  
   --color-warning: #FF9500;  /* 橙色 */
   --color-danger: #FF3B30;   /* 红色 */
+  --color-danger-dark: #d92c23; /* 深红色 */
+  --color-danger-light: #ff6b63; /* 浅红色 */
+  --color-danger-subtle: rgba(255, 59, 48, 0.1); /* 淡红色 */
+  --color-danger-rgb: 255, 59, 48; /* RGB值 */
+  
   --color-info: #5856D6;     /* 紫色 */
   
   /* 中性色调 */
@@ -18,6 +33,7 @@
   --bg-primary: var(--color-white);
   --bg-secondary: var(--color-light-gray);
   --bg-tertiary: #FAFAFC;
+  --bg-hover: rgba(0, 0, 0, 0.05);
   
   /* 文字颜色 */
   --text-primary: var(--color-dark-gray);
@@ -27,6 +43,7 @@
   
   /* 边框和分割线 */
   --border-color: rgba(60, 60, 67, 0.15);
+  --border-color-hover: rgba(60, 60, 67, 0.25);
   --border-width: 0.5px;
   
   /* 圆角 */
@@ -83,4 +100,29 @@
   --container-md: 768px;
   --container-lg: 1024px;
   --container-xl: 1280px;
+}
+
+/* 深色主题 */
+.theme-dark {
+  /* 背景颜色 */
+  --bg-primary: #1C1C1E;
+  --bg-secondary: #2C2C2E;
+  --bg-tertiary: #3A3A3C;
+  --bg-hover: rgba(255, 255, 255, 0.1);
+  
+  /* 文字颜色 */
+  --text-primary: #FFFFFF;
+  --text-secondary: rgba(235, 235, 245, 0.6);
+  --text-tertiary: rgba(235, 235, 245, 0.4);
+  --text-disabled: rgba(235, 235, 245, 0.2);
+  
+  /* 边框和分割线 */
+  --border-color: rgba(235, 235, 245, 0.1);
+  --border-color-hover: rgba(235, 235, 245, 0.2);
+  
+  /* 阴影 */
+  --shadow-small: 0px 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-medium: 0px 2px 4px rgba(0, 0, 0, 0.4);
+  --shadow-large: 0px 4px 8px rgba(0, 0, 0, 0.45);
+  --shadow-extra-large: 0px 8px 16px rgba(0, 0, 0, 0.5);
 }

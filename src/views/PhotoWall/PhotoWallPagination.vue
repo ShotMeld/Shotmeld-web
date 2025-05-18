@@ -44,12 +44,14 @@ export default {
   justify-content: center;
   margin: var(--spacing-xl) 0;
   padding: var(--spacing-md);
-  background-color: rgba(255, 255, 255, 0.8);
+  background-color: var(--bg-primary);
   border-radius: var(--radius-large);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   box-shadow: var(--shadow-small);
+  border: var(--border-width) solid var(--border-color);
 }
+
 :deep(.el-pagination) {
   --el-pagination-font-size: var(--font-size-base);
   --el-pagination-button-color: var(--text-primary);
@@ -57,16 +59,46 @@ export default {
   --el-pagination-button-disabled-color: var(--text-disabled);
   --el-pagination-button-disabled-bg-color: transparent;
   --el-pagination-hover-color: var(--color-primary);
+  --el-pagination-bg-color: var(--bg-primary);
 }
+
 :deep(.el-pagination .el-pager li) {
   border-radius: var(--radius-round);
   min-width: 32px;
   height: 32px;
   font-weight: var(--font-weight-medium);
   transition: all var(--transition-fast);
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
 }
+
+:deep(.el-pagination .el-pager li:hover) {
+  color: var(--color-primary);
+  background-color: var(--bg-tertiary);
+}
+
 :deep(.el-pagination .el-pager li.is-active) {
   background-color: var(--color-primary);
   color: var(--color-white);
+}
+
+:deep(.el-pagination .btn-prev),
+:deep(.el-pagination .btn-next) {
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+}
+
+:deep(.el-pagination .btn-prev:hover),
+:deep(.el-pagination .btn-next:hover) {
+  color: var(--color-primary);
+  background-color: var(--bg-tertiary);
+}
+
+:deep(.el-pagination .el-select .el-input) {
+  background-color: var(--bg-secondary);
+}
+
+:deep(.el-pagination .el-select .el-input__inner) {
+  color: var(--text-primary);
 }
 </style> 

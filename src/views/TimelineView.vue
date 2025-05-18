@@ -4,10 +4,6 @@
 
 <template>
   <div class="timeline-container">
-    <!-- 顶部导航栏 -->
-    <AppNavbar :userName="userName" currentPage="photowall" @show-upload="showUploadModal = true"
-      @show-album-form="showAlbumForm = true" />
-
     <main class="timeline-content">
       <div v-if="loading" class="loading-container" v-loading="true">
         <p>正在加载时间轴...</p>
@@ -78,9 +74,6 @@
       <sf-modal v-model="showUploadModal" title="上传照片">
         <photo-upload :showAlbumOption="true" @upload-success="handlePhotoUploaded" />
       </sf-modal>
-
-      <!-- ICP备案信息 -->
-      <IcpFooter />
     </main>
   </div>
 </template>
@@ -90,19 +83,14 @@ import { photoService } from '../api';
 import apiClient from '../api';
 import PhotoUpload from '../components/PhotoUpload.vue';
 import PhotoDetail from '../components/PhotoDetail.vue';
-import AppNavbar from '../layout/AppNavbar.vue';
-import AlbumForm from '../components/album/AlbumForm.vue';
-import IcpFooter from '../layout/IcpFooter.vue';
 import { SfModal } from '../components/ui';
+import { eventBus } from '../utils/eventBus';
 
 export default {
   name: 'TimelineView',
   components: {
     PhotoUpload,
     PhotoDetail,
-    AppNavbar,
-    AlbumForm,
-    IcpFooter,
     SfModal
   },
   data() {
@@ -115,7 +103,6 @@ export default {
       showDeleteConfirm: false,
       showUploadModal: false,
       showPhotoDetailModal: false,
-      showAlbumForm: false,
       userName: '',
       timelineGroups: [] // 按年月分组后的照片数据
     }
@@ -128,6 +115,16 @@ export default {
     }
 
     this.fetchTimeline();
+    
+    // 监听上传照片事件
+    eventBus.on('show-upload-modal', () => {
+      this.showUploadModal = true
+    });
+  },
+  
+  beforeUnmount() {
+    // 清理事件监听
+    eventBus.off('show-upload-modal');
   },
   methods: {
     async fetchTimeline() {
@@ -314,7 +311,6 @@ export default {
     },
 
     handleAlbumCreated() {
-      this.showAlbumForm = false;
       // 如果需要，可以刷新某些数据
     }
   }
@@ -329,11 +325,13 @@ export default {
 }
 
 .timeline-content {
+  min-height: calc(100vh - 64px);
   flex: 1;
-  padding: 2rem;
   max-width: 1200px;
-  margin: 0 auto;
+  margin-left: auto;
+  margin-right: auto;
   width: 100%;
+  padding: 2rem;
 }
 
 .timeline-title {
@@ -405,30 +403,40 @@ export default {
 .photo-thumbnail {
   height: 150px;
   overflow: hidden;
+  background-color: var(--bg-secondary);
+  border-radius: var(--radius-medium);
 }
 
 .photo-thumbnail img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  transition: transform var(--transition-base);
+}
+
+.photo-thumbnail:hover img {
+  transform: scale(1.05);
 }
 
 .photo-info {
-  padding: 0.75rem;
+  padding: var(--spacing-sm);
+  background-color: var(--bg-primary);
+  border-radius: 0 0 var(--radius-medium) var(--radius-medium);
 }
 
 .photo-info h4 {
   margin: 0;
-  font-size: 0.9rem;
-  margin-bottom: 0.25rem;
+  font-size: var(--font-size-sm);
+  margin-bottom: var(--spacing-2xs);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  color: var(--text-primary);
 }
 
 .photo-info p {
-  color: #6c757d;
-  font-size: 0.75rem;
+  color: var(--text-secondary);
+  font-size: var(--font-size-xs);
   margin: 0;
 }
 
@@ -438,7 +446,8 @@ export default {
   align-items: center;
   justify-content: center;
   min-height: 300px;
-  gap: 1rem;
+  gap: var(--spacing-md);
+  color: var(--text-secondary);
 }
 
 .error-message {
@@ -447,23 +456,23 @@ export default {
   align-items: center;
   justify-content: center;
   min-height: 300px;
-  gap: 1rem;
-  color: #dc3545;
+  gap: var(--spacing-md);
+  color: var(--color-danger);
 }
 
 .retry-button {
-  background-color: #4361ee;
-  color: white;
+  background-color: var(--color-primary);
+  color: var(--color-white);
   border: none;
-  padding: 0.5rem 1.5rem;
-  border-radius: 50px;
+  padding: var(--spacing-sm) var(--spacing-xl);
+  border-radius: var(--radius-round);
   cursor: pointer;
-  font-size: 1rem;
-  transition: background-color 0.3s;
+  font-size: var(--font-size-base);
+  transition: background-color var(--transition-fast);
 }
 
 .retry-button:hover {
-  background-color: #3f37c9;
+  background-color: var(--color-primary-dark);
 }
 
 .empty-timeline {
@@ -472,38 +481,38 @@ export default {
   align-items: center;
   justify-content: center;
   min-height: 300px;
-  gap: 1rem;
-  color: #6c757d;
-  background-color: white;
-  border-radius: 12px;
-  padding: 3rem;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  gap: var(--spacing-md);
+  color: var(--text-secondary);
+  background-color: var(--bg-primary);
+  border-radius: var(--radius-large);
+  padding: var(--spacing-3xl);
+  box-shadow: var(--shadow-medium);
 }
 
 .empty-timeline i {
-  font-size: 4rem;
-  color: #adb5bd;
+  font-size: var(--font-size-4xl);
+  color: var(--text-tertiary);
 }
 
 .empty-actions {
   display: flex;
-  gap: 1rem;
-  margin-top: 1rem;
+  gap: var(--spacing-md);
+  margin-top: var(--spacing-md);
 }
 
 .upload-btn {
-  background-color: #4361ee;
-  color: white;
+  background-color: var(--color-primary);
+  color: var(--color-white);
   border: none;
-  padding: 0.75rem 2rem;
-  border-radius: 50px;
+  padding: var(--spacing-sm) var(--spacing-2xl);
+  border-radius: var(--radius-round);
   cursor: pointer;
-  font-size: 1rem;
-  transition: background-color 0.3s;
+  font-size: var(--font-size-base);
+  transition: background-color var(--transition-fast);
 }
 
 .upload-btn:hover {
-  background-color: #3f37c9;
+  background-color: var(--color-primary-dark);
 }
 
 .modal-overlay {
@@ -517,15 +526,18 @@ export default {
   justify-content: center;
   align-items: center;
   z-index: 1000;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
 }
 
 .modal-container {
-  background-color: white;
-  border-radius: 12px;
+  background-color: var(--bg-primary);
+  border-radius: var(--radius-large);
   width: 95%;
   max-width: 1200px;
   max-height: 95vh;
   overflow-y: auto;
+  box-shadow: var(--shadow-extra-large);
 }
 
 .modal-header {

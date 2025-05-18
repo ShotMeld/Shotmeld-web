@@ -29,6 +29,7 @@ export default {
   background: var(--bg-primary);
   border-radius: var(--radius-large);
   box-shadow: var(--shadow-small);
+  border: var(--border-width) solid var(--border-color);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -38,5 +39,11 @@ export default {
   font-size: 64px;
   color: var(--text-tertiary);
   margin-bottom: var(--spacing-md);
+  opacity: 0.7;
+}
+.no-photos p {
+  color: var(--text-secondary);
+  font-size: var(--font-size-lg);
+  margin-bottom: var(--spacing-lg);
 }
 </style> 

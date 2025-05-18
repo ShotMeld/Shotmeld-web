@@ -134,7 +134,7 @@ export default {
 .album-card {
   cursor: pointer;
   overflow: hidden;
-  background-color: rgba(255, 255, 255, 0.8);
+  background-color: var(--bg-primary);
   transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
   height: 100%;
   display: flex;
@@ -143,14 +143,14 @@ export default {
 
 .album-card:hover {
   transform: scale(1.02) translateY(-5px);
-  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.07), 0 20px 48px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 12px 24px var(--shadow-color), 0 20px 48px var(--shadow-color);
 }
 
 .album-card__cover {
   position: relative;
   height: 220px;
   overflow: hidden;
-  background-color: var(--bg-tertiary);
+  background-color: var(--bg-secondary);
   border-radius: var(--radius-medium);
 }
 
@@ -218,7 +218,7 @@ export default {
 
 .album-card__date {
   font-size: var(--font-size-sm);
-  color: var(--text-secondary);
+  color: var(--text-tertiary);
   margin: 0;
   margin-top: auto;
 }

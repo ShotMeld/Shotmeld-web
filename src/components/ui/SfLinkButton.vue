@@ -36,9 +36,7 @@ export default {
   display: inline-flex;
   align-items: center;
   padding: var(--spacing-xs) var(--spacing-sm);
-  background-color: var(--color-primary-subtle);
   color: var(--color-primary);
-  border-radius: 20px;
   font-size: var(--font-size-sm);
   font-weight: var(--font-weight-medium);
   cursor: pointer;
@@ -49,13 +47,7 @@ export default {
   margin-right: 6px;
 }
 
-.link-button:hover {
-  background-color: var(--color-primary-light);
-  transform: translateY(-1px);
-}
-
 .link-button.danger {
-  background-color: var(--color-danger-subtle);
   color: var(--color-danger);
 }
 

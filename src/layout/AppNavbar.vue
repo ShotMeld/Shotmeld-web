@@ -38,6 +38,11 @@
 
       <template #actions>
         <div class="nav-actions">
+          <!-- 设置页面导航项 -->
+          <SfNavLink to="/settings" class="nav-item" :class="{ active: currentPage === 'settings' }">
+            设置
+          </SfNavLink>
+
           <!-- 时间线页面按钮 -->
           <template v-if="currentPage === 'timeline' && !isMobile">
             <SfButton type="secondary" @click="$emit('show-upload')" class="navbar-button nav-item">
@@ -79,6 +84,12 @@
                       <i class="fas fa-user"></i>
                     </template>
                     个人资料
+                  </SfNavLink>
+                  <SfNavLink to="/settings" @click="closeAllMenus" class="dropdown-link">
+                    <template #icon>
+                      <i class="fas fa-gear"></i>
+                    </template>
+                    设置
                   </SfNavLink>
                   <SfNavLink href="#" @click="handleLogout" class="dropdown-link logout-link">
                     <template #icon>
@@ -132,6 +143,13 @@
               <i class="fas fa-user"></i>
             </template>
             个人资料
+          </SfNavLink>
+
+          <SfNavLink to="/settings" class="drawer-nav-item" @click="closeMobileMenu">
+            <template #icon>
+              <i class="fas fa-gear"></i>
+            </template>
+            设置
           </SfNavLink>
         </div>
 
@@ -188,7 +206,7 @@ export default {
     currentPage: {
       type: String,
       default: 'photowall',
-      validator: (value) => ['photowall', 'timeline', 'albums', 'album-detail'].includes(value)
+      validator: (value) => ['photowall', 'timeline', 'albums', 'album-detail', 'settings'].includes(value)
     }
   },
   data() {

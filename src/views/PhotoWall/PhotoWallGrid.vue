@@ -57,24 +57,24 @@ export default {
 .photo-card {
   overflow: hidden;
   cursor: pointer;
-  background-color: rgba(255, 255, 255, 0.8);
-  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  background-color: var(--bg-primary);
+  transition: transform var(--transition-bounce), box-shadow var(--transition-base);
 }
 .photo-card:hover {
   transform: scale(1.02) translateY(-5px);
-  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.07), 0 20px 48px rgba(0, 0, 0, 0.06);
+  box-shadow: var(--shadow-large);
 }
 .photo-thumbnail {
   height: 220px;
   overflow: hidden;
-  background-color: var(--bg-tertiary);
+  background-color: var(--bg-secondary);
   border-radius: var(--radius-medium);
 }
 .photo-thumbnail img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.5s cubic-bezier(0.33, 1, 0.68, 1);
+  transition: transform var(--transition-base);
 }
 .photo-card:hover .photo-thumbnail img {
   transform: scale(1.05);

@@ -4,7 +4,6 @@
 
 <template>
   <div class="album-detail">
-    <AppNavbar :userName="userName" currentPage="album-detail" @show-upload="showUploadModal = true" @show-album-form="showCreateModal = true" />
     <div class="album-detail__container">
       <div class="album-detail__header">
         <div class="album-detail__info">
@@ -61,10 +60,10 @@
 import PhotoWallGrid from './PhotoWall/PhotoWallGrid.vue'
 import PhotoDetail from '../components/PhotoDetail.vue'
 import PhotoUpload from '../components/PhotoUpload.vue'
-import AppNavbar from '../layout/AppNavbar.vue'
 import SfButton from '../components/ui/SfButton.vue'
 import SfModal from '../components/ui/SfModal.vue'
 import { albumService } from '../api'
+import { eventBus } from '../utils/eventBus'
 
 export default {
   name: 'AlbumDetailView',
@@ -72,7 +71,6 @@ export default {
     PhotoWallGrid,
     PhotoDetail,
     PhotoUpload,
-    AppNavbar,
     SfButton,
     SfModal
   },
@@ -99,6 +97,15 @@ export default {
     const user = JSON.parse(localStorage.getItem('user') || '{}')
     this.userName = user.username || '用户'
     await this.fetchAlbumDetails()
+    
+    // 监听上传照片事件
+    eventBus.on('show-upload-modal', () => {
+      this.showUploadModal = true
+    })
+  },
+  beforeUnmount() {
+    // 清理事件监听
+    eventBus.off('show-upload-modal')
   },
   methods: {
     formatDate(date) {
@@ -227,4 +234,4 @@ export default {
     font-size: var(--font-size-md);
   }
 }
-</style> 
+</style>

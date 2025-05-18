@@ -36,19 +36,26 @@ export default {
 
 <style scoped>
 .sf-navbar {
-  position: sticky;
+  position: fixed;
   top: 0;
   left: 0;
   right: 0;
   height: 64px;
   background-color: var(--bg-primary);
   backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   box-shadow: var(--shadow-small);
-  z-index: 100;
+  z-index: 1000;
+  border-bottom: var(--border-width) solid var(--border-color);
 }
 
 .sf-navbar--transparent {
   background-color: rgba(255, 255, 255, 0.8);
+}
+
+/* 深色模式下的透明导航栏 */
+.theme-dark .sf-navbar--transparent {
+  background-color: rgba(28, 28, 30, 0.9);
 }
 
 .sf-navbar-container {
@@ -71,6 +78,11 @@ export default {
   font-weight: var(--font-weight-semibold);
   color: var(--color-primary);
   text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+.sf-navbar-logo:hover {
+  color: var(--color-primary-dark);
 }
 
 .sf-navbar-content {
