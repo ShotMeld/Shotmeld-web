@@ -36,11 +36,19 @@
         </div>
       </template>
 
+      <!-- 页面左侧按钮和部分页面导览 -->
       <template #actions>
         <div class="nav-actions">
           <!-- 设置页面导航项 -->
-          <SfNavLink to="/settings" class="nav-item" :class="{ active: currentPage === 'settings' }">
+          <SfNavLink v-if="currentPage === 'settings' && !isMobile" to="/settings" class="nav-item"
+            :class="{ active: currentPage === 'settings' }">
             设置
+          </SfNavLink>
+
+          <!-- 个人页面导航项 -->
+          <SfNavLink v-if="currentPage === 'profile' && !isMobile" to="/profile" class="nav-item"
+            :class="{ active: currentPage === 'profile' }">
+            个人资料
           </SfNavLink>
 
           <!-- 时间线页面按钮 -->
@@ -54,6 +62,9 @@
           <template v-if="currentPage === 'photowall' && !isMobile">
             <SfButton type="secondary" @click="$emit('show-upload')" class="navbar-button nav-item">
               上传照片
+            </SfButton>
+            <SfButton type="secondary" @click="$emit('toggle-manage')" class="navbar-button nav-item">
+              管理
             </SfButton>
           </template>
 
@@ -159,6 +170,9 @@
             <SfButton type="primary" @click="showUploadAndCloseMenu" class="drawer-button">
               <i class="fas fa-upload"></i> 上传照片
             </SfButton>
+            <SfButton type="primary" @click="toggleManageAndCloseMenu" class="drawer-button">
+              <i class="fas fa-tasks"></i> 管理
+            </SfButton>
           </template>
 
           <!-- 相册列表页面按钮 -->
@@ -229,7 +243,7 @@ export default {
     window.removeEventListener('resize', this.handleResize)
     document.removeEventListener('click', this.handleDocumentClick)
   },
-  emits: ['show-upload', 'show-album-form'],
+  emits: ['show-upload', 'show-album-form', 'toggle-manage'],
   methods: {
     handleResize() {
       this.windowWidth = window.innerWidth
@@ -271,6 +285,10 @@ export default {
     },
     showAlbumFormAndCloseMenu() {
       this.$emit('show-album-form')
+      this.closeMobileMenu()
+    },
+    toggleManageAndCloseMenu() {
+      this.$emit('toggle-manage')
       this.closeMobileMenu()
     },
     handleLogout() {
@@ -620,7 +638,7 @@ export default {
 
 .dropdown-link {
   padding: 12px 16px;
-  margin: 0 8px;
+  margin: 2px 8px;
   border-radius: 10px;
   transition: all 0.2s ease;
   white-space: nowrap;

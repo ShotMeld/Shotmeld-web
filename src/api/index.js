@@ -157,6 +157,13 @@ export const photoService = {
   // 获取照片时间轴
   getPhotoTimeline(params = {}) {
     return apiClient.get(API_ENDPOINTS.PHOTOS.TIMELINE, { params });
+  },
+  
+  // 将多个照片添加到相册
+  addPhotosToAlbum(data) {
+    return apiClient.post(API_ENDPOINTS.ALBUMS.PHOTOS(data.albumId), { 
+      photoIds: data.photoIds 
+    });
   }
 };
 
