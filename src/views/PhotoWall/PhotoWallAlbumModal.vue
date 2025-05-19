@@ -31,6 +31,25 @@
       </div>
     </div>
   </SfModal>
+  <SfButton 
+  type="primary" 
+  rounded
+  @click="$emit('showUploadModal')"
+>
+  <template #prefix>
+    <i class="fas fa-cloud-upload-alt"></i>
+  </template>
+  上传照片
+  <!-- 隐藏的 input 用于上传 -->
+  <input 
+    type="file" 
+    ref="fileInput" 
+    style="display: none" 
+    accept="image/jpeg, image/png, image/gif, image/webp"
+    @change="handleFileUpload"
+    multiple
+  />
+</SfButton>
 </template>
 
 <script>
@@ -92,8 +111,41 @@ export default {
       if (!this.selectedAlbumId) return;
       this.$emit('add-to-album', this.selectedAlbumId);
       this.visible = false;
+    },
+  handleFileUpload(event) {
+    const files = event.target.files;
+    if (!files.length) return;
+
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+    const invalidFiles = [];
+
+    Array.from(files).forEach(file => {
+      // 检测 HEIC 格式（通过文件类型或扩展名）
+      const isHeic = file.type === 'image/heic' || 
+                    file.name.toLowerCase().endsWith('.heic');
+      
+      if (isHeic || !allowedTypes.includes(file.type)) {
+        invalidFiles.push(file.name);
+      } else {
+        // 合法文件，触发上传逻辑
+        this.$emit('upload-file', file);
+      }
+    });
+
+    // 显示错误提示
+    if (invalidFiles.length) {
+      this.$emit('upload-error', `以下文件格式不支持: ${invalidFiles.join(', ')}\n请上传 JPEG/PNG/GIF/WEBP 格式`);
     }
+
+    // 重置 input，允许重复选择同一文件
+    event.target.value = '';
+  },
+
+  // 手动触发文件选择（替代默认点击上传）
+  openFileDialog() {
+    this.$refs.fileInput.click();
   }
+}
 };
 </script>
 
@@ -160,5 +212,11 @@ export default {
   border-top: 1px solid var(--border-color);
   margin-top: var(--spacing-md);
   gap: var(--spacing-md);
+}
+
+.upload-error {
+  color: #ff4d4f;
+  margin-top: 8px;
+  font-size: 12px;
 }
 </style>
