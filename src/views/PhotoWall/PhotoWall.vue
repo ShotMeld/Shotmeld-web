@@ -40,31 +40,12 @@
         </SfModal>
         
         <!-- 添加到相册的弹窗 -->
-        <SfModal v-model="isAddToAlbumModalVisible" title="选择相册" size="default">
-          <div class="album-selection">
-            <div v-if="albums.length === 0" class="no-albums">
-              <p>暂无相册，请先创建相册</p>
-              <SfButton type="primary" @click="showCreateAlbumModal">创建新相册</SfButton>
-            </div>
-            <div v-else class="album-list">
-              <div v-for="album in albums" :key="album.id" 
-                class="album-item" :class="{ 'selected': selectedAlbumId === album.id }"
-                @click="selectAlbum(album.id)">
-                <div class="album-cover">
-                  <img v-if="album.coverUrl" :src="album.coverUrl" alt="相册封面" />
-                  <div v-else class="empty-cover">
-                    <i class="fas fa-images"></i>
-                  </div>
-                </div>
-                <div class="album-name">{{ album.name }}</div>
-              </div>
-            </div>
-            <div class="modal-footer">
-              <SfButton type="secondary" @click="isAddToAlbumModalVisible = false">取消</SfButton>
-              <SfButton type="primary" @click="addToAlbum" :disabled="!selectedAlbumId">确认</SfButton>
-            </div>
-          </div>
-        </SfModal>
+        <PhotoWallAlbumModal 
+          v-model="isAddToAlbumModalVisible" 
+          :albums="albums" 
+          @create-album="showCreateAlbumModal" 
+          @add-to-album="handleAddToAlbum" 
+        />
         
         <!-- 批量删除确认弹窗 -->
         <SfDeleteConfirmModal
@@ -83,6 +64,7 @@ import PhotoWallGrid from './PhotoWallGrid.vue';
 import PhotoWallLoading from './PhotoWallLoading.vue';
 import PhotoWallPagination from './PhotoWallPagination.vue';
 import PhotoWallManageToolbar from './PhotoWallManageToolbar.vue';
+import PhotoWallAlbumModal from './PhotoWallAlbumModal.vue';
 import PhotoDetail from '../../components/PhotoDetail.vue';
 import PhotoUpload from '../../components/PhotoUpload.vue';
 import AlbumForm from '../../components/album/AlbumForm.vue';
@@ -99,12 +81,14 @@ export default {
     PhotoWallLoading,
     PhotoWallPagination,
     PhotoWallManageToolbar,
+    PhotoWallAlbumModal,
     PhotoDetail,
     PhotoUpload,
     AlbumForm,
     AppNavbar,
     SfButton,
-    SfModal
+    SfModal,
+    SfDeleteConfirmModal
   },
   data() {
     return {
@@ -133,8 +117,7 @@ export default {
       isManageMode: false,
       selectedPhotos: [],
       isAddToAlbumModalVisible: false,
-      isDeleteSelectedModalVisible: false,
-      selectedAlbumId: null
+      isDeleteSelectedModalVisible: false
     };
   },
   computed: {
@@ -196,19 +179,16 @@ export default {
       if (this.selectedPhotos.length === 0) return;
       this.isDeleteSelectedModalVisible = true;
     },
-    selectAlbum(albumId) {
-      this.selectedAlbumId = albumId;
-    },
     showCreateAlbumModal() {
       this.isAddToAlbumModalVisible = false;
       this.isAlbumFormVisible = true;
     },
-    async addToAlbum() {
-      if (!this.selectedAlbumId || this.selectedPhotos.length === 0) return;
+    async handleAddToAlbum(albumId) {
+      if (!albumId || this.selectedPhotos.length === 0) return;
       
       try {
         await photoService.addPhotosToAlbum({
-          albumId: this.selectedAlbumId,
+          albumId: albumId,
           photoIds: this.selectedPhotos
         });
         
@@ -217,9 +197,6 @@ export default {
           message: `已将${this.selectedPhotos.length}张照片添加到相册`,
           type: 'success'
         });
-        
-        this.isAddToAlbumModalVisible = false;
-        this.selectedAlbumId = null;
       } catch (error) {
         console.error('添加照片到相册失败:', error);
         this.$notify.error({
@@ -379,69 +356,7 @@ export default {
   color: var(--text-primary);
 }
 
-.album-selection {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.no-albums {
-  text-align: center;
-}
-
-.album-list {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-}
-
-.album-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin: var(--spacing-md);
-  cursor: pointer;
-}
-
-.album-item.selected {
-  border: 2px solid var(--primary);
-}
-
-.album-cover {
-  width: 100px;
-  height: 100px;
-  overflow: hidden;
-  border-radius: var(--border-radius-md);
-  margin-bottom: var(--spacing-sm);
-}
-
-.album-cover img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.empty-cover {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  height: 100%;
-  background-color: var(--bg-secondary);
-  color: var(--text-secondary);
-}
-
-.album-name {
-  font-size: var(--font-size-md);
-  color: var(--text-primary);
-}
-
-.modal-footer {
-  display: flex;
-  justify-content: flex-end;
-  width: 100%;
-  margin-top: var(--spacing-lg);
-}
+/* 相册模态框的样式已移至 PhotoWallAlbumModal.vue 组件中 */
 
 /* 已移到 SfDeleteConfirmModal 组件中 */
 

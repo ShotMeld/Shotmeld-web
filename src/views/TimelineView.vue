@@ -55,17 +55,6 @@
         </div>
       </template>
 
-      <!-- 删除确认对话框 -->
-      <el-dialog v-model="showDeleteConfirm" title="确认删除" width="30%" :show-close="false">
-        <span>确定要删除这张照片吗？此操作不可恢复。</span>
-        <template #footer>
-          <span class="dialog-footer">
-            <el-button @click="showDeleteConfirm = false">取消</el-button>
-            <el-button type="danger" @click="deletePhoto">确认</el-button>
-          </span>
-        </template>
-      </el-dialog>
-
       <!-- 照片详情模态框 -->
       <PhotoDetail v-if="currentPhoto" v-model="showPhotoDetailModal" :photo="currentPhoto"
         @photo-deleted="handlePhotoDeleted" />

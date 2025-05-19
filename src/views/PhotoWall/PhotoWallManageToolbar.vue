@@ -33,17 +33,17 @@ export default {
     toolbarActions() {
       return [
         {
-          label: '加入相册',
-          event: 'show-add-to-album',
-          icon: 'fas fa-folder-plus',
-          type: 'secondary',
-          requireSelection: true
-        },
-        {
           label: '删除',
           event: 'show-delete-selected',
           icon: 'fas fa-trash',
           type: 'danger',
+          requireSelection: true
+        },
+        {
+          label: '加入相册',
+          event: 'show-add-to-album',
+          icon: 'fas fa-folder-plus',
+          type: 'primary',
           requireSelection: true
         }
       ];

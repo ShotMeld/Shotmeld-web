@@ -35,10 +35,10 @@ export default {
     toolbarActions() {
       return [
         {
-          label: '移动到其他相册',
-          event: 'show-move-to-album',
-          icon: 'fas fa-exchange-alt',
-          type: 'secondary',
+          label: '删除照片',
+          event: 'show-delete-selected',
+          icon: 'fas fa-trash',
+          type: 'danger',
           requireSelection: true
         },
         {
@@ -49,10 +49,10 @@ export default {
           requireSelection: true
         },
         {
-          label: '删除照片',
-          event: 'show-delete-selected',
-          icon: 'fas fa-trash',
-          type: 'danger',
+          label: '移动到其他相册',
+          event: 'show-move-to-album',
+          icon: 'fas fa-exchange-alt',
+          type: 'secondary',
           requireSelection: true
         }
       ];

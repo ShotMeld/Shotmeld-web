@@ -1,6 +1,7 @@
 :root {
   /* 颜色系统 */
   --color-primary: #007AFF;  /* 蓝色 */
+  --color-primary-hover: aliceblue;
   --color-primary-dark: #005ecb; /* 深蓝色 */
   --color-primary-light: #4da3ff; /* 浅蓝色 */
   --color-primary-subtle: rgba(0, 122, 255, 0.1); /* 淡蓝色 */
@@ -13,7 +14,7 @@
   --color-success-subtle: rgba(52, 199, 89, 0.1); /* 淡绿色 */
   --color-success-rgb: 52, 199, 89; /* RGB值 */
   
-  --color-warning: #FF9500;  /* 橙色 */
+  --color-warning: #ffa474;  /* 橙色 */
   --color-danger: #FF3B30;   /* 红色 */
   --color-danger-dark: #d92c23; /* 深红色 */
   --color-danger-light: #ff6b63; /* 浅红色 */
@@ -104,6 +105,7 @@
 
 /* 深色主题 */
 .theme-dark {
+  --color-primary-hover: #3e4854;   /* 深蓝色 */
   /* 背景颜色 */
   --bg-primary: #1C1C1E;
   --bg-secondary: #2C2C2E;

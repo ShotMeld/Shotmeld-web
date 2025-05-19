@@ -88,14 +88,14 @@ export default {
 
 /* Primary Button Style */
 .sf-button--primary {
-  background-color: var(--color-primary);
-  color: var(--color-white);
-  border-color: var(--color-primary);
+  background-color: var(--color-primary-subtle);
+  color: var(--color-primary);
+  border-color: var(--color-primary-subtle);
 }
 
 .sf-button--primary:hover {
-  background-color: var(--color-primary-dark, #005ecb);
-  border-color: var(--color-primary-dark, #005ecb);
+  background-color: var(--color-primary-hover, #e6f0ff);
+  border-color: var(--color-primary-hover, #e6f0ff);
 }
 
 /* Secondary Button Style */

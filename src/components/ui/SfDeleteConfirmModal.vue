@@ -75,10 +75,6 @@ export default {
 </script>
 
 <style scoped>
-.delete-confirm {
-  text-align: center;
-}
-
 .warning-text {
   color: var(--danger);
   font-weight: bold;

@@ -9,7 +9,8 @@
       <SfButton type="primary" size="small" @click="selectAll" class="toolbar-btn">
         全选
       </SfButton>
-      <SfButton type="secondary" size="small" @click="deselectAll" class="toolbar-btn" :disabled="selectedItems.length === 0">
+      <SfButton type="primary" size="small" @click="deselectAll" class="toolbar-btn"
+        :disabled="selectedItems.length === 0">
         取消全选
       </SfButton>
       <span class="selected-count" v-if="selectedItems.length > 0">
@@ -18,13 +19,8 @@
     </div>
     <div class="manage-toolbar-right">
       <template v-for="(action, index) in visibleActions" :key="index">
-        <SfButton 
-          :type="action.type || 'secondary'" 
-          size="small" 
-          @click="handleAction(action.event)" 
-          class="toolbar-btn" 
-          :disabled="action.requireSelection && selectedItems.length === 0"
-        >
+        <SfButton :type="action.type || 'secondary'" size="small" @click="handleAction(action.event)"
+          class="toolbar-btn" :disabled="action.requireSelection && selectedItems.length === 0">
           <i v-if="action.icon" :class="action.icon"></i>
           {{ action.label }}
         </SfButton>
@@ -103,7 +99,7 @@ export default {
     exitManageMode() {
       if (this.useImmediateHide) {
         this.shouldHideImmediately = true;
-        
+
         // 添加一个很短的延迟后再触发实际的退出事件
         setTimeout(() => {
           this.$emit('exit-manage-mode');
@@ -144,6 +140,7 @@ export default {
   padding: 6px 14px;
   border-radius: 8px;
   transition: all 0.2s ease;
+  border: none;
 }
 
 .toolbar-btn:hover {
@@ -177,6 +174,7 @@ export default {
     transform: translateY(-8px);
     opacity: 0;
   }
+
   to {
     transform: translateY(0);
     opacity: 1;
@@ -189,7 +187,7 @@ export default {
     gap: 12px;
     padding: 14px 16px;
   }
-  
+
   .manage-toolbar-left,
   .manage-toolbar-right {
     width: 100%;
@@ -197,7 +195,7 @@ export default {
     justify-content: center;
     gap: 8px;
   }
-  
+
   .toolbar-btn {
     flex-grow: 1;
     min-width: 80px;
@@ -205,10 +203,9 @@ export default {
     text-align: center;
     margin-right: 0;
   }
-  
+
   .selected-count {
-    width: 100%;
-    text-align: center;
+    width: 100%;  text-align: center;
     margin: 6px 0;
   }
 }
