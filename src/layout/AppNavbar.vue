@@ -33,14 +33,26 @@
             :class="{ active: currentPage === 'albums' || currentPage === 'album-detail' }">
             相册
           </SfNavLink>
+          
+          <SfNavLink to="/more" class="nav-item" :class="{ active: currentPage === 'more' }">
+            更多
+          </SfNavLink>
         </div>
       </template>
 
+      <!-- 页面左侧按钮和部分页面导览 -->
       <template #actions>
         <div class="nav-actions">
           <!-- 设置页面导航项 -->
-          <SfNavLink to="/settings" class="nav-item" :class="{ active: currentPage === 'settings' }">
+          <SfNavLink v-if="currentPage === 'settings' && !isMobile" to="/settings" class="nav-item"
+            :class="{ active: currentPage === 'settings' }">
             设置
+          </SfNavLink>
+
+          <!-- 个人页面导航项 -->
+          <SfNavLink v-if="currentPage === 'profile' && !isMobile" to="/profile" class="nav-item"
+            :class="{ active: currentPage === 'profile' }">
+            个人资料
           </SfNavLink>
 
           <!-- 时间线页面按钮 -->
@@ -55,6 +67,9 @@
             <SfButton type="secondary" @click="$emit('show-upload')" class="navbar-button nav-item">
               上传照片
             </SfButton>
+            <SfButton type="secondary" @click="$emit('toggle-manage')" class="navbar-button nav-item">
+              管理
+            </SfButton>
           </template>
 
           <!-- 相册列表页面按钮 -->
@@ -62,12 +77,18 @@
             <SfButton type="secondary" @click="$emit('show-album-form')" class="navbar-button nav-item">
               新建相册
             </SfButton>
+            <SfButton type="secondary" @click="$emit('toggle-album-manage')" class="navbar-button nav-item">
+              管理
+            </SfButton>
           </template>
 
           <!-- 相册详情页面按钮 -->
           <template v-if="currentPage === 'album-detail' && !isMobile">
             <SfButton type="secondary" @click="$emit('show-upload')" class="navbar-button nav-item">
               添加照片
+            </SfButton>
+            <SfButton type="secondary" @click="$emit('toggle-manage')" class="navbar-button nav-item">
+              管理
             </SfButton>
           </template>
 
@@ -137,6 +158,13 @@
             </template>
             相册
           </SfNavLink>
+          
+          <SfNavLink to="/more" class="drawer-nav-item" :class="{ active: currentPage === 'more' }" @click="closeMobileMenu">
+            <template #icon>
+              <i class="fas fa-ellipsis-h"></i>
+            </template>
+            更多
+          </SfNavLink>
 
           <SfNavLink to="/profile" class="drawer-nav-item" @click="closeMobileMenu">
             <template #icon>
@@ -159,6 +187,9 @@
             <SfButton type="primary" @click="showUploadAndCloseMenu" class="drawer-button">
               <i class="fas fa-upload"></i> 上传照片
             </SfButton>
+            <SfButton type="primary" @click="toggleManageAndCloseMenu" class="drawer-button">
+              <i class="fas fa-tasks"></i> 管理
+            </SfButton>
           </template>
 
           <!-- 相册列表页面按钮 -->
@@ -166,12 +197,18 @@
             <SfButton type="primary" @click="showAlbumFormAndCloseMenu" class="drawer-button">
               <i class="fas fa-plus"></i> 新建相册
             </SfButton>
+            <SfButton type="primary" @click="toggleAlbumManageAndCloseMenu" class="drawer-button">
+              <i class="fas fa-tasks"></i> 管理
+            </SfButton>
           </template>
 
           <!-- 相册详情页面按钮 -->
           <template v-if="currentPage === 'album-detail'">
             <SfButton type="primary" @click="showUploadAndCloseMenu" class="drawer-button">
               <i class="fas fa-upload"></i> 添加照片
+            </SfButton>
+            <SfButton type="primary" @click="toggleManageAndCloseMenu" class="drawer-button">
+              <i class="fas fa-tasks"></i> 管理
             </SfButton>
           </template>
 
@@ -206,7 +243,7 @@ export default {
     currentPage: {
       type: String,
       default: 'photowall',
-      validator: (value) => ['photowall', 'timeline', 'albums', 'album-detail', 'settings'].includes(value)
+      validator: (value) => ['photowall', 'timeline', 'albums', 'album-detail', 'settings', 'more'].includes(value)
     }
   },
   data() {
@@ -229,7 +266,7 @@ export default {
     window.removeEventListener('resize', this.handleResize)
     document.removeEventListener('click', this.handleDocumentClick)
   },
-  emits: ['show-upload', 'show-album-form'],
+  emits: ['show-upload', 'show-album-form', 'toggle-manage', 'toggle-album-manage'],
   methods: {
     handleResize() {
       this.windowWidth = window.innerWidth
@@ -271,6 +308,14 @@ export default {
     },
     showAlbumFormAndCloseMenu() {
       this.$emit('show-album-form')
+      this.closeMobileMenu()
+    },
+    toggleManageAndCloseMenu() {
+      this.$emit('toggle-manage')
+      this.closeMobileMenu()
+    },
+    toggleAlbumManageAndCloseMenu() {
+      this.$emit('toggle-album-manage')
       this.closeMobileMenu()
     },
     handleLogout() {
@@ -620,7 +665,7 @@ export default {
 
 .dropdown-link {
   padding: 12px 16px;
-  margin: 0 8px;
+  margin: 2px 8px;
   border-radius: 10px;
   transition: all 0.2s ease;
   white-space: nowrap;

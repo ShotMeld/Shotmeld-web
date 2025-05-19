@@ -24,6 +24,7 @@ app.config.globalProperties.$http = apiClient
 
 // 导入全局样式
 import './styles/variables.css'
+import './styles/scrollbar.css'
 
 // 导入UI组件库
 import SfUI from './components/ui'

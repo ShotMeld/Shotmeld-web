@@ -3,6 +3,7 @@ import LoginPage from '../views/auth/LoginPage.vue'
 import RegisterPage from '../views/auth/RegisterPage.vue'
 import ProfilePage from '../views/ProfilePage.vue'
 import SettingsPage from '../views/SettingsPage.vue'
+import MorePage from '../views/MorePage.vue'
 import BaseLayout from '../layout/BaseLayout.vue'
 
 const routes = [
@@ -58,6 +59,12 @@ const routes = [
         path: 'settings',
         name: 'Settings',
         component: SettingsPage,
+        meta: { requiresAuth: true }
+      },
+      {
+        path: 'more',
+        name: 'More',
+        component: MorePage,
         meta: { requiresAuth: true }
       }
     ]

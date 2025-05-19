@@ -50,8 +50,4 @@ export default {
 .link-button.danger {
   color: var(--color-danger);
 }
-
-.link-button.danger:hover {
-  background-color: var(--color-danger-light);
-}
 </style>

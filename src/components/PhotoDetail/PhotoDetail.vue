@@ -34,7 +34,15 @@
   </SfModal>
 
   <!-- 删除确认对话框 -->
-  <DeleteConfirmModal v-model="showDeleteConfirm" @confirm="deletePhoto" />
+  <DeleteConfirmModal 
+    v-model="showDeleteConfirm" 
+    @confirm="deletePhoto"
+    title="确认删除"
+    itemName="照片"
+    :count="1"
+    confirmMessage="确定要删除这张照片吗？"
+    warningText="此操作无法撤销。" 
+  />
 </template>
 
 <script>
