@@ -1,5 +1,5 @@
 <!--
-  PhotoWallManageToolbar.vue - 照片墙批量管理工具栏组件
+  AlbumPhotosManageToolbar.vue - 相册照片批量管理工具栏组件
 -->
 
 <template>
@@ -7,9 +7,11 @@
     :selectedItems="selectedPhotos"
     itemUnit="张照片"
     :actions="toolbarActions"
+    :useImmediateHide="true"
     @select-all="$emit('select-all')"
     @deselect-all="$emit('deselect-all')"
-    @show-add-to-album="$emit('show-add-to-album')"
+    @show-move-to-album="$emit('show-move-to-album')"
+    @show-remove-from-album="$emit('show-remove-from-album')"
     @show-delete-selected="$emit('show-delete-selected')"
     @exit-manage-mode="$emit('exit-manage-mode')"
   />
@@ -19,7 +21,7 @@
 import { ManageToolbar } from '../../components/toolbar';
 
 export default {
-  name: 'PhotoWallManageToolbar',
+  name: 'AlbumPhotosManageToolbar',
   components: {
     ManageToolbar
   },
@@ -33,14 +35,21 @@ export default {
     toolbarActions() {
       return [
         {
-          label: '加入相册',
-          event: 'show-add-to-album',
-          icon: 'fas fa-folder-plus',
+          label: '移动到其他相册',
+          event: 'show-move-to-album',
+          icon: 'fas fa-exchange-alt',
           type: 'secondary',
           requireSelection: true
         },
         {
-          label: '删除',
+          label: '从相册移除',
+          event: 'show-remove-from-album',
+          icon: 'fas fa-folder-minus',
+          type: 'warning',
+          requireSelection: true
+        },
+        {
+          label: '删除照片',
           event: 'show-delete-selected',
           icon: 'fas fa-trash',
           type: 'danger',
@@ -49,6 +58,6 @@ export default {
       ];
     }
   },
-  emits: ['select-all', 'deselect-all', 'show-add-to-album', 'show-delete-selected', 'exit-manage-mode']
+  emits: ['select-all', 'deselect-all', 'show-move-to-album', 'show-remove-from-album', 'show-delete-selected', 'exit-manage-mode']
 };
 </script>

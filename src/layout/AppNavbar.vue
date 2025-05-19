@@ -83,6 +83,9 @@
             <SfButton type="secondary" @click="$emit('show-upload')" class="navbar-button nav-item">
               添加照片
             </SfButton>
+            <SfButton type="secondary" @click="$emit('toggle-manage')" class="navbar-button nav-item">
+              管理
+            </SfButton>
           </template>
 
           <div class="user-profile" @click="toggleUserMenu">
@@ -192,6 +195,9 @@
           <template v-if="currentPage === 'album-detail'">
             <SfButton type="primary" @click="showUploadAndCloseMenu" class="drawer-button">
               <i class="fas fa-upload"></i> 添加照片
+            </SfButton>
+            <SfButton type="primary" @click="toggleManageAndCloseMenu" class="drawer-button">
+              <i class="fas fa-tasks"></i> 管理
             </SfButton>
           </template>
 
