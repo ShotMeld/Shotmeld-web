@@ -14,7 +14,14 @@
           </template>
         </SfInput>
 
-        <SfInput v-model="formData.password" label="密码" type="password" required :error="errors.password">
+        <SfInput 
+          v-model="formData.password" 
+          label="密码" 
+          type="password" 
+          required 
+          :error="errors.password"
+          @keyup.enter="handleLogin" 
+        >
           <template #prefix>
             <i class="sf-icon">🔒</i>
           </template>
@@ -34,7 +41,6 @@
     </div>
   </div>
 </template>
-
 <script>
 import { authService } from '../../api';
 import IcpFooter from '../../layout/IcpFooter.vue';
