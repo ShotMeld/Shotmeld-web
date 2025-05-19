@@ -1,12 +1,15 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import LoginPage from '../components/LoginPage.vue'
-import RegisterPage from '../components/RegisterPage.vue'
-import ProfilePage from '../components/ProfilePage.vue'
+import LoginPage from '../views/auth/LoginPage.vue'
+import RegisterPage from '../views/auth/RegisterPage.vue'
+import ProfilePage from '../views/ProfilePage.vue'
+import SettingsPage from '../views/SettingsPage.vue'
+import MorePage from '../views/MorePage.vue'
+import BaseLayout from '../layout/BaseLayout.vue'
 
 const routes = [
   {
     path: '/',
-    redirect: '/login'
+    redirect: '/photowall'
   },
   {
     path: '/register',
@@ -19,22 +22,52 @@ const routes = [
     component: LoginPage
   },
   {
-    path: '/photowall',
-    name: 'PhotoWall',
-    component: () => import('../components/PhotoWall.vue'),
-    meta: { requiresAuth: true }
-  },
-  {
-    path: '/profile',
-    name: 'Profile',
-    component: ProfilePage,
-    meta: { requiresAuth: true }
-  },
-  {
-    path: '/timeline',
-    name: 'Timeline',
-    component: () => import('../components/TimelineView.vue'),
-    meta: { requiresAuth: true }
+    path: '/',
+    component: BaseLayout,
+    children: [
+      {
+        path: 'photowall',
+        name: 'PhotoWall',
+        component: () => import('../views/PhotoWall/PhotoWall.vue'),
+        meta: { requiresAuth: true }
+      },
+      {
+        path: 'profile',
+        name: 'Profile',
+        component: ProfilePage,
+        meta: { requiresAuth: true }
+      },
+      {
+        path: 'timeline',
+        name: 'Timeline',
+        component: () => import('../views/TimelineView.vue'),
+        meta: { requiresAuth: true }
+      },
+      {
+        path: 'albums',
+        name: 'Albums',
+        component: () => import('../views/AlbumView.vue'),
+        meta: { requiresAuth: true }
+      },
+      {
+        path: 'album/:id',
+        name: 'AlbumDetail',
+        component: () => import('../views/AlbumDetailView.vue'),
+        meta: { requiresAuth: true }
+      },
+      {
+        path: 'settings',
+        name: 'Settings',
+        component: SettingsPage,
+        meta: { requiresAuth: true }
+      },
+      {
+        path: 'more',
+        name: 'More',
+        component: MorePage,
+        meta: { requiresAuth: true }
+      }
+    ]
   }
 ]
 

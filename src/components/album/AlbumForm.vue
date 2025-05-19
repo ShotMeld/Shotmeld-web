@@ -1,3 +1,7 @@
+<!--
+  AlbumForm.vue - 相册创建组件
+-->
+
 <template>
   <div class="album-form-container">
 
@@ -11,12 +15,6 @@
         <label for="album-description">相册描述</label>
         <textarea id="album-description" v-model="formData.description" placeholder="输入相册描述" class="form-textarea"
           rows="3"></textarea>
-      </div>
-
-      <div class="form-group">
-        <label for="cover-photo">封面照片ID</label>
-        <input id="cover-photo" v-model="formData.coverPhotoId" type="text" placeholder="输入封面照片ID" class="form-input">
-        <p class="form-hint">可选，输入照片ID作为相册封面</p>
       </div>
 
       <div class="form-actions">

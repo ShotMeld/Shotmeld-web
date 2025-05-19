@@ -1,3 +1,7 @@
+<!--
+  PhotoUpload.vue - 照片上传组件
+-->
+
 <template>
   <div class="upload-component">
     <div class="upload-container" @dragover.prevent="handleDragOver" @dragleave.prevent="isDragging = false"
@@ -18,7 +22,8 @@
         </el-upload>
       </div>
       <div class="loading-container" v-else>
-        <el-progress :percentage="uploadProgress" type="circle"></el-progress>
+        <el-progress :percentage="uploadProgress" :format="percent => `${percent}%`" type="circle" :stroke-width="6"
+          :status="uploadProgress === 100 ? 'success' : ''"></el-progress>
         <div class="upload-status">{{ uploadStatus }}</div>
       </div>
     </div>
@@ -44,17 +49,9 @@
       <div class="upload-options" v-if="showAlbumOption">
         <div class="option-item">
           <label>添加到相册:</label>
-          <el-select v-model="albumId" placeholder="选择相册" clearable popper-class="album-select-dropdown" teleported
+          <el-select v-model="selectedAlbumId" placeholder="选择相册" clearable popper-class="album-select-dropdown" teleported
             popper-append-to-body>
             <el-option v-for="album in albums" :key="album.id" :label="album.name" :value="album.id">
-            </el-option>
-          </el-select>
-        </div>
-        <div class="option-item">
-          <label>添加标签:</label>
-          <el-select v-model="selectedTags" multiple collapse-tags placeholder="添加标签" popper-class="tag-select-dropdown"
-            teleported popper-append-to-body>
-            <el-option v-for="tag in tags" :key="tag.id" :label="tag.name" :value="tag.id">
             </el-option>
           </el-select>
         </div>
@@ -67,7 +64,7 @@
 </template>
 
 <script>
-import { photoService, albumService, tagService } from '../api';
+import { photoService, albumService } from '../api';
 
 export default {
   name: 'PhotoUpload',
@@ -87,6 +84,10 @@ export default {
     showAlbumOption: {
       type: Boolean,
       default: true
+    },
+    albumId: {
+      type: String,
+      default: null
     }
   },
   data() {
@@ -96,34 +97,33 @@ export default {
       loading: false,
       uploadProgress: 0,
       uploadStatus: '正在上传...',
-      albumId: null,
-      selectedTags: [],
+      selectedAlbumId: null,
       albums: [],
-      tags: [],
       actionUrl: '' // 不使用el-upload的自动上传功能
+    }
+  },
+  watch: {
+    albumId: {
+      immediate: true,
+      handler(newVal) {
+        this.selectedAlbumId = newVal;
+      }
     }
   },
   async created() {
     if (this.showAlbumOption) {
       try {
-        // 获取相册和标签列表
-        const [albumsResponse, tagsResponse] = await Promise.all([
-          albumService.getAlbums(),
-          tagService.getTags()
-        ]);
-
+        // 获取相册列表
+        const albumsResponse = await albumService.getAlbums();
         this.albums = albumsResponse.data.data || [];
-        this.tags = tagsResponse.data || [];
       } catch (error) {
-        console.error('获取相册或标签列表失败:', error);
+        console.error('获取相册列表失败:', error);
       }
     }
-  },
-  methods: {
+  }, methods: {
     handleDragOver(event) {
       this.isDragging = true;
-    },
-    handleDrop(event) {
+    }, handleDrop(event) {
       this.isDragging = false;
       const files = event.dataTransfer.files;
       if (!files || files.length === 0) return;
@@ -137,8 +137,7 @@ export default {
       } else if (files.length > 0 && this.isValidFile(files[0])) {
         this.selectedFiles = [files[0]];
       }
-    },
-    handleFileChange(file) {
+    }, handleFileChange(file) {
       if (!file || !this.isValidFile(file.raw)) return;
 
       if (this.multiple) {
@@ -173,10 +172,10 @@ export default {
       }
 
       return true;
-    },
-    isImageFile(file) {
+    }, isImageFile(file) {
       return file.type.startsWith('image/');
     },
+
     getFilePreview(file) {
       if (!this.isImageFile(file)) return '';
 
@@ -217,16 +216,24 @@ export default {
       this.uploadProgress = 0;
       this.uploadStatus = '正在上传...';
 
+      // 定义进度更新回调函数
+      const updateProgress = (percent) => {
+        this.uploadProgress = percent;
+        this.uploadStatus = `正在上传... ${percent}%`;
+      };
+
       try {
-        if (this.multiple && this.selectedFiles.length > 1) {
-          // 批量上传
+        if (this.multiple && this.selectedFiles.length > 1) {          // 批量上传
           const response = await photoService.batchUploadPhotos(
             this.selectedFiles,
-            this.albumId,
-            this.selectedTags
+            this.selectedAlbumId,
+            null,
+            updateProgress // 传入进度更新回调
           );
 
           this.$emit('upload-success', response.data);
+          this.uploadProgress = 100;
+          this.uploadStatus = '上传完成';
           this.$notify({
             title: '成功',
             message: `已成功上传 ${response.data.uploadedCount} 张照片`,
@@ -237,12 +244,17 @@ export default {
           const metadata = {
             title: this.selectedFiles[0].name.split('.')[0],
             description: '',
-            tags: this.selectedTags,
-            albumIds: this.albumId ? [this.albumId] : []
+            albumIds: this.selectedAlbumId ? [this.selectedAlbumId] : []
           };
 
-          const response = await photoService.uploadPhoto(this.selectedFiles[0], metadata);
+          const response = await photoService.uploadPhoto(
+            this.selectedFiles[0],
+            metadata,
+            updateProgress // 传入进度更新回调
+          );
 
+          this.uploadProgress = 100;
+          this.uploadStatus = '上传完成';
           this.$emit('upload-success', [response.data]);
           this.$notify({
             title: '成功',
@@ -259,7 +271,16 @@ export default {
           message: error.response?.data?.message || '上传失败，请重试'
         });
       } finally {
-        this.loading = false;
+        // 短暂延迟后重置状态，让用户有时间看到100%的进度
+        setTimeout(() => {
+          this.loading = false;
+          // 如果上传成功，uploadProgress会被设置为100
+          // 如果上传失败，重置进度
+          if (this.uploadProgress !== 100) {
+            this.uploadProgress = 0;
+            this.uploadStatus = '正在上传...';
+          }
+        }, 500);
       }
     }
   }
@@ -271,6 +292,12 @@ export default {
   width: 100%;
   max-width: 800px;
   margin: 0 auto;
+  --upload-border-color: var(--el-border-color);
+  --upload-bg-color: var(--el-bg-color);
+  --upload-text-color: var(--el-text-color-primary);
+  --upload-text-color-secondary: var(--el-text-color-secondary);
+  --upload-hover-bg-color: var(--el-fill-color-light);
+  --upload-icon-color: var(--el-text-color-secondary);
 }
 
 /* 全局样式，确保Element Plus的下拉菜单显示在最上层 */
@@ -278,9 +305,8 @@ export default {
   z-index: 10002 !important;
 }
 
-/* 相册和标签下拉菜单样式 */
-:deep(.album-select-dropdown),
-:deep(.tag-select-dropdown) {
+/* 相册下拉菜单样式 */
+:deep(.album-select-dropdown) {
   position: fixed !important;
   margin-top: 5px !important;
   z-index: 10001 !important;
@@ -314,18 +340,19 @@ export default {
 }
 
 .upload-container {
-  border: 2px dashed #dcdfe6;
+  border: 2px dashed var(--upload-border-color);
   border-radius: 12px;
   padding: 20px;
   text-align: center;
   cursor: pointer;
   margin-bottom: 20px;
   transition: all 0.3s ease;
+  background-color: var(--upload-bg-color);
 }
 
 .upload-container.is-dragging {
-  border-color: #409eff;
-  background-color: rgba(64, 158, 255, 0.05);
+  border-color: var(--el-color-primary);
+  background-color: var(--upload-hover-bg-color);
 }
 
 .upload-inner {
@@ -349,22 +376,23 @@ export default {
 
 .upload-icon i {
   font-size: 48px;
-  color: #909399;
+  color: var(--upload-icon-color);
 }
 
 .upload-title {
   font-size: 18px;
   font-weight: 600;
   margin-bottom: 8px;
+  color: var(--upload-text-color);
 }
 
 .upload-subtitle {
   font-size: 14px;
-  color: #909399;
+  color: var(--upload-text-color-secondary);
 }
 
 .browse-text {
-  color: #409eff;
+  color: var(--el-color-primary);
   cursor: pointer;
   text-decoration: underline;
 }
@@ -378,14 +406,15 @@ export default {
 
 .upload-status {
   font-size: 14px;
-  color: #606266;
+  color: var(--upload-text-color-secondary);
 }
 
 .selected-files {
   margin-top: 20px;
-  border: 1px solid #ebeef5;
+  border: 1px solid var(--upload-border-color);
   border-radius: 12px;
   overflow: hidden;
+  background-color: var(--upload-bg-color);
 }
 
 .selected-files-header {
@@ -393,13 +422,14 @@ export default {
   justify-content: space-between;
   align-items: center;
   padding: 12px 16px;
-  background-color: #f5f7fa;
-  border-bottom: 1px solid #ebeef5;
+  background-color: var(--upload-hover-bg-color);
+  border-bottom: 1px solid var(--upload-border-color);
 }
 
 .selected-count {
   font-weight: 600;
   font-size: 14px;
+  color: var(--upload-text-color);
 }
 
 .clear-button {
@@ -420,7 +450,7 @@ export default {
   display: flex;
   align-items: center;
   padding: 8px;
-  border-bottom: 1px solid #ebeef5;
+  border-bottom: 1px solid var(--upload-border-color);
   position: relative;
 }
 
@@ -437,7 +467,7 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #f5f7fa;
+  background-color: var(--upload-hover-bg-color);
 }
 
 .file-preview img {
@@ -452,8 +482,8 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #909399;
-  color: white;
+  background-color: var(--upload-text-color-secondary);
+  color: var(--upload-bg-color);
   font-weight: bold;
   text-transform: uppercase;
 }
@@ -466,11 +496,12 @@ export default {
   font-size: 14px;
   margin-bottom: 4px;
   word-break: break-all;
+  color: var(--upload-text-color);
 }
 
 .file-size {
   font-size: 12px;
-  color: #909399;
+  color: var(--upload-text-color-secondary);
 }
 
 .remove-file {
@@ -497,10 +528,11 @@ export default {
 
 .upload-options {
   padding: 16px;
-  border-top: 1px solid #ebeef5;
+  border-top: 1px solid var(--upload-border-color);
   display: flex;
   flex-direction: column;
   gap: 12px;
+  background-color: var(--upload-bg-color);
 }
 
 .option-item {
@@ -513,6 +545,7 @@ export default {
   width: 100px;
   font-size: 14px;
   text-align: right;
+  color: var(--upload-text-color);
 }
 
 .upload-button {

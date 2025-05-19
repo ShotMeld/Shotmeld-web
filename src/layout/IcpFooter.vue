@@ -1,3 +1,7 @@
+<!--
+  IcpFooter.vue - ICP备案信息
+-->
+
 <template>
   <div class="icp-footer">
     <a href="https://beian.miit.gov.cn" target="_blank" rel="noopener noreferrer">
