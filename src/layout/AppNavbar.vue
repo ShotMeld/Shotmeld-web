@@ -73,6 +73,9 @@
             <SfButton type="secondary" @click="$emit('show-album-form')" class="navbar-button nav-item">
               新建相册
             </SfButton>
+            <SfButton type="secondary" @click="$emit('toggle-album-manage')" class="navbar-button nav-item">
+              管理
+            </SfButton>
           </template>
 
           <!-- 相册详情页面按钮 -->
@@ -180,6 +183,9 @@
             <SfButton type="primary" @click="showAlbumFormAndCloseMenu" class="drawer-button">
               <i class="fas fa-plus"></i> 新建相册
             </SfButton>
+            <SfButton type="primary" @click="toggleAlbumManageAndCloseMenu" class="drawer-button">
+              <i class="fas fa-tasks"></i> 管理
+            </SfButton>
           </template>
 
           <!-- 相册详情页面按钮 -->
@@ -243,7 +249,7 @@ export default {
     window.removeEventListener('resize', this.handleResize)
     document.removeEventListener('click', this.handleDocumentClick)
   },
-  emits: ['show-upload', 'show-album-form', 'toggle-manage'],
+  emits: ['show-upload', 'show-album-form', 'toggle-manage', 'toggle-album-manage'],
   methods: {
     handleResize() {
       this.windowWidth = window.innerWidth
@@ -289,6 +295,10 @@ export default {
     },
     toggleManageAndCloseMenu() {
       this.$emit('toggle-manage')
+      this.closeMobileMenu()
+    },
+    toggleAlbumManageAndCloseMenu() {
+      this.$emit('toggle-album-manage')
       this.closeMobileMenu()
     },
     handleLogout() {

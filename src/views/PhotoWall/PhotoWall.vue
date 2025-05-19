@@ -67,16 +67,12 @@
         </SfModal>
         
         <!-- 批量删除确认弹窗 -->
-        <SfModal v-model="isDeleteSelectedModalVisible" title="删除确认" size="small">
-          <div class="delete-confirm">
-            <p>确定要删除选中的 {{ selectedPhotos.length }} 张照片吗？</p>
-            <p class="warning-text">此操作不可恢复！</p>
-            <div class="modal-footer">
-              <SfButton type="secondary" @click="isDeleteSelectedModalVisible = false">取消</SfButton>
-              <SfButton type="danger" @click="deleteSelectedPhotos">确认删除</SfButton>
-            </div>
-          </div>
-        </SfModal>
+        <SfDeleteConfirmModal
+          v-model="isDeleteSelectedModalVisible"
+          item-name="照片"
+          :count="selectedPhotos.length"
+          @confirm="deleteSelectedPhotos"
+        />
       </main>
   </div>
 </template>
@@ -91,7 +87,7 @@ import PhotoDetail from '../../components/PhotoDetail.vue';
 import PhotoUpload from '../../components/PhotoUpload.vue';
 import AlbumForm from '../../components/album/AlbumForm.vue';
 import AppNavbar from '../../layout/AppNavbar.vue';
-import { SfButton, SfModal } from '../../components/ui';
+import { SfButton, SfModal, SfDeleteConfirmModal } from '../../components/ui';
 import { photoService, albumService } from '../../api';
 import { eventBus, EventTypes } from '../../utils/eventBus';
 
@@ -447,14 +443,7 @@ export default {
   margin-top: var(--spacing-lg);
 }
 
-.delete-confirm {
-  text-align: center;
-}
-
-.warning-text {
-  color: var(--danger);
-  font-weight: bold;
-}
+/* 已移到 SfDeleteConfirmModal 组件中 */
 
 /* 过渡动画样式 */
 .slide-fade-enter-active {

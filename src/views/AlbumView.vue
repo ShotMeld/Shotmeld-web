@@ -4,6 +4,7 @@
 
 <template>
   <div class="album-view">
+    <AppNavbar :userName="userName" currentPage="albums" @show-upload="isUploadModalVisible = true" @show-album-form="showCreateModal = true" @toggle-album-manage="toggleManageMode" />
     <div class="album-container">
       <div v-if="loading" class="album-view__loading">
         <div class="album-view__spinner"></div>
@@ -21,32 +22,68 @@
         <p>还没有创建任何相册</p>
       </div>
 
-      <div v-else class="album-view__grid">
-        <album-card v-for="album in albums" :key="album.id" :album="album" @click="openAlbum(album)" />
+      <div v-else>
+        <!-- 批量管理工具栏 -->
+        <transition name="slide-fade">
+          <album-manage-toolbar 
+            v-if="isManageMode" 
+            :selectedAlbums="selectedAlbums"
+            @select-all="selectAll"
+            @deselect-all="deselectAll"
+            @show-delete-selected="showDeleteSelectedModal"
+            @exit-manage-mode="exitManageMode"
+          />
+        </transition>
+
+        <div class="album-view__grid">
+          <album-card 
+            v-for="album in albums" 
+            :key="album.id" 
+            :album="album" 
+            :isManageMode="isManageMode"
+            :isSelected="isSelected(album.id)"
+            @click="handleAlbumClick(album)"
+            @toggleSelect="toggleSelectAlbum"
+          />
+        </div>
       </div>
     </div>
 
     <sf-modal v-model="showCreateModal" title="创建新相册">
       <album-form @success="handleAlbumCreated" @close="showCreateModal = false" @cancel="showCreateModal = false" />
     </sf-modal>
+
+    <!-- 批量删除确认弹窗 -->
+    <sf-delete-confirm-modal
+      v-model="isDeleteSelectedModalVisible"
+      item-name="相册"
+      :count="selectedAlbums.length"
+      @confirm="deleteSelectedAlbums"
+    />
   </div>
 </template>
 
 <script>
 import AlbumCard from '../components/album/AlbumCard.vue'
+import AlbumManageToolbar from './Albums/AlbumManageToolbar.vue'
 import SfButton from '../components/ui/SfButton.vue'
 import SfModal from '../components/ui/SfModal.vue'
+import SfDeleteConfirmModal from '../components/ui/SfDeleteConfirmModal.vue'
 import AlbumForm from '../components/album/AlbumForm.vue'
 import { albumService } from '../api'
 import { eventBus } from '../utils/eventBus'
+import AppNavbar from '../layout/AppNavbar.vue'
 
 export default {
   name: 'AlbumView',
   components: {
     AlbumCard,
+    AlbumManageToolbar,
     SfButton,
     SfModal,
-    AlbumForm
+    SfDeleteConfirmModal,
+    AlbumForm,
+    AppNavbar
   },
   data() {
     return {
@@ -54,7 +91,11 @@ export default {
       albums: [],
       loading: false,
       error: null,
-      userName: ''
+      userName: '',
+      // 批量管理相关的状态
+      isManageMode: false,
+      selectedAlbums: [],
+      isDeleteSelectedModalVisible: false
     }
   },
   async created() {
@@ -67,10 +108,16 @@ export default {
     eventBus.on('show-album-form', () => {
       this.showCreateModal = true
     })
+
+    // 监听管理相册事件
+    eventBus.on('toggle-album-manage', () => {
+      this.toggleManageMode()
+    })
   },
   beforeUnmount() {
     // 清理事件监听
     eventBus.off('show-album-form')
+    eventBus.off('toggle-album-manage')
   },
   methods: {
     async fetchAlbums() {
@@ -92,6 +139,71 @@ export default {
       // 将新创建的相册添加到列表开头
       this.albums.unshift(newAlbum)
       this.showCreateModal = false
+    },
+    // 批量管理相关方法
+    toggleManageMode() {
+      this.isManageMode = !this.isManageMode
+      if (!this.isManageMode) {
+        this.selectedAlbums = []
+      }
+    },
+    exitManageMode() {
+      this.isManageMode = false
+      this.selectedAlbums = []
+    },
+    handleAlbumClick(album) {
+      if (this.isManageMode) {
+        this.toggleSelectAlbum(album.id)
+      } else {
+        this.openAlbum(album)
+      }
+    },
+    toggleSelectAlbum(albumId) {
+      const index = this.selectedAlbums.indexOf(albumId)
+      if (index === -1) {
+        this.selectedAlbums.push(albumId)
+      } else {
+        this.selectedAlbums.splice(index, 1)
+      }
+    },
+    selectAll() {
+      this.selectedAlbums = this.albums.map(album => album.id)
+    },
+    deselectAll() {
+      this.selectedAlbums = []
+    },
+    isSelected(albumId) {
+      return this.selectedAlbums.includes(albumId)
+    },
+    showDeleteSelectedModal() {
+      if (this.selectedAlbums.length === 0) return
+      this.isDeleteSelectedModalVisible = true
+    },
+    async deleteSelectedAlbums() {
+      try {
+        // 批量删除选中的相册
+        await Promise.all(
+          this.selectedAlbums.map(albumId => albumService.deleteAlbum(albumId))
+        )
+
+        this.$notify({
+          title: '成功',
+          message: `已删除 ${this.selectedAlbums.length} 个相册`,
+          type: 'success'
+        })
+
+        // 从列表中移除已删除的相册
+        this.albums = this.albums.filter(album => !this.selectedAlbums.includes(album.id))
+        this.selectedAlbums = []
+        this.isDeleteSelectedModalVisible = false
+        this.isManageMode = false
+      } catch (error) {
+        console.error('删除相册失败:', error)
+        this.$notify.error({
+          title: '删除失败',
+          message: error.response?.data?.message || '无法删除相册，请重试'
+        })
+      }
     }
   }
 }
@@ -155,6 +267,34 @@ export default {
 
 .album-view__empty {
   color: var(--text-secondary);
+}
+
+/* 已移到 SfDeleteConfirmModal 组件中 */
+
+/* 过渡动画样式 */
+.slide-fade-enter-active {
+  transition: all 0.4s cubic-bezier(0.33, 1, 0.68, 1);
+  transform-origin: top center;
+}
+
+.slide-fade-leave-active {
+  transition: all 0.25s cubic-bezier(0.32, 0, 0.67, 0);
+  transform-origin: top center;
+  position: absolute;
+  width: 100%;
+  z-index: -1;
+}
+
+.slide-fade-enter-from {
+  transform: translateY(-10px);
+  opacity: 0;
+  filter: blur(1px);
+}
+
+.slide-fade-leave-to {
+  transform: translateY(-8px);
+  opacity: 0;
+  filter: blur(0.5px);
 }
 
 @keyframes spin {

@@ -3,7 +3,11 @@
 -->
 
 <template>
-  <sf-card class="album-card" @click="$emit('click')">
+  <sf-card 
+    class="album-card" 
+    :class="{ 'manage-mode': isManageMode, 'selected': isSelected }" 
+    @click="$emit('click')"
+  >
     <div class="album-card__cover">
       <img 
         :src="coverImage" 
@@ -13,6 +17,11 @@
       <div class="album-card__overlay">
         <div class="album-card__info">
           <span class="album-card__count">{{ album.photoCount }} 张照片</span>
+        </div>
+      </div>
+      <div v-if="isManageMode" class="album-card__select-overlay" @click.stop="$emit('toggleSelect', album.id)">
+        <div class="select-checkbox" :class="{ 'selected': isSelected }">
+          <i v-if="isSelected" class="fas fa-check"></i>
         </div>
       </div>
     </div>
@@ -39,6 +48,14 @@ export default {
     album: {
       type: Object,
       required: true
+    },
+    isManageMode: {
+      type: Boolean,
+      default: false
+    },
+    isSelected: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -141,9 +158,19 @@ export default {
   flex-direction: column;
 }
 
-.album-card:hover {
+.album-card:not(.manage-mode):hover {
   transform: scale(1.02) translateY(-5px);
   box-shadow: 0 12px 24px var(--shadow-color), 0 20px 48px var(--shadow-color);
+}
+
+.album-card.manage-mode {
+  transform: scale(0.98);
+  transition: all 0.3s cubic-bezier(0.2, 0, 0, 1);
+}
+
+.album-card.manage-mode.selected {
+  background-color: var(--bg-hover);
+  box-shadow: 0 0 0 2px var(--primary);
 }
 
 .album-card__cover {
@@ -161,7 +188,7 @@ export default {
   transition: transform 0.5s cubic-bezier(0.33, 1, 0.68, 1);
 }
 
-.album-card:hover .album-card__image {
+.album-card:not(.manage-mode):hover .album-card__image {
   transform: scale(1.05);
 }
 
@@ -184,6 +211,54 @@ export default {
 .album-card__count {
   font-size: var(--font-size-sm);
   font-weight: var(--font-weight-medium);
+}
+
+.album-card__select-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+  padding: var(--spacing-md);
+  background: linear-gradient(to bottom, transparent 70%, rgba(0, 0, 0, 0.3));
+  z-index: 2;
+  transition: background 0.3s ease;
+}
+
+.select-checkbox {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 2px solid white;
+  background-color: rgba(255, 255, 255, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.select-checkbox.selected {
+  background-color: var(--primary);
+  border-color: var(--primary);
+  transform: scale(1.1);
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+}
+
+.select-checkbox i {
+  color: white;
+  font-size: 12px;
+  opacity: 0;
+  transform: scale(0.5);
+  transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.select-checkbox.selected i {
+  opacity: 1;
+  transform: scale(1);
 }
 
 .album-card__content {

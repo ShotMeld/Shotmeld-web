@@ -7,6 +7,7 @@ import SfBadge from './SfBadge.vue';
 import SfNavbar from './SfNavbar.vue';
 import SfNavLink from './SfNavLink.vue';
 import SfLinkButton from './SfLinkButton.vue';
+import SfDeleteConfirmModal from './SfDeleteConfirmModal.vue';
 
 export {
   SfButton,
@@ -17,7 +18,8 @@ export {
   SfBadge,
   SfNavbar,
   SfNavLink,
-  SfLinkButton
+  SfLinkButton,
+  SfDeleteConfirmModal
 };
 
 export default {
@@ -31,5 +33,6 @@ export default {
     app.component('SfNavbar', SfNavbar);
     app.component('SfNavLink', SfNavLink);
     app.component('SfLinkButton', SfLinkButton);
+    app.component('SfDeleteConfirmModal', SfDeleteConfirmModal);
   }
 };
