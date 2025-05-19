@@ -95,6 +95,7 @@ export default {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: var(--spacing-lg);
+  padding: 5px;
 }
 
 /* Photo Grid Animation */
@@ -120,6 +121,8 @@ export default {
 .photo-card-wrapper {
   position: relative;
   will-change: transform;
+  padding: 5px;
+  margin-bottom: 10px;
 }
 
 .photo-card {
@@ -133,7 +136,8 @@ export default {
 
 .photo-card:not(.manage-mode):hover {
   transform: scale(1.02) translateY(-5px);
-  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1), 0 5px 15px rgba(0, 0, 0, 0.07);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1), 0 4px 12px rgba(0, 0, 0, 0.07);
+  z-index: 1;
 }
 
 .photo-card.manage-mode {
