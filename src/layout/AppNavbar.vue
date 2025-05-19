@@ -33,6 +33,10 @@
             :class="{ active: currentPage === 'albums' || currentPage === 'album-detail' }">
             相册
           </SfNavLink>
+          
+          <SfNavLink to="/more" class="nav-item" :class="{ active: currentPage === 'more' }">
+            更多
+          </SfNavLink>
         </div>
       </template>
 
@@ -154,6 +158,13 @@
             </template>
             相册
           </SfNavLink>
+          
+          <SfNavLink to="/more" class="drawer-nav-item" :class="{ active: currentPage === 'more' }" @click="closeMobileMenu">
+            <template #icon>
+              <i class="fas fa-ellipsis-h"></i>
+            </template>
+            更多
+          </SfNavLink>
 
           <SfNavLink to="/profile" class="drawer-nav-item" @click="closeMobileMenu">
             <template #icon>
@@ -232,7 +243,7 @@ export default {
     currentPage: {
       type: String,
       default: 'photowall',
-      validator: (value) => ['photowall', 'timeline', 'albums', 'album-detail', 'settings'].includes(value)
+      validator: (value) => ['photowall', 'timeline', 'albums', 'album-detail', 'settings', 'more'].includes(value)
     }
   },
   data() {

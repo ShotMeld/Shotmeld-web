@@ -47,6 +47,14 @@
   --border-color-hover: rgba(60, 60, 67, 0.25);
   --border-width: 0.5px;
   
+  /* 滚动条样式变量 */
+  --scrollbar-width: 6px;
+  --scrollbar-height: 6px;
+  --scrollbar-track-color: transparent;
+  --scrollbar-thumb-color: rgba(0, 0, 0, 0.2);
+  --scrollbar-thumb-hover-color: rgba(0, 0, 0, 0.3);
+  --scrollbar-thumb-radius: 3px;
+  
   /* 圆角 */
   --radius-small: 6px;
   --radius-medium: 10px;
