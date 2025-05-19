@@ -7,19 +7,11 @@
     <div class="album-selection">
       <div v-if="albums.length === 0" class="no-albums">
         <p>暂无相册，请先创建相册</p>
-        <SfButton type="primary" @click="handleCreateAlbum">创建新相册</SfButton>
       </div>
       <div v-else class="album-list">
-        <div 
-          v-for="album in albums" 
-          :key="album.id" 
-          class="album-card-wrapper"
-          :class="{ 'selected': selectedAlbumId === album.id }"
-        >
-          <AlbumCard 
-            :album="album" 
-            @click="selectAlbum(album.id)"
-          />
+        <div v-for="album in albums" :key="album.id" class="album-card-wrapper"
+          :class="{ 'selected': selectedAlbumId === album.id }">
+          <AlbumCard :album="album" @click="selectAlbum(album.id)" />
           <div v-if="selectedAlbumId === album.id" class="selection-indicator">
             <i class="fas fa-check"></i>
           </div>
@@ -27,7 +19,8 @@
       </div>
       <div class="modal-footer">
         <SfButton type="secondary" @click="handleCancel">取消</SfButton>
-        <SfButton type="primary" @click="handleConfirm" :disabled="!selectedAlbumId">确认</SfButton>
+        <SfButton v-if="albums.length > 0" type="primary" @click="handleConfirm" :disabled="!selectedAlbumId">确认</SfButton>
+        <SfButton v-if="albums.length === 0" type="primary" @click="handleCreateAlbum">创建新相册</SfButton>
       </div>
     </div>
   </SfModal>
@@ -101,13 +94,11 @@ export default {
 .album-selection {
   display: flex;
   flex-direction: column;
-  align-items: center;
   max-width: 100%;
   overflow: hidden;
 }
 
 .no-albums {
-  text-align: center;
   padding: var(--spacing-lg);
 }
 

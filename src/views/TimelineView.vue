@@ -16,13 +16,7 @@
       </div>
 
       <template v-else>
-        <div v-if="timelineGroups.length === 0" class="empty-timeline">
-          <i class="fas fa-calendar-times"></i>
-          <p>暂无照片，请先上传照片</p>
-          <div class="empty-actions">
-            <button @click="showUploadModal = true" class="upload-btn">上传照片</button>
-          </div>
-        </div>
+        <PhotoWallNoPhotos v-if="photos.length === 0" @showUploadModal="$emit('showUploadModal')" />
 
         <div v-else class="timeline">
           <div v-for="(yearGroup, yearIndex) in timelineGroups" :key="yearIndex" class="timeline-year">
@@ -73,6 +67,7 @@ import apiClient from '../api';
 import PhotoUpload from '../components/PhotoUpload.vue';
 import PhotoDetail from '../components/PhotoDetail.vue';
 import { SfModal } from '../components/ui';
+import PhotoWallNoPhotos from './PhotoWall/PhotoWallNoPhotos.vue';
 import { eventBus } from '../utils/eventBus';
 
 export default {
@@ -80,7 +75,8 @@ export default {
   components: {
     PhotoUpload,
     PhotoDetail,
-    SfModal
+    SfModal,
+    PhotoWallNoPhotos
   },
   data() {
     return {
