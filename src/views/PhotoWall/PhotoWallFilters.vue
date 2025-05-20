@@ -15,30 +15,30 @@
       <div class="filter-controls">
         <div class="filter-item">
           <label class="filter-label">相册</label>
-          <div class="apple-select-wrapper">
-            <el-select v-model="localFilters.albumId" placeholder="全部相册" clearable @change="handleFilterChange" class="apple-select">
+          <div class="select-wrapper">
+            <el-select v-model="localFilters.albumId" placeholder="全部相册" clearable @change="handleFilterChange" class="select">
               <el-option v-for="album in albums" :key="album.id" :label="album.name" :value="album.id"></el-option>
             </el-select>
           </div>
         </div>
         <div class="filter-item">
           <label class="filter-label">日期范围</label>
-          <div class="apple-datepicker-wrapper">
-            <el-date-picker v-model="localDateRange" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" format="YYYY-MM-DD" value-format="YYYY-MM-DD" @change="handleDateRangeChange" class="apple-datepicker"></el-date-picker>
+          <div class="datepicker-wrapper">
+            <el-date-picker v-model="localDateRange" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" format="YYYY-MM-DD" value-format="YYYY-MM-DD" @change="handleDateRangeChange" class="photo-wall-datepicker"></el-date-picker>
           </div>
         </div>
         <div class="filter-item">
           <label class="filter-label">排序</label>
           <div class="sort-controls">
-            <div class="apple-select-wrapper sort-field">
-              <el-select v-model="localFilters.sort" @change="handleFilterChange" class="apple-select">
+            <div class="select-wrapper sort-field">
+              <el-select v-model="localFilters.sort" @change="handleFilterChange" class="select">
                 <el-option label="拍摄时间" value="takenAt"></el-option>
                 <el-option label="上传时间" value="createdAt"></el-option>
                 <el-option label="标题" value="title"></el-option>
               </el-select>
             </div>
-            <div class="apple-select-wrapper sort-order">
-              <el-select v-model="localFilters.order" @change="handleFilterChange" class="apple-select">
+            <div class="select-wrapper sort-order">
+              <el-select v-model="localFilters.order" @change="handleFilterChange" class="select">
                 <el-option label="降序" value="desc"></el-option>
                 <el-option label="升序" value="asc"></el-option>
               </el-select>
@@ -151,13 +151,13 @@ export default {
 .sort-order {
   flex: 1;
 }
-.apple-select-wrapper {
+.select-wrapper {
   position: relative;
 }
-:deep(.apple-select) {
+:deep(.select) {
   width: 100%;
 }
-:deep(.apple-select .el-input__wrapper) {
+:deep(.select .el-input__wrapper) {
   background-color: var(--bg-secondary);
   border-radius: var(--radius-round);
   padding: var(--spacing-xs) var(--spacing-sm);
@@ -165,23 +165,23 @@ export default {
   border: 2px solid transparent;
   transition: all var(--transition-base);
 }
-:deep(.apple-select .el-input__wrapper:hover) {
+:deep(.select .el-input__wrapper:hover) {
   background-color: var(--bg-tertiary);
 }
-:deep(.apple-select .el-input__wrapper.is-focus) {
+:deep(.select .el-input__wrapper.is-focus) {
   background-color: var(--bg-primary);
   border-color: var(--color-primary);
   box-shadow: 0 0 0 2px rgba(var(--color-primary-rgb), 0.15);
 }
-:deep(.apple-select .el-input__inner) {
+:deep(.select .el-input__inner) {
   color: var(--text-primary);
   font-family: var(--font-family);
   font-size: var(--font-size-base);
 }
-:deep(.apple-datepicker) {
+:deep(.photo-wall-datepicker) {
   width: 100%;
 }
-:deep(.apple-datepicker .el-input__wrapper) {
+:deep(.photo-wall-datepicker .el-input__wrapper) {
   background-color: var(--bg-secondary);
   border-radius: var(--radius-round);
   padding: var(--spacing-xs) var(--spacing-sm);
@@ -189,10 +189,10 @@ export default {
   border: 2px solid transparent;
   transition: all var(--transition-base);
 }
-:deep(.apple-datepicker .el-input__wrapper:hover) {
+:deep(.photo-wall-datepicker .el-input__wrapper:hover) {
   background-color: var(--bg-tertiary);
 }
-:deep(.apple-datepicker .el-input__wrapper.is-focus) {
+:deep(.photo-wall-datepicker .el-input__wrapper.is-focus) {
   background-color: var(--bg-primary);
   border-color: var(--color-primary);
   box-shadow: 0 0 0 2px rgba(var(--color-primary-rgb), 0.15);
