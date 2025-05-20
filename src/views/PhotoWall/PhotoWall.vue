@@ -5,7 +5,7 @@
 <template>
   <div class="photo-wall-container">
     <AppNavbar :userName="userName" currentPage="photowall" @show-upload="isUploadModalVisible = true" @show-album-form="isAlbumFormVisible = true" @toggle-manage="toggleManageMode" />
-    <main class="photo-wall-main">
+    <main :class="mainContentClass">
         <transition name="slide-fade">
           <PhotoWallFilters v-if="!isManageMode" :searchQuery="searchQuery" :filters="filters" :dateRange="dateRange" :albums="albums"
             @update:searchQuery="searchQuery = $event" @update:filters="filters = $event"
@@ -13,17 +13,15 @@
         </transition>
         
         <!-- 批量管理工具栏 -->
-        <transition name="slide-fade">
-          <PhotoWallManageToolbar 
-            v-if="isManageMode" 
-            :selectedPhotos="selectedPhotos"
-            @select-all="selectAll"
-            @deselect-all="deselectAll"
-            @show-add-to-album="showAddToAlbumModal"
-            @show-delete-selected="showDeleteSelectedModal"
-            @exit-manage-mode="exitManageMode"
-          />
-        </transition>
+        <PhotoWallManageToolbar 
+          v-if="isManageMode" 
+          :selectedPhotos="selectedPhotos"
+          @select-all="selectAll"
+          @deselect-all="deselectAll"
+          @show-add-to-album="showAddToAlbumModal"
+          @show-delete-selected="showDeleteSelectedModal"
+          @exit-manage-mode="exitManageMode"
+        />
         
         <PhotoWallGrid v-if="!loading" :photos="photos" :isManageMode="isManageMode" :selectedPhotos="selectedPhotos"
           @openPhotoDetail="openPhotoDetail" @toggleSelect="toggleSelectPhoto"
@@ -124,6 +122,13 @@ export default {
     userName() {
       const user = JSON.parse(localStorage.getItem('user') || '{}');
       return user.username || '用户';
+    },
+    // 为主内容添加动态类，当管理工具栏显示时提供额外的顶部间距
+    mainContentClass() {
+      return {
+        'photo-wall-main': true,
+        'with-toolbar-space': this.isManageMode
+      };
     }
   },
   created() {
@@ -332,6 +337,21 @@ export default {
   margin-right: auto;
   width: 100%;
   padding: var(--spacing-xl);
+}
+
+/* 为固定定位的工具栏腾出空间 */
+.with-toolbar-space {
+  padding-top: var(--spacing-xl); /* 保持原有的顶部间距 */
+  margin-top: 80px; /* 为固定工具栏添加额外的空间 */
+  transition: margin-top 0.3s ease;
+  position: relative; /* 确保正确的堆叠上下文 */
+}
+
+@media (max-width: 768px) {
+  .with-toolbar-space {
+    padding-top: var(--spacing-md); /* 移动端使用较小的间距 */
+    margin-top: 100px; /* 移动端工具栏可能更高 */
+  }
 }
 
 .manage-toolbar {

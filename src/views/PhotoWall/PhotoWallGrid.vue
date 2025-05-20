@@ -146,8 +146,7 @@ export default {
 }
 
 .photo-card.manage-mode.selected {
-  background-color: var(--bg-hover);
-  box-shadow: 0 0 0 2px var(--primary);
+  outline: var(--color-primary) solid 2px;
 }
 
 .photo-thumbnail {

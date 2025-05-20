@@ -160,7 +160,7 @@ export default {
 
 .album-card:not(.manage-mode):hover {
   transform: scale(1.02) translateY(-5px);
-  box-shadow: 0 12px 24px var(--shadow-color), 0 20px 48px var(--shadow-color);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1), 0 4px 12px rgba(0, 0, 0, 0.07);
 }
 
 .album-card.manage-mode {
@@ -169,8 +169,7 @@ export default {
 }
 
 .album-card.manage-mode.selected {
-  background-color: var(--bg-hover);
-  box-shadow: 0 0 0 2px var(--primary);
+  outline: var(--color-primary) solid 2px;
 }
 
 .album-card__cover {

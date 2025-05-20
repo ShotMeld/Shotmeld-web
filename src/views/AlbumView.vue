@@ -5,7 +5,7 @@
 <template>
   <div class="album-view">
     <AppNavbar :userName="userName" currentPage="albums" @show-upload="isUploadModalVisible = true" @show-album-form="showCreateModal = true" @toggle-album-manage="toggleManageMode" />
-    <div class="album-container">
+    <div :class="mainContainerClass">
       <div v-if="loading" class="album-view__loading">
         <div class="album-view__spinner"></div>
         <p>加载中...</p>
@@ -24,16 +24,14 @@
 
       <div v-else>
         <!-- 批量管理工具栏 -->
-        <transition name="slide-fade">
-          <album-manage-toolbar 
-            v-if="isManageMode" 
-            :selectedAlbums="selectedAlbums"
-            @select-all="selectAll"
-            @deselect-all="deselectAll"
-            @show-delete-selected="showDeleteSelectedModal"
-            @exit-manage-mode="exitManageMode"
-          />
-        </transition>
+        <album-manage-toolbar 
+          v-if="isManageMode" 
+          :selectedAlbums="selectedAlbums"
+          @select-all="selectAll"
+          @deselect-all="deselectAll"
+          @show-delete-selected="showDeleteSelectedModal"
+          @exit-manage-mode="exitManageMode"
+        />
 
         <div class="album-view__grid">
           <album-card 
@@ -205,6 +203,14 @@ export default {
         })
       }
     }
+  },
+  computed: {
+    mainContainerClass() {
+      return {
+        'album-container': true,
+        'with-toolbar-space': this.isManageMode
+      };
+    }
   }
 }
 </script>
@@ -222,6 +228,20 @@ export default {
   margin-right: auto;
   width: 100%;
   padding: var(--spacing-xl);
+}
+
+/* 为固定工具栏腾出空间 */
+.with-toolbar-space {
+  padding-top: var(--spacing-xl);
+  margin-top: 80px; /* 为固定工具栏添加额外的空间 */
+  transition: margin-top 0.3s ease;
+  position: relative;
+}
+
+@media (max-width: 768px) {
+  .with-toolbar-space {
+    margin-top: 100px;
+  }
 }
 
 .album-view__header {

@@ -10,7 +10,7 @@
       @show-upload="showUploadModal = true" 
       @toggle-manage="toggleManageMode"
     />
-    <div class="album-detail__container">
+    <div :class="albumDetailContainerClass">
       <div class="album-detail__header">
         <div class="album-detail__info">
           <h1 class="album-detail__title">{{ album.name }}</h1>
@@ -38,19 +38,15 @@
 
       <div v-else>
         <!-- 批量管理工具栏 -->
-        <transition name="slide-fade" :duration="{ enter: 300, leave: 100 }">
-          <album-photos-manage-toolbar 
-            v-if="isManageMode" 
-            :selectedPhotos="selectedPhotos"
-            @select-all="selectAll"
-            @deselect-all="deselectAll"
-            @show-move-to-album="showMoveToAlbumDialog"
-            @show-remove-from-album="showRemoveFromAlbumDialog"
-            @show-delete-selected="showDeleteSelectedDialog"
-            @exit-manage-mode="exitManageMode"
-            :key="'manage-toolbar'"
-          />
-        </transition>
+        <album-photos-manage-toolbar 
+          v-if="isManageMode" 
+          :selectedPhotos="selectedPhotos"
+          @select-all="selectAll"
+          @deselect-all="deselectAll"
+          @show-remove-from-album="showRemoveFromAlbumDialog"
+          @show-delete-selected="showDeleteSelectedDialog"
+          @exit-manage-mode="exitManageMode"
+        />
 
         <photo-wall-grid
           :photos="photos"
@@ -93,34 +89,8 @@
         <p>确定要将选中的 {{ selectedPhotos.length }} 张照片从相册「{{ album.name }}」中移除吗？</p>
         <p class="confirm-note">注意：照片不会被删除，只会从当前相册中移除</p>
         <div class="confirm-actions">
-          <sf-button @click="showRemoveFromAlbumModal = false" variant="outline">取消</sf-button>
-          <sf-button @click="removeFromAlbum" variant="warning">确认移除</sf-button>
-        </div>
-      </div>
-    </sf-modal>
-
-    <!-- 移动到其他相册模态框 -->
-    <sf-modal v-model="showMoveToAlbumModal" title="移动到其他相册">
-      <div class="album-selection">
-        <div v-if="albums.length === 0" class="no-albums">
-          <p>暂无其他相册可供选择</p>
-        </div>
-        <div v-else class="album-list">
-          <div v-for="album in albums" :key="album.id" 
-            class="album-item" :class="{ 'selected': targetAlbumId === album.id }"
-            @click="selectTargetAlbum(album.id)">
-            <div class="album-cover">
-              <img v-if="album.coverUrl" :src="album.coverUrl" alt="相册封面" />
-              <div v-else class="empty-cover">
-                <i class="fas fa-images"></i>
-              </div>
-            </div>
-            <div class="album-name">{{ album.name }}</div>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <sf-button @click="showMoveToAlbumModal = false" variant="outline">取消</sf-button>
-          <sf-button @click="moveToAlbum" variant="primary" :disabled="!targetAlbumId">确认移动</sf-button>
+          <sf-button @click="showRemoveFromAlbumModal = false" type="secondary">取消</sf-button>
+          <sf-button @click="removeFromAlbum" type="danger">确认移除</sf-button>
         </div>
       </div>
     </sf-modal>
@@ -171,18 +141,22 @@ export default {
       isManageMode: false,
       selectedPhotos: [],
       showDeleteSelectedModal: false,
-      showRemoveFromAlbumModal: false,
-      showMoveToAlbumModal: false,
-      targetAlbumId: null,
-      albums: []
+      showRemoveFromAlbumModal: false
     }
+  },
+  computed: {
+    albumDetailContainerClass() {
+      return {
+        'album-detail-container': true,
+        'with-toolbar-space': this.isManageMode
+      };
+    },
   },
   async created() {
     // 获取用户信息
     const user = JSON.parse(localStorage.getItem('user') || '{}')
     this.userName = user.username || '用户'
     await this.fetchAlbumDetails()
-    await this.fetchAlbums() // 获取相册列表
     
     // 监听上传照片事件
     eventBus.on('show-upload-modal', () => {
@@ -219,15 +193,7 @@ export default {
       }
     },
     
-    async fetchAlbums() {
-      try {
-        const response = await albumService.getAlbums()
-        // 过滤掉当前相册
-        this.albums = response.data.data.filter(album => album.id !== this.album.id) || []
-      } catch (error) {
-        console.error('获取相册列表失败:', error)
-      }
-    },
+
     
     openPhoto(photo) {
       this.currentPhoto = photo
@@ -257,13 +223,9 @@ export default {
     },
     
     exitManageMode() {
-      // 立即更新UI状态
+      // 立即更新所有状态
       this.isManageMode = false
-      
-      // 使用nextTick延迟清空选择状态
-      this.$nextTick(() => {
-        this.selectedPhotos = []
-      })
+      this.selectedPhotos = []
     },
     
     toggleSelectPhoto(photoId) {
@@ -283,12 +245,6 @@ export default {
       this.selectedPhotos = []
     },
     
-    showMoveToAlbumDialog() {
-      if (this.selectedPhotos.length === 0) return
-      this.targetAlbumId = null
-      this.showMoveToAlbumModal = true
-    },
-    
     showRemoveFromAlbumDialog() {
       if (this.selectedPhotos.length === 0) return
       this.showRemoveFromAlbumModal = true
@@ -299,45 +255,7 @@ export default {
       this.showDeleteSelectedModal = true
     },
     
-    selectTargetAlbum(albumId) {
-      this.targetAlbumId = albumId
-    },
-    
-    async moveToAlbum() {
-      if (!this.targetAlbumId || this.selectedPhotos.length === 0) return
-      
-      try {
-        // 先从当前相册移除
-        await photoService.removePhotosFromAlbum({
-          albumId: this.album.id,
-          photoIds: this.selectedPhotos
-        })
-        
-        // 再添加到目标相册
-        await photoService.addPhotosToAlbum({
-          albumId: this.targetAlbumId,
-          photoIds: this.selectedPhotos
-        })
-        
-        this.$notify({
-          title: '成功',
-          message: `已将${this.selectedPhotos.length}张照片移动到其他相册`,
-          type: 'success'
-        })
-        
-        // 从当前页面移除照片
-        this.photos = this.photos.filter(photo => !this.selectedPhotos.includes(photo.id))
-        this.album.photoCount = this.photos.length
-        this.selectedPhotos = []
-        this.showMoveToAlbumModal = false
-      } catch (error) {
-        console.error('移动照片失败:', error)
-        this.$notify.error({
-          title: '操作失败',
-          message: error.response?.data?.message || '无法移动照片，请重试'
-        })
-      }
-    },
+
     
     async removeFromAlbum() {
       if (this.selectedPhotos.length === 0) return
@@ -409,10 +327,24 @@ export default {
   background-color: var(--bg-secondary);
 }
 
-.album-detail__container {
+.album-detail-container {
   max-width: var(--container-xl);
   margin: 0 auto;
   padding: var(--spacing-xl);
+}
+
+/* 为固定工具栏腾出空间 */
+.with-toolbar-space {
+  padding-top: var(--spacing-xl);
+  margin-top: 80px; /* 为固定工具栏添加额外的空间 */
+  transition: margin-top 0.3s ease;
+  position: relative;
+}
+
+@media (max-width: 768px) {
+  .with-toolbar-space {
+    margin-top: 100px;
+  }
 }
 
 .album-detail__header {
@@ -481,87 +413,11 @@ export default {
   color: var(--error);
 }
 
-/* 相册选择模态框样式 */
-.album-selection {
-  padding: var(--spacing-md);
-}
 
-.album-list {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-  gap: var(--spacing-md);
-  margin-bottom: var(--spacing-lg);
-  max-height: 300px;
-  overflow-y: auto;
-}
-
-.album-item {
-  cursor: pointer;
-  border-radius: var(--radius-medium);
-  padding: var(--spacing-xs);
-  transition: all 0.2s ease;
-  border: 2px solid transparent;
-}
-
-.album-item:hover {
-  background-color: var(--bg-hover);
-}
-
-.album-item.selected {
-  border-color: var(--primary);
-  background-color: var(--primary-light);
-}
-
-.album-cover {
-  width: 100%;
-  height: 100px;
-  border-radius: var(--radius-small);
-  overflow: hidden;
-  margin-bottom: var(--spacing-xs);
-  background-color: var(--bg-tertiary);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.album-cover img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.empty-cover {
-  color: var(--text-tertiary);
-  font-size: 2rem;
-}
-
-.album-name {
-  font-size: var(--font-size-sm);
-  text-align: center;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.no-albums {
-  text-align: center;
-  padding: var(--spacing-xl);
-  color: var(--text-secondary);
-}
-
-.modal-footer {
-  display: flex;
-  justify-content: flex-end;
-  gap: var(--spacing-md);
-  margin-top: var(--spacing-lg);
-  padding-top: var(--spacing-md);
-  border-top: 1px solid var(--border);
-}
 
 /* 确认模态框样式 */
 .confirm-modal-content {
   padding: var(--spacing-lg);
-  text-align: center;
 }
 
 .confirm-note {
@@ -572,9 +428,10 @@ export default {
 
 .confirm-actions {
   display: flex;
-  justify-content: center;
-  gap: var(--spacing-lg);
-  margin-top: var(--spacing-xl);
+  justify-content: flex-end;
+  gap: var(--spacing-md);
+  width: 100%;
+  margin-top: var(--spacing-lg);
 }
 
 /* 动画 */

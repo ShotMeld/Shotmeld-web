@@ -97,16 +97,8 @@ export default {
       this.$emit(eventName);
     },
     exitManageMode() {
-      if (this.useImmediateHide) {
-        this.shouldHideImmediately = true;
-
-        // 添加一个很短的延迟后再触发实际的退出事件
-        setTimeout(() => {
-          this.$emit('exit-manage-mode');
-        }, 10); // 10毫秒足够DOM更新但用户不会感知
-      } else {
-        this.$emit('exit-manage-mode');
-      }
+      // 立即触发退出事件，不再使用延迟
+      this.$emit('exit-manage-mode');
     }
   }
 };
@@ -117,7 +109,6 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: var(--spacing-lg);
   background-color: rgba(250, 250, 250, 0.95);
   padding: 14px 18px;
   border-radius: 12px;

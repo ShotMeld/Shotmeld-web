@@ -122,8 +122,7 @@ export default {
 }
 
 .album-card-wrapper.selected :deep(.album-card) {
-  background-color: var(--bg-hover);
-  box-shadow: 0 0 0 2px var(--primary);
+  outline: var(--color-primary) solid 2px;
 }
 
 .selection-indicator {
