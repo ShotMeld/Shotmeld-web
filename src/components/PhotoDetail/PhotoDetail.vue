@@ -158,13 +158,8 @@ export default {
   flex-direction: column;
 }
 
-.photo-detail-info::-webkit-scrollbar {
-  display: none;
-}
-
 .photo-detail-info {
   -ms-overflow-style: none;
-  scrollbar-width: none;
 }
 
 /* 标题自动换行样式 */

@@ -95,7 +95,6 @@ export default {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: var(--spacing-lg);
-  padding: 5px;
 }
 
 /* Photo Grid Animation */

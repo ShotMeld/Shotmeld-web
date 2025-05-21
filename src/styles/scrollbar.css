@@ -1,68 +1,26 @@
 /**
  * scrollbar.css - 全局滚动条样式
- * 实现滚动条不占用空间，不滑动时隐藏
+ * 目标：强制隐藏所有滚动条，以测试样式是否生效
  */
 
-/* 基本滚动条样式 */
+/* 强制隐藏所有 WebKit 浏览器 (Chrome, Safari, Edge) 的滚动条 */
 ::-webkit-scrollbar {
-  width: var(--scrollbar-width);
-  height: var(--scrollbar-height);
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
 }
 
-::-webkit-scrollbar-track {
-  background: var(--scrollbar-track-color);
+/* 强制隐藏 Firefox 的滚动条 */
+html, body, * {
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important; /* IE and Edge (legacy) */
 }
 
-::-webkit-scrollbar-thumb {
-  background: var(--scrollbar-thumb-color);
-  border-radius: var(--scrollbar-thumb-radius);
-  transition: opacity 0.3s;
+/* 确保 html 和 body 元素也应用这些规则 */
+html {
+  overflow: -moz-scrollbars-none; /* Older Firefox */
 }
 
-::-webkit-scrollbar-thumb:hover {
-  background: var(--scrollbar-thumb-hover-color);
-}
-
-/* Firefox样式 */
-* {
-  scrollbar-width: thin;
-  scrollbar-color: var(--scrollbar-thumb-color) transparent;
-}
-
-/* 特定容器样式 */
-.photo-grid-container,
-.album-grid,
-.timeline-container,
-.photo-detail-container,
-.content-scrollable {
-  /* 使滚动平滑 */
-  scroll-behavior: smooth;
-  /* 确保滚动条不占空间 */
-  overflow-y: auto;
-}
-
-/* 使用自定义类来标记需要特殊滚动条样式的容器 */
-.hide-scrollbar:not(:hover):not(:focus) ::-webkit-scrollbar-thumb {
-  background: transparent;
-}
-
-/* 为特定组件优化滚动条样式 */
-.photos-grid .photo-grid-container,
-.album-view .album-grid,
-.timeline-view .timeline-container,
-.photo-detail .photo-detail-container {
-  /* 应用滚动条不占空间的特性 */
-  overflow-y: auto;
-  /* 在移动设备上禁用滚动条样式，使用默认触摸滚动 */
-  @media (max-width: 768px) {
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-  }
-  /* 桌面端特定样式 */
-  @media (min-width: 769px) {
-    &:not(:hover):not(:focus-within) ::-webkit-scrollbar-thumb {
-      opacity: 0;
-      background: transparent;
-    }
-  }
+body {
+  overflow: -moz-scrollbars-none; /* Older Firefox */
 }
