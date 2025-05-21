@@ -52,7 +52,7 @@
           <!-- 个人页面导航项 -->
           <SfNavLink v-if="currentPage === 'profile' && !isMobile" to="/profile" class="nav-item"
             :class="{ active: currentPage === 'profile' }">
-            个人资料
+            个人
           </SfNavLink>
 
           <!-- 时间线页面按钮 -->
@@ -104,7 +104,7 @@
                     <template #icon>
                       <i class="fas fa-user"></i>
                     </template>
-                    个人资料
+                    个人
                   </SfNavLink>
                   <SfNavLink to="/settings" @click="closeAllMenus" class="dropdown-link">
                     <template #icon>
@@ -170,7 +170,7 @@
             <template #icon>
               <i class="fas fa-user"></i>
             </template>
-            个人资料
+            个人
           </SfNavLink>
 
           <SfNavLink to="/settings" class="drawer-nav-item" @click="closeMobileMenu">

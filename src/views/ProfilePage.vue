@@ -16,10 +16,6 @@
           <span class="label">注册时间</span>
           <span class="value">{{ formatDate(user.createdAt) }}</span>
         </div>
-        <div class="info-item">
-          <span class="label">用户ID</span>
-          <span class="value id-text">{{ user.id }}</span>
-        </div>
       </div>
       <button @click="handleLogout" class="md-button outlined">退出登录</button>
     </div>
@@ -87,7 +83,7 @@ export default {
   width: 80px;
   height: 80px;
   border-radius: 50%;
-  background: #6750a4;
+  background: #8ebef1;
   color: white;
   display: flex;
   align-items: center;
@@ -134,11 +130,6 @@ h1 {
   font-weight: 500;
 }
 
-.id-text {
-  font-family: monospace;
-  font-size: 0.9rem;
-}
-
 .md-button {
   padding: 14px 24px;
   border: none;
@@ -152,8 +143,8 @@ h1 {
 
 .md-button.outlined {
   background: transparent;
-  border: 2px solid #6750a4;
-  color: #6750a4;
+  border: 2px solid #8ebef1;
+  color: #8ebef1;
 }
 
 .md-button.outlined:hover {
