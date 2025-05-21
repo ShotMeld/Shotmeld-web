@@ -50,6 +50,12 @@
     multiple
   />
 </SfButton>
+
+   <!-- 错误提示 -->
+   <div v-if="uploadError" class="upload-error-message">
+    <i class="fas fa-exclamation-circle"></i>
+    {{ uploadError }}
+  </div>
 </template>
 
 <script>
@@ -57,96 +63,182 @@ import { SfButton, SfModal } from '../../components/ui';
 import AlbumCard from '../../components/album/AlbumCard.vue';
 
 export default {
-  name: 'PhotoWallAlbumModal',
-  components: {
-    SfButton,
-    SfModal,
-    AlbumCard
-  },
-  props: {
-    modelValue: {
-      type: Boolean,
-      default: false
-    },
-    albums: {
-      type: Array,
-      default: () => []
-    }
-  },
-  emits: ['update:modelValue', 'create-album', 'add-to-album'],
+
   data() {
     return {
       selectedAlbumId: null,
+      uploadError: null // 新增错误状态
     };
   },
-  computed: {
-    visible: {
-      get() {
-        return this.modelValue;
-      },
-      set(value) {
-        this.$emit('update:modelValue', value);
-      }
-    }
-  },
-  watch: {
-    modelValue(newValue) {
-      if (newValue) {
-        // 每次打开弹窗时重置选择的相册ID
-        this.selectedAlbumId = null;
-      }
-    }
-  },
   methods: {
-    selectAlbum(albumId) {
-      this.selectedAlbumId = albumId;
-    },
-    handleCreateAlbum() {
-      this.$emit('create-album');
-    },
-    handleCancel() {
-      this.visible = false;
-    },
-    handleConfirm() {
-      if (!this.selectedAlbumId) return;
-      this.$emit('add-to-album', this.selectedAlbumId);
-      this.visible = false;
-    },
-  handleFileUpload(event) {
-    const files = event.target.files;
-    if (!files.length) return;
+    handleFileUpload(event) {
+      const files = event.target.files;
+      if (!files.length) return;
 
-    const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
-    const invalidFiles = [];
+      // 允许的文件类型
+      const allowedTypes = [
+        'image/jpeg',
+        'image/png',
+        'image/gif',
+        'image/webp'
+      ];
+      const allowedExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp'];
 
-    Array.from(files).forEach(file => {
-      // 检测 HEIC 格式（通过文件类型或扩展名）
-      const isHeic = file.type === 'image/heic' || 
-                    file.name.toLowerCase().endsWith('.heic');
-      
-      if (isHeic || !allowedTypes.includes(file.type)) {
-        invalidFiles.push(file.name);
+      const invalidFiles = [];
+      const validFiles = [];
+
+      Array.from(files).forEach(file => {
+        // 获取文件扩展名
+        const fileExt = file.name.substring(file.name.lastIndexOf('.')).toLowerCase();
+        
+        // 检查类型和扩展名
+        const isTypeAllowed = allowedTypes.includes(file.type);
+        const isExtAllowed = allowedExtensions.includes(fileExt);
+        const isHeic = file.type === 'image/heic' || fileExt === '.heic';
+        
+        if (!isTypeAllowed || !isExtAllowed || isHeic) {
+          invalidFiles.push(file.name);
+        } else {
+          validFiles.push(file);
+        }
+      });
+      // 显示错误提示
+      if (invalidFiles.length) {
+        this.uploadError = `以下文件格式不支持: ${invalidFiles.join(', ')}\n请上传 JPEG/PNG/GIF/WEBP 格式`;
+        // 5秒后自动清除错误信息
+        setTimeout(() => {
+          this.uploadError = null;
+        }, 5000);
       } else {
-        // 合法文件，触发上传逻辑
-        this.$emit('upload-file', file);
+        this.uploadError = null;
       }
-    });
 
-    // 显示错误提示
-    if (invalidFiles.length) {
-      this.$emit('upload-error', `以下文件格式不支持: ${invalidFiles.join(', ')}\n请上传 JPEG/PNG/GIF/WEBP 格式`);
+      // 如果有合法文件，触发上传
+      if (validFiles.length) {
+        this.$emit('upload-files', validFiles); // 注意这里改为复数形式，传递所有合法文件
+      }
+
+      // 重置 input，允许重复选择同一文件
+      event.target.value = '';
+    },
+ // 处理拖放上传
+ handleDrop(event) {
+      event.preventDefault();
+      const files = event.dataTransfer.files;
+      if (files.length) {
+        // 模拟文件输入变化事件
+        const inputEvent = { target: { files } };
+        this.handleFileUpload(inputEvent);
+      }
+    },
+    
+    // 防止默认拖放行为
+    handleDragOver(event) {
+      event.preventDefault();
     }
-
-    // 重置 input，允许重复选择同一文件
-    event.target.value = '';
+  },
+  mounted() {
+    // 添加拖放事件监听
+    this.$el.addEventListener('drop', this.handleDrop);
+    this.$el.addEventListener('dragover', this.handleDragOver);
+  },
+  beforeUnmount() {
+    // 移除事件监听
+    this.$el.removeEventListener('drop', this.handleDrop);
+    this.$el.removeEventListener('dragover', this.handleDragOver);
   },
 
-  // 手动触发文件选择（替代默认点击上传）
-  openFileDialog() {
-    this.$refs.fileInput.click();
+    name: 'PhotoWallAlbumModal',
+    components: {
+      SfButton,
+      SfModal,
+      AlbumCard
+    },
+    props: {
+      modelValue: {
+        type: Boolean,
+        default: false
+      },
+      albums: {
+        type: Array,
+        default: () => []
+      }
+    },
+    emits: ['update:modelValue', 'create-album', 'add-to-album'],
+    data() {
+      return {
+        selectedAlbumId: null,
+      };
+    },
+    computed: {
+      visible: {
+        get() {
+          return this.modelValue;
+        },
+        set(value) {
+          this.$emit('update:modelValue', value);
+        }
+      }
+    },
+    watch: {
+      modelValue(newValue) {
+        if (newValue) {
+          // 每次打开弹窗时重置选择的相册ID
+          this.selectedAlbumId = null;
+        }
+      }
+    },
+    methods: {
+      selectAlbum(albumId) {
+        this.selectedAlbumId = albumId;
+      },
+      handleCreateAlbum() {
+        this.$emit('create-album');
+      },
+      handleCancel() {
+        this.visible = false;
+      },
+      handleConfirm() {
+        if (!this.selectedAlbumId) return;
+        this.$emit('add-to-album', this.selectedAlbumId);
+        this.visible = false;
+      },
+      handleFileUpload(event) {
+        const files = event.target.files;
+        if (!files.length) return;
+
+        const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+        const invalidFiles = [];
+
+        Array.from(files).forEach(file => {
+          // 检测 HEIC 格式（通过文件类型或扩展名）
+          const isHeic = file.type === 'image/heic' ||
+            file.name.toLowerCase().endsWith('.heic');
+
+          if (isHeic || !allowedTypes.includes(file.type)) {
+            invalidFiles.push(file.name);
+          } else {
+            // 合法文件，触发上传逻辑
+            this.$emit('upload-file', file);
+          }
+        });
+
+        // 显示错误提示
+        if (invalidFiles.length) {
+          this.$emit('upload-error', `以下文件格式不支持: ${invalidFiles.join(', ')}\n请上传 JPEG/PNG/GIF/WEBP 格式`);
+        }
+
+        // 重置 input，允许重复选择同一文件
+        event.target.value = '';
+      },
+
+      // 手动触发文件选择（替代默认点击上传）
+      openFileDialog() {
+        this.$refs.fileInput.click();
+      }
+    }
   }
-}
-};
+
 </script>
 
 <style scoped>
@@ -218,5 +310,52 @@ export default {
   color: #ff4d4f;
   margin-top: 8px;
   font-size: 12px;
+}
+
+.upload-error {
+  color: #ff4d4f;
+  margin-top: 8px;
+  padding: 8px;
+  background-color: #fff2f0;
+  border: 1px solid #ffccc7;
+  border-radius: 4px;
+  font-size: 14px;
+  white-space: pre-line; /* 保留换行符 */
+}
+
+/* 错误提示样式 */
+.upload-error-message {
+  color: #ff4d4f;
+  margin-top: 12px;
+  padding: 10px 15px;
+  background-color: #fff2f0;
+  border: 1px solid #ffccc7;
+  border-radius: 6px;
+  font-size: 14px;
+  white-space: pre-line;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  max-width: 100%;
+  word-break: break-word;
+}
+
+.upload-error-message i {
+  font-size: 16px;
+}
+
+/* 添加拖放区域样式 */
+.drop-zone {
+  border: 2px dashed #d9d9d9;
+  border-radius: 8px;
+  padding: 20px;
+  text-align: center;
+  margin-top: 16px;
+  transition: all 0.3s;
+}
+
+.drop-zone.active {
+  border-color: var(--primary);
+  background-color: rgba(24, 144, 255, 0.1);
 }
 </style>
