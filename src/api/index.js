@@ -158,6 +158,11 @@ export const photoService = {
   getPhotoTimeline(params = {}) {
     return apiClient.get(API_ENDPOINTS.PHOTOS.TIMELINE, { params });
   },
+
+  // 根据标题搜索照片
+  searchPhotosByTitle(params = {}) {
+    return apiClient.get(API_ENDPOINTS.PHOTOS.SEARCH_BY_TITLE, { params });
+  },
   
   // 将多个照片添加到相册
   addPhotosToAlbum(data) {

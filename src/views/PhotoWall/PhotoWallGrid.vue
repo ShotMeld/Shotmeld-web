@@ -100,21 +100,22 @@ export default {
 /* Photo Grid Animation */
 .photo-grid-enter-active,
 .photo-grid-leave-active {
-  transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+  transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
 .photo-grid-enter-from {
   opacity: 0;
-  transform: translateY(20px) scale(0.95);
+  transform: translateY(30px) scale(0.9);
 }
 
 .photo-grid-leave-to {
   opacity: 0;
-  transform: translateY(-10px) scale(0.95);
+  transform: translateY(-30px) scale(0.9);
 }
 
 .photo-grid-move {
-  transition: transform 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+  /* Simplify and try to make more robust */
+  transition: transform 0.6s ease; /* Using simple 'ease' for now */
 }
 
 .photo-card-wrapper {
@@ -122,6 +123,9 @@ export default {
   will-change: transform;
   padding: 5px;
   margin-bottom: 10px;
+  /* Promote to its own layer and try to prevent flickering */
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
 }
 
 .photo-card {

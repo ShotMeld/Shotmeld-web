@@ -55,6 +55,12 @@
             个人
           </SfNavLink>
 
+          <!-- 更多页面各个工具的导航页 -->
+          <SfNavLink v-if="currentPage === 'DuplicatePhotos' && !isMobile" to="/duplicate-photos" class="nav-item"
+            :class="{ active: currentPage === 'DuplicatePhotos' }">
+            重复照片检测
+          </SfNavLink>
+
           <!-- 时间线页面按钮 -->
           <template v-if="currentPage === 'timeline' && !isMobile">
             <SfButton type="secondary" @click="$emit('show-upload')" class="navbar-button nav-item">
@@ -243,7 +249,7 @@ export default {
     currentPage: {
       type: String,
       default: 'photowall',
-      validator: (value) => ['photowall', 'timeline', 'albums', 'album-detail', 'settings', 'more'].includes(value)
+      validator: (value) => ['photowall', 'timeline', 'albums', 'album-detail', 'settings', 'profile', 'more', 'DuplicatePhotos'].includes(value)
     }
   },
   data() {

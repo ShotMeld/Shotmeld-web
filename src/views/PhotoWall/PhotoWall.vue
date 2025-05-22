@@ -9,7 +9,8 @@
         <transition name="slide-fade">
           <PhotoWallFilters v-if="!isManageMode" :searchQuery="searchQuery" :filters="filters" :dateRange="dateRange" :albums="albums"
             @update:searchQuery="searchQuery = $event" @update:filters="filters = $event"
-            @update:dateRange="dateRange = $event" @fetchPhotos="fetchPhotos" />
+            @update:dateRange="dateRange = $event" @fetchPhotos="fetchPhotos"
+            @update:searchResults="handleSearchResultsUpdate" />
         </transition>
         
         <!-- 批量管理工具栏 -->
@@ -241,6 +242,30 @@ export default {
       }
     },
     
+    // 新增方法：处理搜索结果更新
+    handleSearchResultsUpdate(results) {
+      this.loading = true;
+      if (results && results.error) {
+        this.$notify.error({
+          title: '搜索失败',
+          message: results.message || '无法获取搜索结果'
+        });
+        this.photos = [];
+        this.totalPhotos = 0;
+      } else if (results && results.data) {
+        this.photos = results.data;
+        this.totalPhotos = results.total || 0;
+        // 如果API返回分页信息，也在这里更新
+        if (typeof results.page !== 'undefined') this.pagination.page = results.page;
+        // this.pagination.limit 应该由请求时设置，通常搜索结果会尊重请求的limit
+      } else {
+        // 兜底处理，或当搜索清除时（尽管PhotoWallFilters会额外触发fetchPhotos）
+        this.photos = [];
+        this.totalPhotos = 0;
+      }
+      this.loading = false;
+    },
+
     // 原有方法
     async fetchPhotos() {
       this.loading = true;
@@ -251,10 +276,13 @@ export default {
           sort: this.filters.sort,
           order: this.filters.order
         };
-        if (this.filters.q) params.q = this.filters.q;
+        // 移除 this.filters.q，因为文本搜索由 searchPhotosByTitle 和 update:searchResults 处理
+        // if (this.filters.q) params.q = this.filters.q; 
         if (this.filters.albumId) params.albumId = this.filters.albumId;
-        if (this.filters.startDate) params.startDate = this.filters.startDate;
-        if (this.filters.endDate) params.endDate = this.filters.endDate;
+        if (this.dateRange && this.dateRange.length === 2) {
+          params.startDate = this.dateRange[0];
+          params.endDate = this.dateRange[1];
+        }
         const response = await photoService.getPhotos(params);
         this.photos = response.data.data || [];
         this.totalPhotos = response.data.total || 0;

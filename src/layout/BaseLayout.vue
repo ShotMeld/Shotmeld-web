@@ -25,12 +25,24 @@ export default {
   },
   computed: {
     currentPage() {
-      const routeName = this.$route.name?.toLowerCase() || 'photowall'
-      // 特殊处理 AlbumDetail 路由
-      if (routeName === 'albumdetail') {
-        return 'album-detail'
+      const routeName = this.$route.name;
+      if (routeName) {
+        const lowerRouteName = routeName.toLowerCase();
+        // Handle AlbumDetail: expects 'album-detail'
+        if (lowerRouteName === 'albumdetail') {
+          return 'album-detail';
+        }
+        // Handle DuplicatePhotos: expects 'DuplicatePhotos' (case-sensitive for AppNavbar prop)
+        if (lowerRouteName === 'duplicatephotos') {
+          return 'DuplicatePhotos';
+        }
+        // Handle other standard pages that AppNavbar expects in lowercase
+        const validLowercasePages = ['photowall', 'timeline', 'albums', 'settings', 'profile', 'more'];
+        if (validLowercasePages.includes(lowerRouteName)) {
+          return lowerRouteName;
+        }
       }
-      return routeName
+      return 'photowall'; // Default page
     },
     userName() {
       const user = JSON.parse(localStorage.getItem('user') || '{}')
@@ -60,4 +72,4 @@ export default {
   flex: 1;
   width: 100%;
 }
-</style> 
+</style>

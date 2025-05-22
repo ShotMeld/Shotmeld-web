@@ -11,6 +11,14 @@
             <i class="fas fa-search"></i>
           </template>
         </SfInput>
+        <SfButton
+          v-if="localSearchQuery && localSearchQuery.trim() !== ''"
+          @click="handleSearchButtonClick"
+          class="search-button"
+          aria-label="执行搜索"
+        >
+          搜索
+        </SfButton>
       </div>
       <div class="filter-controls">
         <div class="filter-item">
@@ -51,6 +59,8 @@
 </template>
 
 <script>
+import { photoService } from '../../api';
+
 export default {
   name: 'PhotoWallFilters',
   props: {
@@ -82,6 +92,10 @@ export default {
   watch: {
     searchQuery(val) {
       this.localSearchQuery = val;
+      // 如果外部清空了 searchQuery，也触发一次 debouncedSearch 来清空结果
+      if (!val || val.trim() === '') {
+        this.debouncedSearch();
+      }
     },
     filters: {
       handler(val) {
@@ -94,13 +108,49 @@ export default {
     }
   },
   methods: {
+    async executeSearch() {
+      if (!this.localSearchQuery || this.localSearchQuery.trim() === '') {
+        // 通常由 debouncedSearch 中的逻辑处理清空，这里作为保险
+        this.$emit('update:searchResults', { data: [], total: 0, page: 1, limit: 50, totalPages: 0, searchTerm: '' });
+        this.$emit('fetchPhotos'); // 确保在清除搜索词时重新加载默认照片列表
+        return;
+      }
+
+      try {
+        const response = await photoService.searchPhotosByTitle({
+          title: this.localSearchQuery.trim(),
+          page: 1, // 注意：分页参数目前是硬编码的
+          limit: 50,
+          sort: this.localFilters.sort,
+          order: this.localFilters.order
+        });
+        this.$emit('update:searchResults', response.data);
+      } catch (error) {
+        console.error('搜索照片失败:', error);
+        this.$emit('update:searchResults', { data: [], error: '搜索失败', searchTerm: this.localSearchQuery.trim() });
+      }
+    },
+
     debouncedSearch() {
       clearTimeout(this.searchTimeout);
-      this.searchTimeout = setTimeout(() => {
-        this.$emit('update:searchQuery', this.localSearchQuery);
+      if (!this.localSearchQuery || this.localSearchQuery.trim() === '') {
+        // 当输入框被清空时，清除搜索结果并通知父组件获取所有照片
+        this.$emit('update:searchResults', { data: [], total: 0, page: 1, limit: 50, totalPages: 0, searchTerm: '' });
         this.$emit('fetchPhotos');
+        return;
+      }
+      this.searchTimeout = setTimeout(async () => {
+        await this.executeSearch();
       }, 500);
     },
+
+    async handleSearchButtonClick() {
+      clearTimeout(this.searchTimeout); // 取消任何待处理的防抖搜索
+      if (this.localSearchQuery && this.localSearchQuery.trim() !== '') {
+        await this.executeSearch();
+      }
+    },
+
     handleFilterChange() {
       this.$emit('update:filters', this.localFilters);
       this.$emit('fetchPhotos');
@@ -125,10 +175,27 @@ export default {
   border: var(--border-width) solid var(--border-color);
 }
 .search-container {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
   margin-bottom: var(--spacing-lg);
 }
 .search-input {
-  width: 100%;
+  flex-grow: 1; /* 修改，让输入框占据可用空间 */
+  /* width: 100%; 可能不再需要，或改为 width: auto; */
+}
+/* 新增搜索按钮样式 */
+.search-button {
+  flex-shrink: 0;
+  height: auto;
+  align-self: stretch;
+  padding-top: 0;
+  padding-bottom: 0;
+  border-radius: var(--radius-round);
+  display: inline-flex; 
+  align-items: center;
+  justify-content: center;
+  min-width: 70px;
 }
 .filter-controls {
   display: flex;
@@ -197,4 +264,4 @@ export default {
   border-color: var(--color-primary);
   box-shadow: 0 0 0 2px rgba(var(--color-primary-rgb), 0.15);
 }
-</style> 
+</style>

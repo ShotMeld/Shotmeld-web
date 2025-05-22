@@ -122,7 +122,6 @@ export default {
 .sf-input-wrapper {
   display: flex;
   flex-direction: column;
-  margin-bottom: var(--spacing-md);
 }
 
 .sf-input-label {
