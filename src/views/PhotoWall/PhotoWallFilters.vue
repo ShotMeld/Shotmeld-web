@@ -117,8 +117,8 @@ export default {
       }
 
       try {
-        const response = await photoService.searchPhotosByTitle({
-          title: this.localSearchQuery.trim(),
+        const response = await photoService.searchPhotos({
+          searchKey: this.localSearchQuery.trim(),
           page: 1, // 注意：分页参数目前是硬编码的
           limit: 50,
           sort: this.localFilters.sort,

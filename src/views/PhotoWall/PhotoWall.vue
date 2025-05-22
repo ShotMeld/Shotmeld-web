@@ -266,7 +266,6 @@ export default {
       this.loading = false;
     },
 
-    // 原有方法
     async fetchPhotos() {
       this.loading = true;
       try {
@@ -276,8 +275,6 @@ export default {
           sort: this.filters.sort,
           order: this.filters.order
         };
-        // 移除 this.filters.q，因为文本搜索由 searchPhotosByTitle 和 update:searchResults 处理
-        // if (this.filters.q) params.q = this.filters.q; 
         if (this.filters.albumId) params.albumId = this.filters.albumId;
         if (this.dateRange && this.dateRange.length === 2) {
           params.startDate = this.dateRange[0];

@@ -16,7 +16,7 @@ export const API_ENDPOINTS = {
     DETAIL: (id) => `/photos/${id}`,
     BATCH: '/photos/batch',
     TIMELINE: '/timeline',
-    SEARCH_BY_TITLE: '/photos/search/title' // 新增的端点
+    SEARCH: '/photos/search'
   },
   
   // 标签管理
