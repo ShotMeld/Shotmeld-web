@@ -34,13 +34,13 @@
 
               <div class="photos-grid">
                 <div v-for="photo in monthGroup.photos" :key="photo.id" class="photo-card"
+                  :class="getAspectRatioClass(photo)"
                   @click="showPhotoDetail(photo)">
                   <div class="photo-thumbnail">
-                    <img :src="photo.thumbnailUrl || photo.url" :alt="photo.title">
-                  </div>
-                  <div class="photo-info">
-                    <h4>{{ photo.title || '无标题' }}</h4>
-                    <p>{{ formatDate(photo.takenAt || photo.createdAt) }}</p>
+                    <img :src="photo.thumbnailUrl || photo.url" 
+                         :alt="photo.title"
+                         @load="onImageLoad($event, photo)"
+                         :style="{ opacity: photo.aspectRatio ? 1 : 0 }">
                   </div>
                 </div>
               </div>
@@ -89,7 +89,8 @@ export default {
       showUploadModal: false,
       showPhotoDetailModal: false,
       userName: '',
-      timelineGroups: [] // 按年月分组后的照片数据
+      timelineGroups: [], // 按年月分组后的照片数据
+      photoAspectRatios: new Map() // 存储照片的宽高比
     }
   },
   created() {
@@ -297,6 +298,22 @@ export default {
 
     handleAlbumCreated() {
       // 如果需要，可以刷新某些数据
+    },
+
+    getAspectRatioClass(photo) {
+      const ratio = this.photoAspectRatios.get(photo.id);
+      if (!ratio) return '';
+      
+      if (ratio > 1.2) return 'landscape';
+      if (ratio < 0.8) return 'portrait';
+      return 'square';
+    },
+    
+    onImageLoad(event, photo) {
+      const img = event.target;
+      const ratio = img.naturalWidth / img.naturalHeight;
+      this.photoAspectRatios.set(photo.id, ratio);
+      photo.aspectRatio = ratio;
     }
   }
 }
@@ -368,35 +385,84 @@ export default {
 
 .photos-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 1rem;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 12px;
+  padding: 12px 0;
+  grid-auto-rows: 180px;
+  grid-auto-flow: dense;
 }
 
 .photo-card {
-  background-color: white;
-  border-radius: 12px;
+  position: relative;
+  width: 100%;
+  height: 100%;
   overflow: hidden;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
   cursor: pointer;
-  transition: transform 0.3s ease;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  background-color: #f5f5f7;
 }
 
 .photo-card:hover {
-  transform: translateY(-5px);
+  transform: scale(1.02);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+.photo-card.portrait {
+  grid-row: span 2;
+  grid-column: span 3;
+}
+
+.photo-card.landscape {
+  grid-row: span 1;
+  grid-column: span 4;
+}
+
+.photo-card.square {
+  grid-row: span 1;
+  grid-column: span 3;
+}
+
+/* 添加一些随机的尺寸变化 */
+.photo-card:nth-child(3n) {
+  grid-column: span 4;
+}
+
+.photo-card:nth-child(5n) {
+  grid-column: span 2;
+}
+
+.photo-card:nth-child(7n) {
+  grid-row: span 2;
+  grid-column: span 2;
+}
+
+.photo-card:nth-child(11n) {
+  grid-column: span 3;
+}
+
+/* 确保大图有足够的空间 */
+.photo-card:nth-child(13n) {
+  grid-row: span 2;
+  grid-column: span 6;
 }
 
 .photo-thumbnail {
-  height: 150px;
-  overflow: hidden;
-  background-color: var(--bg-secondary);
-  border-radius: var(--radius-medium);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .photo-thumbnail img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform var(--transition-base);
+  transition: transform 0.3s ease, opacity 0.3s ease;
 }
 
 .photo-thumbnail:hover img {
@@ -404,25 +470,66 @@ export default {
 }
 
 .photo-info {
-  padding: var(--spacing-sm);
-  background-color: var(--bg-primary);
-  border-radius: 0 0 var(--radius-medium) var(--radius-medium);
+  display: none;
 }
 
-.photo-info h4 {
-  margin: 0;
-  font-size: var(--font-size-sm);
-  margin-bottom: var(--spacing-2xs);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  color: var(--text-primary);
+/* 响应式布局调整 */
+@media (max-width: 1200px) {
+  .photos-grid {
+    grid-template-columns: repeat(8, 1fr);
+  }
+  
+  .photo-card.portrait {
+    grid-column: span 2;
+  }
+  
+  .photo-card.landscape {
+    grid-column: span 3;
+  }
+  
+  .photo-card.square {
+    grid-column: span 2;
+  }
 }
 
-.photo-info p {
-  color: var(--text-secondary);
-  font-size: var(--font-size-xs);
-  margin: 0;
+@media (max-width: 768px) {
+  .photos-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+  
+  .photo-card.portrait,
+  .photo-card.landscape,
+  .photo-card.square {
+    grid-column: span 2;
+  }
+  
+  .photo-card:nth-child(3n),
+  .photo-card:nth-child(5n),
+  .photo-card:nth-child(7n),
+  .photo-card:nth-child(11n),
+  .photo-card:nth-child(13n) {
+    grid-column: span 2;
+  }
+}
+
+@media (max-width: 480px) {
+  .photos-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .photo-card.portrait,
+  .photo-card.landscape,
+  .photo-card.square {
+    grid-column: span 1;
+  }
+  
+  .photo-card:nth-child(3n),
+  .photo-card:nth-child(5n),
+  .photo-card:nth-child(7n),
+  .photo-card:nth-child(11n),
+  .photo-card:nth-child(13n) {
+    grid-column: span 1;
+  }
 }
 
 .loading-container {
