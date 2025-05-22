@@ -4,7 +4,11 @@
 
 <template>
   <div class="page-container">
-    <div class="profile-card">
+    <div v-if="loading" class="loading">
+      <div class="spinner"></div>
+      <p>正在加载个人信息...</p>
+    </div>
+    <div v-else class="profile-card">
       <div class="avatar">{{ user.username?.[0]?.toUpperCase() || '?' }}</div>
       <h1>{{ user.username }}</h1>
       <div class="info-container">
@@ -16,6 +20,14 @@
           <span class="label">注册时间</span>
           <span class="value">{{ formatDate(user.createdAt) }}</span>
         </div>
+        <div class="info-item">
+          <span class="label">照片</span>
+          <span class="value">{{ user.photoCount != 0 ? user.photoCount : '无照片' }}</span>
+        </div>
+        <div class="info-item">
+          <span class="label">相册</span>
+          <span class="value">{{ user.albumCount != 0 ? user.albumCount : '未创建' }}</span>
+        </div>
       </div>
       <button @click="handleLogout" class="md-button outlined">退出登录</button>
     </div>
@@ -23,29 +35,35 @@
 </template>
 
 <script>
+import { authService } from '@/api';
+
 export default {
   name: 'ProfilePage',
   data() {
     return {
-      user: {}
+      user: {},
+      loading: true
     }
   },
   created() {
-    const userStr = localStorage.getItem('user');
-    if (userStr) {
-      this.user = JSON.parse(userStr);
-    } else {
-      this.$router.push('/login');
-    }
+    this.fetchUserData();
   },
   methods: {
+    async fetchUserData() {
+      try {
+        const response = await authService.getCurrentUser();
+        this.user = response.data;
+        this.loading = false;
+      } catch (error) {
+        console.error('获取用户信息失败:', error);
+        this.$router.push('/login');
+      }
+    },
     formatDate(dateStr) {
       return new Date(dateStr).toLocaleString('zh-CN', {
         year: 'numeric',
         month: 'long',
         day: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit'
       });
     },
     handleLogout() {
@@ -153,5 +171,41 @@ h1 {
 
 .md-button.outlined:active {
   transform: scale(0.98);
+}
+
+.loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: #ffffff;
+  border-radius: 28px;
+  padding: 32px;
+  width: 100%;
+  max-width: 500px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.loading p {
+  margin-top: 16px;
+  color: #666;
+}
+
+.spinner {
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border-left-color: #8ebef1;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 </style>
