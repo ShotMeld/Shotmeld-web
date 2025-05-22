@@ -375,7 +375,7 @@ export default {
 @media (max-width: 768px) {
   .with-toolbar-space {
     padding-top: var(--spacing-md); /* 移动端使用较小的间距 */
-    margin-top: 100px; /* 移动端工具栏可能更高 */
+    margin-top: 130px; /* 移动端工具栏可能更高 */
   }
 }
 
@@ -384,21 +384,16 @@ export default {
   justify-content: space-between;
   align-items: center;
   margin-bottom: var(--spacing-lg);
-}
-
-.manage-toolbar-left,
-.manage-toolbar-right {
-  display: flex;
-  align-items: center;
-}
-
-.toolbar-btn {
-  margin-right: var(--spacing-md);
-}
-
-.selected-count {
-  font-size: var(--font-size-md);
-  color: var(--text-primary);
+  /* 确保管理工具栏有更好的视觉效果 */
+  background-color: var(--bg-primary);
+  padding: var(--spacing-md);
+  border-radius: var(--radius-large);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  animation: toolbar-appear 0.4s cubic-bezier(0.33, 1, 0.68, 1) forwards;
+  /* Added for sticky behavior */
+  position: sticky;
+  top: 0; /* Stick to the top of the main scrolling container's content area */
+  z-index: 10; /* Ensure it's above other scrolled content */
 }
 
 /* 相册模态框的样式已移至 PhotoWallAlbumModal.vue 组件中 */

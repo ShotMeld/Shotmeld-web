@@ -84,7 +84,7 @@ export default {
 
 @media (max-width: 768px) {
   .photo-wall-toolbar-container {
-    top: 60px;
+    top: 80px;
     width: calc(100% - (var(--spacing-md) * 2)); /* 移动设备上可能使用更小的间距 */
   }
 }
