@@ -54,7 +54,6 @@
             :class="{ active: currentPage === 'profile' }">
             个人
           </SfNavLink>
-
           <!-- 更多页面各个工具的导航页 -->
           <SfNavLink v-if="currentPage === 'DuplicatePhotos' && !isMobile" to="/duplicate-photos" class="nav-item"
             :class="{ active: currentPage === 'DuplicatePhotos' }">
@@ -663,6 +662,9 @@ export default {
   font-size: var(--font-size-md);
   font-weight: var(--font-weight-semibold);
   color: var(--text-primary);
+  display: block;
+  text-align: center;
+  width: 100%;
 }
 
 .dropdown-links {
