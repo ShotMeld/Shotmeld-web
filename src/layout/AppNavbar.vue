@@ -22,11 +22,13 @@
         <!-- 主导航链接容器 -->
         <div class="main-nav">
           <SfNavLink to="/photowall" class="nav-item" :class="{ active: currentPage === 'photowall' }">
-            照片墙
+            照片
+            <!-- 「照片墙」改名为「照片」-->
           </SfNavLink>
 
           <SfNavLink to="/timeline" class="nav-item" :class="{ active: currentPage === 'timeline' }">
-            时间线
+            记忆
+            <!-- 「时间线」改名为「记忆」-->
           </SfNavLink>
 
           <SfNavLink to="/albums" class="nav-item"

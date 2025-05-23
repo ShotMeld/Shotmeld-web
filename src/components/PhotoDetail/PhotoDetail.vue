@@ -7,10 +7,13 @@
     :title="photo?.title || '无标题照片'" size="large">
     <div class="photo-detail-content">
       <!-- 左侧照片显示组件 -->
-      <PhotoImage :photo="photo" :imageLoaded="imageLoaded" @image-loaded="imageLoaded = true" />
+      <div class="photo-detail-left">
+        <PhotoImage :photo="photo" :imageLoaded="imageLoaded" @image-loaded="imageLoaded = true" />
+        <!-- 操作按钮组件 -->
+        <PhotoActions :photo="photo" @delete-click="confirmDelete" />
+      </div>
 
       <!-- 右侧信息组件 -->
-      <!-- TODO：组件之后考虑来个 Tab 分页 -->
       <div class="photo-detail-info">
         <!-- 基本信息组件 -->
         <PhotoInfo :photo="photo" />
@@ -26,9 +29,6 @@
 
         <!-- 相册组件 -->
         <PhotoAlbums v-if="photo?.albums && photo.albums.length > 0" :photo="photo" :albumsMap="albumsMap" />
-
-        <!-- 操作按钮组件 -->
-        <PhotoActions :photo="photo" @delete-click="confirmDelete" />
       </div>
     </div>
   </SfModal>
@@ -156,10 +156,21 @@ export default {
 .photo-detail-content {
   display: flex;
   flex-direction: column;
+  /* 设定一个最大高度，例如视窗高度的90%，减去模态框可能的边距 */
+  max-height: calc(90vh - 100px); /* 100px 是模态框上下padding和title的预估值 */
+}
+
+.photo-detail-left {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  align-items: center;
 }
 
 .photo-detail-info {
   -ms-overflow-style: none;
+  /* 桌面端信息区域允许滚动 */
+  overflow-y: auto; 
 }
 
 /* 标题自动换行样式 */
@@ -174,7 +185,7 @@ export default {
 }
 
 .photo-detail-info {
-  padding: var(--spacing-lg);
+  padding: 0 var(--spacing-lg) var(--spacing-lg) var(--spacing-lg);
   font-family: -apple-system, BlinkMacSystemFont, 'San Francisco', 'Helvetica Neue', sans-serif;
 }
 
@@ -183,16 +194,23 @@ export default {
   .photo-detail-content {
     flex-direction: row;
     gap: var(--spacing-xl);
+    align-items: flex-start; /* 顶部对齐 */
   }
 
-  .photo-detail-image {
-    flex: 1.5;
+  .photo-detail-left {
+    flex: 1.5; /* 恢复flex比例，使其比信息区宽 */
+    flex-shrink: 0; /* 防止图片区域被压缩 */
+    /* max-width: 70%; */ /* 移除这个，让flex布局决定宽度 */
+    /* 图片容器本身不需要滚动条，由内部图片处理 */
   }
 
   .photo-detail-info {
-    flex: 1;
-    overflow-y: visible;
-    max-height: none;
+    flex: 1; /* 信息区占据相应比例空间 */
+    /* 确保信息区域可以滚动 */
+    overflow-y: auto;
+    /* 设置一个最大高度，以适应图片的高度，同时自身可滚动 */
+    max-height: calc(85vh - 120px); /* 这里的计算需要根据实际模态框标题和padding调整 */
+    padding-right: var(--spacing-sm); /* 为滚动条留出空间，防止内容遮挡 */
   }
 }
 </style>

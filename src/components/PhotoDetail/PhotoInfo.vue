@@ -10,8 +10,8 @@
       <span class="info-value title-value">{{ photo?.title || '无标题' }}</span>
     </div>
     <div class="info-item">
-      <span class="info-label">拍摄时间</span>
-      <span class="info-value">{{ formatDate(photo?.takenAt) }}</span>
+      <span class="info-label">{{ photo?.takenAt ? '拍摄时间' : '创建时间' }}</span>
+      <span class="info-value">{{ formatDate(photo?.takenAt || photo?.createdAt) }}</span>
     </div>
     <div class="info-item">
       <span class="info-label">文件大小</span>
