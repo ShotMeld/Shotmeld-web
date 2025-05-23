@@ -1,5 +1,5 @@
 <!--
-  TimelineView.vue - 时间线页
+  TimelineView.vue - 时间线页/记忆
 -->
 
 <template>

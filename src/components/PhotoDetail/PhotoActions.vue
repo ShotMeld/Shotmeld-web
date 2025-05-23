@@ -4,12 +4,12 @@
 
 <template>
   <div class="photo-actions">
-    <SfLinkButton icon="fas fa-download" @click="downloadPhoto">
-      下载照片
+    <SfLinkButton icon="fas fa-download" @click="downloadPhoto" class="action-button">
+      下载
     </SfLinkButton>
 
-    <SfLinkButton icon="fas fa-trash" type="danger" @click="$emit('delete-click')">
-      删除照片
+    <SfLinkButton icon="fas fa-trash" type="danger" @click="$emit('delete-click')" class="action-button">
+      删除
     </SfLinkButton>
   </div>
 </template>
@@ -50,6 +50,21 @@ export default {
   gap: var(--spacing-md);
 }
 
+.action-button {
+  background-color: var(--bg-primary);
+  display: flex;
+  align-items: center;
+  padding: 8px 16px;
+  height: 36px;
+  border: 1px solid var(--border-color);
+  border-radius: 18px;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.action-button:hover {
+  background-color: var(--bg-secondary);
+}
+
 @media (max-width: 768px) {
   .photo-actions {
     flex-direction: column;
@@ -57,7 +72,7 @@ export default {
     gap: var(--spacing-sm);
   }
 
-  :deep(.link-button) {
+  .action-button {
     width: 100%;
     justify-content: center;
   }

@@ -1,5 +1,5 @@
 <!--
-  PhotoWall.vue - 照片墙
+  PhotoWall.vue - 照片墙/照片
 -->
 
 <template>
