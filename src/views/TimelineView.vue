@@ -38,7 +38,7 @@
                   @click="showPhotoDetail(photo)">
                   <div class="photo-thumbnail">
                     <img :src="photo.thumbnailUrl || photo.url" 
-                         :alt="photo.title"
+                         :alt="photo.title ?? '无标题'"
                          @load="onImageLoad($event, photo)"
                          :style="{ opacity: photo.aspectRatio ? 1 : 0 }">
                   </div>
