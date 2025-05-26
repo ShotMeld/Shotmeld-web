@@ -7,6 +7,7 @@ import ElementPlus from 'element-plus'
 import 'element-plus/dist/index.css'
 import '@fortawesome/fontawesome-free/css/all.min.css'
 import { useThemeStore } from './store/theme'
+import { configureNotification } from './utils/notification'
 
 // apiClient已经在api/index.js中配置完成，这里不需要额外配置
 
@@ -25,6 +26,7 @@ app.config.globalProperties.$http = apiClient
 // 导入全局样式
 import './styles/variables.css'
 import './styles/scrollbar.css'
+import './styles/notification.css'
 
 // 导入UI组件库
 import SfUI from './components/ui'
@@ -34,6 +36,9 @@ app.use(ElementPlus)
 app.use(SfUI)
 app.use(router)
 app.use(pinia)
+
+// 配置通知组件
+configureNotification(app)
 
 // 初始化主题
 const themeStore = useThemeStore(pinia)

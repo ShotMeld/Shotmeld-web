@@ -1,0 +1,29 @@
+/**
+ * notification.css - 全局通知组件样式
+ * 确保通知组件显示在页面的最高层级
+ */
+
+/* Element Plus 通知组件样式覆盖 */
+.el-notification {
+  z-index: 99999 !important; /* 确保显示在最高层级 */
+}
+
+/* 通知层覆盖容器 */
+.el-notification__group {
+  overflow-wrap: break-word; /* 确保文本自动换行 */
+}
+
+/* 通知组件弹出动画效果增强 */
+.el-notification-fade-enter-active {
+  transition: all .3s ease !important;
+}
+
+.el-notification-fade-leave-active {
+  transition: all .4s ease !important;
+}
+
+.el-notification-fade-enter-from,
+.el-notification-fade-leave-to {
+  opacity: 0;
+  transform: translateX(100%);
+}
