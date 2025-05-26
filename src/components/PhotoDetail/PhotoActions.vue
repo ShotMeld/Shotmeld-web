@@ -8,6 +8,10 @@
       下载
     </SfLinkButton>
 
+    <SfLinkButton icon="fas fa-share-alt" @click="sharePhoto" class="action-button">
+      分享
+    </SfLinkButton>
+
     <SfLinkButton icon="fas fa-trash" type="danger" @click="$emit('delete-click')" class="action-button">
       删除
     </SfLinkButton>
@@ -28,6 +32,11 @@ export default {
       default: null
     }
   },
+  data() {
+    return {
+      isNotifying: false
+    };
+  },
   emits: ['delete-click'],
   methods: {
     downloadPhoto() {
@@ -39,6 +48,41 @@ export default {
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
+    },
+    sharePhoto() {
+      if (!this.photo || this.isNotifying) return;
+      
+      // 设置标志，防止重复通知
+      this.isNotifying = true;
+      
+      // 复制图片URL到剪贴板
+      navigator.clipboard.writeText(this.photo.url)
+        .then(() => {
+          // 使用消息提示
+          this.$notify({
+            title: '分享成功',
+            message: '链接已复制到剪贴板',
+            type: 'success'
+          });
+          
+          // 重置标志状态
+          setTimeout(() => {
+            this.isNotifying = false;
+          }, 100);
+        })
+        .catch(err => {
+          console.error('无法复制链接: ', err);
+          this.$notify({
+            title: '分享失败',
+            message: '无法复制链接到剪贴板',
+            type: 'error'
+          });
+          
+          // 重置标志状态
+          setTimeout(() => {
+            this.isNotifying = false;
+          }, 100);
+        });
     }
   }
 }
