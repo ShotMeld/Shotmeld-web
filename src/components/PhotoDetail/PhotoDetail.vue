@@ -4,17 +4,17 @@
 
 <template>
   <SfModal :modelValue="modelValue" @update:modelValue="$emit('update:modelValue', $event)"
-    :title="photo?.title || '无标题照片'" size="large">
+    :title="photo?.title || '无标题照片'" size="large" :customStyles="dynamicModalStyles">
     <div class="photo-detail-content">
       <!-- 左侧照片显示组件 -->
       <div class="photo-detail-left">
-        <PhotoImage :photo="photo" :imageLoaded="imageLoaded" @image-loaded="imageLoaded = true" />
+        <PhotoImage :photo="photo" :imageLoaded="imageLoaded" :targetHeight="imageHeight" @image-loaded="handleImageLoaded" />
         <!-- 操作按钮组件 -->
         <PhotoActions :photo="photo" @delete-click="confirmDelete" />
       </div>
 
       <!-- 右侧信息组件 -->
-      <div class="photo-detail-info">
+      <div class="photo-detail-info" :style="rightPanelStyles">
         <!-- 基本信息组件 -->
         <PhotoInfo :photo="photo" />
 
@@ -87,18 +87,42 @@ export default {
     return {
       imageLoaded: false,
       showDeleteConfirm: false,
-      albumsMap: {} // 用于存储相册ID到相册名称的映射
+      albumsMap: {}, // 用于存储相册ID到相册名称的映射
+      modalStyles: {}, // 动态模态框样式
+      imageHeight: 0, // 图片实际高度
+      minModalHeight: 500, // 最低模态框高度
+      maxModalWidth: 1400, // 最大模态框宽度
+      rightPanelWidth: 350, // 右侧信息面板固定宽度
+      buttonsHeight: 60, // 底部按钮区域高度
+      headerHeight: 70, // 模态框头部高度
+      modalPadding: 48, // 模态框内边距
+      resizeTimeout: null // 防抖定时器
     }
   },
   computed: {
     hasExifData() {
       return !!(this.photo?.metadata?.exif)
+    },
+    dynamicModalStyles() {
+      return this.modalStyles;
+    },
+    rightPanelStyles() {
+      // 计算右侧面板的高度，使其与左侧区域保持一致
+      if (this.imageHeight > 0) {
+        const leftSideHeight = this.imageHeight + this.buttonsHeight;
+        return {
+          height: `${leftSideHeight}px`,
+          maxHeight: `${leftSideHeight}px`
+        };
+      }
+      return {};
     }
   },
   watch: {
     modelValue(newVal) {
       if (newVal) {
         this.imageLoaded = false;
+        this.resetModalStyles();
       }
     },
     'photo.albums': {
@@ -107,6 +131,12 @@ export default {
         if (albumIds && albumIds.length > 0) {
           this.fetchAlbumsInfo(albumIds);
         }
+      }
+    },
+    photo: {
+      immediate: true,
+      handler() {
+        this.resetModalStyles();
       }
     }
   },
@@ -122,6 +152,97 @@ export default {
     
     handleTagClick(tag) {
       this.$emit('tag-clicked', tag);
+    },
+
+    handleImageLoaded() {
+      this.imageLoaded = true;
+      this.$nextTick(() => {
+        this.calculateModalSize();
+      });
+    },
+
+    resetModalStyles() {
+      this.modalStyles = {};
+      this.imageHeight = 0;
+    },
+
+    calculateModalSize() {
+      if (!this.photo || !this.imageLoaded) return;
+      
+      // 获取视口尺寸
+      const viewportWidth = window.innerWidth;
+      const viewportHeight = window.innerHeight;
+      const isMobile = viewportWidth < 992;
+      
+      if (isMobile) {
+        // 移动端保持原有逻辑
+        this.modalStyles = {};
+        return;
+      }
+
+      // 创建临时图片元素来获取图片实际尺寸
+      const tempImg = new Image();
+      tempImg.onload = () => {
+        const imgNaturalWidth = tempImg.naturalWidth;
+        const imgNaturalHeight = tempImg.naturalHeight;
+        const imgAspectRatio = imgNaturalWidth / imgNaturalHeight;
+        
+        // 计算理想的图片容器宽度（左侧区域宽度）
+        // 首先确保右侧面板宽度固定，左侧宽度基于剩余空间计算
+        const availableWidth = viewportWidth * 0.9 - this.rightPanelWidth - this.modalPadding;
+        let leftPanelWidth = Math.min(
+          availableWidth, // 可用宽度
+          imgNaturalWidth // 但不超过图片原始宽度
+        );
+        
+        // 确保左侧宽度不会太小
+        leftPanelWidth = Math.max(leftPanelWidth, 400);
+        
+        // 根据宽度计算图片高度
+        let calculatedImageHeight = leftPanelWidth / imgAspectRatio;
+        
+        // 计算模态框需要的总高度
+        let totalModalHeight = calculatedImageHeight + this.buttonsHeight + this.headerHeight + this.modalPadding;
+        
+        // 检查是否低于最小高度
+        if (totalModalHeight < this.minModalHeight) {
+          // 重新计算尺寸以满足最小高度
+          const targetImageHeight = this.minModalHeight - this.buttonsHeight - this.headerHeight - this.modalPadding;
+          leftPanelWidth = targetImageHeight * imgAspectRatio;
+          calculatedImageHeight = targetImageHeight;
+          totalModalHeight = this.minModalHeight;
+        }
+        
+        // 检查模态框宽度是否超过最大限制
+        const totalModalWidth = leftPanelWidth + this.rightPanelWidth + this.modalPadding + 32; // 添加间距
+        if (totalModalWidth > this.maxModalWidth) {
+          // 重新计算，保持右侧面板宽度固定，调整左侧宽度
+          leftPanelWidth = this.maxModalWidth - this.rightPanelWidth - this.modalPadding - 32;
+          calculatedImageHeight = leftPanelWidth / imgAspectRatio;
+          totalModalHeight = calculatedImageHeight + this.buttonsHeight + this.headerHeight + this.modalPadding;
+        }
+        
+        // 确保不超过视口高度的85%
+        const maxModalHeight = viewportHeight * 0.85;
+        if (totalModalHeight > maxModalHeight) {
+          const targetImageHeight = maxModalHeight - this.buttonsHeight - this.headerHeight - this.modalPadding;
+          leftPanelWidth = targetImageHeight * imgAspectRatio;
+          calculatedImageHeight = targetImageHeight;
+          totalModalHeight = maxModalHeight;
+        }
+        
+        // 应用计算出的样式
+        this.imageHeight = calculatedImageHeight + 20; // 添加一些额外的间距
+        const finalModalWidth = leftPanelWidth + this.rightPanelWidth + this.modalPadding + 32;
+        this.modalStyles = {
+          width: `${Math.min(finalModalWidth, this.maxModalWidth)}px`,
+          height: `${totalModalHeight}px`,
+          maxHeight: `${maxModalHeight}px`,
+          minWidth: `${this.rightPanelWidth + 400 + this.modalPadding + 32}px` // 确保最小宽度包含固定右侧面板
+        };
+      };
+      
+      tempImg.src = this.photo.url;
     },
 
     fetchAlbumsInfo(albumIds) {
@@ -147,6 +268,27 @@ export default {
         console.error('获取相册信息时出错:', err);
       });
     },
+
+    handleResize() {
+      // 防抖处理
+      if (this.resizeTimeout) {
+        clearTimeout(this.resizeTimeout);
+      }
+      this.resizeTimeout = setTimeout(() => {
+        if (this.imageLoaded && this.photo) {
+          this.calculateModalSize();
+        }
+      }, 200);
+    }
+  },
+  mounted() {
+    window.addEventListener('resize', this.handleResize);
+  },
+  beforeUnmount() {
+    window.removeEventListener('resize', this.handleResize);
+    if (this.resizeTimeout) {
+      clearTimeout(this.resizeTimeout);
+    }
   }
 }
 </script>
@@ -156,8 +298,8 @@ export default {
 .photo-detail-content {
   display: flex;
   flex-direction: column;
-  /* 设定一个最大高度，例如视窗高度的90%，减去模态框可能的边距 */
-  max-height: calc(90vh - 100px); /* 100px 是模态框上下padding和title的预估值 */
+  height: 100%;
+  overflow: hidden;
 }
 
 .photo-detail-left {
@@ -165,12 +307,18 @@ export default {
   flex-direction: column;
   gap: var(--spacing-md);
   align-items: center;
+  /* 移动端：限制图片区域的最大高度，避免占据过多空间 */
+  flex-shrink: 0;
+  /* 桌面端：确保左侧区域能够正确填充 */
+  flex: 1;
+  min-height: 0;
 }
 
 .photo-detail-info {
   -ms-overflow-style: none;
-  /* 桌面端信息区域允许滚动 */
-  overflow-y: auto; 
+  /* 移动端：不设置overflow，让内容自然排列 */
+  flex: 1;
+  min-height: 0; /* 确保flex子项可以收缩 */
 }
 
 /* 标题自动换行样式 */
@@ -185,32 +333,76 @@ export default {
 }
 
 .photo-detail-info {
-  padding: 0 var(--spacing-lg) var(--spacing-lg) var(--spacing-lg);
+  padding: 0 var(--spacing-lg) 0 var(--spacing-lg);
   font-family: -apple-system, BlinkMacSystemFont, 'San Francisco', 'Helvetica Neue', sans-serif;
+  /* 在所有情况下都设置基础样式约束 */
+  box-sizing: border-box;
 }
 
-/* 响应式设计 */
+/* 移动端优化样式 */
+@media (max-width: 991px) {
+  .photo-detail-content {
+    /* 移动端：允许整个内容区域滚动 */
+    max-height: none;
+    overflow-y: visible;
+  }
+  
+  .photo-detail-left {
+    overflow: hidden;
+  }
+  
+  .photo-detail-info {
+    /* 移动端：信息区域不设置滚动，让内容自然展开 */
+    overflow-y: visible;
+    max-height: none;
+    padding: var(--spacing-md) var(--spacing-lg) var(--spacing-sm) var(--spacing-lg);
+  }
+}
+
+/* 响应式设计 - 桌面端 */
 @media (min-width: 992px) {
   .photo-detail-content {
     flex-direction: row;
     gap: var(--spacing-xl);
     align-items: flex-start; /* 顶部对齐 */
+    /* 桌面端：设置为填充模态框高度 */
+    height: 100%;
   }
 
   .photo-detail-left {
-    flex: 1.5; /* 恢复flex比例，使其比信息区宽 */
+    /* 桌面端：左侧区域占据剩余空间，减去右侧固定宽度 */
+    flex: 1;
     flex-shrink: 0; /* 防止图片区域被压缩 */
-    /* max-width: 70%; */ /* 移除这个，让flex布局决定宽度 */
-    /* 图片容器本身不需要滚动条，由内部图片处理 */
+    max-height: none; /* 桌面端移除高度限制 */
+    overflow: visible; /* 桌面端恢复可见性 */
+    /* 确保左侧区域能够正确布局 */
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    min-height: 0;
+    /* 确保与右侧区域高度一致 */
+    height: 100%;
+    align-self: stretch;
   }
 
   .photo-detail-info {
-    flex: 1; /* 信息区占据相应比例空间 */
-    /* 确保信息区域可以滚动 */
+    /* 桌面端：右侧信息面板固定宽度 - 使用更强的约束 */
+    width: 350px !important;
+    min-width: 350px !important;
+    max-width: 350px !important;
+    flex-basis: 350px !important;
+    flex-shrink: 0 !important; /* 防止收缩 */
+    flex-grow: 0 !important; /* 防止扩展 */
+    /* 桌面端：确保信息区域可以滚动 */
     overflow-y: auto;
-    /* 设置一个最大高度，以适应图片的高度，同时自身可滚动 */
-    max-height: calc(85vh - 120px); /* 这里的计算需要根据实际模态框标题和padding调整 */
+    /* 设置高度与左侧区域保持一致 */
+    height: 100%;
+    max-height: 100%;
+    padding: 0 var(--spacing-lg) 0 var(--spacing-lg);
     padding-right: var(--spacing-sm); /* 为滚动条留出空间，防止内容遮挡 */
+    box-sizing: border-box; /* 确保padding包含在宽度内 */
+    /* 确保与左侧区域顶部对齐 */
+    align-self: stretch;
   }
 }
 </style>
