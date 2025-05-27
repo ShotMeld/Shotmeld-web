@@ -16,7 +16,9 @@ export const API_ENDPOINTS = {
     DETAIL: (id) => `/photos/${id}`,
     BATCH: '/photos/batch',
     TIMELINE: '/timeline',
-    SEARCH: '/photos/semantic-search'
+    SEARCH: '/photos/semantic-search',
+    SHARE: (id) => `/photos/share/${id}`,
+    SHARED: (id) => `/photos/shared/${id}`
   },
   
   // 标签管理

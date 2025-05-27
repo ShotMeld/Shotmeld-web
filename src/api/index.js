@@ -169,6 +169,23 @@ export const photoService = {
     return apiClient.post(API_ENDPOINTS.ALBUMS.PHOTOS(data.albumId), { 
       photoIds: data.photoIds 
     });
+  },
+
+  // 设置照片为可分享状态
+  sharePhoto(id) {
+    return apiClient.post(API_ENDPOINTS.PHOTOS.SHARE(id));
+  },
+
+  // 获取共享照片详情（无需认证）
+  getSharedPhoto(id) {
+    // 创建一个不包含认证header的新axios实例
+    const publicClient = axios.create({
+      baseURL: API_BASE_URL,
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+    return publicClient.get(API_ENDPOINTS.PHOTOS.SHARED(id));
   }
 };
 

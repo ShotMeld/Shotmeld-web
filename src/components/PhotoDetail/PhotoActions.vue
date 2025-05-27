@@ -20,6 +20,7 @@
 
 <script>
 import { SfLinkButton } from '../ui';
+import { photoService } from '../../api';
 
 export default {
   name: 'PhotoActions',
@@ -34,7 +35,8 @@ export default {
   },
   data() {
     return {
-      isNotifying: false
+      isNotifying: false,
+      isSharing: false
     };
   },
   emits: ['delete-click'],
@@ -49,40 +51,44 @@ export default {
       link.click();
       document.body.removeChild(link);
     },
-    sharePhoto() {
-      if (!this.photo || this.isNotifying) return;
+    async sharePhoto() {
+      if (!this.photo || this.isNotifying || this.isSharing) return;
       
-      // 设置标志，防止重复通知
+      // 设置标志，防止重复操作
+      this.isSharing = true;
       this.isNotifying = true;
       
-      // 复制图片URL到剪贴板
-      navigator.clipboard.writeText(this.photo.url)
-        .then(() => {
-          // 使用消息提示
-          this.$notify({
-            title: '分享成功',
-            message: '链接已复制到剪贴板',
-            type: 'success'
-          });
-          
-          // 重置标志状态
-          setTimeout(() => {
-            this.isNotifying = false;
-          }, 100);
-        })
-        .catch(err => {
-          console.error('无法复制链接: ', err);
-          this.$notify({
-            title: '分享失败',
-            message: '无法复制链接到剪贴板',
-            type: 'error'
-          });
-          
-          // 重置标志状态
-          setTimeout(() => {
-            this.isNotifying = false;
-          }, 100);
+      try {
+        // 调用API设置照片为可分享状态
+        const response = await photoService.sharePhoto(this.photo.id);
+        
+        // 生成分享链接
+        const shareUrl = `${window.location.origin}/share/${this.photo.id}`;
+        
+        // 复制分享链接到剪贴板
+        await navigator.clipboard.writeText(shareUrl);
+        
+        // 使用消息提示
+        this.$notify({
+          title: '分享成功',
+          message: '分享链接已复制到剪贴板',
+          type: 'success'
         });
+        
+      } catch (error) {
+        console.error('分享失败: ', error);
+        this.$notify({
+          title: '分享失败',
+          message: error.response?.data?.message || '无法创建分享链接',
+          type: 'error'
+        });
+      } finally {
+        // 重置标志状态
+        setTimeout(() => {
+          this.isNotifying = false;
+          this.isSharing = false;
+        }, 100);
+      }
     }
   }
 }
