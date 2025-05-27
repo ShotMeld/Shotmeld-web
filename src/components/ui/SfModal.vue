@@ -154,11 +154,11 @@ export default {
 }
 
 .sf-modal--large {
-  max-width: 1000px;
+  max-width: 2000px;
 }
 
 .sf-modal--extra-large {
-  max-width: 1200px;
+  max-width: 2500px;
 }
 
 .sf-modal--full {
