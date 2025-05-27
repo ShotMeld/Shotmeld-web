@@ -147,7 +147,7 @@
             <template #icon>
               <i class="fas fa-th"></i>
             </template>
-            照片墙
+            照片
           </SfNavLink>
 
           <SfNavLink to="/timeline" class="drawer-nav-item" :class="{ active: currentPage === 'timeline' }"
@@ -155,7 +155,7 @@
             <template #icon>
               <i class="fas fa-calendar-alt"></i>
             </template>
-            时间线
+            记忆
           </SfNavLink>
 
           <SfNavLink to="/albums" class="drawer-nav-item"
