@@ -33,14 +33,14 @@
               </h3>
 
               <div class="photos-grid">
-                <div v-for="photo in monthGroup.photos" :key="photo.id" class="photo-card"
-                  :class="getAspectRatioClass(photo)"
-                  @click="showPhotoDetail(photo)">
+                <div v-for="(photo, index) in getOptimizedPhotoLayout(monthGroup.photos)" :key="photo.id" 
+                     class="photo-card"
+                     :class="photo.gridSize"
+                     @click="showPhotoDetail(photo)">
                   <div class="photo-thumbnail">
                     <img :src="photo.thumbnailUrl || photo.url" 
                          :alt="photo.title ?? '无标题'"
-                         @load="onImageLoad($event, photo)"
-                         :style="{ opacity: photo.aspectRatio ? 1 : 0 }">
+                         loading="lazy">
                   </div>
                 </div>
               </div>
@@ -89,8 +89,7 @@ export default {
       showUploadModal: false,
       showPhotoDetailModal: false,
       userName: '',
-      timelineGroups: [], // 按年月分组后的照片数据
-      photoAspectRatios: new Map() // 存储照片的宽高比
+      timelineGroups: [] // 按年月分组后的照片数据
     }
   },
   created() {
@@ -296,24 +295,57 @@ export default {
       this.$router.push('/login');
     },
 
-    handleAlbumCreated() {
-      // 如果需要，可以刷新某些数据
+    // 新增：优化照片布局，确保每排尽可能铺满（使用确定性算法）
+    getOptimizedPhotoLayout(photos) {
+      const photosWithLayout = photos.map(photo => ({ ...photo }));
+      const gridWidth = 6; // 每行6个单位格子
+      let currentRowUsed = 0;
+      
+      photosWithLayout.forEach((photo, index) => {
+        const remainingPhotos = photosWithLayout.length - index;
+        const remainingInRow = gridWidth - currentRowUsed;
+        
+        // 使用确定性算法决定图片尺寸，基于照片ID和索引
+        let shouldUseLarge = false;
+        
+        // 如果还有足够空间放置2x2图片
+        if (remainingInRow >= 2) {
+          // 使用照片ID的哈希值来确定性地决定是否使用大图
+          const photoHash = this.getSimpleHash(photo.id || index.toString());
+          const threshold = currentRowUsed === 0 ? 0.4 : 0.25; // 行首更倾向于大图
+          
+          // 如果剩余照片较多，调整阈值
+          const adjustedThreshold = remainingPhotos > 3 ? threshold * 1.2 : threshold * 0.8;
+          
+          shouldUseLarge = (photoHash % 100) / 100 < adjustedThreshold;
+        }
+        
+        if (shouldUseLarge) {
+          photo.gridSize = 'size-2x2';
+          currentRowUsed += 2;
+        } else {
+          photo.gridSize = 'size-1x1';
+          currentRowUsed += 1;
+        }
+        
+        // 如果当前行已满或接近满，换到下一行
+        if (currentRowUsed >= gridWidth) {
+          currentRowUsed = 0;
+        }
+      });
+      
+      return photosWithLayout;
     },
 
-    getAspectRatioClass(photo) {
-      const ratio = this.photoAspectRatios.get(photo.id);
-      if (!ratio) return '';
-      
-      if (ratio > 1.2) return 'landscape';
-      if (ratio < 0.8) return 'portrait';
-      return 'square';
-    },
-    
-    onImageLoad(event, photo) {
-      const img = event.target;
-      const ratio = img.naturalWidth / img.naturalHeight;
-      this.photoAspectRatios.set(photo.id, ratio);
-      photo.aspectRatio = ratio;
+    // 简单哈希函数，用于确定性地生成伪随机数
+    getSimpleHash(str) {
+      let hash = 0;
+      for (let i = 0; i < str.length; i++) {
+        const char = str.charCodeAt(i);
+        hash = ((hash << 5) - hash) + char;
+        hash = hash & hash; // 转换为32位整数
+      }
+      return Math.abs(hash);
     }
   }
 }
@@ -385,66 +417,39 @@ export default {
 
 .photos-grid {
   display: grid;
-  grid-template-columns: repeat(12, 1fr);
-  gap: 12px;
-  padding: 12px 0;
-  grid-auto-rows: 180px;
-  grid-auto-flow: dense;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 16px;
+  padding: 16px 0;
+  grid-auto-rows: minmax(120px, auto);
 }
 
 .photo-card {
   position: relative;
   width: 100%;
-  height: 100%;
+  aspect-ratio: 1;
   overflow: hidden;
-  border-radius: 8px;
+  border-radius: 16px;
   cursor: pointer;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition: all 0.3s ease;
   background-color: #f5f5f7;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .photo-card:hover {
-  transform: scale(1.02);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
 }
 
-.photo-card.portrait {
-  grid-row: span 2;
-  grid-column: span 3;
-}
-
-.photo-card.landscape {
+/* 1*1 小图占用 1 个网格单位 */
+.photo-card.size-1x1 {
+  grid-column: span 1;
   grid-row: span 1;
-  grid-column: span 4;
 }
 
-.photo-card.square {
-  grid-row: span 1;
-  grid-column: span 3;
-}
-
-/* 添加一些随机的尺寸变化 */
-.photo-card:nth-child(3n) {
-  grid-column: span 4;
-}
-
-.photo-card:nth-child(5n) {
+/* 2*2 大图占用 4 个网格单位 */
+.photo-card.size-2x2 {
   grid-column: span 2;
-}
-
-.photo-card:nth-child(7n) {
   grid-row: span 2;
-  grid-column: span 2;
-}
-
-.photo-card:nth-child(11n) {
-  grid-column: span 3;
-}
-
-/* 确保大图有足够的空间 */
-.photo-card:nth-child(13n) {
-  grid-row: span 2;
-  grid-column: span 6;
 }
 
 .photo-thumbnail {
@@ -476,59 +481,34 @@ export default {
 /* 响应式布局调整 */
 @media (max-width: 1200px) {
   .photos-grid {
-    grid-template-columns: repeat(8, 1fr);
-  }
-  
-  .photo-card.portrait {
-    grid-column: span 2;
-  }
-  
-  .photo-card.landscape {
-    grid-column: span 3;
-  }
-  
-  .photo-card.square {
-    grid-column: span 2;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
   }
 }
 
 @media (max-width: 768px) {
   .photos-grid {
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
   }
   
-  .photo-card.portrait,
-  .photo-card.landscape,
-  .photo-card.square {
+  /* 在小屏幕上减少大图的使用 */
+  .photo-card.size-2x2 {
     grid-column: span 2;
-  }
-  
-  .photo-card:nth-child(3n),
-  .photo-card:nth-child(5n),
-  .photo-card:nth-child(7n),
-  .photo-card:nth-child(11n),
-  .photo-card:nth-child(13n) {
-    grid-column: span 2;
+    grid-row: span 2;
   }
 }
 
 @media (max-width: 480px) {
   .photos-grid {
     grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
   }
   
-  .photo-card.portrait,
-  .photo-card.landscape,
-  .photo-card.square {
+  /* 在最小屏幕上所有图片都使用 1*1 */
+  .photo-card.size-2x2 {
     grid-column: span 1;
-  }
-  
-  .photo-card:nth-child(3n),
-  .photo-card:nth-child(5n),
-  .photo-card:nth-child(7n),
-  .photo-card:nth-child(11n),
-  .photo-card:nth-child(13n) {
-    grid-column: span 1;
+    grid-row: span 1;
   }
 }
 
