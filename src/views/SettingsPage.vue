@@ -89,6 +89,13 @@ export default {
     // 获取当前主题设置
     const themeStore = useThemeStore()
     this.selectedTheme = themeStore.theme
+
+    // 获取当前语言设置
+    const savedLocale = localStorage.getItem('locale')
+    if (savedLocale) {
+      this.selectedLanguage = savedLocale
+      this.$i18n.locale = savedLocale
+    }
   },
   methods: {
     selectTheme(theme) {
@@ -99,6 +106,8 @@ export default {
     selectLanguage(lang) {
       this.selectedLanguage = lang
       this.$i18n.locale = lang
+      // 将语言设置保存到本地存储
+      localStorage.setItem('locale', lang)
     }
   }
 }
@@ -261,4 +270,4 @@ h2 {
     justify-content: center;
   }
 }
-</style> 
+</style>
