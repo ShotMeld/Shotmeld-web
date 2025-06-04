@@ -4,7 +4,16 @@
 
 <template>
   <div class="photo-detail-image" :style="{ height: imageHeight, width: imageWidth }">
-    <img v-if="photo" :src="photo.url" :alt="photo.title" @load="handleImageLoad" ref="imageElement" />
+    <!-- 缩略图作为背景占位 -->
+    <div v-if="photo?.thumbnailUrl && !imageLoaded" class="thumbnail-placeholder">
+      <img :src="photo.thumbnailUrl" :alt="photo.title" class="thumbnail-bg" />
+    </div>
+    
+    <!-- 主图片 -->
+    <img v-if="photo" :src="photo.url" :alt="photo.title" @load="handleImageLoad" ref="imageElement" 
+         :class="{ 'image-loaded': imageLoaded }" />
+    
+    <!-- 加载旋转器 -->
     <div v-if="!imageLoaded" class="image-loading">
       <div class="spinner"></div>
     </div>
@@ -144,11 +153,39 @@ export default {
   flex-grow: 0;
 }
 
-.photo-detail-image img {
+/* 缩略图背景占位 */
+.thumbnail-placeholder {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+}
+
+.thumbnail-bg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: blur(8px);
+  opacity: 0.6;
+  transform: scale(1.1); /* 稍微放大避免边缘露白 */
+}
+
+/* 主图片 */
+.photo-detail-image > img {
   width: 100%;
   height: 100%;
   object-fit: cover; /* 改为 cover 以完全填充容器 */
   display: block; /* 消除图片下方的空白 */
+  position: relative;
+  z-index: 2;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.photo-detail-image > img.image-loaded {
+  opacity: 1;
 }
 
 /* 加载状态 */
@@ -176,8 +213,9 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: rgba(255, 255, 255, 0.5);
-  backdrop-filter: blur(5px);
-  -webkit-backdrop-filter: blur(5px);
+  background-color: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  z-index: 3;
 }
 </style>
