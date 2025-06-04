@@ -1,12 +1,34 @@
 <template>
   <div id="app">
+    <div class="language-switcher">
+      <select v-model="currentLanguage" @change="changeLanguage">
+        <option value="zh-CN">中文</option>
+        <option value="en">English</option>
+      </select>
+    </div>
     <router-view></router-view>
   </div>
 </template>
 
 <script>
+import { useI18n } from 'vue-i18n';
+
 export default {
-  name: 'App'
+  name: 'App',
+  setup() {
+    const { locale } = useI18n();
+    return { locale };
+  },
+  data() {
+    return {
+      currentLanguage: 'zh-CN'
+    }
+  },
+  methods: {
+    changeLanguage() {
+      this.locale = this.currentLanguage;
+    }
+  }
 }
 </script>
 
@@ -52,5 +74,11 @@ a:hover {
 .fade-enter-from,
 .fade-leave-to {
   opacity: 0;
+}
+
+.language-switcher {
+  position: absolute;
+  top: 10px;
+  right: 10px;
 }
 </style>

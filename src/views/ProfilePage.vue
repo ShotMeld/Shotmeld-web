@@ -6,30 +6,30 @@
   <div class="page-container">
     <div v-if="loading" class="loading">
       <div class="spinner"></div>
-      <p>正在加载个人信息...</p>
+      <p>{{ $t('profile.loading') }}</p>
     </div>
     <div v-else class="profile-card">
       <div class="avatar">{{ user.username?.[0]?.toUpperCase() || '?' }}</div>
       <h1>{{ user.username }}</h1>
       <div class="info-container">
         <div class="info-item">
-          <span class="label">邮箱</span>
+          <span class="label">{{ $t('profile.email') }}</span>
           <span class="value">{{ user.email }}</span>
         </div>
         <div class="info-item">
-          <span class="label">注册时间</span>
+          <span class="label">{{ $t('profile.registerDate') }}</span>
           <span class="value">{{ formatDate(user.createdAt) }}</span>
         </div>
         <div class="info-item">
-          <span class="label">照片</span>
-          <span class="value">{{ user.photoCount != 0 ? user.photoCount : '无照片' }}</span>
+          <span class="label">{{ $t('profile.photos') }}</span>
+          <span class="value">{{ user.photoCount != 0 ? user.photoCount : $t('profile.noPhotos') }}</span>
         </div>
         <div class="info-item">
-          <span class="label">相册</span>
-          <span class="value">{{ user.albumCount != 0 ? user.albumCount : '未创建' }}</span>
+          <span class="label">{{ $t('profile.albums') }}</span>
+          <span class="value">{{ user.albumCount != 0 ? user.albumCount : $t('profile.noAlbums') }}</span>
         </div>
       </div>
-      <button @click="handleLogout" class="md-button outlined">退出登录</button>
+      <button @click="handleLogout" class="md-button outlined">{{ $t('profile.logout') }}</button>
     </div>
   </div>
 </template>
@@ -55,12 +55,12 @@ export default {
         this.user = response.data;
         this.loading = false;
       } catch (error) {
-        console.error('获取用户信息失败:', error);
+        console.error(this.$t('profile.fetchError'), error);
         this.$router.push('/login');
       }
     },
     formatDate(dateStr) {
-      return new Date(dateStr).toLocaleString('zh-CN', {
+      return new Date(dateStr).toLocaleString(this.$i18n.locale, {
         year: 'numeric',
         month: 'long',
         day: 'numeric',

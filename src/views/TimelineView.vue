@@ -6,13 +6,13 @@
   <div class="timeline-container">
     <main class="timeline-content">
       <div v-if="loading" class="loading-container" v-loading="true">
-        <p>正在加载时间轴...</p>
+        <p>{{ $t('timeline.loading') }}</p>
       </div>
 
       <div v-else-if="error" class="error-message">
         <i class="fas fa-exclamation-circle"></i>
         <p>{{ error }}</p>
-        <button @click="fetchTimeline" class="retry-button">重试</button>
+        <button @click="fetchTimeline" class="retry-button">{{ $t('timeline.retry') }}</button>
       </div>
 
       <template v-else>
@@ -21,15 +21,15 @@
         <div v-else class="timeline">
           <div v-for="(yearGroup, yearIndex) in timelineGroups" :key="yearIndex" class="timeline-year">
             <h2 class="year-header">
-              {{ yearGroup.year }}年
-              <span class="year-photo-count">{{ getYearPhotoCount(yearGroup) }}张照片</span>
+              {{ yearGroup.year }}{{ $t('timeline.year') }}
+              <span class="year-photo-count">{{ getYearPhotoCount(yearGroup) }}{{ $t('timeline.photos') }}</span>
             </h2>
 
             <div v-for="(monthGroup, monthIndex) in yearGroup.months" :key="`${yearIndex}-${monthIndex}`"
               class="timeline-month">
               <h3 class="month-header">
-                {{ monthGroup.month }}月
-                <span class="month-photo-count">{{ monthGroup.photos.length }}张照片</span>
+                {{ monthGroup.month }}{{ $t('timeline.month') }}
+                <span class="month-photo-count">{{ monthGroup.photos.length }}{{ $t('timeline.photos') }}</span>
               </h3>
 
               <div class="photos-grid">
@@ -39,7 +39,7 @@
                      @click="showPhotoDetail(photo)">
                   <div class="photo-thumbnail">
                     <img :src="photo.thumbnailUrl || photo.url" 
-                         :alt="photo.title ?? '无标题'"
+                         :alt="photo.title ?? $t('timeline.noTitle')"
                          loading="lazy">
                   </div>
                 </div>
@@ -54,7 +54,7 @@
         @photo-deleted="handlePhotoDeleted" />
 
       <!-- 上传照片模态框 -->
-      <sf-modal v-model="showUploadModal" title="上传照片">
+      <sf-modal v-model="showUploadModal" :title="$t('timeline.uploadModal.title')">
         <photo-upload :showAlbumOption="true" @upload-success="handlePhotoUploaded" />
       </sf-modal>
     </main>
@@ -133,8 +133,8 @@ export default {
         // 将照片按年月分组
         this.groupPhotosByDate();
       } catch (error) {
-        console.error('获取照片失败:', error);
-        this.error = error.response?.data?.message || '加载时间轴失败，请重试';
+        console.error(this.$t('timeline.error.fetchFailed'), error);
+        this.error = error.response?.data?.message || this.$t('timeline.error.loadFailed');
       } finally {
         this.loading = false;
       }
@@ -192,9 +192,9 @@ export default {
     },
 
     startEditingPhoto(photo) {
-      console.log('编辑照片:', photo);
+      console.log(this.$t('timeline.editPhoto'), photo);
       // TODO: 实现编辑照片的功能
-      alert('编辑照片功能将在后续版本实现');
+      alert(this.$t('timeline.editPhotoComingSoon'));
     },
 
     handlePhotoDeleted(photoId) {
@@ -206,8 +206,8 @@ export default {
       this.fetchTimeline();
 
       this.$notify({
-        title: '上传成功',
-        message: `已成功上传 ${uploadedPhotos.length || 1} 张照片`,
+        title: this.$t('timeline.uploadSuccess.title'),
+        message: this.$t('timeline.uploadSuccess.message', { count: uploadedPhotos.length || 1 }),
         type: 'success'
       });
     },
@@ -224,8 +224,8 @@ export default {
         await photoService.deletePhoto(idToDelete);
 
         this.$notify({
-          title: '成功',
-          message: '照片已删除',
+          title: this.$t('timeline.deleteSuccess.title'),
+          message: this.$t('timeline.deleteSuccess.message'),
           type: 'success'
         });
 
@@ -238,10 +238,10 @@ export default {
         this.closePhotoDetail();
         this.showDeleteConfirm = false;
       } catch (error) {
-        console.error('删除照片失败:', error);
+        console.error(this.$t('timeline.error.deleteFailed'), error);
         this.$notify.error({
-          title: '删除失败',
-          message: error.response?.data?.message || '无法删除照片，请重试'
+          title: this.$t('timeline.error.deleteFailedTitle'),
+          message: error.response?.data?.message || this.$t('timeline.error.deleteFailedMessage')
         });
       }
     },

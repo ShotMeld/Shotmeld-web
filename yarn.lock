@@ -37,10 +37,10 @@
   resolved "https://mirrors.huaweicloud.com/repository/npm/@element-plus/icons-vue/-/icons-vue-2.3.1.tgz"
   integrity sha512-XxVUZv48RZAd87ucGS48jPf6pKu0yV5UCg9f4FFwtrYxXOwWuVJo6wOvSLKEoMQKjv8GsX/mhP6UsC1lRwbUWg==
 
-"@esbuild/win32-x64@0.25.4":
+"@esbuild/darwin-arm64@0.25.4":
   version "0.25.4"
-  resolved "https://registry.npmmirror.com/@esbuild/win32-x64/-/win32-x64-0.25.4.tgz"
-  integrity sha512-nOT2vZNw6hJ+z43oP1SPea/G/6AbN6X+bGNhNuq8NtRHy4wsMhw765IKLNmnjek7GvjWBYQ8Q5VBoYTFg9y1UQ==
+  resolved "https://registry.npmmirror.com/@esbuild/darwin-arm64/-/darwin-arm64-0.25.4.tgz"
+  integrity sha512-Y1giCfM4nlHDWEfSckMzeWNdQS31BQGs9/rouw6Ub91tkK79aIMTH3q9xHvzH8d0wDru5Ci0kWB8b3up/nl16g==
 
 "@floating-ui/core@^1.7.0":
   version "1.7.0"
@@ -67,6 +67,36 @@
   resolved "https://registry.npmmirror.com/@fortawesome/fontawesome-free/-/fontawesome-free-6.7.2.tgz"
   integrity sha512-JUOtgFW6k9u4Y+xeIaEiLr3+cjoUPiAuLXoyKOJSia6Duzb7pq+A76P9ZdPDoAoxHdHzq6gE9/jKBGXlZT8FbA==
 
+"@intlify/core-base@12.0.0-alpha.2":
+  version "12.0.0-alpha.2"
+  resolved "https://registry.npmjs.org/@intlify/core-base/-/core-base-12.0.0-alpha.2.tgz"
+  integrity sha512-sPWvQ1Z4Wyw9Kp8xqjAk2sMOeZ4pO7p/NL3Eol8l9a7iPyMTuHyJ2DZVbOBG6zDnCupvLAqnRMAT1LAgvx0QRQ==
+  dependencies:
+    "@intlify/message-compiler" "12.0.0-alpha.2"
+    "@intlify/shared" "12.0.0-alpha.2"
+
+"@intlify/message-compiler@12.0.0-alpha.2":
+  version "12.0.0-alpha.2"
+  resolved "https://registry.npmjs.org/@intlify/message-compiler/-/message-compiler-12.0.0-alpha.2.tgz"
+  integrity sha512-PD9C+oQbb7BF52hec0+vLnScaFkvnfX+R7zSbODYuRo/E2niAtGmHd0wPvEMsDhf9Z9b8f/qyDsVeZnD/ya9Ug==
+  dependencies:
+    "@intlify/shared" "12.0.0-alpha.2"
+    source-map-js "^1.0.2"
+
+"@intlify/shared@12.0.0-alpha.2":
+  version "12.0.0-alpha.2"
+  resolved "https://registry.npmjs.org/@intlify/shared/-/shared-12.0.0-alpha.2.tgz"
+  integrity sha512-P2DULVX9nz3y8zKNqLw9Es1aAgQ1JGC+kgpx5q7yLmrnAKkPR5MybQWoEhxanefNJgUY5ehsgo+GKif59SrncA==
+
+"@intlify/vue-i18n-core@12.0.0-alpha.2":
+  version "12.0.0-alpha.2"
+  resolved "https://registry.npmjs.org/@intlify/vue-i18n-core/-/vue-i18n-core-12.0.0-alpha.2.tgz"
+  integrity sha512-y1NPEcPbD8xqWGiaEREkA9WxxWbxmd8IurN176w39MenZKEf5P20rYyk0w4r718+w/9jjm0m5zR1ed6uMaZT2Q==
+  dependencies:
+    "@intlify/core-base" "12.0.0-alpha.2"
+    "@intlify/shared" "12.0.0-alpha.2"
+    "@vue/devtools-api" "^6.5.0"
+
 "@jridgewell/sourcemap-codec@^1.5.0":
   version "1.5.0"
   resolved "https://mirrors.huaweicloud.com/repository/npm/@jridgewell/sourcemap-codec/-/sourcemap-codec-1.5.0.tgz"
@@ -76,9 +106,6 @@
   version "2.11.7"
   resolved "https://mirrors.huaweicloud.com/repository/npm/@sxzz/popperjs-es/-/popperjs-es-2.11.7.tgz"
   integrity sha512-Ccy0NlLkzr0Ex2FKvh2X+OyERHXJ88XJ1MXtsI9y9fGexlaXaVTPzBCRBwIxFkORuOb+uBqeu+RqnpgYTEZRUQ==
-
-"@rollup/rollup-win32-x64-msvc@4.40.2":
-  version "4.40.2"
 
 "@types/estree@1.0.7":
   version "1.0.7"
@@ -149,7 +176,7 @@
     "@vue/compiler-dom" "3.5.14"
     "@vue/shared" "3.5.14"
 
-"@vue/devtools-api@^6.6.4":
+"@vue/devtools-api@^6.5.0", "@vue/devtools-api@^6.6.4":
   version "6.6.4"
   resolved "https://mirrors.huaweicloud.com/repository/npm/@vue/devtools-api/-/devtools-api-6.6.4.tgz"
   integrity sha512-sGhTPMuXqZ1rVOk32RylztWkfXTRhuS7vgAKv0zjqk8gbsHkJ7xfFf+jbySxt7tWObEJwyKaHMikV/WGDiQm8g==
@@ -425,6 +452,11 @@ form-data@^4.0.0:
     es-set-tostringtag "^2.1.0"
     mime-types "^2.1.12"
 
+fsevents@~2.3.2, fsevents@~2.3.3:
+  version "2.3.3"
+  resolved "https://registry.npmmirror.com/fsevents/-/fsevents-2.3.3.tgz"
+  integrity sha512-5xoDfX+fL7faATnagmWPpbFtwh/R77WmMMqqHGS65C3vvB0YHrgF+B1YmZ3441tMj5n63k0212XNoJwzlhffQw==
+
 function-bind@^1.1.2:
   version "1.1.2"
   resolved "https://mirrors.huaweicloud.com/repository/npm/function-bind/-/function-bind-1.1.2.tgz"
@@ -615,7 +647,7 @@ rollup@^4.34.9:
     "@rollup/rollup-win32-x64-msvc" "4.40.2"
     fsevents "~2.3.2"
 
-source-map-js@^1.2.1:
+source-map-js@^1.0.2, source-map-js@^1.2.1:
   version "1.2.1"
   resolved "https://mirrors.huaweicloud.com/repository/npm/source-map-js/-/source-map-js-1.2.1.tgz"
   integrity sha512-UXWMKhLOwVKb728IUtQPXxfYU+usdybtUrK/8uGE8CQMvrhOpwvzDBwj0QhSL7MQc7vIsISBG8VQ8+IDQxpfQA==
@@ -659,6 +691,16 @@ vue-demi@*:
   resolved "https://mirrors.huaweicloud.com/repository/npm/vue-demi/-/vue-demi-0.14.10.tgz"
   integrity sha512-nMZBOwuzabUO0nLgIcc6rycZEebF6eeUfaiQx9+WSk8e29IbLvPU9feI6tqW4kTo3hvoYAJkMh8n8D0fuISphg==
 
+vue-i18n@^12.0.0-alpha.2:
+  version "12.0.0-alpha.2"
+  resolved "https://registry.npmjs.org/vue-i18n/-/vue-i18n-12.0.0-alpha.2.tgz"
+  integrity sha512-ZSaZrDV/PhD4hLVybo84bkaNRnkGDF7GpI0Fcmn9Yj+2Kq5C3nE7I5iRbo+DiHyRGrwZ/IV1VP3naFAhcNJGsg==
+  dependencies:
+    "@intlify/core-base" "12.0.0-alpha.2"
+    "@intlify/shared" "12.0.0-alpha.2"
+    "@intlify/vue-i18n-core" "12.0.0-alpha.2"
+    "@vue/devtools-api" "^6.5.0"
+
 vue-router@^4.2.0:
   version "4.5.1"
   resolved "https://mirrors.huaweicloud.com/repository/npm/vue-router/-/vue-router-4.5.1.tgz"
@@ -666,7 +708,7 @@ vue-router@^4.2.0:
   dependencies:
     "@vue/devtools-api" "^6.6.4"
 
-"vue@^2.7.0 || ^3.5.11", "vue@^3.0.0-0 || ^2.6.0", vue@^3.2.0, vue@^3.2.25, vue@^3.4.0, vue@3.5.14:
+"vue@^2.7.0 || ^3.5.11", vue@^3.0.0, "vue@^3.0.0-0 || ^2.6.0", vue@^3.2.0, vue@^3.2.25, vue@^3.4.0, vue@3.5.14:
   version "3.5.14"
   resolved "https://mirrors.huaweicloud.com/repository/npm/vue/-/vue-3.5.14.tgz"
   integrity sha512-LbOm50/vZFG6Mhy6KscQYXZMQ0LMCC/y40HDJPPvGFQ+i/lUH+PJHR6C3assgOQiXdl6tAfsXHbXYVBZZu65ew==
