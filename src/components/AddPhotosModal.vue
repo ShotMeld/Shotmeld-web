@@ -14,6 +14,7 @@
     <!-- 模态框底部操作按钮 -->
     <div class="modal-footer">
       <sf-button type="secondary" @click="handleCancel">取消</sf-button>
+      <sf-button type="primary" icon="fas fa-cloud-upload-alt" @click="handleShowUploadModal">上传照片</sf-button>
       <sf-button 
         type="primary" 
         @click="handleAddSelectedPhotos" 
@@ -22,10 +23,20 @@
       </sf-button>
     </div>
   </sf-modal>
+
+  <!-- 上传照片模态框 -->
+  <sf-modal v-model="showUploadModal" title="上传照片到相册" size="default">
+    <photo-upload 
+      :albumId="albumId"
+      :showAlbumOption="false"
+      @upload-success="handlePhotoUploaded" 
+    />
+  </sf-modal>
 </template>
 
 <script>
 import PhotoSelector from './PhotoSelector.vue'
+import PhotoUpload from './PhotoUpload.vue'
 import SfModal from './ui/SfModal.vue'
 import SfButton from './ui/SfButton.vue'
 import { albumService } from '../api'
@@ -34,6 +45,7 @@ export default {
   name: 'AddPhotosModal',
   components: {
     PhotoSelector,
+    PhotoUpload,
     SfModal,
     SfButton
   },
@@ -55,7 +67,8 @@ export default {
   data() {
     return {
       selectedPhotoIds: [],
-      isAdding: false
+      isAdding: false,
+      showUploadModal: false
     }
   },
   computed: {
@@ -74,6 +87,7 @@ export default {
         // 每次打开模态框时重置状态
         this.selectedPhotoIds = []
         this.isAdding = false
+        this.showUploadModal = false
       }
     }
   },
@@ -116,6 +130,30 @@ export default {
       } finally {
         this.isAdding = false
       }
+    },
+    
+    handleShowUploadModal() {
+      this.showUploadModal = true
+    },
+    
+    handlePhotoUploaded(uploadedPhotos) {
+      this.showUploadModal = false
+      
+      // 通知父组件照片已上传并添加到相册
+      this.$emit('photos-added', {
+        type: 'uploaded',
+        photos: uploadedPhotos,
+        count: uploadedPhotos.length || 1
+      })
+      
+      this.$notify({
+        title: '上传成功',
+        message: `已成功上传 ${uploadedPhotos.length || 1} 张照片到相册`,
+        type: 'success'
+      })
+      
+      // 关闭主模态框
+      this.visible = false
     },
     
     handleCancel() {
