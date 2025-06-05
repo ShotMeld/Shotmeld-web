@@ -79,10 +79,10 @@ export default {
 .page-container {
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
   min-height: 100vh;
   background-color: #f8f9fa;
-  padding: 16px;
+  padding: 32px;
 }
 
 .profile-card {
