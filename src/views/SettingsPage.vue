@@ -131,7 +131,7 @@ export default {
 }
 
 h1 {
-  color: var(--text-primary);
+  color: var(--color-primary-light);
   font-size: 32px;
   font-weight: 600;
   margin-bottom: 8px;
@@ -161,11 +161,11 @@ h1 {
 
 .section-icon {
   font-size: 20px;
-  color: var(--primary);
+  color: var(--color-primary-light);
 }
 
 h2 {
-  color: var(--text-primary);
+  color: var(--color-primary-light);
   font-size: 20px;
   font-weight: 600;
   margin: 0;
@@ -212,9 +212,9 @@ h2 {
 }
 
 .settings-option.active {
-  color: var(--primary);
-  background: rgba(var(--primary-rgb), 0.08);
-  border-color: var(--primary);
+  color: var(--color-primary-light);
+  background: rgba(var(--color-primary-light), 0.08);
+  border-color: var(--color-primary-light);
 }
 
 .settings-option.active::after {

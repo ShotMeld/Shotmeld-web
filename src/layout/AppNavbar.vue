@@ -356,8 +356,8 @@ export default {
   font-weight: var(--font-weight-semibold);
   color: var(--text-primary);
   text-decoration: none;
-  font-family: "SF Pro Display", -apple-system, BlinkMacSystemFont, "Dancing Script", cursive;
-  font-weight: 600;
+  font-family: "Dancing Script",cursive;
+  font-weight: 400;
 }
 
 /* 主导航链接容器 */
@@ -527,7 +527,6 @@ export default {
   max-width: 320px;
   height: 100%;
   background-color: var(--bg-primary);
-  box-shadow: 0 0 30px rgba(0, 0, 0, 0.15);
   transform: translateX(-100%);
   transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
   z-index: 20;
