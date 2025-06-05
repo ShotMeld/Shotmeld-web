@@ -55,12 +55,21 @@
         </span>
       </div>
     </template>
+
+    <!-- 删除确认对话框 -->
+    <sf-delete-confirm-modal
+      v-model="showDeleteModal"
+      item-name="图片"
+      :count="selectedCount"
+      @confirm="confirmDeleteSelected"
+    />
   </sf-card>
 </template>
 
 <script>
 import SfCard from '@/components/ui/SfCard.vue'
 import SfButton from '@/components/ui/SfButton.vue'
+import SfDeleteConfirmModal from '@/components/ui/SfDeleteConfirmModal.vue'
 import DuplicateItem from './DuplicateItem.vue'
 
 export default {
@@ -68,6 +77,7 @@ export default {
   components: {
     SfCard,
     SfButton,
+    SfDeleteConfirmModal,
     DuplicateItem
   },
   props: {
@@ -84,10 +94,25 @@ export default {
       default: 95
     }
   },
-  emits: ['delete-photos'],
+  emits: ['delete-photos', 'selection-change'],
   data() {
     return {
-      selectedPhotos: []
+      selectedPhotos: [],
+      showDeleteModal: false // 控制删除确认对话框显示
+    }
+  },
+  watch: {
+    selectedPhotos: {
+      handler(newSelected) {
+        // 通知父组件选中状态变化
+        this.$emit('selection-change', {
+          groupIndex: this.groupIndex,
+          selectedCount: newSelected.length,
+          selectedPhotos: [...newSelected]
+        })
+      },
+      immediate: true,
+      deep: true
     }
   },
   computed: {
@@ -135,26 +160,40 @@ export default {
     clearSelection() {
       this.selectedPhotos = []
     },
+    smartSelect() {
+      // 智能推荐：保留体积最大的图片，选择其他图片删除
+      if (this.photos.length <= 1) return
+      
+      // 找到体积最大的图片
+      const largestPhoto = this.photos.reduce((largest, current) => {
+        const currentSize = current.fileSize || current.size || 0
+        const largestSize = largest.fileSize || largest.size || 0
+        
+        if (currentSize > largestSize) {
+          return current
+        } else if (currentSize === largestSize) {
+          // 如果体积相同，随机选择一张
+          return Math.random() > 0.5 ? current : largest
+        }
+        return largest
+      })
+      
+      // 选择除了最大体积之外的所有图片
+      this.selectedPhotos = this.photos.filter(photo => 
+        this.getPhotoId(photo) !== this.getPhotoId(largestPhoto)
+      )
+    },
     async deleteSelected() {
       if (this.selectedCount === 0) return
       
-      try {
-        // 使用Element Plus的确认对话框
-        await this.$confirm(
-          `确定要删除选中的 ${this.selectedCount} 张图片吗？此操作不可恢复。`,
-          '确认删除',
-          {
-            confirmButtonText: '确定删除',
-            cancelButtonText: '取消',
-            type: 'warning'
-          }
-        )
-        
-        this.$emit('delete-photos', this.selectedPhotos)
-        this.selectedPhotos = []
-      } catch (error) {
-        // 用户取消删除，不需要处理
-      }
+      // 显示删除确认对话框
+      this.showDeleteModal = true
+    },
+    
+    confirmDeleteSelected() {
+      // 确认删除选中的图片
+      this.$emit('delete-photos', this.selectedPhotos)
+      this.selectedPhotos = []
     }
   }
 }
@@ -193,8 +232,8 @@ export default {
 
 .photo-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: var(--spacing-md);
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: var(--spacing-lg);
   padding: var(--spacing-md) 0;
 }
 
@@ -222,8 +261,8 @@ export default {
   }
   
   .photo-grid {
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-    gap: var(--spacing-sm);
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: var(--spacing-md);
   }
   
   .group-stats {

@@ -1,17 +1,19 @@
 <template>
-  <div class="task-progress">
-    <div class="progress-header">
-      <h3>正在检测重复图片</h3>
-      <sf-button
-        type="text"
-        size="small"
-        @click="$emit('cancel')"
-        class="cancel-btn"
-      >
-        取消
-      </sf-button>
-    </div>
-
+  <sf-card class="task-progress" shadow="medium">
+    <template #header>
+      <div class="progress-header">
+        <h3>正在检测重复图片</h3>
+        <sf-button
+          type="text"
+          size="small"
+          @click="$emit('cancel')"
+          class="cancel-btn"
+        >
+          取消
+        </sf-button>
+      </div>
+    </template>
+    
     <div class="progress-content">
       <div class="progress-circle">
         <svg width="80" height="80" viewBox="0 0 80 80">
@@ -53,16 +55,18 @@
         </div>
       </div>
     </div>
-  </div>
+  </sf-card>
 </template>
 
 <script>
 import SfButton from '@/components/ui/SfButton.vue'
+import SfCard from '@/components/ui/SfCard.vue'
 
 export default {
   name: 'TaskProgress',
   components: {
-    SfButton
+    SfButton,
+    SfCard
   },
   props: {
     progress: {
@@ -97,23 +101,22 @@ export default {
 
 <style scoped>
 .task-progress {
-  background: var(--bg-secondary);
-  border-radius: var(--radius-large);
-  padding: var(--spacing-2xl);
   text-align: center;
+  max-width: 500px;
+  margin: 0 auto;
 }
 
 .progress-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: var(--spacing-xl);
 }
 
 .progress-header h3 {
   font-size: var(--font-size-lg);
   font-weight: var(--font-weight-medium);
   color: var(--text-primary);
+  margin: 0;
 }
 
 .cancel-btn {

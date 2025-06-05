@@ -40,11 +40,13 @@
       @cancel="cancelDetection"
     />
 
-    <div v-if="error" class="error-message">
-      <div class="error-icon">⚠️</div>
+    <sf-card v-if="error" class="error-message" shadow="small">
       <div class="error-content">
-        <h3>检测失败</h3>
-        <p>{{ error }}</p>
+        <div class="error-icon">⚠️</div>
+        <div class="error-text">
+          <h3>检测失败</h3>
+          <p>{{ error }}</p>
+        </div>
         <sf-button
           type="primary"
           size="small"
@@ -53,12 +55,13 @@
           重试
         </sf-button>
       </div>
-    </div>
+    </sf-card>
   </div>
 </template>
 
 <script>
 import SfButton from '@/components/ui/SfButton.vue'
+import SfCard from '@/components/ui/SfCard.vue'
 import TaskProgress from './TaskProgress.vue'
 import { duplicatePhotosAPI } from '@/api'
 
@@ -66,6 +69,7 @@ export default {
   name: 'DuplicateDetector',
   components: {
     SfButton,
+    SfCard,
     TaskProgress
   },
   emits: ['detection-complete', 'detection-start'],
@@ -195,13 +199,15 @@ export default {
 }
 
 .error-message {
+  margin-top: var(--spacing-lg);
+  background: var(--color-danger-subtle);
+}
+
+.error-content {
   display: flex;
   align-items: flex-start;
   gap: var(--spacing-md);
-  padding: var(--spacing-lg);
-  background: var(--color-danger-subtle);
-  border-radius: var(--radius-medium);
-  margin-top: var(--spacing-lg);
+  padding: var(--spacing-md);
 }
 
 .error-icon {
@@ -209,16 +215,20 @@ export default {
   flex-shrink: 0;
 }
 
-.error-content h3 {
+.error-text {
+  flex: 1;
+}
+
+.error-text h3 {
   font-size: var(--font-size-lg);
   font-weight: var(--font-weight-medium);
   color: var(--color-danger);
   margin-bottom: var(--spacing-xs);
 }
 
-.error-content p {
+.error-text p {
   color: var(--text-secondary);
-  margin-bottom: var(--spacing-md);
+  margin-bottom: 0;
   line-height: 1.4;
 }
 </style>

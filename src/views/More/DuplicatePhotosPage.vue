@@ -1,12 +1,5 @@
 <template>
   <div class="duplicate-photos-page">
-    <div class="page-header">
-      <h1>重复图片管理</h1>
-      <p class="page-description">
-        智能检测并管理重复的照片，释放存储空间，让您的图库更加整洁有序。
-      </p>
-    </div>
-
     <DuplicateDetector
       @detection-start="handleDetectionStart"
       @detection-complete="handleDetectionComplete"
@@ -14,9 +7,11 @@
 
     <DuplicateResults
       v-if="showResults"
+      ref="duplicateResults"
       :duplicate-groups="duplicateGroups"
       @restart="handleRestart"
       @delete-photos="handleDeletePhotos"
+      @smart-select="handleSmartSelect"
     />
   </div>
 </template>
@@ -59,6 +54,20 @@ export default {
     handleRestart() {
       this.showResults = false
       this.duplicateGroups = []
+    },
+
+    handleSmartSelect() {
+      // 触发所有重复组的智能选择
+      this.$nextTick(() => {
+        const duplicateResultsComponent = this.$refs.duplicateResults
+        if (duplicateResultsComponent && duplicateResultsComponent.$refs.duplicateGroups) {
+          duplicateResultsComponent.$refs.duplicateGroups.forEach(group => {
+            if (group.smartSelect) {
+              group.smartSelect()
+            }
+          })
+        }
+      })
     },
 
     async handleDeletePhotos(photos) {

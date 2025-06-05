@@ -55,6 +55,8 @@
         :group-index="index"
         :similarity="calculateSimilarity(group)"
         @delete-photos="handleDeletePhotos"
+        @selection-change="handleSelectionChange"
+        ref="duplicateGroups"
       />
     </div>
 
@@ -70,17 +72,27 @@
         重新检测
       </sf-button>
     </div>
+
+    <!-- 批量删除确认对话框 -->
+    <sf-delete-confirm-modal
+      v-model="showDeleteSelectedModal"
+      item-name="图片"
+      :count="totalSelected"
+      @confirm="confirmDeleteAllSelected"
+    />
   </div>
 </template>
 
 <script>
 import SfButton from '@/components/ui/SfButton.vue'
+import SfDeleteConfirmModal from '@/components/ui/SfDeleteConfirmModal.vue'
 import DuplicateGroup from './DuplicateGroup.vue'
 
 export default {
   name: 'DuplicateResults',
   components: {
     SfButton,
+    SfDeleteConfirmModal,
     DuplicateGroup
   },
   props: {
@@ -89,14 +101,31 @@ export default {
       default: () => []
     }
   },
-  emits: ['restart', 'delete-photos'],
+  emits: ['restart', 'delete-photos', 'smart-select'],
+  data() {
+    return {
+      groupSelections: {}, // 存储每个组的选中状态
+      showDeleteSelectedModal: false // 控制删除确认对话框显示
+    }
+  },
+  watch: {
+    duplicateGroups: {
+      handler() {
+        // 重复组数据变化时重置选中状态
+        this.groupSelections = {}
+      },
+      immediate: true
+    }
+  },
   computed: {
     totalDuplicates() {
       return this.duplicateGroups.reduce((total, group) => total + group.length, 0)
     },
     totalSelected() {
-      // 这里需要从子组件收集选中状态，暂时返回0
-      return 0
+      // 计算所有组的选中图片总数
+      return Object.values(this.groupSelections).reduce((total, group) => {
+        return total + (group.selectedCount || 0)
+      }, 0)
     },
     estimatedSpace() {
       // 估算可释放空间
@@ -115,38 +144,60 @@ export default {
     },
     
     selectSmartRecommendations() {
-      // 智能推荐选择策略：
-      // 1. 每组保留最大/最高质量的图片
-      // 2. 选择其他图片进行删除
+      // 智能推荐选择策略：每组保留体积最大的图片，选择其他图片进行删除
+      if (this.$refs.duplicateGroups) {
+        this.$refs.duplicateGroups.forEach(groupRef => {
+          if (groupRef.smartSelect) {
+            groupRef.smartSelect()
+          }
+        })
+      }
+      
       this.$message({
-        message: '智能推荐功能正在开发中，敬请期待！',
-        type: 'info'
+        message: '已应用智能推荐',
+        type: 'success'
       })
     },
     
     async deleteAllSelected() {
       if (this.totalSelected === 0) return
       
-      try {
-        await this.$confirm(
-          `确定要删除所有选中的图片吗？此操作不可恢复。`,
-          '批量删除确认',
-          {
-            confirmButtonText: '确定删除',
-            cancelButtonText: '取消',
-            type: 'warning'
+      // 显示删除确认对话框
+      this.showDeleteSelectedModal = true
+    },
+    
+    confirmDeleteAllSelected() {
+      // 收集所有选中的图片
+      const allSelectedPhotos = []
+      Object.values(this.groupSelections).forEach(group => {
+        if (group.selectedPhotos && group.selectedPhotos.length > 0) {
+          allSelectedPhotos.push(...group.selectedPhotos)
+        }
+      })
+      
+      // 触发删除
+      this.$emit('delete-photos', allSelectedPhotos)
+      
+      // 清除所有选择
+      if (this.$refs.duplicateGroups) {
+        this.$refs.duplicateGroups.forEach(groupRef => {
+          if (groupRef.clearSelection) {
+            groupRef.clearSelection()
           }
-        )
-        
-        // 处理批量删除逻辑
-        this.$emit('delete-photos', [])
-      } catch (error) {
-        // 用户取消删除，不需要处理
+        })
       }
     },
     
     handleDeletePhotos(photoIds) {
       this.$emit('delete-photos', photoIds)
+    },
+    
+    handleSelectionChange(selectionData) {
+      // 更新对应组的选中状态
+      this.groupSelections[selectionData.groupIndex] = {
+        selectedCount: selectionData.selectedCount,
+        selectedPhotos: selectionData.selectedPhotos
+      }
     }
   }
 }
