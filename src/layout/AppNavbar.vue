@@ -356,8 +356,8 @@ export default {
   font-weight: var(--font-weight-semibold);
   color: var(--text-primary);
   text-decoration: none;
-  font-family: "SF Pro Display", -apple-system, BlinkMacSystemFont, "Dancing Script", cursive;
-  font-weight: 600;
+  font-family: "Dancing Script",cursive;
+  font-weight: 400;
 }
 
 /* 主导航链接容器 */

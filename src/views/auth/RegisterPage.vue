@@ -257,7 +257,7 @@ export default {
   color: var(--text-primary);
   font-size: var(--font-size-3xl);
   margin-bottom: var(--spacing-md);
-  font-weight: 600;
+  font-weight: 400;
   text-align: center;
   font-family: "Dancing Script", cursive;
 }
