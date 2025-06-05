@@ -1,0 +1,224 @@
+<template>
+  <div class="duplicate-detector">
+    <div class="detector-header">
+      <h2>重复图片检测</h2>
+      <p class="detector-description">
+        扫描您的图库，找出重复的照片并帮您整理空间
+      </p>
+    </div>
+
+    <div class="detector-actions">
+      <sf-button
+        v-if="!isDetecting && !hasResults"
+        type="primary"
+        size="large"
+        @click="startDetection"
+        :loading="isStarting"
+      >
+        <template #icon>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M21 21L16.514 16.506M19 10.5C19 15.194 15.194 19 10.5 19S2 15.194 2 10.5 5.806 2 10.5 2 19 5.806 19 10.5Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </template>
+        开始检测重复图片
+      </sf-button>
+
+      <sf-button
+        v-if="hasResults && !isDetecting"
+        type="secondary"
+        @click="restartDetection"
+        :loading="isStarting"
+      >
+        重新检测
+      </sf-button>
+    </div>
+
+    <TaskProgress
+      v-if="isDetecting"
+      :progress="progress"
+      :status="taskStatus"
+      @cancel="cancelDetection"
+    />
+
+    <div v-if="error" class="error-message">
+      <div class="error-icon">⚠️</div>
+      <div class="error-content">
+        <h3>检测失败</h3>
+        <p>{{ error }}</p>
+        <sf-button
+          type="primary"
+          size="small"
+          @click="clearError"
+        >
+          重试
+        </sf-button>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+import SfButton from '@/components/ui/SfButton.vue'
+import TaskProgress from './TaskProgress.vue'
+import { duplicatePhotosAPI } from '@/api'
+
+export default {
+  name: 'DuplicateDetector',
+  components: {
+    SfButton,
+    TaskProgress
+  },
+  emits: ['detection-complete', 'detection-start'],
+  data() {
+    return {
+      isDetecting: false,
+      isStarting: false,
+      hasResults: false,
+      progress: 0,
+      taskStatus: 'pending',
+      taskId: null,
+      error: null,
+      pollInterval: null
+    }
+  },
+  methods: {
+    async startDetection() {
+      try {
+        this.isStarting = true
+        this.error = null
+        
+        const response = await duplicatePhotosAPI.startDetection()
+        this.taskId = response.taskId
+        
+        this.isDetecting = true
+        this.hasResults = false
+        this.progress = 0
+        this.taskStatus = 'pending'
+        
+        this.$emit('detection-start')
+        this.startPolling()
+        
+      } catch (error) {
+        this.error = error.response?.data?.message || '启动检测失败，请重试'
+      } finally {
+        this.isStarting = false
+      }
+    },
+
+    async restartDetection() {
+      this.hasResults = false
+      await this.startDetection()
+    },
+
+    startPolling() {
+      this.pollInterval = setInterval(async () => {
+        try {
+          const status = await duplicatePhotosAPI.getTaskStatus(this.taskId)
+          
+          this.progress = status.progress
+          this.taskStatus = status.status
+          
+          if (status.status === 'completed') {
+            this.isDetecting = false
+            this.hasResults = true
+            this.$emit('detection-complete', status.result)
+            this.stopPolling()
+          } else if (status.status === 'failed') {
+            this.isDetecting = false
+            this.error = status.error?.message || '检测过程中发生错误'
+            this.stopPolling()
+          }
+        } catch (error) {
+          this.error = '获取检测状态失败'
+          this.isDetecting = false
+          this.stopPolling()
+        }
+      }, 2000)
+    },
+
+    stopPolling() {
+      if (this.pollInterval) {
+        clearInterval(this.pollInterval)
+        this.pollInterval = null
+      }
+    },
+
+    cancelDetection() {
+      this.isDetecting = false
+      this.stopPolling()
+    },
+
+    clearError() {
+      this.error = null
+    }
+  },
+
+  beforeUnmount() {
+    this.stopPolling()
+  }
+}
+</script>
+
+<style scoped>
+.duplicate-detector {
+  background: var(--bg-primary);
+  border-radius: var(--radius-large);
+  padding: var(--spacing-2xl);
+  margin-bottom: var(--spacing-xl);
+  border: var(--border-width) solid var(--border-color);
+}
+
+.detector-header {
+  text-align: center;
+  margin-bottom: var(--spacing-2xl);
+}
+
+.detector-header h2 {
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+  margin-bottom: var(--spacing-sm);
+}
+
+.detector-description {
+  font-size: var(--font-size-base);
+  color: var(--text-secondary);
+  line-height: 1.5;
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.detector-actions {
+  display: flex;
+  justify-content: center;
+  gap: var(--spacing-md);
+}
+
+.error-message {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-md);
+  padding: var(--spacing-lg);
+  background: var(--color-danger-subtle);
+  border-radius: var(--radius-medium);
+  margin-top: var(--spacing-lg);
+}
+
+.error-icon {
+  font-size: var(--font-size-xl);
+  flex-shrink: 0;
+}
+
+.error-content h3 {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-danger);
+  margin-bottom: var(--spacing-xs);
+}
+
+.error-content p {
+  color: var(--text-secondary);
+  margin-bottom: var(--spacing-md);
+  line-height: 1.4;
+}
+</style>

@@ -1,0 +1,5 @@
+export { default as DuplicateDetector } from './DuplicateDetector.vue'
+export { default as TaskProgress } from './TaskProgress.vue'
+export { default as DuplicateGroup } from './DuplicateGroup.vue'
+export { default as DuplicateItem } from './DuplicateItem.vue'
+export { default as DuplicateResults } from './DuplicateResults.vue'

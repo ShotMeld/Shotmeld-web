@@ -265,4 +265,29 @@ export const albumService = {
   }
 };
 
+// 重复图片检测API
+export const duplicatePhotosAPI = {
+  // 启动重复图片检测任务
+  async startDetection() {
+    try {
+      const response = await apiClient.get(API_ENDPOINTS.PHOTOS_TOOL.DUPLICATES);
+      return response.data;
+    } catch (error) {
+      console.error('启动重复图片检测失败:', error);
+      throw error;
+    }
+  },
+
+  // 获取任务状态
+  async getTaskStatus(taskId) {
+    try {
+      const response = await apiClient.get(API_ENDPOINTS.PHOTOS_TOOL.TASK_STATUS(taskId));
+      return response.data;
+    } catch (error) {
+      console.error('获取任务状态失败:', error);
+      throw error;
+    }
+  }
+};
+
 export default apiClient;
