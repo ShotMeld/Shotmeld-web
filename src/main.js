@@ -38,6 +38,7 @@ app.use(ElementPlus)
 app.use(SfUI)
 app.use(router)
 app.use(pinia)
+app.use(i18n)
 
 // 配置通知组件
 configureNotification(app)
@@ -48,7 +49,5 @@ themeStore.initTheme()
 
 // 修改网站标题
 document.title = 'ShotMeld - 照片管理系统'
-
-app.use(i18n)
 
 app.mount('#app')

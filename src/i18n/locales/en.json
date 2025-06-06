@@ -221,7 +221,13 @@
         "delete": "Delete",
         "addToAlbum": "Add to Album"
       }
-    }
+    },
+    "noPhotos": {
+      "message": "",
+      "uploadButton": ""
+    },
+    "noTitle": "",
+    "unknownDate": ""
   },
   "navbar": {
     "menu": {
@@ -459,6 +465,7 @@
       "scanning": "Scanning...",
       "progress": "Progress: {percent}%",
       "status": {
+        "pending": "Pending...",
         "preparing": "Preparing...",
         "scanning": "Scanning photos...",
         "analyzing": "Analyzing results...",
@@ -470,17 +477,26 @@
       "title": "Scan Results",
       "totalGroups": "Found {count} groups of duplicate photos",
       "noDuplicates": "No duplicate photos found",
+      "noDuplicatesDescription": "No duplicate photos were found in your photo library.",
+      "summary": {
+        "groups": "duplicate groups",
+        "duplicates": "duplicate photos",
+        "space": "space to free up"
+      },
       "actions": {
         "selectAll": "Select All",
         "deselectAll": "Deselect All",
         "deleteSelected": "Delete Selected",
-        "keepSelected": "Keep Selected"
+        "keepSelected": "Keep Selected",
+        "smartRecommendations": "Smart Recommendations",
+        "restart": "Restart Scan"
       },
       "confirm": {
         "delete": {
           "title": "Confirm Delete",
           "message": "Are you sure you want to delete {count} selected photos?",
-          "warning": "This action cannot be undone"
+          "warning": "This action cannot be undone",
+          "itemName": "duplicate photos"
         }
       },
       "success": {

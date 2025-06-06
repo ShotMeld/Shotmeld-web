@@ -465,6 +465,7 @@
       "scanning": "正在扫描...",
       "progress": "扫描进度：{percent}%",
       "status": {
+        "pending": "等待中...",
         "preparing": "准备中...",
         "scanning": "正在扫描照片...",
         "analyzing": "正在分析结果...",
@@ -476,17 +477,26 @@
       "title": "扫描结果",
       "totalGroups": "共发现 {count} 组重复照片",
       "noDuplicates": "未发现重复照片",
+      "noDuplicatesDescription": "您的照片库中没有发现重复的照片。",
+      "summary": {
+        "groups": "组重复照片",
+        "duplicates": "张重复照片",
+        "space": "可释放空间"
+      },
       "actions": {
         "selectAll": "全选",
         "deselectAll": "取消全选",
         "deleteSelected": "删除选中",
-        "keepSelected": "保留选中"
+        "keepSelected": "保留选中",
+        "smartRecommendations": "智能推荐选择",
+        "restart": "重新扫描"
       },
       "confirm": {
         "delete": {
           "title": "确认删除",
           "message": "确定要删除选中的 {count} 张照片吗？",
-          "warning": "此操作无法撤销"
+          "warning": "此操作无法撤销",
+          "itemName": "重复照片"
         }
       },
       "success": {
