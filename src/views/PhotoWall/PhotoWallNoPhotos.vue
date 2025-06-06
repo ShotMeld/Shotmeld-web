@@ -5,19 +5,24 @@
 <template>
   <div class="no-photos">
     <i class="fas fa-image no-photos-icon"></i>
-    <p>没有照片。上传一些照片开始使用吧！</p>
+    <p>{{ $t('photoWall.noPhotos.message') }}</p>
     <SfButton @click="$emit('showUploadModal')" type="primary" rounded>
       <template #prefix>
         <i class="fas fa-cloud-upload-alt"></i>
       </template>
-      上传照片
+      {{ $t('photoWall.noPhotos.uploadButton') }}
     </SfButton>
   </div>
 </template>
 
 <script>
+import { SfButton } from '../../components/ui';
+
 export default {
-  name: 'PhotoWallNoPhotos'
+  name: 'PhotoWallNoPhotos',
+  components: {
+    SfButton
+  }
 };
 </script>
 

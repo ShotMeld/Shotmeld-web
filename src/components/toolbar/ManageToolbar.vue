@@ -7,14 +7,14 @@
   <div class="manage-toolbar" :class="{ 'immediate-hide': shouldHideImmediately }">
     <div class="manage-toolbar-left">
       <SfButton type="primary" size="small" @click="selectAll" class="toolbar-btn">
-        全选
+        {{ $t('manageToolbar.selectAll') }}
       </SfButton>
       <SfButton type="primary" size="small" @click="deselectAll" class="toolbar-btn"
         :disabled="selectedItems.length === 0">
-        取消全选
+        {{ $t('manageToolbar.deselectAll') }}
       </SfButton>
       <span class="selected-count" v-if="selectedItems.length > 0">
-        已选择 {{ selectedItems.length }} {{ itemUnit }}
+        {{ $t('manageToolbar.selectedCount', { count: selectedItems.length, unit: itemUnit }) }}
       </span>
     </div>
     <div class="manage-toolbar-right">
@@ -26,7 +26,7 @@
         </SfButton>
       </template>
       <SfButton type="secondary" size="small" @click="exitManageMode" class="toolbar-btn close-btn">
-        <i class="fas fa-times"></i> 关闭
+        <i class="fas fa-times"></i> {{ $t('manageToolbar.close') }}
       </SfButton>
     </div>
   </div>
@@ -49,7 +49,9 @@ export default {
     // 项目单位名称，如"张照片"、"个相册"等
     itemUnit: {
       type: String,
-      default: '项'
+      default() {
+        return this.$t('manageToolbar.defaultUnit')
+      }
     },
     // 操作按钮配置
     actions: {

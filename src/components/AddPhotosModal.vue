@@ -4,7 +4,7 @@
 -->
 
 <template>
-  <sf-modal v-model="visible" title="添加照片" size="default" class="add-photos-modal">
+  <sf-modal v-model="visible" :title="$t('addPhotosModal.title')" size="default" class="add-photos-modal">
     <photo-selector 
       :albumId="albumId"
       :existingPhotoIds="existingPhotoIds"
@@ -13,19 +13,19 @@
     
     <!-- 模态框底部操作按钮 -->
     <div class="modal-footer">
-      <sf-button type="secondary" @click="handleCancel">取消</sf-button>
-      <sf-button type="primary" icon="fas fa-cloud-upload-alt" @click="handleShowUploadModal">上传照片</sf-button>
+      <sf-button type="secondary" @click="handleCancel">{{ $t('addPhotosModal.cancel') }}</sf-button>
+      <sf-button type="primary" icon="fas fa-cloud-upload-alt" @click="handleShowUploadModal">{{ $t('addPhotosModal.upload') }}</sf-button>
       <sf-button 
         type="primary" 
         @click="handleAddSelectedPhotos" 
         :disabled="selectedPhotoIds.length === 0 || isAdding">
-        {{ isAdding ? '添加中...' : (selectedPhotoIds.length > 0 ? `添加 ${selectedPhotoIds.length} 张照片` : '添加到相册') }}
+        {{ isAdding ? $t('addPhotosModal.adding') : (selectedPhotoIds.length > 0 ? $t('addPhotosModal.addCount', { count: selectedPhotoIds.length }) : $t('addPhotosModal.addToAlbum')) }}
       </sf-button>
     </div>
   </sf-modal>
 
   <!-- 上传照片模态框 -->
-  <sf-modal v-model="showUploadModal" title="上传照片到相册" size="default">
+  <sf-modal v-model="showUploadModal" :title="$t('addPhotosModal.uploadTitle')" size="default">
     <photo-upload 
       :albumId="albumId"
       :showAlbumOption="false"
@@ -106,8 +106,8 @@ export default {
         const result = await albumService.addPhotosToAlbum(this.albumId, this.selectedPhotoIds)
         
         this.$notify({
-          title: '成功',
-          message: `已将 ${this.selectedPhotoIds.length} 张照片添加到相册`,
+          title: this.$t('addPhotosModal.success'),
+          message: this.$t('addPhotosModal.addSuccess', { count: this.selectedPhotoIds.length }),
           type: 'success'
         })
         
@@ -124,8 +124,8 @@ export default {
       } catch (error) {
         console.error('添加照片到相册失败:', error)
         this.$notify.error({
-          title: '添加失败',
-          message: error.response?.data?.message || '无法添加照片到相册，请重试'
+          title: this.$t('addPhotosModal.addFailed'),
+          message: error.response?.data?.message || this.$t('addPhotosModal.addFailedMessage')
         })
       } finally {
         this.isAdding = false
@@ -147,8 +147,8 @@ export default {
       })
       
       this.$notify({
-        title: '上传成功',
-        message: `已成功上传 ${uploadedPhotos.length || 1} 张照片到相册`,
+        title: this.$t('addPhotosModal.success'),
+        message: this.$t('addPhotosModal.uploadSuccess', { count: uploadedPhotos.length || 1 }),
         type: 'success'
       })
       

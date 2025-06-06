@@ -6,7 +6,7 @@
   <div class="photo-wall-toolbar-container toolbar-visible">
     <ManageToolbar
       :selectedItems="selectedPhotos"
-      itemUnit="张照片"
+      :itemUnit="$t('photoWall.manageToolbar.itemUnit')"
       :actions="toolbarActions"
       @select-all="$emit('select-all')"
       @deselect-all="$emit('deselect-all')"
@@ -35,14 +35,14 @@ export default {
     toolbarActions() {
       return [
         {
-          label: '删除',
+          label: this.$t('photoWall.manageToolbar.actions.delete'),
           event: 'show-delete-selected',
           icon: 'fas fa-trash',
           type: 'danger',
           requireSelection: true
         },
         {
-          label: '加入相册',
+          label: this.$t('photoWall.manageToolbar.actions.addToAlbum'),
           event: 'show-add-to-album',
           icon: 'fas fa-folder-plus',
           type: 'primary',

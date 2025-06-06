@@ -41,7 +41,7 @@ export default {
     formatDate(dateString) {
       if (!dateString) return this.$t('photoDetail.info.unknownDate')
       const date = new Date(dateString)
-      return date.toLocaleDateString('zh-CN', {
+      return date.toLocaleDateString(this.$i18n.locale, {
         year: 'numeric',
         month: '2-digit',
         day: '2-digit',

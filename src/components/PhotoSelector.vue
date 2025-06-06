@@ -10,8 +10,8 @@
                 <div class="no-photos-icon">
                     <i class="fas fa-images"></i>
                 </div>
-                <p class="no-photos-text">暂无照片可选择</p>
-                <p class="no-photos-hint">请先上传一些照片到图库</p>
+                <p class="no-photos-text">{{ $t('photoSelector.noPhotos.title') }}</p>
+                <p class="no-photos-hint">{{ $t('photoSelector.noPhotos.hint') }}</p>
             </div>
             <div v-else class="photo-grid">
                 <div v-for="photo in photos" :key="photo.id" class="photo-item" :class="{
@@ -20,13 +20,13 @@
                     'selectable': !isPhotoInAlbum(photo.id)
                 }" @click="toggleSelection(photo.id)">
                     <div class="photo-thumbnail">
-                        <img :src="photo.thumbnailUrl || photo.url" :alt="photo.title || '照片'" loading="lazy" />
+                        <img :src="photo.thumbnailUrl || photo.url" :alt="photo.title || $t('photoSelector.photo.unknownDate')" loading="lazy" />
                         <div v-if="isSelected(photo.id)" class="selection-indicator selected">
                             <i class="fas fa-check"></i>
                         </div>
                         <div v-if="isPhotoInAlbum(photo.id)" class="in-album-badge">
                             <i class="fas fa-folder"></i>
-                            <span>已添加</span>
+                            <span>{{ $t('photoSelector.photo.inAlbum') }}</span>
                         </div>
                     </div>
                 </div>
@@ -37,23 +37,21 @@
             <div class="loading-spinner">
                 <div class="spinner"></div>
             </div>
-            <p class="loading-text">加载照片中...</p>
+            <p class="loading-text">{{ $t('photoSelector.loading') }}</p>
         </div>
 
         <div class="selector-footer" v-if="totalPages > 1">
             <div class="pagination">
                 <button @click="goToPage(currentPage - 1)" :disabled="currentPage <= 1" class="page-btn prev-btn">
                     <i class="fas fa-chevron-left"></i>
-                    上一页
+                    {{ $t('photoSelector.pagination.prev') }}
                 </button>
                 <div class="page-info">
-                    <span class="current-page">{{ currentPage }}</span>
-                    <span class="separator">/</span>
-                    <span class="total-pages">{{ totalPages }}</span>
+                    {{ $t('photoSelector.pagination.pageInfo', { current: currentPage, total: totalPages }) }}
                 </div>
                 <button @click="goToPage(currentPage + 1)" :disabled="currentPage >= totalPages"
                     class="page-btn next-btn">
-                    下一页
+                    {{ $t('photoSelector.pagination.next') }}
                     <i class="fas fa-chevron-right"></i>
                 </button>
             </div>
@@ -112,8 +110,8 @@ export default {
             } catch (error) {
                 console.error('获取照片列表失败:', error)
                 this.$notify?.error({
-                    title: '加载失败',
-                    message: '无法加载照片列表，请重试'
+                    title: this.$t('photoSelector.error.loadFailed'),
+                    message: this.$t('photoSelector.error.loadFailedMessage')
                 })
             } finally {
                 this.loading = false
@@ -156,9 +154,9 @@ export default {
         },
 
         formatDate(dateString) {
-            if (!dateString) return '未知日期'
+            if (!dateString) return this.$t('photoSelector.photo.unknownDate')
             const date = new Date(dateString)
-            return date.toLocaleDateString('zh-CN', {
+            return date.toLocaleDateString(this.$i18n.locale, {
                 year: 'numeric',
                 month: '2-digit',
                 day: '2-digit'

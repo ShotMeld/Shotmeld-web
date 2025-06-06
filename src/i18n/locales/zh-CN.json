@@ -160,6 +160,12 @@
         "title": "分享失败",
         "message": "无法创建分享链接"
       }
+    },
+    "tags": {
+      "title": "标签"
+    },
+    "albums": {
+      "title": "相册"
     }
   },
   "photoWall": {
@@ -186,7 +192,41 @@
       }
     },
     "error": {
-      "searchFailed": "搜索照片失败"
+      "searchFailed": "搜索照片失败",
+      "fetchFailed": "获取照片列表失败",
+      "fetchFailedMessage": "无法加载照片列表，请重试",
+      "fetchAlbumsFailed": "获取相册列表失败",
+      "deleteFailed": "删除失败",
+      "deleteFailedMessage": "无法删除照片，请重试",
+      "addToAlbumFailed": "添加照片到相册失败:",
+      "operationFailed": "操作失败",
+      "addToAlbumFailedMessage": "无法添加照片到相册，请重试"
+    },
+    "defaultUser": "用户",
+    "uploadModal": {
+      "title": "上传照片"
+    },
+    "createAlbum": {
+      "title": "创建相册"
+    },
+    "deleteConfirm": {
+      "itemName": "照片"
+    },
+    "success": "成功",
+    "addToAlbumSuccess": "已将 {count} 张照片添加到相册",
+    "deleteSuccess": "已删除 {count} 张照片",
+    "noTitle": "无标题",
+    "unknownDate": "未知日期",
+    "noPhotos": {
+      "message": "没有照片。上传一些照片开始使用吧！",
+      "uploadButton": "上传照片"
+    },
+    "manageToolbar": {
+      "itemUnit": "张照片",
+      "actions": {
+        "delete": "删除",
+        "addToAlbum": "加入相册"
+      }
     }
   },
   "navbar": {
@@ -260,6 +300,73 @@
         "passwordLength": "密码至少需要8个字符",
         "registerFailed": "注册失败，请重试"
       }
+    }
+  },
+  "manageToolbar": {
+    "selectAll": "全选",
+    "deselectAll": "取消全选",
+    "selectedCount": "已选择 {count} {unit}",
+    "close": "关闭",
+    "defaultUnit": "项"
+  },
+  "photoUpload": {
+    "title": "上传照片",
+    "dragText": "拖拽文件到此处或",
+    "clickToUpload": "点击上传",
+    "selectedFiles": "已选择 {count} 个文件",
+    "clear": "清空",
+    "uploading": "正在上传...",
+    "uploadingWithProgress": "正在上传... {percent}%",
+    "uploadComplete": "上传完成",
+    "startUpload": "开始上传",
+    "addToAlbum": "添加到相册:",
+    "selectAlbum": "选择相册",
+    "uploadSuccess": "已成功上传 {count} 张照片",
+    "uploadWarning": "请先选择要上传的文件",
+    "preview": "预览",
+    "fileSize": {
+      "b": "{size}B",
+      "kb": "{size}KB",
+      "mb": "{size}MB"
+    },
+    "error": {
+      "fetchAlbumsFailed": "获取相册列表失败:",
+      "uploadFailed": "上传失败",
+      "uploadFailedMessage": "上传失败，请重试"
+    }
+  },
+  "addPhotosModal": {
+    "title": "添加照片",
+    "uploadTitle": "上传照片",
+    "cancel": "取消",
+    "upload": "上传",
+    "adding": "正在添加...",
+    "addCount": "添加 {count} 张照片",
+    "addToAlbum": "添加到相册",
+    "success": "成功",
+    "addSuccess": "已成功添加 {count} 张照片",
+    "addFailed": "添加失败",
+    "addFailedMessage": "添加照片失败，请重试",
+    "uploadSuccess": "已成功上传 {count} 张照片"
+  },
+  "photoSelector": {
+    "noPhotos": {
+      "title": "暂无照片",
+      "hint": "上传照片后即可在此处查看"
+    },
+    "loading": "正在加载照片...",
+    "photo": {
+      "unknownDate": "未知日期",
+      "inAlbum": "已在相册中"
+    },
+    "pagination": {
+      "prev": "上一页",
+      "next": "下一页",
+      "pageInfo": "第 {current} 页，共 {total} 页"
+    },
+    "error": {
+      "loadFailed": "加载失败",
+      "loadFailedMessage": "获取照片列表失败，请重试"
     }
   }
 }

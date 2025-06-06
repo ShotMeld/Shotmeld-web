@@ -132,6 +132,12 @@
         "title": "Share Failed",
         "message": "Unable to create share link"
       }
+    },
+    "tags": {
+      "title": "Tags"
+    },
+    "albums": {
+      "title": "Albums"
     }
   },
   "timeline": {
@@ -186,7 +192,35 @@
       }
     },
     "error": {
-      "searchFailed": "Failed to search photos"
+      "searchFailed": "Failed to search photos",
+      "fetchFailed": "Failed to fetch photos",
+      "fetchFailedMessage": "Unable to load photos, please try again",
+      "fetchAlbumsFailed": "Failed to fetch albums",
+      "deleteFailed": "Delete Failed",
+      "deleteFailedMessage": "Unable to delete photo, please try again",
+      "addToAlbumFailed": "Failed to add photos to album:",
+      "operationFailed": "Operation Failed",
+      "addToAlbumFailedMessage": "Unable to add photos to album, please try again"
+    },
+    "defaultUser": "User",
+    "uploadModal": {
+      "title": "Upload Photos"
+    },
+    "createAlbum": {
+      "title": "Create Album"
+    },
+    "deleteConfirm": {
+      "itemName": "photos"
+    },
+    "success": "Success",
+    "addToAlbumSuccess": "Added {count} photos to album",
+    "deleteSuccess": "Deleted {count} photos",
+    "manageToolbar": {
+      "itemUnit": "photos",
+      "actions": {
+        "delete": "Delete",
+        "addToAlbum": "Add to Album"
+      }
     }
   },
   "navbar": {
@@ -260,6 +294,73 @@
         "passwordLength": "Password must be at least 8 characters",
         "registerFailed": "Registration failed, please try again"
       }
+    }
+  },
+  "manageToolbar": {
+    "selectAll": "Select All",
+    "deselectAll": "Deselect All",
+    "selectedCount": "Selected {count} {unit}",
+    "close": "Close",
+    "defaultUnit": "items"
+  },
+  "photoUpload": {
+    "title": "Upload Photos",
+    "dragText": "Drag files here or",
+    "clickToUpload": "click to upload",
+    "selectedFiles": "Selected {count} files",
+    "clear": "Clear",
+    "uploading": "Uploading...",
+    "uploadingWithProgress": "Uploading... {percent}%",
+    "uploadComplete": "Upload Complete",
+    "startUpload": "Start Upload",
+    "addToAlbum": "Add to Album:",
+    "selectAlbum": "Select Album",
+    "uploadSuccess": "Successfully uploaded {count} photos",
+    "uploadWarning": "Please select files to upload first",
+    "preview": "Preview",
+    "fileSize": {
+      "b": "{size}B",
+      "kb": "{size}KB",
+      "mb": "{size}MB"
+    },
+    "error": {
+      "fetchAlbumsFailed": "Failed to fetch albums:",
+      "uploadFailed": "Upload Failed",
+      "uploadFailedMessage": "Upload failed, please try again"
+    }
+  },
+  "addPhotosModal": {
+    "title": "Add Photos",
+    "uploadTitle": "Upload Photos to Album",
+    "cancel": "Cancel",
+    "upload": "Upload Photos",
+    "addToAlbum": "Add to Album",
+    "adding": "Adding...",
+    "addCount": "Add {count} Photos",
+    "success": "Success",
+    "addSuccess": "Added {count} photos to album",
+    "uploadSuccess": "Successfully uploaded {count} photos to album",
+    "addFailed": "Add Failed",
+    "addFailedMessage": "Unable to add photos to album, please try again"
+  },
+  "photoSelector": {
+    "noPhotos": {
+      "title": "No Photos",
+      "hint": "Upload photos to view them here"
+    },
+    "loading": "Loading photos...",
+    "photo": {
+      "unknownDate": "Unknown Date",
+      "inAlbum": "In Album"
+    },
+    "pagination": {
+      "prev": "Previous",
+      "next": "Next",
+      "pageInfo": "Page {current} of {total}"
+    },
+    "error": {
+      "loadFailed": "Load Failed",
+      "loadFailedMessage": "Failed to load photo list, please try again"
     }
   }
 }

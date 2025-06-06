@@ -14,7 +14,7 @@
           shadow="small" 
           @click="handleCardClick(photo)">
           <div class="photo-thumbnail">
-            <img :src="photo.thumbnailUrl || photo.url" :alt="photo.title" loading="lazy" />
+            <img :src="photo.thumbnailUrl || photo.url" :alt="photo.title || $t('photoWall.noTitle')" loading="lazy" />
             <div v-if="isManageMode" class="photo-select-overlay" @click.stop="toggleSelect(photo.id)">
               <div class="select-checkbox" :class="{ 'selected': isSelected(photo.id) }">
                 <i v-if="isSelected(photo.id)" class="fas fa-check"></i>
@@ -22,7 +22,7 @@
             </div>
           </div>
           <div class="photo-info">
-            <h3 class="photo-title">{{ photo.title || '无标题' }}</h3>
+            <h3 class="photo-title">{{ photo.title || $t('photoWall.noTitle') }}</h3>
             <p class="photo-date">{{ formatDate(photo.takenAt) }}</p>
           </div>
         </SfCard>
@@ -57,9 +57,9 @@ export default {
   emits: ['openPhotoDetail', 'showUploadModal', 'toggleSelect'],
   methods: {
     formatDate(dateString) {
-      if (!dateString) return '未知日期';
+      if (!dateString) return this.$t('photoWall.unknownDate');
       const date = new Date(dateString);
-      return date.toLocaleDateString('zh-CN', {
+      return date.toLocaleDateString(this.$i18n.locale, {
         year: 'numeric',
         month: '2-digit',
         day: '2-digit',
