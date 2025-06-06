@@ -4,7 +4,16 @@
 
 <template>
   <div class="auth-container">
-    <!-- 背景装饰 -->
+    <!-- 登录过渡动画 -->
+    <LoginTransition 
+      :show="showTransition" 
+      :user-name="currentUser?.name || currentUser?.username || ''"
+      @start-fade-to-main="startFadeToMain"
+      @transition-complete="onTransitionComplete"
+    />
+    
+    <!-- 登录表单容器 - 过渡动画显示时隐藏 -->
+    <div class="login-form-container" :class="{ 'fade-out': showTransition }">
     <div class="auth-background">
       <div class="floating-circle circle-1"></div>
       <div class="floating-circle circle-2"></div>
@@ -71,16 +80,19 @@
       <!-- ICP备案信息 -->
       <IcpFooter class="icp-footer" />
     </div>
+    </div>
   </div>
 </template>
 <script>
 import { authService } from '../../api';
 import IcpFooter from '../../layout/IcpFooter.vue';
+import { LoginTransition } from '../../components/ui';
 
 export default {
   name: 'LoginPage',
   components: {
-    IcpFooter
+    IcpFooter,
+    LoginTransition
   },
   data() {
     return {
@@ -92,7 +104,9 @@ export default {
         emailOrUsername: '',
         password: ''
       },
-      loading: false
+      loading: false,
+      showTransition: false,
+      currentUser: null
     }
   },
   methods: {
@@ -131,12 +145,13 @@ export default {
         // 保存认证信息
         localStorage.setItem('token', token);
         localStorage.setItem('user', JSON.stringify(user));
-
-        // 确保路由跳转前完成状态更新
-        await this.$nextTick();
-
-        // 跳转到照片墙页面
-        this.$router.push({ path: '/photowall', replace: true });
+        
+        // 设置当前用户
+        this.currentUser = user;
+        this.loading = false;
+        
+        // 立即显示过渡动画
+        this.showTransition = true;
 
       } catch (error) {
         let errorMessage = '登录失败，请重试';
@@ -156,6 +171,17 @@ export default {
       } finally {
         this.loading = false;
       }
+    },
+    
+    startFadeToMain() {
+      setTimeout(() => {
+        this.navigateToPhotoWall();
+      }, 100);
+    },
+    
+    navigateToPhotoWall() {
+      // 跳转到照片墙页面（主页）
+      this.$router.push({ path: '/photowall', replace: true });
     }
   }
 }
@@ -397,6 +423,16 @@ export default {
 .icp-footer {
   margin-top: var(--spacing-xl);
   opacity: 0.6;
+}
+
+/* 登录表单容器 */
+.login-form-container {
+  transition: opacity 0.4s ease-out;
+}
+
+.login-form-container.fade-out {
+  opacity: 0;
+  pointer-events: none;
 }
 
 /* 响应式设计 */
