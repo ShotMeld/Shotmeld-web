@@ -15,8 +15,8 @@
               <i class="el-icon-upload"></i>
             </div>
             <div class="upload-text">
-              <div class="upload-title">{{ title }}</div>
-              <div class="upload-subtitle">拖拽文件到此处或 <span class="browse-text">点击上传</span></div>
+              <div class="upload-title">{{ displayTitle }}</div>
+              <div class="upload-subtitle">{{ $t('photoUpload.dragText') }} <span class="browse-text">{{ $t('photoUpload.clickToUpload') }}</span></div>
             </div>
           </div>
         </el-upload>
@@ -30,13 +30,13 @@
 
     <div class="selected-files" v-if="selectedFiles.length > 0">
       <div class="selected-files-header">
-        <div class="selected-count">已选择 {{ selectedFiles.length }} 个文件</div>
-        <button class="clear-button" @click="clearFiles">清空</button>
+        <div class="selected-count">{{ $t('photoUpload.selectedFiles', { count: selectedFiles.length }) }}</div>
+        <button class="clear-button" @click="clearFiles">{{ $t('photoUpload.clear') }}</button>
       </div>
       <div class="file-list">
         <div v-for="(file, index) in selectedFiles" :key="index" class="file-item">
           <div class="file-preview">
-            <img v-if="isImageFile(file)" :src="getFilePreview(file)" alt="预览" />
+            <img v-if="isImageFile(file)" :src="getFilePreview(file)" :alt="$t('photoUpload.preview')" />
             <div v-else class="file-icon">{{ file.name.slice(-3) }}</div>
           </div>
           <div class="file-info">
@@ -48,8 +48,8 @@
       </div>
       <div class="upload-options" v-if="showAlbumOption">
         <div class="option-item">
-          <label>添加到相册:</label>
-          <el-select v-model="selectedAlbumId" placeholder="选择相册" clearable popper-class="album-select-dropdown" teleported
+          <label>{{ $t('photoUpload.addToAlbum') }}</label>
+          <el-select v-model="selectedAlbumId" :placeholder="$t('photoUpload.selectAlbum')" clearable popper-class="album-select-dropdown" teleported
             popper-append-to-body>
             <el-option v-for="album in albums" :key="album.id" :label="album.name" :value="album.id">
             </el-option>
@@ -57,7 +57,7 @@
         </div>
       </div>
       <el-button type="primary" class="upload-button" @click="uploadFiles" :loading="loading">
-        {{ loading ? '上传中...' : '开始上传' }}
+        {{ loading ? $t('photoUpload.uploading') : $t('photoUpload.startUpload') }}
       </el-button>
     </div>
   </div>
@@ -71,7 +71,7 @@ export default {
   props: {
     title: {
       type: String,
-      default: '上传照片'
+      default: ''
     },
     multiple: {
       type: Boolean,
@@ -96,10 +96,15 @@ export default {
       selectedFiles: [],
       loading: false,
       uploadProgress: 0,
-      uploadStatus: '正在上传...',
+      uploadStatus: '',
       selectedAlbumId: null,
       albums: [],
       actionUrl: '' // 不使用el-upload的自动上传功能
+    }
+  },
+  computed: {
+    displayTitle() {
+      return this.title || this.$t('photoUpload.title');
     }
   },
   watch: {
@@ -117,7 +122,7 @@ export default {
         const albumsResponse = await albumService.getAlbums();
         this.albums = albumsResponse.data.data || [];
       } catch (error) {
-        console.error('获取相册列表失败:', error);
+        console.error(this.$t('photoUpload.error.fetchAlbumsFailed'), error);
       }
     }
   }, methods: {
@@ -189,11 +194,11 @@ export default {
     },
     formatFileSize(size) {
       if (size < 1024) {
-        return size + 'B';
+        return this.$t('photoUpload.fileSize.b', { size });
       } else if (size < 1024 * 1024) {
-        return (size / 1024).toFixed(1) + 'KB';
+        return this.$t('photoUpload.fileSize.kb', { size: (size / 1024).toFixed(1) });
       } else {
-        return (size / (1024 * 1024)).toFixed(1) + 'MB';
+        return this.$t('photoUpload.fileSize.mb', { size: (size / (1024 * 1024)).toFixed(1) });
       }
     },
     removeFile(index) {
@@ -206,20 +211,20 @@ export default {
     async uploadFiles() {
       if (this.selectedFiles.length === 0) {
         this.$notify.warning({
-          title: '提示',
-          message: '请先选择要上传的文件'
+          title: this.$t('navbar.actions.upload'),
+          message: this.$t('photoUpload.uploadWarning')
         });
         return;
       }
 
       this.loading = true;
       this.uploadProgress = 0;
-      this.uploadStatus = '正在上传...';
+      this.uploadStatus = this.$t('photoUpload.uploading');
 
       // 定义进度更新回调函数
       const updateProgress = (percent) => {
         this.uploadProgress = percent;
-        this.uploadStatus = `正在上传... ${percent}%`;
+        this.uploadStatus = this.$t('photoUpload.uploadingWithProgress', { percent });
       };
 
       try {
@@ -233,10 +238,10 @@ export default {
 
           this.$emit('upload-success', response.data);
           this.uploadProgress = 100;
-          this.uploadStatus = '上传完成';
+          this.uploadStatus = this.$t('photoUpload.uploadComplete');
           this.$notify({
-            title: '成功',
-            message: `已成功上传 ${response.data.uploadedCount} 张照片`,
+            title: this.$t('photoWall.success'),
+            message: this.$t('photoUpload.uploadSuccess', { count: response.data.uploadedCount }),
             type: 'success'
           });
         } else {
@@ -254,21 +259,21 @@ export default {
           );
 
           this.uploadProgress = 100;
-          this.uploadStatus = '上传完成';
+          this.uploadStatus = this.$t('photoUpload.uploadComplete');
           this.$emit('upload-success', [response.data]);
           this.$notify({
-            title: '成功',
-            message: '照片上传成功',
+            title: this.$t('photoWall.success'),
+            message: this.$t('photoUpload.uploadSuccess', { count: 1 }),
             type: 'success'
           });
         }
 
         this.clearFiles();
       } catch (error) {
-        console.error('上传失败:', error);
+        console.error(this.$t('photoUpload.error.uploadFailed'), error);
         this.$notify.error({
-          title: '上传失败',
-          message: error.response?.data?.message || '上传失败，请重试'
+          title: this.$t('photoUpload.error.uploadFailed'),
+          message: error.response?.data?.message || this.$t('photoUpload.error.uploadFailedMessage')
         });
       } finally {
         // 短暂延迟后重置状态，让用户有时间看到100%的进度
@@ -278,7 +283,7 @@ export default {
           // 如果上传失败，重置进度
           if (this.uploadProgress !== 100) {
             this.uploadProgress = 0;
-            this.uploadStatus = '正在上传...';
+            this.uploadStatus = this.$t('photoUpload.uploading');
           }
         }, 500);
       }
