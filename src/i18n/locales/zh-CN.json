@@ -73,5 +73,33 @@
         "message": "照片已删除"
       }
     }
+  },
+  "timeline": {
+    "loading": "正在加载时间轴...",
+    "retry": "重试",
+    "year": "年",
+    "month": "月",
+    "photos": "张照片",
+    "noTitle": "无标题",
+    "uploadModal": {
+      "title": "上传照片"
+    },
+    "error": {
+      "fetchFailed": "获取照片失败:",
+      "loadFailed": "加载时间轴失败，请重试",
+      "deleteFailed": "删除照片失败:",
+      "deleteFailedTitle": "删除失败",
+      "deleteFailedMessage": "无法删除照片，请重试"
+    },
+    "editPhoto": "编辑照片:",
+    "editPhotoComingSoon": "编辑照片功能将在后续版本实现",
+    "uploadSuccess": {
+      "title": "上传成功",
+      "message": "已成功上传 {count} 张照片"
+    },
+    "deleteSuccess": {
+      "title": "成功",
+      "message": "照片已删除"
+    }
   }
 }

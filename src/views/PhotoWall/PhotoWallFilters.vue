@@ -22,7 +22,6 @@
       </div>
       <div class="filter-controls">
         <div class="filter-item">
-          <label class="filter-label">相册</label>
           <div class="select-wrapper">
             <el-select v-model="localFilters.albumId" placeholder="全部相册" clearable @change="handleFilterChange" class="select">
               <el-option v-for="album in albums" :key="album.id" :label="album.name" :value="album.id"></el-option>
@@ -30,13 +29,11 @@
           </div>
         </div>
         <div class="filter-item">
-          <label class="filter-label">日期范围</label>
           <div class="datepicker-wrapper">
             <el-date-picker v-model="localDateRange" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" format="YYYY-MM-DD" value-format="YYYY-MM-DD" @change="handleDateRangeChange" class="photo-wall-datepicker"></el-date-picker>
           </div>
         </div>
         <div class="filter-item">
-          <label class="filter-label">排序</label>
           <div class="sort-controls">
             <div class="select-wrapper sort-field">
               <el-select v-model="localFilters.sort" @change="handleFilterChange" class="select">
