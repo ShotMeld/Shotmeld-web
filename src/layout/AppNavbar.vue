@@ -8,7 +8,7 @@
       <template #brand>
         <!-- 移动端菜单按钮和标题 -->
         <div class="navbar-brand">
-          <button class="mobile-menu-button" @click="toggleMobileMenu" aria-label="菜单">
+          <button class="mobile-menu-button" @click="toggleMobileMenu" :aria-label="$t('navbar.mobile.menuAriaLabel')">
             <span class="menu-icon" :class="{ 'is-active': isMobileMenuOpen }">
               <span></span>
               <span></span>
@@ -22,22 +22,20 @@
         <!-- 主导航链接容器 -->
         <div class="main-nav">
           <SfNavLink to="/photowall" class="nav-item" :class="{ active: currentPage === 'photowall' }">
-            照片
-            <!-- 「照片墙」改名为「照片」-->
+            {{ $t('navbar.menu.photos') }}
           </SfNavLink>
 
           <SfNavLink to="/timeline" class="nav-item" :class="{ active: currentPage === 'timeline' }">
-            记忆
-            <!-- 「时间线」改名为「记忆」-->
+            {{ $t('navbar.menu.memories') }}
           </SfNavLink>
 
           <SfNavLink to="/albums" class="nav-item"
             :class="{ active: currentPage === 'albums' || currentPage === 'album-detail' }">
-            相册
+            {{ $t('navbar.menu.albums') }}
           </SfNavLink>
           
           <SfNavLink to="/more" class="nav-item" :class="{ active: currentPage === 'more' }">
-            更多
+            {{ $t('navbar.menu.more') }}
           </SfNavLink>
         </div>
       </template>
@@ -48,54 +46,54 @@
           <!-- 设置页面导航项 -->
           <SfNavLink v-if="currentPage === 'settings' && !isMobile" to="/settings" class="nav-item"
             :class="{ active: currentPage === 'settings' }">
-            设置
+            {{ $t('navbar.menu.settings') }}
           </SfNavLink>
 
           <!-- 个人页面导航项 -->
           <SfNavLink v-if="currentPage === 'profile' && !isMobile" to="/profile" class="nav-item"
             :class="{ active: currentPage === 'profile' }">
-            个人
+            {{ $t('navbar.menu.profile') }}
           </SfNavLink>
           <!-- 更多页面各个工具的导航页 -->
           <SfNavLink v-if="currentPage === 'DuplicatePhotos' && !isMobile" to="/duplicate-photos" class="nav-item"
             :class="{ active: currentPage === 'DuplicatePhotos' }">
-            重复照片检测
+            {{ $t('navbar.menu.duplicatePhotos') }}
           </SfNavLink>
 
           <!-- 时间线页面按钮 -->
           <template v-if="currentPage === 'timeline' && !isMobile">
             <SfButton type="secondary" @click="$emit('show-upload')" class="navbar-button nav-item">
-              上传照片
+              {{ $t('navbar.actions.upload') }}
             </SfButton>
           </template>
 
           <!-- 照片墙页面按钮 -->
           <template v-if="currentPage === 'photowall' && !isMobile">
             <SfButton type="secondary" @click="$emit('show-upload')" class="navbar-button nav-item">
-              上传照片
+              {{ $t('navbar.actions.upload') }}
             </SfButton>
             <SfButton type="secondary" @click="$emit('toggle-manage')" class="navbar-button nav-item">
-              管理
+              {{ $t('navbar.actions.manage') }}
             </SfButton>
           </template>
 
           <!-- 相册列表页面按钮 -->
           <template v-if="currentPage === 'albums' && !isMobile">
             <SfButton type="secondary" @click="$emit('show-album-form')" class="navbar-button nav-item">
-              新建相册
+              {{ $t('navbar.actions.createAlbum') }}
             </SfButton>
             <SfButton type="secondary" @click="$emit('toggle-album-manage')" class="navbar-button nav-item">
-              管理
+              {{ $t('navbar.actions.manage') }}
             </SfButton>
           </template>
 
           <!-- 相册详情页面按钮 -->
           <template v-if="currentPage === 'album-detail' && !isMobile">
             <SfButton type="secondary" @click="$emit('show-upload')" class="navbar-button nav-item">
-              添加照片
+              {{ $t('navbar.actions.addPhotos') }}
             </SfButton>
             <SfButton type="secondary" @click="$emit('toggle-manage')" class="navbar-button nav-item">
-              管理
+              {{ $t('navbar.actions.manage') }}
             </SfButton>
           </template>
 
@@ -111,19 +109,19 @@
                     <template #icon>
                       <i class="fas fa-user"></i>
                     </template>
-                    个人
+                    {{ $t('navbar.menu.profile') }}
                   </SfNavLink>
                   <SfNavLink to="/settings" @click="closeAllMenus" class="dropdown-link">
                     <template #icon>
                       <i class="fas fa-gear"></i>
                     </template>
-                    设置
+                    {{ $t('navbar.menu.settings') }}
                   </SfNavLink>
                   <SfNavLink href="#" @click="handleLogout" class="dropdown-link logout-link">
                     <template #icon>
                       <i class="fas fa-sign-out-alt"></i>
                     </template>
-                    退出登录
+                    {{ $t('navbar.actions.logout') }}
                   </SfNavLink>
                 </div>
               </div>
@@ -147,7 +145,7 @@
             <template #icon>
               <i class="fas fa-th"></i>
             </template>
-            照片
+            {{ $t('navbar.menu.photos') }}
           </SfNavLink>
 
           <SfNavLink to="/timeline" class="drawer-nav-item" :class="{ active: currentPage === 'timeline' }"
@@ -155,7 +153,7 @@
             <template #icon>
               <i class="fas fa-calendar-alt"></i>
             </template>
-            记忆
+            {{ $t('navbar.menu.memories') }}
           </SfNavLink>
 
           <SfNavLink to="/albums" class="drawer-nav-item"
@@ -163,28 +161,28 @@
             <template #icon>
               <i class="fas fa-book-open"></i>
             </template>
-            相册
+            {{ $t('navbar.menu.albums') }}
           </SfNavLink>
           
           <SfNavLink to="/more" class="drawer-nav-item" :class="{ active: currentPage === 'more' }" @click="closeMobileMenu">
             <template #icon>
               <i class="fas fa-ellipsis-h"></i>
             </template>
-            更多
+            {{ $t('navbar.menu.more') }}
           </SfNavLink>
 
           <SfNavLink to="/profile" class="drawer-nav-item" @click="closeMobileMenu">
             <template #icon>
               <i class="fas fa-user"></i>
             </template>
-            个人
+            {{ $t('navbar.menu.profile') }}
           </SfNavLink>
 
           <SfNavLink to="/settings" class="drawer-nav-item" @click="closeMobileMenu">
             <template #icon>
               <i class="fas fa-gear"></i>
             </template>
-            设置
+            {{ $t('navbar.menu.settings') }}
           </SfNavLink>
         </div>
 
@@ -192,35 +190,35 @@
           <!-- 照片墙页面按钮 -->
           <template v-if="currentPage === 'photowall'">
             <SfButton type="primary" @click="showUploadAndCloseMenu" class="drawer-button">
-              <i class="fas fa-upload"></i> 上传照片
+              <i class="fas fa-upload"></i> {{ $t('navbar.actions.upload') }}
             </SfButton>
             <SfButton type="primary" @click="toggleManageAndCloseMenu" class="drawer-button">
-              <i class="fas fa-tasks"></i> 管理
+              <i class="fas fa-tasks"></i> {{ $t('navbar.actions.manage') }}
             </SfButton>
           </template>
 
           <!-- 相册列表页面按钮 -->
           <template v-if="currentPage === 'albums'">
             <SfButton type="primary" @click="showAlbumFormAndCloseMenu" class="drawer-button">
-              <i class="fas fa-plus"></i> 新建相册
+              <i class="fas fa-plus"></i> {{ $t('navbar.actions.createAlbum') }}
             </SfButton>
             <SfButton type="primary" @click="toggleAlbumManageAndCloseMenu" class="drawer-button">
-              <i class="fas fa-tasks"></i> 管理
+              <i class="fas fa-tasks"></i> {{ $t('navbar.actions.manage') }}
             </SfButton>
           </template>
 
           <!-- 相册详情页面按钮 -->
           <template v-if="currentPage === 'album-detail'">
             <SfButton type="primary" @click="showUploadAndCloseMenu" class="drawer-button">
-              <i class="fas fa-upload"></i> 添加照片
+              <i class="fas fa-upload"></i> {{ $t('navbar.actions.addPhotos') }}
             </SfButton>
             <SfButton type="primary" @click="toggleManageAndCloseMenu" class="drawer-button">
-              <i class="fas fa-tasks"></i> 管理
+              <i class="fas fa-tasks"></i> {{ $t('navbar.actions.manage') }}
             </SfButton>
           </template>
 
           <SfButton type="secondary" @click="handleLogout" class="drawer-button logout-button">
-            退出登录
+            {{ $t('navbar.actions.logout') }}
           </SfButton>
         </div>
       </div>
@@ -245,7 +243,7 @@ export default {
   props: {
     userName: {
       type: String,
-      default: '用户'
+      default() { return this.$t('navbar.defaultUser') }
     },
     currentPage: {
       type: String,

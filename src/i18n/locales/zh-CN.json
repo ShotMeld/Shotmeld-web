@@ -101,5 +101,114 @@
       "title": "成功",
       "message": "照片已删除"
     }
+  },
+  "photoDetail": {
+    "untitledPhoto": "无标题照片",
+    "deleteConfirm": {
+      "title": "确认删除",
+      "itemName": "照片",
+      "message": "确定要删除这张照片吗？",
+      "warning": "此操作无法撤销"
+    },
+    "info": {
+      "title": "照片信息",
+      "photoTitle": "标题",
+      "untitled": "无标题",
+      "takenTime": "拍摄时间",
+      "createdTime": "创建时间",
+      "fileSize": "文件大小",
+      "dimensions": "尺寸",
+      "pixels": "像素",
+      "resolution": "分辨率",
+      "unknownDate": "未知日期"
+    },
+    "location": {
+      "title": "位置信息",
+      "longitude": "经度",
+      "latitude": "纬度",
+      "location": "位置",
+      "viewOnMap": "在地图中查看"
+    },
+    "exif": {
+      "title": "相机参数",
+      "device": "设备",
+      "exposureTime": "曝光时间",
+      "aperture": "光圈",
+      "iso": "感光度",
+      "focalLength": "焦距",
+      "ev": "EV",
+      "meteringMode": "测光模式",
+      "meteringModes": {
+        "unknown": "未知",
+        "average": "平均",
+        "centerWeighted": "中心加权",
+        "spot": "点测光",
+        "multiSpot": "多区域",
+        "pattern": "局部",
+        "partial": "矩阵"
+      }
+    },
+    "actions": {
+      "download": "下载",
+      "share": "分享",
+      "delete": "删除",
+      "shareSuccess": {
+        "title": "分享成功",
+        "message": "分享链接已复制到剪贴板"
+      },
+      "shareError": {
+        "title": "分享失败",
+        "message": "无法创建分享链接"
+      }
+    }
+  },
+  "photoWall": {
+    "filters": {
+      "searchPlaceholder": "搜索照片...",
+      "searchButton": "搜索",
+      "searchButtonAriaLabel": "执行搜索",
+      "album": {
+        "all": "全部相册"
+      },
+      "date": {
+        "start": "开始日期",
+        "end": "结束日期",
+        "separator": "至"
+      },
+      "sort": {
+        "takenAt": "拍摄时间",
+        "createdAt": "上传时间",
+        "title": "标题",
+        "order": {
+          "asc": "升序",
+          "desc": "降序"
+        }
+      }
+    },
+    "error": {
+      "searchFailed": "搜索照片失败"
+    }
+  },
+  "navbar": {
+    "menu": {
+      "photos": "照片",
+      "memories": "记忆",
+      "albums": "相册",
+      "more": "更多",
+      "settings": "设置",
+      "profile": "个人",
+      "duplicatePhotos": "重复照片检测"
+    },
+    "actions": {
+      "upload": "上传照片",
+      "addPhotos": "添加照片",
+      "manage": "管理",
+      "createAlbum": "新建相册",
+      "logout": "退出登录"
+    },
+    "mobile": {
+      "menuAriaLabel": "菜单"
+    },
+    "defaultUser": "用户"
   }
 }

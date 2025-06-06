@@ -4,35 +4,35 @@
 
 <template>
     <div class="info-group" v-if="hasExifData">
-        <h3 class="info-group-title">相机参数</h3>
+        <h3 class="info-group-title">{{ $t('photoDetail.exif.title') }}</h3>
         <div class="info-item" v-if="photo?.metadata?.exif?.make || photo?.metadata?.exif?.model">
-            <span class="info-label">设备</span>
+            <span class="info-label">{{ $t('photoDetail.exif.device') }}</span>
             <span class="info-value">{{ photo.metadata.exif.model }}</span>
         </div>
         <div class="exif-grid">
             <div class="exif-item" v-if="photo?.metadata?.exif?.exposureTime">
                 <div class="exif-value">{{ formatExposureTime(photo.metadata.exif.exposureTime) }}</div>
-                <div class="exif-label">曝光时间</div>
+                <div class="exif-label">{{ $t('photoDetail.exif.exposureTime') }}</div>
             </div>
             <div class="exif-item" v-if="photo?.metadata?.exif?.fNumber">
                 <div class="exif-value">f/{{ formatNumber(photo.metadata.exif.fNumber) }}</div>
-                <div class="exif-label">光圈</div>
+                <div class="exif-label">{{ $t('photoDetail.exif.aperture') }}</div>
             </div>
             <div class="exif-item" v-if="photo?.metadata?.exif?.isoSpeedRatings">
                 <div class="exif-value">ISO {{ formatNumber(photo.metadata.exif.isoSpeedRatings) }}</div>
-                <div class="exif-label">感光度</div>
+                <div class="exif-label">{{ $t('photoDetail.exif.iso') }}</div>
             </div>
             <div class="exif-item" v-if="photo?.metadata?.exif?.focalLength">
                 <div class="exif-value">{{ formatNumber(photo.metadata.exif.focalLength) }}mm</div>
-                <div class="exif-label">焦距</div>
+                <div class="exif-label">{{ $t('photoDetail.exif.focalLength') }}</div>
             </div>
             <div class="exif-item" v-if="photo?.metadata?.exif?.rawExif?.BrightnessValue">
                 <div class="exif-value">{{ formatNumber(photo?.metadata?.exif?.rawExif?.BrightnessValue) }}</div>
-                <div class="exif-label">EV</div>
+                <div class="exif-label">{{ $t('photoDetail.exif.ev') }}</div>
             </div>
             <div class="exif-item" v-if="photo?.metadata?.exif?.rawExif?.MeteringMode">
                 <div class="exif-value">{{ formatMeteringMode(photo?.metadata?.exif?.rawExif?.MeteringMode) }}</div>
-                <div class="exif-label">测光模式</div>
+                <div class="exif-label">{{ $t('photoDetail.exif.meteringMode') }}</div>
             </div>
         </div>
     </div>
@@ -78,16 +78,16 @@ export default {
         },
 
         formatMeteringMode(mode) {
-            const modes = {
-                0: '未知',
-                1: '平均',
-                2: '中心加权',
-                3: '点测光',
-                4: '多区域',
-                5: '局部',
-                6: '矩阵'
+            const modeKeys = {
+                0: 'unknown',
+                1: 'average',
+                2: 'centerWeighted',
+                3: 'spot',
+                4: 'multiSpot',
+                5: 'pattern',
+                6: 'partial'
             };
-            return modes[mode] || '未知';
+            return this.$t(`photoDetail.exif.meteringModes.${modeKeys[mode] || 'unknown'}`);
         },
 
         // 通用格式化数值函数，保留最多两位小数

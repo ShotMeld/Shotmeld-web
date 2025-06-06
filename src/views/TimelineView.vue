@@ -21,15 +21,15 @@
         <div v-else class="timeline">
           <div v-for="(yearGroup, yearIndex) in timelineGroups" :key="yearIndex" class="timeline-year">
             <h2 class="year-header">
-              {{ yearGroup.year }}{{ $t('timeline.year') }}
-              <span class="year-photo-count">{{ getYearPhotoCount(yearGroup) }}{{ $t('timeline.photos') }}</span>
+              {{ formatYearDisplay(yearGroup.year) }}
+              <span class="year-photo-count">{{ formatPhotoCount(getYearPhotoCount(yearGroup)) }}</span>
             </h2>
 
             <div v-for="(monthGroup, monthIndex) in yearGroup.months" :key="`${yearIndex}-${monthIndex}`"
               class="timeline-month">
               <h3 class="month-header">
-                {{ monthGroup.month }}{{ $t('timeline.month') }}
-                <span class="month-photo-count">{{ monthGroup.photos.length }}{{ $t('timeline.photos') }}</span>
+                {{ formatMonthDisplay(monthGroup.month) }}
+                <span class="month-photo-count">{{ formatPhotoCount(monthGroup.photos.length) }}</span>
               </h3>
 
               <div class="photos-grid">
@@ -346,6 +346,38 @@ export default {
         hash = hash & hash; // 转换为32位整数
       }
       return Math.abs(hash);
+    },
+
+    // 格式化年份显示
+    formatYearDisplay(year) {
+      if (this.$i18n.locale === 'zh-CN') {
+        return `${year}${this.$t('timeline.year')}`;
+      } else {
+        return year.toString();
+      }
+    },
+
+    // 格式化月份显示
+    formatMonthDisplay(month) {
+      if (this.$i18n.locale === 'zh-CN') {
+        return `${month}${this.$t('timeline.month')}`;
+      } else {
+        // 英文环境下显示月份名称
+        const monthNames = [
+          'January', 'February', 'March', 'April', 'May', 'June',
+          'July', 'August', 'September', 'October', 'November', 'December'
+        ];
+        return monthNames[parseInt(month) - 1] || `Month ${month}`;
+      }
+    },
+
+    // 格式化照片数量显示
+    formatPhotoCount(count) {
+      if (this.$i18n.locale === 'zh-CN') {
+        return `${count}${this.$t('timeline.photos')}`;
+      } else {
+        return `${count} ${this.$t('timeline.photos')}`;
+      }
     }
   }
 }

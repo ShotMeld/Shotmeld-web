@@ -6,7 +6,12 @@
   <div class="filters-section">
     <SfCard class="search-card" shadow="medium">
       <div class="search-container">
-        <SfInput v-model="localSearchQuery" placeholder="搜索照片..." @input="debouncedSearch" class="search-input">
+        <SfInput 
+          v-model="localSearchQuery" 
+          :placeholder="$t('photoWall.filters.searchPlaceholder')" 
+          @input="debouncedSearch" 
+          class="search-input"
+        >
           <template #prefix>
             <i class="fas fa-search"></i>
           </template>
@@ -15,37 +20,53 @@
           v-if="localSearchQuery && localSearchQuery.trim() !== ''"
           @click="handleSearchButtonClick"
           class="search-button"
-          aria-label="执行搜索"
+          :aria-label="$t('photoWall.filters.searchButtonAriaLabel')"
         >
-          搜索
+          {{ $t('photoWall.filters.searchButton') }}
         </SfButton>
       </div>
       <div class="filter-controls">
         <div class="filter-item">
           <div class="select-wrapper">
-            <el-select v-model="localFilters.albumId" placeholder="全部相册" clearable @change="handleFilterChange" class="select">
+            <el-select 
+              v-model="localFilters.albumId" 
+              :placeholder="$t('photoWall.filters.album.all')" 
+              clearable 
+              @change="handleFilterChange" 
+              class="select"
+            >
               <el-option v-for="album in albums" :key="album.id" :label="album.name" :value="album.id"></el-option>
             </el-select>
           </div>
         </div>
         <div class="filter-item">
           <div class="datepicker-wrapper">
-            <el-date-picker v-model="localDateRange" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" format="YYYY-MM-DD" value-format="YYYY-MM-DD" @change="handleDateRangeChange" class="photo-wall-datepicker"></el-date-picker>
+            <el-date-picker 
+              v-model="localDateRange" 
+              type="daterange" 
+              :range-separator="$t('photoWall.filters.date.separator')" 
+              :start-placeholder="$t('photoWall.filters.date.start')" 
+              :end-placeholder="$t('photoWall.filters.date.end')" 
+              format="YYYY-MM-DD" 
+              value-format="YYYY-MM-DD" 
+              @change="handleDateRangeChange" 
+              class="photo-wall-datepicker"
+            ></el-date-picker>
           </div>
         </div>
         <div class="filter-item">
           <div class="sort-controls">
             <div class="select-wrapper sort-field">
               <el-select v-model="localFilters.sort" @change="handleFilterChange" class="select">
-                <el-option label="拍摄时间" value="takenAt"></el-option>
-                <el-option label="上传时间" value="createdAt"></el-option>
-                <el-option label="标题" value="title"></el-option>
+                <el-option :label="$t('photoWall.filters.sort.takenAt')" value="takenAt"></el-option>
+                <el-option :label="$t('photoWall.filters.sort.createdAt')" value="createdAt"></el-option>
+                <el-option :label="$t('photoWall.filters.sort.title')" value="title"></el-option>
               </el-select>
             </div>
             <div class="select-wrapper sort-order">
               <el-select v-model="localFilters.order" @change="handleFilterChange" class="select">
-                <el-option label="降序" value="desc"></el-option>
-                <el-option label="升序" value="asc"></el-option>
+                <el-option :label="$t('photoWall.filters.sort.order.desc')" value="desc"></el-option>
+                <el-option :label="$t('photoWall.filters.sort.order.asc')" value="asc"></el-option>
               </el-select>
             </div>
           </div>
@@ -123,7 +144,7 @@ export default {
         });
         this.$emit('update:searchResults', response.data);
       } catch (error) {
-        console.error('搜索照片失败:', error);
+        console.error(this.$t('photoWall.error.searchFailed') + ':', error);
         this.$emit('update:searchResults', { data: [], error: '搜索失败', searchTerm: this.localSearchQuery.trim() });
       }
     },
