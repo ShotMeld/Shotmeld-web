@@ -210,5 +210,56 @@
       "menuAriaLabel": "Menu"
     },
     "defaultUser": "User"
+  },
+  "loginTransition": {
+    "welcomeBack": "Welcome Back",
+    "defaultUser": "User"
+  },
+  "auth": {
+    "brand": {
+      "subtitle": "Your memories preserved here",
+      "startYourMemory": "Start your memory"
+    },
+    "login": {
+      "welcome": "Welcome Back",
+      "description": "Sign in to continue to your account",
+      "emailOrUsername": "Username or Email",
+      "password": "Password",
+      "button": {
+        "login": "Sign In",
+        "loading": "Signing in..."
+      },
+      "noAccount": "Don't have an account?",
+      "registerNow": "Register Now",
+      "errors": {
+        "emailOrUsernameRequired": "Please enter your username or email",
+        "passwordRequired": "Please enter your password",
+        "invalidCredentials": "Invalid username or password",
+        "loginFailed": "Login failed, please try again"
+      }
+    },
+    "register": {
+      "title": "Create Account",
+      "description": "Join us for refined photo management",
+      "username": "Username",
+      "email": "Email Address",
+      "password": "Password (minimum 8 characters)",
+      "button": {
+        "register": "Create Account",
+        "loading": "Creating..."
+      },
+      "hasAccount": "Already have an account?",
+      "loginNow": "Sign In Now",
+      "errors": {
+        "usernameRequired": "Please enter a username",
+        "usernameNoAt": "Username cannot contain @ symbol",
+        "usernameLength": "Username must be at least 3 characters",
+        "emailRequired": "Please enter an email address",
+        "emailInvalid": "Please enter a valid email address",
+        "passwordRequired": "Please enter a password",
+        "passwordLength": "Password must be at least 8 characters",
+        "registerFailed": "Registration failed, please try again"
+      }
+    }
   }
 }

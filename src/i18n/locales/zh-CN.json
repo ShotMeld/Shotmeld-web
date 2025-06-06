@@ -210,5 +210,56 @@
       "menuAriaLabel": "菜单"
     },
     "defaultUser": "用户"
+  },
+  "loginTransition": {
+    "welcomeBack": "欢迎回来",
+    "defaultUser": "用户"
+  },
+  "auth": {
+    "brand": {
+      "subtitle": "您的记忆留存于此",
+      "startYourMemory": "开始您的记忆"
+    },
+    "login": {
+      "welcome": "欢迎回来",
+      "description": "登录您的账户继续使用",
+      "emailOrUsername": "用户名或邮箱地址",
+      "password": "密码",
+      "button": {
+        "login": "登录",
+        "loading": "登录中..."
+      },
+      "noAccount": "还没有账户？",
+      "registerNow": "立即注册",
+      "errors": {
+        "emailOrUsernameRequired": "请输入用户名或邮箱地址",
+        "passwordRequired": "请输入密码",
+        "invalidCredentials": "用户名或密码错误",
+        "loginFailed": "登录失败，请重试"
+      }
+    },
+    "register": {
+      "title": "创建账户",
+      "description": "加入我们，体验精致的照片管理",
+      "username": "用户名",
+      "email": "邮箱地址",
+      "password": "密码（至少8个字符）",
+      "button": {
+        "register": "创建账户",
+        "loading": "注册中..."
+      },
+      "hasAccount": "已有账户？",
+      "loginNow": "立即登录",
+      "errors": {
+        "usernameRequired": "请输入用户名",
+        "usernameNoAt": "用户名不能包含@符号",
+        "usernameLength": "用户名至少需要3个字符",
+        "emailRequired": "请输入邮箱地址",
+        "emailInvalid": "请输入有效的邮箱地址",
+        "passwordRequired": "请输入密码",
+        "passwordLength": "密码至少需要8个字符",
+        "registerFailed": "注册失败，请重试"
+      }
+    }
   }
 }
