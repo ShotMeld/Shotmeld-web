@@ -1,5 +1,5 @@
 <template>
-  <div class="duplicate-detector">
+  <div class="duplicate-detector" v-show="!hasResults">
     <div class="detector-header">
       <h2>重复图片检测</h2>
       <p class="detector-description">

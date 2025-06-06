@@ -6,15 +6,15 @@
         <div class="summary-stats">
           <div class="stat-item">
             <span class="stat-value">{{ duplicateGroups.length }}</span>
-            <span class="stat-label">个重复组</span>
+            <span class="stat-label">重复组</span>
           </div>
           <div class="stat-item">
             <span class="stat-value">{{ totalDuplicates }}</span>
-            <span class="stat-label">张重复图片</span>
+            <span class="stat-label">重复图片</span>
           </div>
           <div class="stat-item">
             <span class="stat-value">{{ estimatedSpace }}</span>
-            <span class="stat-label">可释放空间</span>
+            <span class="stat-label">释放空间</span>
           </div>
         </div>
       </div>
@@ -62,7 +62,7 @@
 
     <div v-if="duplicateGroups.length > 0" class="results-footer">
       <div class="pagination-info">
-        显示 {{ duplicateGroups.length }} 个重复组
+        {{ duplicateGroups.length }} 个重复组
       </div>
       
       <sf-button
@@ -128,13 +128,46 @@ export default {
       }, 0)
     },
     estimatedSpace() {
-      // 估算可释放空间
-      const avgSize = 2.5 // MB per photo
-      const space = this.totalDuplicates * avgSize * 0.7 // 假设平均70%的重复图片会被删除
-      if (space > 1024) {
-        return `${(space / 1024).toFixed(1)} GB`
+      // 计算智能推荐后可释放的空间
+      let totalBytes = 0
+      
+      this.duplicateGroups.forEach(group => {
+        if (group.length <= 1) return
+        
+        // 找到像素最高的照片（保留）
+        const highestPixelPhoto = group.reduce((highest, current) => {
+          const currentPixels = (current.width || 1920) * (current.height || 1080)
+          const highestPixels = (highest.width || 1920) * (highest.height || 1080)
+          
+          if (currentPixels > highestPixels) {
+            return current
+          } else if (currentPixels === highestPixels) {
+            // 像素相同时，选择文件大小更大的
+            const currentSize = current.fileSize || current.size || 2500000
+            const highestSize = highest.fileSize || highest.size || 2500000
+            return currentSize > highestSize ? current : highest
+          }
+          return highest
+        })
+        
+        // 计算其他照片（将被删除）的总大小
+        group.forEach(photo => {
+          const photoId = photo.id || photo.filename || photo.name
+          const highestId = highestPixelPhoto.id || highestPixelPhoto.filename || highestPixelPhoto.name
+          
+          if (photoId !== highestId) {
+            totalBytes += photo.fileSize || photo.size || 2500000 // 默认2.5MB
+          }
+        })
+      })
+      
+      // 格式化显示
+      if (totalBytes > 1024 * 1024 * 1024) {
+        return `${(totalBytes / (1024 * 1024 * 1024)).toFixed(1)} GB`
+      } else if (totalBytes > 1024 * 1024) {
+        return `${(totalBytes / (1024 * 1024)).toFixed(1)} MB`
       }
-      return `${space.toFixed(0)} MB`
+      return `${(totalBytes / 1024).toFixed(1)} KB`
     }
   },
   methods: {
@@ -144,16 +177,18 @@ export default {
     },
     
     selectSmartRecommendations() {
-      // 智能推荐选择策略：每组保留体积最大的图片，选择其他图片进行删除
+      // 智能推荐选择策略：每组保留像素最高的图片，选择其他图片进行删除
       if (this.$refs.duplicateGroups) {
         this.$refs.duplicateGroups.forEach(groupRef => {
-          if (groupRef.smartSelect) {
+          if (groupRef.smartSelectByResolution) {
+            groupRef.smartSelectByResolution()
+          } else if (groupRef.smartSelect) {
             groupRef.smartSelect()
           }
         })
       }
-      
-      this.$message({
+
+      this.$notify({
         message: '已应用智能推荐',
         type: 'success'
       })
@@ -226,7 +261,7 @@ export default {
 
 .summary-stats {
   display: flex;
-  gap: var(--spacing-xl);
+  gap: var(--spacing-md);
 }
 
 .stat-item {
@@ -234,19 +269,28 @@ export default {
   flex-direction: column;
   align-items: center;
   text-align: center;
+  background-color: var(--bg-primary);
+  border-radius: 12px;
+  padding: var(--spacing-sm) var(--spacing-xs);
+  transition: transform 0.2s ease;
+  min-width: 80px;
+}
+
+.stat-item:hover {
+  transform: scale(1.02);
 }
 
 .stat-value {
-  font-size: var(--font-size-xl);
-  font-weight: var(--font-weight-semibold);
-  color: var(--color-primary);
-  line-height: 1.2;
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-medium);
+  color: var(--text-primary);
+  margin-bottom: 4px;
 }
 
 .stat-label {
-  font-size: var(--font-size-sm);
+  font-size: var(--font-size-xs);
   color: var(--text-secondary);
-  margin-top: var(--spacing-2xs);
+  font-weight: var(--font-weight-normal);
 }
 
 .results-actions {
@@ -305,8 +349,9 @@ export default {
   }
   
   .summary-stats {
-    justify-content: space-around;
-    gap: var(--spacing-md);
+    justify-content: center;
+    gap: var(--spacing-sm);
+    flex-wrap: wrap;
   }
   
   .results-actions {

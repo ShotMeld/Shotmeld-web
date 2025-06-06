@@ -44,8 +44,9 @@ export default {
       this.showResults = true
       
       if (this.duplicateGroups.length > 0) {
-        this.$message({
-          message: `检测完成！发现 ${this.duplicateGroups.length} 组重复图片`,
+        this.$notify({
+          title: '检测完成',
+          message: `发现 ${this.duplicateGroups.length} 组重复图片`,
           type: 'success'
         })
       }
@@ -76,8 +77,9 @@ export default {
         
         await photoService.deletePhotos(photoIds)
         
-        this.$message({
-          message: `成功删除 ${photos.length} 张图片`,
+        this.$notify({
+          title: '成功',
+          message: `已删除${photos.length}张照片`,
           type: 'success'
         })
         
@@ -91,7 +93,8 @@ export default {
           
       } catch (error) {
         console.error('删除图片失败:', error)
-        this.$message({
+        this.$notify({
+          title: '错误',
           message: error.response?.data?.message || '删除图片失败，请重试',
           type: 'error'
         })

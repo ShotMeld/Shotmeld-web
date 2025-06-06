@@ -39,7 +39,7 @@
           />
         </svg>
         <div class="progress-text">
-          {{ progress }}%
+          {{ Math.round(displayProgress) }}%
         </div>
       </div>
 
@@ -50,7 +50,7 @@
         <div class="progress-bar">
           <div 
             class="progress-bar-fill"
-            :style="{ width: `${progress}%` }"
+            :style="{ width: `${displayProgress}%` }"
           ></div>
         </div>
       </div>
@@ -79,12 +79,25 @@ export default {
     }
   },
   emits: ['cancel'],
+  data() {
+    return {
+      fakeProgress: 0,
+      fakeProgressTimer: null
+    }
+  },
   computed: {
     circumference() {
       return 2 * Math.PI * 36
     },
+    displayProgress() {
+      // 如果有真实进度数据，使用真实进度；否则使用假进度
+      if (this.progress > 0 || this.status === 'completed') {
+        return this.progress
+      }
+      return this.fakeProgress
+    },
     dashOffset() {
-      return this.circumference - (this.progress / 100) * this.circumference
+      return this.circumference - (this.displayProgress / 100) * this.circumference
     },
     statusText() {
       const statusMap = {
@@ -94,6 +107,50 @@ export default {
         failed: '检测失败'
       }
       return statusMap[this.status] || '处理中...'
+    }
+  },
+  mounted() {
+    this.startFakeProgress()
+  },
+  beforeUnmount() {
+    this.stopFakeProgress()
+  },
+  watch: {
+    progress(newVal) {
+      // 当有真实进度时，停止假进度
+      if (newVal > 0) {
+        this.stopFakeProgress()
+      }
+    },
+    status(newVal) {
+      if (newVal === 'completed' || newVal === 'failed') {
+        this.stopFakeProgress()
+      } else if ((newVal === 'pending' || newVal === 'processing') && this.progress === 0) {
+        this.startFakeProgress()
+      }
+    }
+  },
+  methods: {
+    startFakeProgress() {
+      if (this.fakeProgressTimer) return
+      
+      this.fakeProgressTimer = setInterval(() => {
+        if (this.progress > 0) {
+          // 有真实进度时停止假进度
+          this.stopFakeProgress()
+          return
+        }
+        
+        // 随机增长，但速度较慢，最多到85%
+        const increment = Math.random() * 0.5 + 0.1 // 0.1-0.6%的随机增长
+        this.fakeProgress = Math.min(this.fakeProgress + increment, 85)
+      }, 200) // 每200ms更新一次
+    },
+    stopFakeProgress() {
+      if (this.fakeProgressTimer) {
+        clearInterval(this.fakeProgressTimer)
+        this.fakeProgressTimer = null
+      }
     }
   }
 }
@@ -132,7 +189,13 @@ export default {
 
 .progress-circle {
   position: relative;
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.progress-circle svg {
+  display: block;
 }
 
 .progress-circle-fill {
@@ -149,6 +212,12 @@ export default {
   font-size: var(--font-size-xl);
   font-weight: var(--font-weight-semibold);
   color: var(--color-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  text-align: center;
 }
 
 .progress-info {

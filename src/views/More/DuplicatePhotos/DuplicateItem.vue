@@ -1,19 +1,9 @@
 <template>
   <div class="photo-card-wrapper">
-    <sf-card 
-      class="photo-card" 
-      :class="{ 'selected': selected }" 
-      hoverable 
-      shadow="small" 
-      @click="$emit('select', photo)"
-    >
+    <sf-card class="photo-card" :class="{ 'selected': selected }" hoverable shadow="small"
+      @click="$emit('select', photo)">
       <div class="photo-thumbnail">
-        <img 
-          :src="photoUrl" 
-          :alt="photoName" 
-          loading="lazy" 
-          @error="handleImageError"
-        />
+        <img :src="photoUrl" :alt="photoName" loading="lazy" @error="handleImageError" />
         <div v-if="selected" class="photo-select-overlay">
           <div class="select-checkbox selected">
             <i class="fas fa-check"></i>
@@ -83,7 +73,7 @@ export default {
     fileSize() {
       const size = this.photo.fileSize || this.photo.size
       if (!size) return '未知大小'
-      
+
       if (size > 1024 * 1024) {
         return `${(size / (1024 * 1024)).toFixed(1)} MB`
       } else if (size > 1024) {
@@ -94,7 +84,7 @@ export default {
     dimensions() {
       const width = this.photo.width
       const height = this.photo.height
-      
+
       if (width && height) {
         return `${width} × ${height}`
       }
@@ -103,7 +93,7 @@ export default {
     formatDate() {
       const dateString = this.photo.takenAt || this.photo.createdAt || this.photo.uploadedAt
       if (!dateString) return '未知日期'
-      
+
       const date = new Date(dateString)
       return date.toLocaleDateString('zh-CN', {
         year: 'numeric',
@@ -134,9 +124,9 @@ export default {
   overflow: hidden;
   cursor: pointer;
   background-color: var(--bg-primary);
-  transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1), 
-              box-shadow 0.3s cubic-bezier(0.25, 1, 0.5, 1),
-              background-color 0.3s ease;
+  transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1),
+    box-shadow 0.3s cubic-bezier(0.25, 1, 0.5, 1),
+    background-color 0.3s ease;
 }
 
 .photo-card:hover {

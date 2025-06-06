@@ -4,31 +4,15 @@
       <div class="group-header">
         <div class="group-info">
           <h3>相似图片组 {{ groupIndex + 1 }}</h3>
-          <span class="photo-count">{{ photos.length }} 张图片</span>
         </div>
         <div class="group-actions">
-          <sf-button
-            type="text"
-            size="small"
-            @click="selectAll"
-            :disabled="isAllSelected"
-          >
+          <sf-button type="text" size="small" @click="selectAll" :disabled="isAllSelected">
             全选
           </sf-button>
-          <sf-button
-            type="text"
-            size="small"
-            @click="clearSelection"
-            :disabled="selectedCount === 0"
-          >
+          <sf-button type="text" size="small" @click="clearSelection" :disabled="selectedCount === 0">
             清除选择
           </sf-button>
-          <sf-button
-            type="danger"
-            size="small"
-            @click="deleteSelected"
-            :disabled="selectedCount === 0"
-          >
+          <sf-button type="danger" size="small" @click="deleteSelected" :disabled="selectedCount === 0">
             删除选中 ({{ selectedCount }})
           </sf-button>
         </div>
@@ -36,19 +20,14 @@
     </template>
 
     <div class="photo-grid">
-      <DuplicateItem
-        v-for="photo in photos"
-        :key="photo.id || photo.filename"
-        :photo="photo"
-        :selected="isPhotoSelected(photo)"
-        @select="toggleSelection"
-      />
+      <DuplicateItem v-for="photo in photos" :key="photo.id || photo.filename" :photo="photo"
+        :selected="isPhotoSelected(photo)" @select="toggleSelection" />
     </div>
 
     <template #footer>
       <div class="group-stats">
-        <span class="similarity-info">
-          相似度: <strong>{{ similarity }}%</strong>
+        <span class="photo-count">
+          {{ photos.length }} 张图片
         </span>
         <span class="space-info">
           可释放空间: <strong>{{ estimatedSpace }}</strong>
@@ -57,12 +36,8 @@
     </template>
 
     <!-- 删除确认对话框 -->
-    <sf-delete-confirm-modal
-      v-model="showDeleteModal"
-      item-name="图片"
-      :count="selectedCount"
-      @confirm="confirmDeleteSelected"
-    />
+    <sf-delete-confirm-modal v-model="showDeleteModal" item-name="图片" :count="selectedCount"
+      @confirm="confirmDeleteSelected" />
   </sf-card>
 </template>
 
@@ -88,10 +63,6 @@ export default {
     groupIndex: {
       type: Number,
       required: true
-    },
-    similarity: {
-      type: Number,
-      default: 95
     }
   },
   emits: ['delete-photos', 'selection-change'],
@@ -127,7 +98,7 @@ export default {
       const totalBytes = this.selectedPhotos.reduce((total, photo) => {
         return total + (photo.fileSize || photo.size || 2500000) // 默认2.5MB
       }, 0)
-      
+
       if (totalBytes > 1024 * 1024 * 1024) {
         return `${(totalBytes / (1024 * 1024 * 1024)).toFixed(1)} GB`
       } else if (totalBytes > 1024 * 1024) {
@@ -147,7 +118,7 @@ export default {
     toggleSelection(photo) {
       const photoId = this.getPhotoId(photo)
       const index = this.selectedPhotos.findIndex(selected => this.getPhotoId(selected) === photoId)
-      
+
       if (index > -1) {
         this.selectedPhotos.splice(index, 1)
       } else {
@@ -163,12 +134,12 @@ export default {
     smartSelect() {
       // 智能推荐：保留体积最大的图片，选择其他图片删除
       if (this.photos.length <= 1) return
-      
+
       // 找到体积最大的图片
       const largestPhoto = this.photos.reduce((largest, current) => {
         const currentSize = current.fileSize || current.size || 0
         const largestSize = largest.fileSize || largest.size || 0
-        
+
         if (currentSize > largestSize) {
           return current
         } else if (currentSize === largestSize) {
@@ -177,19 +148,44 @@ export default {
         }
         return largest
       })
-      
+
       // 选择除了最大体积之外的所有图片
-      this.selectedPhotos = this.photos.filter(photo => 
+      this.selectedPhotos = this.photos.filter(photo =>
         this.getPhotoId(photo) !== this.getPhotoId(largestPhoto)
+      )
+    },
+    smartSelectByResolution() {
+      // 智能推荐：保留像素最高的图片，选择其他图片删除
+      if (this.photos.length <= 1) return
+
+      // 找到像素最高的图片
+      const highestPixelPhoto = this.photos.reduce((highest, current) => {
+        const currentPixels = (current.width || 1920) * (current.height || 1080)
+        const highestPixels = (highest.width || 1920) * (highest.height || 1080)
+
+        if (currentPixels > highestPixels) {
+          return current
+        } else if (currentPixels === highestPixels) {
+          // 像素相同时，选择文件大小更大的
+          const currentSize = current.fileSize || current.size || 0
+          const highestSize = highest.fileSize || highest.size || 0
+          return currentSize > highestSize ? current : highest
+        }
+        return highest
+      })
+
+      // 选择除了像素最高之外的所有图片
+      this.selectedPhotos = this.photos.filter(photo =>
+        this.getPhotoId(photo) !== this.getPhotoId(highestPixelPhoto)
       )
     },
     async deleteSelected() {
       if (this.selectedCount === 0) return
-      
+
       // 显示删除确认对话框
       this.showDeleteModal = true
     },
-    
+
     confirmDeleteSelected() {
       // 确认删除选中的图片
       this.$emit('delete-photos', this.selectedPhotos)
@@ -232,7 +228,7 @@ export default {
 
 .photo-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   gap: var(--spacing-lg);
   padding: var(--spacing-md) 0;
 }
@@ -245,7 +241,6 @@ export default {
   color: var(--text-secondary);
 }
 
-.similarity-info strong,
 .space-info strong {
   color: var(--text-primary);
 }
@@ -255,16 +250,16 @@ export default {
     flex-direction: column;
     align-items: stretch;
   }
-  
+
   .group-actions {
     justify-content: center;
   }
-  
+
   .photo-grid {
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
     gap: var(--spacing-md);
   }
-  
+
   .group-stats {
     flex-direction: column;
     gap: var(--spacing-xs);
