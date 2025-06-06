@@ -7,13 +7,26 @@ const messages = {
   'en': en
 }
 
-// 从本地存储中获取用户设置的语言，如果没有则默认使用中文
-const savedLocale = localStorage.getItem('locale') || 'zh-CN'
+// 从本地存储中获取用户设置的语言，如果没有则默认使用英文
+let savedLocale = 'en'
+try {
+  savedLocale = localStorage.getItem('locale') || 'en'
+} catch (e) {
+  console.warn('Cannot access localStorage, using default locale zh-CN')
+}
+
+console.log('Initializing i18n with locale:', savedLocale)
+console.log('Available messages:', Object.keys(messages))
 
 const i18n = createI18n({
+  legacy: true, // 使用 legacy 模式保证兼容性
   locale: savedLocale,
   fallbackLocale: 'en',
-  messages
+  messages,
+  globalInjection: true, // 确保全局注入$t
+  silentTranslationWarn: false, // 显示翻译警告来帮助调试
+  missingWarn: false,
+  silentFallbackWarn: false
 })
 
 export default i18n
