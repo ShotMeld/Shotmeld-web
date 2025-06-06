@@ -1,0 +1,532 @@
+{
+  "message": {
+    "hello": "你好",
+    "welcome": "欢迎使用ShotMeld"
+  },
+  "settings": {
+    "title": "设置",
+    "subtitle": "自定义您的 ShotMeld 体验",
+    "theme": {
+      "title": "主题",
+      "description": "选择您喜欢的界面主题",
+      "light": "浅色模式",
+      "dark": "深色模式",
+      "system": "跟随系统"
+    },
+    "language": {
+      "title": "语言",
+      "description": "选择您偏好的界面语言",
+      "zh": "中文",
+      "en": "English"
+    }
+  },
+  "profile": {
+    "loading": "正在加载个人信息...",
+    "email": "邮箱",
+    "registerDate": "注册时间",
+    "photos": "照片",
+    "noPhotos": "无照片",
+    "albums": "相册",
+    "noAlbums": "未创建",
+    "logout": "退出登录",
+    "fetchError": "获取用户信息失败:"
+  },
+  "sharePhoto": {
+    "loading": "正在加载照片...",
+    "error": {
+      "title": "照片不存在或未分享",
+      "homeButton": "返回首页",
+      "invalidId": "照片ID无效",
+      "loadFailed": "加载共享照片失败:",
+      "notFound": "照片不存在或未分享",
+      "imageLoadFailed": "照片加载失败"
+    },
+    "defaultTitle": "共享照片",
+    "download": "下载",
+    "imageLoading": "正在加载图片...",
+    "pageTitle": "Shotmeld 共享照片",
+    "timeline": {
+      "loading": "正在加载时间轴...",
+      "retry": "重试",
+      "year": "年",
+      "month": "月",
+      "photos": "张照片",
+      "noTitle": "无标题",
+      "uploadModal": {
+        "title": "上传照片"
+      },
+      "error": {
+        "fetchFailed": "获取照片失败:",
+        "loadFailed": "加载时间轴失败，请重试",
+        "deleteFailed": "删除照片失败:",
+        "deleteFailedTitle": "删除失败",
+        "deleteFailedMessage": "无法删除照片，请重试"
+      },
+      "editPhoto": "编辑照片:",
+      "editPhotoComingSoon": "编辑照片功能将在后续版本实现",
+      "uploadSuccess": {
+        "title": "上传成功",
+        "message": "已成功上传 {count} 张照片"
+      },
+      "deleteSuccess": {
+        "title": "成功",
+        "message": "照片已删除"
+      }
+    }
+  },
+  "timeline": {
+    "loading": "正在加载时间轴...",
+    "retry": "重试",
+    "year": "年",
+    "month": "月",
+    "photos": "张照片",
+    "noTitle": "无标题",
+    "uploadModal": {
+      "title": "上传照片"
+    },
+    "error": {
+      "fetchFailed": "获取照片失败:",
+      "loadFailed": "加载时间轴失败，请重试",
+      "deleteFailed": "删除照片失败:",
+      "deleteFailedTitle": "删除失败",
+      "deleteFailedMessage": "无法删除照片，请重试"
+    },
+    "editPhoto": "编辑照片:",
+    "editPhotoComingSoon": "编辑照片功能将在后续版本实现",
+    "uploadSuccess": {
+      "title": "上传成功",
+      "message": "已成功上传 {count} 张照片"
+    },
+    "deleteSuccess": {
+      "title": "成功",
+      "message": "照片已删除"
+    }
+  },
+  "photoDetail": {
+    "untitledPhoto": "无标题照片",
+    "deleteConfirm": {
+      "title": "确认删除",
+      "itemName": "照片",
+      "message": "确定要删除这张照片吗？",
+      "warning": "此操作无法撤销"
+    },
+    "info": {
+      "title": "照片信息",
+      "photoTitle": "标题",
+      "untitled": "无标题",
+      "takenTime": "拍摄时间",
+      "createdTime": "创建时间",
+      "fileSize": "文件大小",
+      "dimensions": "尺寸",
+      "pixels": "像素",
+      "resolution": "分辨率",
+      "unknownDate": "未知日期"
+    },
+    "location": {
+      "title": "位置信息",
+      "longitude": "经度",
+      "latitude": "纬度",
+      "location": "位置",
+      "viewOnMap": "在地图中查看"
+    },
+    "exif": {
+      "title": "相机参数",
+      "device": "设备",
+      "exposureTime": "曝光时间",
+      "aperture": "光圈",
+      "iso": "感光度",
+      "focalLength": "焦距",
+      "ev": "EV",
+      "meteringMode": "测光模式",
+      "meteringModes": {
+        "unknown": "未知",
+        "average": "平均",
+        "centerWeighted": "中心加权",
+        "spot": "点测光",
+        "multiSpot": "多区域",
+        "pattern": "局部",
+        "partial": "矩阵"
+      }
+    },
+    "actions": {
+      "download": "下载",
+      "share": "分享",
+      "delete": "删除",
+      "shareSuccess": {
+        "title": "分享成功",
+        "message": "分享链接已复制到剪贴板"
+      },
+      "shareError": {
+        "title": "分享失败",
+        "message": "无法创建分享链接"
+      }
+    },
+    "tags": {
+      "title": "标签"
+    },
+    "albums": {
+      "title": "相册"
+    }
+  },
+  "photoWall": {
+    "filters": {
+      "searchPlaceholder": "搜索照片...",
+      "searchButton": "搜索",
+      "searchButtonAriaLabel": "执行搜索",
+      "album": {
+        "all": "全部相册"
+      },
+      "date": {
+        "start": "开始日期",
+        "end": "结束日期",
+        "separator": "至"
+      },
+      "sort": {
+        "takenAt": "拍摄时间",
+        "createdAt": "上传时间",
+        "title": "标题",
+        "order": {
+          "asc": "升序",
+          "desc": "降序"
+        }
+      }
+    },
+    "error": {
+      "searchFailed": "搜索照片失败",
+      "fetchFailed": "获取照片列表失败",
+      "fetchFailedMessage": "无法加载照片列表，请重试",
+      "fetchAlbumsFailed": "获取相册列表失败",
+      "deleteFailed": "删除失败",
+      "deleteFailedMessage": "无法删除照片，请重试",
+      "addToAlbumFailed": "添加照片到相册失败:",
+      "operationFailed": "操作失败",
+      "addToAlbumFailedMessage": "无法添加照片到相册，请重试"
+    },
+    "defaultUser": "用户",
+    "uploadModal": {
+      "title": "上传照片"
+    },
+    "createAlbum": {
+      "title": "创建相册"
+    },
+    "deleteConfirm": {
+      "itemName": "照片"
+    },
+    "success": "成功",
+    "addToAlbumSuccess": "已将 {count} 张照片添加到相册",
+    "deleteSuccess": "已删除 {count} 张照片",
+    "noTitle": "无标题",
+    "unknownDate": "未知日期",
+    "noPhotos": {
+      "message": "没有照片。上传一些照片开始使用吧！",
+      "uploadButton": "上传照片"
+    },
+    "manageToolbar": {
+      "itemUnit": "张照片",
+      "actions": {
+        "delete": "删除",
+        "addToAlbum": "加入相册"
+      }
+    }
+  },
+  "navbar": {
+    "menu": {
+      "photos": "照片",
+      "memories": "记忆",
+      "albums": "相册",
+      "more": "更多",
+      "settings": "设置",
+      "profile": "个人",
+      "duplicatePhotos": "重复照片检测"
+    },
+    "actions": {
+      "upload": "上传照片",
+      "addPhotos": "添加照片",
+      "manage": "管理",
+      "createAlbum": "新建相册",
+      "logout": "退出登录"
+    },
+    "mobile": {
+      "menuAriaLabel": "菜单"
+    },
+    "defaultUser": "用户"
+  },
+  "loginTransition": {
+    "welcomeBack": "欢迎回来",
+    "defaultUser": "用户"
+  },
+  "auth": {
+    "brand": {
+      "subtitle": "您的记忆留存于此",
+      "startYourMemory": "开始您的记忆"
+    },
+    "login": {
+      "welcome": "欢迎回来",
+      "description": "登录您的账户继续使用",
+      "emailOrUsername": "用户名或邮箱地址",
+      "password": "密码",
+      "button": {
+        "login": "登录",
+        "loading": "登录中..."
+      },
+      "noAccount": "还没有账户？",
+      "registerNow": "立即注册",
+      "errors": {
+        "emailOrUsernameRequired": "请输入用户名或邮箱地址",
+        "passwordRequired": "请输入密码",
+        "invalidCredentials": "用户名或密码错误",
+        "loginFailed": "登录失败，请重试"
+      }
+    },
+    "register": {
+      "title": "创建账户",
+      "description": "加入我们，体验精致的照片管理",
+      "username": "用户名",
+      "email": "邮箱地址",
+      "password": "密码（至少8个字符）",
+      "button": {
+        "register": "创建账户",
+        "loading": "注册中..."
+      },
+      "hasAccount": "已有账户？",
+      "loginNow": "立即登录",
+      "errors": {
+        "usernameRequired": "请输入用户名",
+        "usernameNoAt": "用户名不能包含@符号",
+        "usernameLength": "用户名至少需要3个字符",
+        "emailRequired": "请输入邮箱地址",
+        "emailInvalid": "请输入有效的邮箱地址",
+        "passwordRequired": "请输入密码",
+        "passwordLength": "密码至少需要8个字符",
+        "registerFailed": "注册失败，请重试"
+      }
+    }
+  },
+  "manageToolbar": {
+    "selectAll": "全选",
+    "deselectAll": "取消全选",
+    "selectedCount": "已选择 {count} {unit}",
+    "close": "关闭",
+    "defaultUnit": "项"
+  },
+  "photoUpload": {
+    "title": "上传照片",
+    "dragText": "拖拽文件到此处或",
+    "clickToUpload": "点击上传",
+    "selectedFiles": "已选择 {count} 个文件",
+    "clear": "清空",
+    "uploading": "正在上传...",
+    "uploadingWithProgress": "正在上传... {percent}%",
+    "uploadComplete": "上传完成",
+    "startUpload": "开始上传",
+    "addToAlbum": "添加到相册:",
+    "selectAlbum": "选择相册",
+    "uploadSuccess": "已成功上传 {count} 张照片",
+    "uploadWarning": "请先选择要上传的文件",
+    "preview": "预览",
+    "fileSize": {
+      "b": "{size}B",
+      "kb": "{size}KB",
+      "mb": "{size}MB"
+    },
+    "error": {
+      "fetchAlbumsFailed": "获取相册列表失败:",
+      "uploadFailed": "上传失败",
+      "uploadFailedMessage": "上传失败，请重试"
+    }
+  },
+  "addPhotosModal": {
+    "title": "添加照片",
+    "uploadTitle": "上传照片",
+    "cancel": "取消",
+    "upload": "上传",
+    "adding": "正在添加...",
+    "addCount": "添加 {count} 张照片",
+    "addToAlbum": "添加到相册",
+    "success": "成功",
+    "addSuccess": "已成功添加 {count} 张照片",
+    "addFailed": "添加失败",
+    "addFailedMessage": "添加照片失败，请重试",
+    "uploadSuccess": "已成功上传 {count} 张照片"
+  },
+  "photoSelector": {
+    "noPhotos": {
+      "title": "暂无照片",
+      "hint": "上传照片后即可在此处查看"
+    },
+    "loading": "正在加载照片...",
+    "photo": {
+      "unknownDate": "未知日期",
+      "inAlbum": "已在相册中"
+    },
+    "pagination": {
+      "prev": "上一页",
+      "next": "下一页",
+      "pageInfo": "第 {current} 页，共 {total} 页"
+    },
+    "error": {
+      "loadFailed": "加载失败",
+      "loadFailedMessage": "获取照片列表失败，请重试"
+    }
+  },
+  "albumView": {
+    "loading": "加载中...",
+    "retry": "重试",
+    "empty": "还没有创建任何相册",
+    "createAlbum": {
+      "title": "创建新相册"
+    },
+    "deleteConfirm": {
+      "itemName": "相册"
+    },
+    "success": "成功",
+    "deleteSuccess": "已删除 {count} 个相册",
+    "error": {
+      "fetchFailed": "获取相册列表失败"
+    }
+  },
+  "albumCard": {
+    "photoCount": "{count} 张照片",
+    "noPhotos": "无照片"
+  },
+  "albumForm": {
+    "name": {
+      "label": "相册名称*",
+      "placeholder": "输入相册名称"
+    },
+    "description": {
+      "label": "相册描述",
+      "placeholder": "输入相册描述"
+    },
+    "actions": {
+      "cancel": "取消",
+      "submit": "确认",
+      "submitting": "提交中..."
+    },
+    "success": {
+      "create": "相册已创建",
+      "update": "相册已更新"
+    },
+    "error": {
+      "title": "错误",
+      "message": "操作失败，请重试"
+    }
+  },
+  "albumPhotos": {
+    "manageToolbar": {
+      "itemUnit": "张照片",
+      "actions": {
+        "delete": "删除照片",
+        "removeFromAlbum": "从相册移除"
+      }
+    }
+  },
+  "morePage": {
+    "features": {
+      "duplicatePhotos": {
+        "title": "重复照片检测",
+        "description": "筛选出重复照片并进行管理"
+      },
+      "portraitRecognition": {
+        "title": "人像识别",
+        "description": "人脸属性识别"
+      },
+      "feature3": {
+        "title": "功能三",
+        "description": "这是功能三的简要描述。"
+      },
+      "feature4": {
+        "title": "功能四",
+        "description": "这是功能四的简要描述。"
+      },
+      "feature5": {
+        "title": "功能五",
+        "description": "这是功能五的简要描述。"
+      },
+      "feature6": {
+        "title": "功能六",
+        "description": "这是功能六的简要描述。"
+      }
+    }
+  },
+  "duplicatePhotos": {
+    "detector": {
+      "title": "重复照片检测",
+      "description": "查找并管理重复的照片",
+      "startScan": "开始扫描",
+      "scanning": "正在扫描...",
+      "noPhotos": "暂无照片",
+      "error": {
+        "scanFailed": "扫描失败，请重试"
+      }
+    },
+    "progress": {
+      "title": "扫描进度",
+      "scanning": "正在扫描...",
+      "progress": "扫描进度：{percent}%",
+      "status": {
+        "pending": "等待中...",
+        "preparing": "准备中...",
+        "scanning": "正在扫描照片...",
+        "analyzing": "正在分析结果...",
+        "completed": "扫描完成"
+      },
+      "cancel": "取消扫描"
+    },
+    "results": {
+      "title": "扫描结果",
+      "totalGroups": "共发现 {count} 组重复照片",
+      "noDuplicates": "未发现重复照片",
+      "noDuplicatesDescription": "您的照片库中没有发现重复的照片。",
+      "summary": {
+        "groups": "组重复照片",
+        "duplicates": "张重复照片",
+        "space": "可释放空间"
+      },
+      "actions": {
+        "selectAll": "全选",
+        "deselectAll": "取消全选",
+        "deleteSelected": "删除选中",
+        "keepSelected": "保留选中",
+        "smartRecommendations": "智能推荐选择",
+        "restart": "重新扫描"
+      },
+      "confirm": {
+        "delete": {
+          "title": "确认删除",
+          "message": "确定要删除选中的 {count} 张照片吗？",
+          "warning": "此操作无法撤销",
+          "itemName": "重复照片"
+        }
+      },
+      "success": {
+        "delete": "已成功删除 {count} 张照片",
+        "keep": "已成功保留 {count} 张照片"
+      },
+      "error": {
+        "deleteFailed": "删除失败，请重试",
+        "keepFailed": "保留失败，请重试"
+      }
+    },
+    "group": {
+      "title": "第 {index} 组",
+      "count": "{count} 张照片",
+      "similarity": "相似度：{percent}%",
+      "actions": {
+        "keep": "保留",
+        "delete": "删除"
+      }
+    },
+    "item": {
+      "actions": {
+        "keep": "保留",
+        "delete": "删除"
+      },
+      "info": {
+        "size": "大小：{size}",
+        "dimensions": "尺寸：{width} x {height}",
+        "date": "拍摄时间：{date}"
+      }
+    }
+  }
+}

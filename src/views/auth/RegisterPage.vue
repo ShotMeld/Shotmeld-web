@@ -18,21 +18,21 @@
           <div class="logo-icon">📸</div>
         </div> -->
         <h1 class="brand-title">ShotMeld</h1>
-        <p class="brand-subtitle">开始您的记忆</p>
+        <p class="brand-subtitle">{{ $t('auth.brand.startYourMemory') }}</p>
       </div>
       
       <!-- 注册表单 -->
       <div class="auth-card">
         <div class="card-header">
-          <h2 class="auth-title">创建账户</h2>
-          <p class="auth-description">加入我们，体验精致的照片管理</p>
+          <h2 class="auth-title">{{ $t('auth.register.title') }}</h2>
+          <p class="auth-description">{{ $t('auth.register.description') }}</p>
         </div>
         
         <form @submit.prevent="handleRegister" class="auth-form">
           <div class="form-group">
             <SfInput 
               v-model="formData.username" 
-              placeholder="用户名" 
+              :placeholder="$t('auth.register.username')"
               required 
               :error="errors.username"
               class="auth-input"
@@ -43,7 +43,7 @@
             <SfInput 
               v-model="formData.email" 
               type="email" 
-              placeholder="邮箱地址" 
+              :placeholder="$t('auth.register.email')"
               required 
               :error="errors.email"
               class="auth-input"
@@ -54,7 +54,7 @@
             <SfInput 
               v-model="formData.password" 
               type="password" 
-              placeholder="密码（至少8个字符）" 
+              :placeholder="$t('auth.register.password')"
               required 
               :error="errors.password"
               @keyup.enter="handleRegister"
@@ -69,13 +69,13 @@
             class="auth-button"
             @click="handleRegister"
           >
-            {{ loading ? '注册中...' : '创建账户' }}
+            {{ loading ? $t('auth.register.button.loading') : $t('auth.register.button.register') }}
           </SfButton>
         </form>
 
         <div class="auth-footer">
-          <span class="footer-text">已有账户？</span>
-          <router-link to="/login" class="footer-link">立即登录</router-link>
+          <span class="footer-text">{{ $t('auth.register.hasAccount') }}</span>
+          <router-link to="/login" class="footer-link">{{ $t('auth.register.loginNow') }}</router-link>
         </div>
       </div>
       
@@ -131,17 +131,17 @@ export default {
       this.errors.username = '';
 
       if (!this.formData.username) {
-        this.errors.username = '请输入用户名';
+        this.errors.username = this.$t('auth.register.errors.usernameRequired');
         return false;
       }
 
       if (this.formData.username.includes('@')) {
-        this.errors.username = '用户名不能包含@符号';
+        this.errors.username = this.$t('auth.register.errors.usernameNoAt');
         return false;
       }
 
       if (this.formData.username.length < 3) {
-        this.errors.username = '用户名至少需要3个字符';
+        this.errors.username = this.$t('auth.register.errors.usernameLength');
         return false;
       }
 
@@ -152,13 +152,13 @@ export default {
       this.errors.email = '';
 
       if (!this.formData.email) {
-        this.errors.email = '请输入邮箱地址';
+        this.errors.email = this.$t('auth.register.errors.emailRequired');
         return false;
       }
 
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!emailRegex.test(this.formData.email)) {
-        this.errors.email = '请输入有效的邮箱地址';
+        this.errors.email = this.$t('auth.register.errors.emailInvalid');
         return false;
       }
 
@@ -169,12 +169,12 @@ export default {
       this.errors.password = '';
 
       if (!this.formData.password) {
-        this.errors.password = '请输入密码';
+        this.errors.password = this.$t('auth.register.errors.passwordRequired');
         return false;
       }
 
       if (this.formData.password.length < 8) {
-        this.errors.password = '密码至少需要8个字符';
+        this.errors.password = this.$t('auth.register.errors.passwordLength');
         return false;
       }
 
@@ -203,7 +203,7 @@ export default {
           query: { registered: 'success' }
         });
       } catch (error) {
-        let errorMessage = '注册失败，请重试';
+        let errorMessage = this.$t('auth.register.errors.registerFailed');
         if (error.response) {
           errorMessage = error.response.data.message || errorMessage;
 

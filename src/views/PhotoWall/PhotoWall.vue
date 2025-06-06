@@ -31,10 +31,10 @@
         <PhotoWallPagination v-if="totalPhotos > 0" :currentPage="pagination.page" :pageSize="pagination.limit"
           :total="totalPhotos" @sizeChange="handleSizeChange" @currentChange="handlePageChange" />
         <PhotoDetail v-if="currentPhoto" v-model="showPhotoDetail" :photo="currentPhoto" @photo-deleted="deletePhoto" />
-        <SfModal v-model="isUploadModalVisible" title="上传照片" size="default">
+        <SfModal v-model="isUploadModalVisible" :title="$t('photoWall.uploadModal.title')" size="default">
           <PhotoUpload @upload-success="handlePhotoUploaded" />
         </SfModal>
-        <SfModal v-model="isAlbumFormVisible" title="创建相册" size="default">
+        <SfModal v-model="isAlbumFormVisible" :title="$t('photoWall.createAlbum.title')" size="default">
           <AlbumForm @album-created="handleAlbumCreated" />
         </SfModal>
         
@@ -49,7 +49,7 @@
         <!-- 批量删除确认弹窗 -->
         <SfDeleteConfirmModal
           v-model="isDeleteSelectedModalVisible"
-          item-name="照片"
+          :item-name="$t('photoWall.deleteConfirm.itemName')"
           :count="selectedPhotos.length"
           @confirm="deleteSelectedPhotos"
         />
@@ -122,7 +122,7 @@ export default {
   computed: {
     userName() {
       const user = JSON.parse(localStorage.getItem('user') || '{}');
-      return user.username || '用户';
+      return user.username || this.$t('photoWall.defaultUser');
     },
     // 为主内容添加动态类，当管理工具栏显示时提供额外的顶部间距
     mainContentClass() {
@@ -199,15 +199,15 @@ export default {
         });
         
         this.$notify({
-          title: '成功',
-          message: `已将${this.selectedPhotos.length}张照片添加到相册`,
+          title: this.$t('photoWall.success'),
+          message: this.$t('photoWall.addToAlbumSuccess', { count: this.selectedPhotos.length }),
           type: 'success'
         });
       } catch (error) {
-        console.error('添加照片到相册失败:', error);
+        console.error(this.$t('photoWall.error.addToAlbumFailed'), error);
         this.$notify.error({
-          title: '操作失败',
-          message: error.response?.data?.message || '无法添加照片到相册，请重试'
+          title: this.$t('photoWall.error.operationFailed'),
+          message: error.response?.data?.message || this.$t('photoWall.error.addToAlbumFailedMessage')
         });
       }
     },
@@ -218,8 +218,8 @@ export default {
         await photoService.deletePhotos(this.selectedPhotos);
         
         this.$notify({
-          title: '成功',
-          message: `已删除${this.selectedPhotos.length}张照片`,
+          title: this.$t('photoWall.success'),
+          message: this.$t('photoWall.deleteSuccess', { count: this.selectedPhotos.length }),
           type: 'success'
         });
         
@@ -234,10 +234,10 @@ export default {
           this.fetchPhotos();
         }
       } catch (error) {
-        console.error('批量删除照片失败:', error);
+        console.error(this.$t('photoWall.error.deleteFailed'), error);
         this.$notify.error({
-          title: '删除失败',
-          message: error.response?.data?.message || '无法删除照片，请重试'
+          title: this.$t('photoWall.error.deleteFailed'),
+          message: error.response?.data?.message || this.$t('photoWall.error.deleteFailedMessage')
         });
       }
     },
@@ -247,11 +247,9 @@ export default {
       this.loading = true;
       if (results && results.error) {
         this.$notify.error({
-          title: '搜索失败',
-          message: results.message || '无法获取搜索结果'
+          title: this.$t('photoWall.error.searchFailed'),
+          message: results.error
         });
-        this.photos = [];
-        this.totalPhotos = 0;
       } else if (results && results.data) {
         this.photos = results.data;
         this.totalPhotos = results.total || 0;
@@ -284,10 +282,10 @@ export default {
         this.photos = response.data.data || [];
         this.totalPhotos = response.data.total || 0;
       } catch (error) {
-        console.error('获取照片列表失败:', error);
+        console.error(this.$t('photoWall.error.fetchFailed'), error);
         this.$notify.error({
-          title: '获取照片失败',
-          message: '无法加载照片列表，请重试'
+          title: this.$t('photoWall.error.fetchFailed'),
+          message: this.$t('photoWall.error.fetchFailedMessage')
         });
       } finally {
         this.loading = false;
@@ -298,7 +296,7 @@ export default {
         const response = await albumService.getAlbums();
         this.albums = response.data.data || [];
       } catch (error) {
-        console.error('获取相册列表失败:', error);
+        console.error(this.$t('photoWall.error.fetchAlbumsFailed'), error);
       }
     },
     openPhotoDetail(photo) {
@@ -331,17 +329,17 @@ export default {
       try {
         await photoService.deletePhoto(photoId);
         this.$notify({
-          title: '成功',
-          message: '照片已删除',
+          title: this.$t('photoWall.success'),
+          message: this.$t('photoWall.deleteSuccess', { count: 1 }),
           type: 'success'
         });
         this.photos = this.photos.filter(p => p.id !== photoId);
         this.closePhotoDetail();
       } catch (error) {
-        console.error('删除照片失败:', error);
+        console.error(this.$t('photoWall.error.deleteFailed'), error);
         this.$notify.error({
-          title: '删除失败',
-          message: error.response?.data?.message || '无法删除照片，请重试'
+          title: this.$t('photoWall.error.deleteFailed'),
+          message: error.response?.data?.message || this.$t('photoWall.error.deleteFailedMessage')
         });
       }
     }

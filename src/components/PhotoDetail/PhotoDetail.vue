@@ -4,7 +4,7 @@
 
 <template>
   <SfModal :modelValue="modelValue" @update:modelValue="$emit('update:modelValue', $event)"
-    :title="photo?.title || '无标题照片'" size="large" :customStyles="dynamicModalStyles">
+    :title="photo?.title || $t('photoDetail.untitledPhoto')" size="large" :customStyles="dynamicModalStyles">
     <div class="photo-detail-content">
       <!-- 左侧照片显示组件 -->
       <div class="photo-detail-left">
@@ -37,11 +37,11 @@
   <DeleteConfirmModal 
     v-model="showDeleteConfirm" 
     @confirm="deletePhoto"
-    title="确认删除"
-    itemName="照片"
+    :title="$t('photoDetail.deleteConfirm.title')"
+    :itemName="$t('photoDetail.deleteConfirm.itemName')"
     :count="1"
-    confirmMessage="确定要删除这张照片吗？"
-    warningText="此操作无法撤销。" 
+    :confirmMessage="$t('photoDetail.deleteConfirm.message')"
+    :warningText="$t('photoDetail.deleteConfirm.warning')" 
   />
 </template>
 

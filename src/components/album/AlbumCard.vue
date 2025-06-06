@@ -16,7 +16,7 @@
       >
       <div class="album-card__overlay">
         <div class="album-card__info">
-          <span class="album-card__count">{{ album.photoCount }} 张照片</span>
+          <span class="album-card__count">{{ $t('albumCard.photoCount', { count: album.photoCount }) }}</span>
         </div>
       </div>
       <div v-if="isManageMode" class="album-card__select-overlay" @click.stop="$emit('toggleSelect', album.id)">
@@ -85,7 +85,7 @@ export default {
           <circle cx="38" cy="12" r="4" fill="#999"/>
           <polyline points="0,28 15,20 50,40" stroke="#999" stroke-width="2" fill="none"/>
         </g>
-        <text x="150" y="130" font-family="Arial" font-size="16" fill="#999" text-anchor="middle">No Photos</text>
+        <text x="150" y="130" font-family="Arial" font-size="16" fill="#999" text-anchor="middle">${this.$t('albumCard.noPhotos')}</text>
       </svg>`;
       return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
     }
@@ -110,7 +110,7 @@ export default {
   },
   methods: {
     formatDate(date) {
-      return new Date(date).toLocaleDateString('zh-CN', {
+      return new Date(date).toLocaleDateString(this.$i18n.locale, {
         year: 'numeric',
         month: 'long',
         day: 'numeric'
@@ -140,7 +140,7 @@ export default {
           })
         }
       } catch (error) {
-        console.error('获取照片详情失败:', error)
+        console.error(this.$t('photoWall.error.fetchFailed'), error)
       }
     }
   }

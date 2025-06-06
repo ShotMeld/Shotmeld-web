@@ -17,10 +17,10 @@
                 <!-- 欢迎文字动画 -->
                 <div class="welcome-sequence">
                     <div class="welcome-text primary" :class="{ 'animate': step >= 1 }">
-                        欢迎回来
+                        {{ $t('loginTransition.welcomeBack') }}
                     </div>
                     <div class="welcome-text secondary" :class="{ 'animate': step >= 2 }">
-                        {{ userName }}
+                        {{ userName || $t('loginTransition.defaultUser') }}
                     </div>
                 </div>
             </div>

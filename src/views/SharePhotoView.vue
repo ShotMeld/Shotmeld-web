@@ -7,16 +7,16 @@
     <!-- 加载状态 -->
     <div v-if="loading" class="loading-container">
       <div class="loading-spinner"></div>
-      <p>正在加载照片...</p>
+      <p>{{ $t('sharePhoto.loading') }}</p>
     </div>
 
     <!-- 错误状态 -->
     <div v-else-if="error" class="error-container">
       <div class="error-icon">⚠️</div>
-      <h2>照片不存在或未分享</h2>
+      <h2>{{ $t('sharePhoto.error.title') }}</h2>
       <p>{{ error }}</p>
       <SfButton @click="goHome" class="home-button">
-        返回首页
+        {{ $t('sharePhoto.error.homeButton') }}
       </SfButton>
     </div>
 
@@ -24,13 +24,13 @@
       <!-- 顶部工具栏 -->
       <div class="toolbar">
         <div class="toolbar-center">
-          <h1 class="photo-title">{{ photo.title || '共享照片' }}</h1>
+          <h1 class="photo-title">{{ photo.title || $t('sharePhoto.defaultTitle') }}</h1>
         </div>
 
         <div class="toolbar-right">
           <SfButton @click="downloadPhoto" variant="ghost" class="action-button">
             <i class="fas fa-download"></i>
-            下载
+            {{ $t('sharePhoto.download') }}
           </SfButton>
         </div>
       </div>
@@ -40,11 +40,11 @@
         <!-- 左侧照片显示组件 -->
         <div class="photo-detail-left">
           <div class="photo-image-container">
-            <img v-if="photo?.url" :src="photo.url" :alt="photo.title || '共享照片'" class="photo-image"
+            <img v-if="photo?.url" :src="photo.url" :alt="photo.title || $t('sharePhoto.defaultTitle')" class="photo-image"
               @load="handleImageLoaded" @error="handleImageError" />
             <div v-if="!imageLoaded && photo?.url" class="image-loading">
               <div class="image-loading-spinner"></div>
-              <p>正在加载图片...</p>
+              <p>{{ $t('sharePhoto.imageLoading') }}</p>
             </div>
           </div>
         </div>
@@ -159,18 +159,18 @@ export default {
 
         const photoId = this.$route.params.id;
         if (!photoId) {
-          throw new Error('照片ID无效');
+          throw new Error(this.$t('sharePhoto.error.invalidId'));
         }
 
         const response = await photoService.getSharedPhoto(photoId);
         this.photo = response.data;
 
         // 设置页面标题
-        document.title = this.photo.title ? `${this.photo.title} - Shotmeld` : 'Shotmeld 共享照片';
+        document.title = this.photo.title ? `${this.photo.title} - Shotmeld` : this.$t('sharePhoto.pageTitle');
 
       } catch (error) {
-        console.error('加载共享照片失败:', error);
-        this.error = error.response?.data?.message || '照片不存在或未分享';
+        console.error(this.$t('sharePhoto.error.loadFailed'), error);
+        this.error = error.response?.data?.message || this.$t('sharePhoto.error.notFound');
       } finally {
         this.loading = false;
       }
@@ -192,7 +192,7 @@ export default {
     },
 
     handleImageError() {
-      this.error = '照片加载失败';
+      this.error = this.$t('sharePhoto.error.imageLoadFailed');
     }
   }
 };

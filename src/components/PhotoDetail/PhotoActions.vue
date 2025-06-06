@@ -5,15 +5,15 @@
 <template>
   <div class="photo-actions">
     <SfLinkButton icon="fas fa-download" @click="downloadPhoto" class="action-button">
-      下载
+      {{ $t('photoDetail.actions.download') }}
     </SfLinkButton>
 
     <SfLinkButton icon="fas fa-share-alt" @click="sharePhoto" class="action-button">
-      分享
+      {{ $t('photoDetail.actions.share') }}
     </SfLinkButton>
 
     <SfLinkButton icon="fas fa-trash" type="danger" @click="$emit('delete-click')" class="action-button">
-      删除
+      {{ $t('photoDetail.actions.delete') }}
     </SfLinkButton>
   </div>
 </template>
@@ -70,16 +70,16 @@ export default {
         
         // 使用消息提示
         this.$notify({
-          title: '分享成功',
-          message: '分享链接已复制到剪贴板',
+          title: this.$t('photoDetail.actions.shareSuccess.title'),
+          message: this.$t('photoDetail.actions.shareSuccess.message'),
           type: 'success'
         });
         
       } catch (error) {
         console.error('分享失败: ', error);
         this.$notify({
-          title: '分享失败',
-          message: error.response?.data?.message || '无法创建分享链接',
+          title: this.$t('photoDetail.actions.shareError.title'),
+          message: error.response?.data?.message || this.$t('photoDetail.actions.shareError.message'),
           type: 'error'
         });
       } finally {

@@ -4,7 +4,7 @@
 
 <template>
     <div class="info-group" v-if="photo?.tags && photo.tags.length > 0">
-        <h3 class="info-group-title">标签</h3>
+        <h3 class="info-group-title">{{ $t('photoDetail.tags.title') }}</h3>
         <div class="photo-tags">
             <div v-for="tag in photo.tags" :key="tag" class="tag-item" @click="handleTagClick(tag, $event)">
                 <span class="tag-icon">#</span>

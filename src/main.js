@@ -8,6 +8,7 @@ import 'element-plus/dist/index.css'
 import '@fortawesome/fontawesome-free/css/all.min.css'
 import { useThemeStore } from './store/theme'
 import { configureNotification } from './utils/notification'
+import i18n from './i18n'
 
 // apiClient已经在api/index.js中配置完成，这里不需要额外配置
 
@@ -37,6 +38,7 @@ app.use(ElementPlus)
 app.use(SfUI)
 app.use(router)
 app.use(pinia)
+app.use(i18n)
 
 // 配置通知组件
 configureNotification(app)

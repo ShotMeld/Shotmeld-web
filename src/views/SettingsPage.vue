@@ -7,17 +7,17 @@
     <div class="settings-content">
       <div class="settings-card">
         <div class="settings-header">
-          <h1>设置</h1>
-          <p class="settings-subtitle">自定义您的 ShotMeld 体验</p>
+          <h1>{{ $t('settings.title') }}</h1>
+          <p class="settings-subtitle">{{ $t('settings.subtitle') }}</p>
         </div>
         
         <!-- 主题设置 -->
         <div class="settings-section">
           <div class="section-header">
             <i class="fas fa-palette section-icon"></i>
-            <h2>主题</h2>
+            <h2>{{ $t('settings.theme.title') }}</h2>
           </div>
-          <p class="section-description">选择您喜欢的界面主题</p>
+          <p class="section-description">{{ $t('settings.theme.description') }}</p>
           <div class="settings-options">
             <button 
               v-for="theme in themes" 
@@ -27,7 +27,7 @@
               @click="selectTheme(theme.value)"
             >
               <i :class="theme.icon"></i>
-              <span>{{ theme.label }}</span>
+              <span>{{ $t(theme.label) }}</span>
             </button>
           </div>
         </div>
@@ -38,9 +38,9 @@
         <div class="settings-section">
           <div class="section-header">
             <i class="fas fa-language section-icon"></i>
-            <h2>语言</h2>
+            <h2>{{ $t('settings.language.title') }}</h2>
           </div>
-          <p class="section-description">选择您偏好的界面语言</p>
+          <p class="section-description">{{ $t('settings.language.description') }}</p>
           <div class="settings-options">
             <button 
               v-for="lang in languages" 
@@ -49,7 +49,7 @@
               :class="{ active: selectedLanguage === lang.value }"
               @click="selectLanguage(lang.value)"
             >
-              <span>{{ lang.label }}</span>
+              <span>{{ $t(lang.label) }}</span>
             </button>
           </div>
         </div>
@@ -69,15 +69,15 @@ export default {
     return {
       userName: '',
       selectedTheme: 'system',
-      selectedLanguage: 'zh',
+      selectedLanguage: 'zh-CN',
       themes: [
-        { value: 'light', label: '浅色模式', icon: 'fas fa-sun' },
-        { value: 'dark', label: '深色模式', icon: 'fas fa-moon' },
-        { value: 'system', label: '跟随系统', icon: 'fas fa-circle-half-stroke' }
+        { value: 'light', label: 'settings.theme.light', icon: 'fas fa-sun' },
+        { value: 'dark', label: 'settings.theme.dark', icon: 'fas fa-moon' },
+        { value: 'system', label: 'settings.theme.system', icon: 'fas fa-circle-half-stroke' }
       ],
       languages: [
-        { value: 'zh', label: '中文' },
-        { value: 'en', label: 'English' }
+        { value: 'zh-CN', label: 'settings.language.zh' },
+        { value: 'en', label: 'settings.language.en' }
       ]
     }
   },
@@ -89,6 +89,13 @@ export default {
     // 获取当前主题设置
     const themeStore = useThemeStore()
     this.selectedTheme = themeStore.theme
+
+    // 获取当前语言设置
+    const savedLocale = localStorage.getItem('locale')
+    if (savedLocale) {
+      this.selectedLanguage = savedLocale
+      this.$i18n.locale = savedLocale
+    }
   },
   methods: {
     selectTheme(theme) {
@@ -98,7 +105,9 @@ export default {
     },
     selectLanguage(lang) {
       this.selectedLanguage = lang
-      // TODO: 实现语言切换功能
+      this.$i18n.locale = lang
+      // 将语言设置保存到本地存储
+      localStorage.setItem('locale', lang)
     }
   }
 }
@@ -261,4 +270,4 @@ h2 {
     justify-content: center;
   }
 }
-</style> 
+</style>

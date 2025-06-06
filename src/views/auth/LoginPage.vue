@@ -27,21 +27,21 @@
           <div class="logo-icon">📸</div>
         </div> -->
         <h1 class="brand-title">ShotMeld</h1>
-        <p class="brand-subtitle">您的记忆留存于此</p>
+        <p class="brand-subtitle">{{ $t('auth.brand.subtitle') }}</p>
       </div>
       
       <!-- 登录表单 -->
       <div class="auth-card">
         <div class="card-header">
-          <h2 class="auth-title">欢迎回来</h2>
-          <p class="auth-description">登录您的账户继续使用</p>
+          <h2 class="auth-title">{{ $t('auth.login.welcome') }}</h2>
+          <p class="auth-description">{{ $t('auth.login.description') }}</p>
         </div>
         
         <form @submit.prevent="handleLogin" class="auth-form">
           <div class="form-group">
             <SfInput 
               v-model="formData.emailOrUsername" 
-              placeholder="用户名或邮箱地址" 
+              :placeholder="$t('auth.login.emailOrUsername')"
               required 
               :error="errors.emailOrUsername"
               class="auth-input"
@@ -51,7 +51,7 @@
           <div class="form-group">
             <SfInput 
               v-model="formData.password" 
-              placeholder="密码"
+              :placeholder="$t('auth.login.password')"
               type="password" 
               required 
               :error="errors.password"
@@ -67,13 +67,13 @@
             class="auth-button"
             @click="handleLogin"
           >
-            {{ loading ? '登录中...' : '登录' }}
+            {{ loading ? $t('auth.login.button.loading') : $t('auth.login.button.login') }}
           </SfButton>
         </form>
 
         <div class="auth-footer">
-          <span class="footer-text">还没有账户？</span>
-          <router-link to="/register" class="footer-link">立即注册</router-link>
+          <span class="footer-text">{{ $t('auth.login.noAccount') }}</span>
+          <router-link to="/register" class="footer-link">{{ $t('auth.login.registerNow') }}</router-link>
         </div>
       </div>
       
@@ -118,12 +118,12 @@ export default {
       };
 
       if (!this.formData.emailOrUsername) {
-        this.errors.emailOrUsername = '请输入用户名或邮箱地址';
+        this.errors.emailOrUsername = this.$t('auth.login.errors.emailOrUsernameRequired');
         isValid = false;
       }
 
       if (!this.formData.password) {
-        this.errors.password = '请输入密码';
+        this.errors.password = this.$t('auth.login.errors.passwordRequired');
         isValid = false;
       }
 
@@ -154,13 +154,13 @@ export default {
         this.showTransition = true;
 
       } catch (error) {
-        let errorMessage = '登录失败，请重试';
+        let errorMessage = this.$t('auth.login.errors.loginFailed');
         if (error.response) {
           errorMessage = error.response.data.message || errorMessage;
 
           // 处理特定错误
           if (error.response.status === 401) {
-            this.errors.password = '用户名或密码错误';
+            this.errors.password = this.$t('auth.login.errors.invalidCredentials');
           } else {
             this.errors.emailOrUsername = errorMessage;
           }

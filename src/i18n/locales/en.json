@@ -1,0 +1,532 @@
+{
+  "message": {
+    "hello": "Hello",
+    "welcome": "Welcome to ShotMeld"
+  },
+  "settings": {
+    "title": "Settings",
+    "subtitle": "Customize your ShotMeld experience",
+    "theme": {
+      "title": "Theme",
+      "description": "Choose your preferred interface theme",
+      "light": "Light Mode",
+      "dark": "Dark Mode",
+      "system": "Follow System"
+    },
+    "language": {
+      "title": "Language",
+      "description": "Choose your preferred interface language",
+      "zh": "中文",
+      "en": "English"
+    }
+  },
+  "profile": {
+    "loading": "Loading profile information...",
+    "email": "Email",
+    "registerDate": "Registration Date",
+    "photos": "Photos",
+    "noPhotos": "No Photos",
+    "albums": "Albums",
+    "noAlbums": "No Albums",
+    "logout": "Logout",
+    "fetchError": "Failed to fetch user information:"
+  },
+  "sharePhoto": {
+    "loading": "Loading photo...",
+    "error": {
+      "title": "Photo does not exist or is not shared",
+      "homeButton": "Return to Home",
+      "invalidId": "Invalid photo ID",
+      "loadFailed": "Failed to load shared photo:",
+      "notFound": "Photo does not exist or is not shared",
+      "imageLoadFailed": "Failed to load photo"
+    },
+    "defaultTitle": "Shared Photo",
+    "download": "Download",
+    "imageLoading": "Loading image...",
+    "pageTitle": "Shotmeld Shared Photo",
+    "timeline": {
+      "loading": "Loading timeline...",
+      "retry": "Retry",
+      "year": "Year",
+      "month": "Month",
+      "photos": "Photos",
+      "noTitle": "No Title",
+      "uploadModal": {
+        "title": "Upload Photo"
+      },
+      "error": {
+        "fetchFailed": "Failed to fetch photos:",
+        "loadFailed": "Failed to load timeline, please try again",
+        "deleteFailed": "Failed to delete photo:",
+        "deleteFailedTitle": "Delete Failed",
+        "deleteFailedMessage": "Unable to delete photo, please try again"
+      },
+      "editPhoto": "Edit photo:",
+      "editPhotoComingSoon": "Photo editing feature will be implemented in future versions",
+      "uploadSuccess": {
+        "title": "Upload Success",
+        "message": "Successfully uploaded {count} photos"
+      },
+      "deleteSuccess": {
+        "title": "Success",
+        "message": "Photo has been deleted"
+      }
+    }
+  },
+  "photoDetail": {
+    "untitledPhoto": "Untitled Photo",
+    "deleteConfirm": {
+      "title": "Confirm Delete",
+      "itemName": "photo",
+      "message": "Are you sure you want to delete this photo?",
+      "warning": "This action cannot be undone"
+    },
+    "info": {
+      "title": "Photo Information",
+      "photoTitle": "Title",
+      "untitled": "Untitled",
+      "takenTime": "Taken Time",
+      "createdTime": "Created Time",
+      "fileSize": "File Size",
+      "dimensions": "Dimensions",
+      "pixels": "pixels",
+      "resolution": "Resolution",
+      "unknownDate": "Unknown Date"
+    },
+    "location": {
+      "title": "Location Information",
+      "longitude": "Longitude",
+      "latitude": "Latitude",
+      "location": "Location",
+      "viewOnMap": "View on Map"
+    },
+    "exif": {
+      "title": "Camera Parameters",
+      "device": "Device",
+      "exposureTime": "Exposure Time",
+      "aperture": "Aperture",
+      "iso": "ISO",
+      "focalLength": "Focal Length",
+      "ev": "EV",
+      "meteringMode": "Metering Mode",
+      "meteringModes": {
+        "unknown": "Unknown",
+        "average": "Average",
+        "centerWeighted": "Center Weighted",
+        "spot": "Spot",
+        "multiSpot": "Multi Spot",
+        "pattern": "Pattern",
+        "partial": "Partial"
+      }
+    },
+    "actions": {
+      "download": "Download",
+      "share": "Share",
+      "delete": "Delete",
+      "shareSuccess": {
+        "title": "Share Success",
+        "message": "Share link copied to clipboard"
+      },
+      "shareError": {
+        "title": "Share Failed",
+        "message": "Unable to create share link"
+      }
+    },
+    "tags": {
+      "title": "Tags"
+    },
+    "albums": {
+      "title": "Albums"
+    }
+  },
+  "timeline": {
+    "loading": "Loading timeline...",
+    "retry": "Retry",
+    "year": "",
+    "month": "",
+    "photos": "photos",
+    "noTitle": "No Title",
+    "uploadModal": {
+      "title": "Upload Photo"
+    },
+    "error": {
+      "fetchFailed": "Failed to fetch photos:",
+      "loadFailed": "Failed to load timeline, please try again",
+      "deleteFailed": "Failed to delete photo:",
+      "deleteFailedTitle": "Delete Failed",
+      "deleteFailedMessage": "Unable to delete photo, please try again"
+    },
+    "editPhoto": "Edit photo:",
+    "editPhotoComingSoon": "Photo editing feature will be implemented in future versions",
+    "uploadSuccess": {
+      "title": "Upload Success",
+      "message": "Successfully uploaded {count} photos"
+    },
+    "deleteSuccess": {
+      "title": "Success",
+      "message": "Photo has been deleted"
+    }
+  },
+  "photoWall": {
+    "filters": {
+      "searchPlaceholder": "Search photos...",
+      "searchButton": "Search",
+      "searchButtonAriaLabel": "Execute search",
+      "album": {
+        "all": "All Albums"
+      },
+      "date": {
+        "start": "Start Date",
+        "end": "End Date",
+        "separator": "to"
+      },
+      "sort": {
+        "takenAt": "Taken Date",
+        "createdAt": "Upload Date",
+        "title": "Title",
+        "order": {
+          "asc": "Ascending",
+          "desc": "Descending"
+        }
+      }
+    },
+    "error": {
+      "searchFailed": "Failed to search photos",
+      "fetchFailed": "Failed to fetch photos",
+      "fetchFailedMessage": "Unable to load photos, please try again",
+      "fetchAlbumsFailed": "Failed to fetch albums",
+      "deleteFailed": "Delete Failed",
+      "deleteFailedMessage": "Unable to delete photo, please try again",
+      "addToAlbumFailed": "Failed to add photos to album:",
+      "operationFailed": "Operation Failed",
+      "addToAlbumFailedMessage": "Unable to add photos to album, please try again"
+    },
+    "defaultUser": "User",
+    "uploadModal": {
+      "title": "Upload Photos"
+    },
+    "createAlbum": {
+      "title": "Create Album"
+    },
+    "deleteConfirm": {
+      "itemName": "photos"
+    },
+    "success": "Success",
+    "addToAlbumSuccess": "Added {count} photos to album",
+    "deleteSuccess": "Deleted {count} photos",
+    "manageToolbar": {
+      "itemUnit": "photos",
+      "actions": {
+        "delete": "Delete",
+        "addToAlbum": "Add to Album"
+      }
+    },
+    "noPhotos": {
+      "message": "",
+      "uploadButton": ""
+    },
+    "noTitle": "",
+    "unknownDate": ""
+  },
+  "navbar": {
+    "menu": {
+      "photos": "Photos",
+      "memories": "Memories",
+      "albums": "Albums",
+      "more": "More",
+      "settings": "Settings",
+      "profile": "Profile",
+      "duplicatePhotos": "Duplicate Photos"
+    },
+    "actions": {
+      "upload": "Upload Photos",
+      "addPhotos": "Add Photos",
+      "manage": "Manage",
+      "createAlbum": "Create Album",
+      "logout": "Logout"
+    },
+    "mobile": {
+      "menuAriaLabel": "Menu"
+    },
+    "defaultUser": "User"
+  },
+  "loginTransition": {
+    "welcomeBack": "Welcome Back",
+    "defaultUser": "User"
+  },
+  "auth": {
+    "brand": {
+      "subtitle": "Your memories preserved here",
+      "startYourMemory": "Start your memory"
+    },
+    "login": {
+      "welcome": "Welcome Back",
+      "description": "Sign in to continue to your account",
+      "emailOrUsername": "Username or Email",
+      "password": "Password",
+      "button": {
+        "login": "Sign In",
+        "loading": "Signing in..."
+      },
+      "noAccount": "Don't have an account?",
+      "registerNow": "Register Now",
+      "errors": {
+        "emailOrUsernameRequired": "Please enter your username or email",
+        "passwordRequired": "Please enter your password",
+        "invalidCredentials": "Invalid username or password",
+        "loginFailed": "Login failed, please try again"
+      }
+    },
+    "register": {
+      "title": "Create Account",
+      "description": "Join us for refined photo management",
+      "username": "Username",
+      "email": "Email Address",
+      "password": "Password (minimum 8 characters)",
+      "button": {
+        "register": "Create Account",
+        "loading": "Creating..."
+      },
+      "hasAccount": "Already have an account?",
+      "loginNow": "Sign In Now",
+      "errors": {
+        "usernameRequired": "Please enter a username",
+        "usernameNoAt": "Username cannot contain @ symbol",
+        "usernameLength": "Username must be at least 3 characters",
+        "emailRequired": "Please enter an email address",
+        "emailInvalid": "Please enter a valid email address",
+        "passwordRequired": "Please enter a password",
+        "passwordLength": "Password must be at least 8 characters",
+        "registerFailed": "Registration failed, please try again"
+      }
+    }
+  },
+  "manageToolbar": {
+    "selectAll": "Select All",
+    "deselectAll": "Deselect All",
+    "selectedCount": "Selected {count} {unit}",
+    "close": "Close",
+    "defaultUnit": "items"
+  },
+  "photoUpload": {
+    "title": "Upload Photos",
+    "dragText": "Drag files here or",
+    "clickToUpload": "click to upload",
+    "selectedFiles": "Selected {count} files",
+    "clear": "Clear",
+    "uploading": "Uploading...",
+    "uploadingWithProgress": "Uploading... {percent}%",
+    "uploadComplete": "Upload Complete",
+    "startUpload": "Start Upload",
+    "addToAlbum": "Add to Album:",
+    "selectAlbum": "Select Album",
+    "uploadSuccess": "Successfully uploaded {count} photos",
+    "uploadWarning": "Please select files to upload first",
+    "preview": "Preview",
+    "fileSize": {
+      "b": "{size}B",
+      "kb": "{size}KB",
+      "mb": "{size}MB"
+    },
+    "error": {
+      "fetchAlbumsFailed": "Failed to fetch albums:",
+      "uploadFailed": "Upload Failed",
+      "uploadFailedMessage": "Upload failed, please try again"
+    }
+  },
+  "addPhotosModal": {
+    "title": "Add Photos",
+    "uploadTitle": "Upload Photos to Album",
+    "cancel": "Cancel",
+    "upload": "Upload Photos",
+    "addToAlbum": "Add to Album",
+    "adding": "Adding...",
+    "addCount": "Add {count} Photos",
+    "success": "Success",
+    "addSuccess": "Added {count} photos to album",
+    "uploadSuccess": "Successfully uploaded {count} photos to album",
+    "addFailed": "Add Failed",
+    "addFailedMessage": "Unable to add photos to album, please try again"
+  },
+  "photoSelector": {
+    "noPhotos": {
+      "title": "No Photos",
+      "hint": "Upload photos to view them here"
+    },
+    "loading": "Loading photos...",
+    "photo": {
+      "unknownDate": "Unknown Date",
+      "inAlbum": "In Album"
+    },
+    "pagination": {
+      "prev": "Previous",
+      "next": "Next",
+      "pageInfo": "Page {current} of {total}"
+    },
+    "error": {
+      "loadFailed": "Load Failed",
+      "loadFailedMessage": "Failed to load photo list, please try again"
+    }
+  },
+  "albumView": {
+    "loading": "Loading...",
+    "retry": "Retry",
+    "empty": "No albums created yet",
+    "createAlbum": {
+      "title": "Create New Album"
+    },
+    "deleteConfirm": {
+      "itemName": "albums"
+    },
+    "success": "Success",
+    "deleteSuccess": "Deleted {count} albums",
+    "error": {
+      "fetchFailed": "Failed to fetch albums"
+    }
+  },
+  "albumCard": {
+    "photoCount": "{count} photos",
+    "noPhotos": "No Photos"
+  },
+  "albumForm": {
+    "name": {
+      "label": "Album Name*",
+      "placeholder": "Enter album name"
+    },
+    "description": {
+      "label": "Description",
+      "placeholder": "Enter album description"
+    },
+    "actions": {
+      "cancel": "Cancel",
+      "submit": "Confirm",
+      "submitting": "Submitting..."
+    },
+    "success": {
+      "create": "Album created successfully",
+      "update": "Album updated successfully"
+    },
+    "error": {
+      "title": "Error",
+      "message": "Operation failed, please try again"
+    }
+  },
+  "albumPhotos": {
+    "manageToolbar": {
+      "itemUnit": "photos",
+      "actions": {
+        "delete": "Delete Photos",
+        "removeFromAlbum": "Remove from Album"
+      }
+    }
+  },
+  "morePage": {
+    "features": {
+      "duplicatePhotos": {
+        "title": "Duplicate Photos",
+        "description": "Find and manage duplicate photos"
+      },
+      "portraitRecognition": {
+        "title": "Portrait Recognition",
+        "description": "Face attribute recognition"
+      },
+      "feature3": {
+        "title": "Feature 3",
+        "description": "This is a brief description of feature 3."
+      },
+      "feature4": {
+        "title": "Feature 4",
+        "description": "This is a brief description of feature 4."
+      },
+      "feature5": {
+        "title": "Feature 5",
+        "description": "This is a brief description of feature 5."
+      },
+      "feature6": {
+        "title": "Feature 6",
+        "description": "This is a brief description of feature 6."
+      }
+    }
+  },
+  "duplicatePhotos": {
+    "detector": {
+      "title": "Duplicate Photos",
+      "description": "Find and manage duplicate photos",
+      "startScan": "Start Scan",
+      "scanning": "Scanning...",
+      "noPhotos": "No photos",
+      "error": {
+        "scanFailed": "Scan failed, please try again"
+      }
+    },
+    "progress": {
+      "title": "Scan Progress",
+      "scanning": "Scanning...",
+      "progress": "Progress: {percent}%",
+      "status": {
+        "pending": "Pending...",
+        "preparing": "Preparing...",
+        "scanning": "Scanning photos...",
+        "analyzing": "Analyzing results...",
+        "completed": "Scan completed"
+      },
+      "cancel": "Cancel Scan"
+    },
+    "results": {
+      "title": "Scan Results",
+      "totalGroups": "Found {count} groups of duplicate photos",
+      "noDuplicates": "No duplicate photos found",
+      "noDuplicatesDescription": "No duplicate photos were found in your photo library.",
+      "summary": {
+        "groups": "duplicate groups",
+        "duplicates": "duplicate photos",
+        "space": "space to free up"
+      },
+      "actions": {
+        "selectAll": "Select All",
+        "deselectAll": "Deselect All",
+        "deleteSelected": "Delete Selected",
+        "keepSelected": "Keep Selected",
+        "smartRecommendations": "Smart Recommendations",
+        "restart": "Restart Scan"
+      },
+      "confirm": {
+        "delete": {
+          "title": "Confirm Delete",
+          "message": "Are you sure you want to delete {count} selected photos?",
+          "warning": "This action cannot be undone",
+          "itemName": "duplicate photos"
+        }
+      },
+      "success": {
+        "delete": "Successfully deleted {count} photos",
+        "keep": "Successfully kept {count} photos"
+      },
+      "error": {
+        "deleteFailed": "Delete failed, please try again",
+        "keepFailed": "Keep failed, please try again"
+      }
+    },
+    "group": {
+      "title": "Group {index}",
+      "count": "{count} photos",
+      "similarity": "Similarity: {percent}%",
+      "actions": {
+        "keep": "Keep",
+        "delete": "Delete"
+      }
+    },
+    "item": {
+      "actions": {
+        "keep": "Keep",
+        "delete": "Delete"
+      },
+      "info": {
+        "size": "Size: {size}",
+        "dimensions": "Dimensions: {width} x {height}",
+        "date": "Taken: {date}"
+      }
+    }
+  }
+}

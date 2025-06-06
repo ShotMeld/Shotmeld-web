@@ -2,19 +2,19 @@
   <div class="duplicate-results">
     <div class="results-header">
       <div class="results-summary">
-        <h2>检测结果</h2>
+        <h2>{{ $t('duplicatePhotos.results.title') }}</h2>
         <div class="summary-stats">
           <div class="stat-item">
             <span class="stat-value">{{ duplicateGroups.length }}</span>
-            <span class="stat-label">重复组</span>
+            <span class="stat-label">{{ $t('duplicatePhotos.results.summary.groups') }}</span>
           </div>
           <div class="stat-item">
             <span class="stat-value">{{ totalDuplicates }}</span>
-            <span class="stat-label">重复图片</span>
+            <span class="stat-label">{{ $t('duplicatePhotos.results.summary.duplicates') }}</span>
           </div>
           <div class="stat-item">
             <span class="stat-value">{{ estimatedSpace }}</span>
-            <span class="stat-label">释放空间</span>
+            <span class="stat-label">{{ $t('duplicatePhotos.results.summary.space') }}</span>
           </div>
         </div>
       </div>
@@ -24,14 +24,14 @@
           type="secondary"
           @click="selectSmartRecommendations"
         >
-          智能推荐
+          {{ $t('duplicatePhotos.results.actions.smartRecommendations') }}
         </sf-button>
         <sf-button
           type="danger"
           @click="deleteAllSelected"
           :disabled="totalSelected === 0"
         >
-          批量删除 ({{ totalSelected }})
+          {{ $t('duplicatePhotos.results.actions.deleteSelected', { count: totalSelected }) }}
         </sf-button>
       </div>
     </div>
@@ -43,8 +43,8 @@
           <circle cx="12" cy="12" r="10" stroke="var(--color-success)" stroke-width="2"/>
         </svg>
       </div>
-      <h3>太棒了！没有发现重复图片</h3>
-      <p>您的图库很整洁，没有重复的照片。</p>
+      <h3>{{ $t('duplicatePhotos.results.noDuplicates') }}</h3>
+      <p>{{ $t('duplicatePhotos.results.noDuplicatesDescription') }}</p>
     </div>
 
     <div v-else class="results-content">
@@ -62,21 +62,21 @@
 
     <div v-if="duplicateGroups.length > 0" class="results-footer">
       <div class="pagination-info">
-        {{ duplicateGroups.length }} 个重复组
+        {{ $t('duplicatePhotos.results.totalGroups', { count: duplicateGroups.length }) }}
       </div>
       
       <sf-button
         type="primary"
         @click="$emit('restart')"
       >
-        重新检测
+        {{ $t('duplicatePhotos.results.actions.restart') }}
       </sf-button>
     </div>
 
     <!-- 批量删除确认对话框 -->
     <sf-delete-confirm-modal
       v-model="showDeleteSelectedModal"
-      item-name="图片"
+      item-name="{{ $t('duplicatePhotos.results.confirm.delete.itemName') }}"
       :count="totalSelected"
       @confirm="confirmDeleteAllSelected"
     />

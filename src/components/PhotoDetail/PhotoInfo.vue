@@ -4,25 +4,25 @@
 
 <template>
   <div class="info-group">
-    <h3 class="info-group-title">照片信息</h3>
+    <h3 class="info-group-title">{{ $t('photoDetail.info.title') }}</h3>
     <div class="info-item">
-      <span class="info-label">标题</span>
-      <span class="info-value title-value">{{ photo?.title || '无标题' }}</span>
+      <span class="info-label">{{ $t('photoDetail.info.photoTitle') }}</span>
+      <span class="info-value title-value">{{ photo?.title || $t('photoDetail.info.untitled') }}</span>
     </div>
     <div class="info-item">
-      <span class="info-label">{{ photo?.takenAt ? '拍摄时间' : '创建时间' }}</span>
+      <span class="info-label">{{ photo?.takenAt ? $t('photoDetail.info.takenTime') : $t('photoDetail.info.createdTime') }}</span>
       <span class="info-value">{{ formatDate(photo?.takenAt || photo?.createdAt) }}</span>
     </div>
     <div class="info-item">
-      <span class="info-label">文件大小</span>
+      <span class="info-label">{{ $t('photoDetail.info.fileSize') }}</span>
       <span class="info-value">{{ formatFileSize(photo?.fileSize) }}</span>
     </div>
     <div class="info-item">
-      <span class="info-label">尺寸</span>
-      <span class="info-value">{{ photo?.width || 0 }}×{{ photo?.height || 0 }} 像素</span>
+      <span class="info-label">{{ $t('photoDetail.info.dimensions') }}</span>
+      <span class="info-value">{{ photo?.width || 0 }}×{{ photo?.height || 0 }} {{ $t('photoDetail.info.pixels') }}</span>
     </div>
     <div class="info-item" v-if="photo?.metadata?.density">
-      <span class="info-label">分辨率</span>
+      <span class="info-label">{{ $t('photoDetail.info.resolution') }}</span>
       <span class="info-value">{{ photo.metadata.density }} dpi</span>
     </div>
   </div>
@@ -39,9 +39,9 @@ export default {
   },
   methods: {
     formatDate(dateString) {
-      if (!dateString) return '未知日期'
+      if (!dateString) return this.$t('photoDetail.info.unknownDate')
       const date = new Date(dateString)
-      return date.toLocaleDateString('zh-CN', {
+      return date.toLocaleDateString(this.$i18n.locale, {
         year: 'numeric',
         month: '2-digit',
         day: '2-digit',

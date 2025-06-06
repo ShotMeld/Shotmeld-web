@@ -3,7 +3,9 @@
     <template #header>
       <div class="group-header">
         <div class="group-info">
-          <h3>相似图片组 {{ groupIndex + 1 }}</h3>
+          <h3>{{ $t('duplicatePhotos.group.title', { index: groupIndex + 1 }) }}</h3>
+          <span class="group-count">{{ $t('duplicatePhotos.group.count', { count: photos.length }) }}</span>
+          <span class="group-similarity">{{ $t('duplicatePhotos.group.similarity', { percent: similarity }) }}</span>
         </div>
         <div class="group-actions">
           <sf-button type="text" size="small" @click="selectAll" :disabled="isAllSelected">
@@ -61,6 +63,10 @@ export default {
       required: true
     },
     groupIndex: {
+      type: Number,
+      required: true
+    },
+    similarity: {
       type: Number,
       required: true
     }
@@ -215,8 +221,9 @@ export default {
   margin-bottom: var(--spacing-2xs);
 }
 
-.photo-count {
-  font-size: var(--font-size-sm);
+.group-count,
+.group-similarity {
+  font-size: var(--font-size-md);
   color: var(--text-secondary);
 }
 

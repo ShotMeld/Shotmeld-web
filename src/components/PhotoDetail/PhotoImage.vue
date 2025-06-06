@@ -176,7 +176,27 @@ export default {
   flex-grow: 0;
 }
 
-.photo-detail-image img {
+/* 缩略图背景占位 */
+.thumbnail-placeholder {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+}
+
+.thumbnail-bg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: blur(8px);
+  opacity: 0.6;
+  transform: scale(1.1); /* 稍微放大避免边缘露白 */
+}
+
+/* 主图片 */
+.photo-detail-image > img {
   width: 100%;
   height: 100%;
   object-fit: cover; /* 改为 cover 以完全填充容器 */
@@ -230,8 +250,9 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: rgba(255, 255, 255, 0.5);
-  backdrop-filter: blur(5px);
-  -webkit-backdrop-filter: blur(5px);
+  background-color: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  z-index: 3;
 }
 </style>

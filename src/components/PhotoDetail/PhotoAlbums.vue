@@ -4,7 +4,7 @@
 
 <template>
   <div class="info-group" v-if="photo?.albums && photo.albums.length > 0">
-    <h3 class="info-group-title">相册</h3>
+    <h3 class="info-group-title">{{ $t('photoDetail.albums.title') }}</h3>
     <div class="photo-albums">
       <div v-for="album in photo.albums" :key="album" class="album-item">
         <span class="album-icon">📁</span>

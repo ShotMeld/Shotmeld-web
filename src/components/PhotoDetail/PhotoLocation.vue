@@ -4,22 +4,22 @@
 
 <template>
   <div class="info-group" v-if="hasLocation">
-    <h3 class="info-group-title">位置信息</h3>
+    <h3 class="info-group-title">{{ $t('photoDetail.location.title') }}</h3>
     <div class="info-item">
-      <span class="info-label">经度</span>
+      <span class="info-label">{{ $t('photoDetail.location.longitude') }}</span>
       <span class="info-value">{{ formatCoordinate(photo.location.longitude, 'lng') }}</span>
     </div>
     <div class="info-item">
-      <span class="info-label">纬度</span>
+      <span class="info-label">{{ $t('photoDetail.location.latitude') }}</span>
       <span class="info-value">{{ formatCoordinate(photo.location.latitude, 'lat') }}</span>
     </div>
     <div v-if="photo.location.name" class="info-item">
-      <span class="info-label">位置</span>
+      <span class="info-label">{{ $t('photoDetail.location.location') }}</span>
       <span class="info-value">{{ formatCoordinate(photo.location.name, 'name') }}</span>
     </div>
     <!-- TODO：之后考虑添加地图组件或是来个接口显示位置名称 -->
     <SfLinkButton icon="fas fa-map-marker-alt" @click="openMap">
-      在地图中查看
+      {{ $t('photoDetail.location.viewOnMap') }}
     </SfLinkButton>
   </div>
 </template>

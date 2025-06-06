@@ -8,18 +8,18 @@
     <div :class="mainContainerClass">
       <div v-if="loading" class="album-view__loading">
         <div class="album-view__spinner"></div>
-        <p>加载中...</p>
+        <p>{{ $t('albumView.loading') }}</p>
       </div>
 
       <div v-else-if="error" class="album-view__error">
         <p>{{ error }}</p>
         <sf-button @click="fetchAlbums" variant="outline">
-          重试
+          {{ $t('albumView.retry') }}
         </sf-button>
       </div>
 
       <div v-else-if="albums.length === 0" class="album-view__empty">
-        <p>还没有创建任何相册</p>
+        <p>{{ $t('albumView.empty') }}</p>
       </div>
 
       <div v-else>
@@ -47,14 +47,14 @@
       </div>
     </div>
 
-    <sf-modal v-model="showCreateModal" title="创建新相册">
+    <sf-modal v-model="showCreateModal" :title="$t('albumView.createAlbum.title')">
       <album-form @success="handleAlbumCreated" @close="showCreateModal = false" @cancel="showCreateModal = false" />
     </sf-modal>
 
     <!-- 批量删除确认弹窗 -->
     <sf-delete-confirm-modal
       v-model="isDeleteSelectedModalVisible"
-      item-name="相册"
+      :item-name="$t('albumView.deleteConfirm.itemName')"
       :count="selectedAlbums.length"
       @confirm="deleteSelectedAlbums"
     />
@@ -124,8 +124,8 @@ export default {
         const response = await albumService.getAlbums()
         this.albums = response.data.data
       } catch (error) {
-        this.error = error.response?.data?.message || '获取相册列表失败'
-        console.error('获取相册列表失败:', error)
+        this.error = error.response?.data?.message || this.$t('albumView.error.fetchFailed')
+        console.error(this.$t('albumView.error.fetchFailed'), error)
       } finally {
         this.loading = false
       }
@@ -185,8 +185,8 @@ export default {
         )
 
         this.$notify({
-          title: '成功',
-          message: `已删除 ${this.selectedAlbums.length} 个相册`,
+          title: this.$t('albumView.success'),
+          message: this.$t('albumView.deleteSuccess', { count: this.selectedAlbums.length }),
           type: 'success'
         })
 
@@ -196,10 +196,10 @@ export default {
         this.isDeleteSelectedModalVisible = false
         this.isManageMode = false
       } catch (error) {
-        console.error('删除相册失败:', error)
+        console.error(this.$t('albumView.error.fetchFailed'), error)
         this.$notify.error({
-          title: '删除失败',
-          message: error.response?.data?.message || '无法删除相册，请重试'
+          title: this.$t('photoWall.error.deleteFailed'),
+          message: error.response?.data?.message || this.$t('photoWall.error.deleteFailedMessage')
         })
       }
     }
