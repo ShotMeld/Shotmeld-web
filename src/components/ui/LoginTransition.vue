@@ -5,12 +5,8 @@
 <template>
     <transition name="login-transition" @after-leave="$emit('transition-complete')">
         <div v-if="show" class="login-transition-overlay">
-            <!-- 背景动画层 -->
-            <div class="transition-background">
-                <div class="gradient-orb orb-1"></div>
-                <div class="gradient-orb orb-2"></div>
-                <div class="gradient-orb orb-3"></div>
-            </div>
+            <!-- 背景动画层使用独立组件 -->
+            <AuthBackground />
 
             <!-- 内容层 -->
             <div class="transition-content">
@@ -29,8 +25,13 @@
 </template>
 
 <script>
+import AuthBackground from '../auth/AuthBackground.vue';
+
 export default {
     name: 'LoginTransition',
+    components: {
+        AuthBackground
+    },
     props: {
         show: {
             type: Boolean,
@@ -125,67 +126,10 @@ export default {
     transform: scale(1.1);
 }
 
-/* 背景动画层 */
-.transition-background {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-}
-
-.gradient-orb {
-    position: absolute;
-    border-radius: 50%;
-    filter: blur(40px);
-    opacity: 0.6;
-    animation: float 8s ease-in-out infinite;
-}
-
-.orb-1 {
-    width: 300px;
-    height: 300px;
-    background: linear-gradient(45deg, rgba(0, 122, 255, 0.3), rgba(88, 86, 214, 0.3));
-    top: 10%;
-    right: 10%;
-    animation-delay: 0s;
-}
-
-.orb-2 {
-    width: 200px;
-    height: 200px;
-    background: linear-gradient(45deg, rgba(255, 45, 85, 0.2), rgba(255, 149, 0, 0.2));
-    bottom: 15%;
-    left: 15%;
-    animation-delay: -3s;
-}
-
-.orb-3 {
-    width: 150px;
-    height: 150px;
-    background: linear-gradient(45deg, rgba(50, 215, 75, 0.2), rgba(0, 199, 190, 0.2));
-    top: 50%;
-    left: 50%;
-    animation-delay: -6s;
-    transform: translate(-50%, -50%);
-}
-
-@keyframes float {
-
-    0%,
-    100% {
-        transform: translateY(0px) scale(1);
-    }
-
-    50% {
-        transform: translateY(-30px) scale(1.1);
-    }
-}
-
 /* 内容层 */
 .transition-content {
     position: relative;
-    z-index: 2;
+    z-index: 10000;
     text-align: center;
     max-width: 600px;
     padding: var(--spacing-xl);

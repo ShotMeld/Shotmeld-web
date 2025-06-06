@@ -1,6 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import LoginPage from '../views/auth/LoginPage.vue'
-import RegisterPage from '../views/auth/RegisterPage.vue'
+import AuthPage from '../views/auth/AuthPage.vue'
 import ProfilePage from '../views/ProfilePage.vue'
 import SettingsPage from '../views/SettingsPage.vue'
 import MorePage from '../views/MorePage.vue'
@@ -15,12 +14,12 @@ const routes = [
   {
     path: '/register',
     name: 'Register',
-    component: RegisterPage
+    component: AuthPage
   },
   {
     path: '/login',
     name: 'Login',
-    component: LoginPage
+    component: AuthPage
   },
   {
     path: '/share/:id',
