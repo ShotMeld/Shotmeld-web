@@ -66,14 +66,13 @@
       @photo-deleted="deletePhoto"
     />
 
-    <!-- 上传照片模态框 -->
-    <sf-modal v-model="showUploadModal" title="添加照片">
-      <photo-upload
-        :showAlbumOption="false"
-        :albumId="album.id"
-        @upload-success="handlePhotoUploaded"
-      />
-    </sf-modal>
+    <!-- 添加照片模态框 -->
+    <add-photos-modal
+      v-model="showUploadModal"
+      :albumId="album.id"
+      :existingPhotoIds="photos.map(p => p.id)"
+      @photos-added="handlePhotosAdded"
+    />
 
     <!-- 批量删除确认模态框 -->
     <sf-delete-confirm-modal
@@ -100,7 +99,7 @@
 <script>
 import PhotoWallGrid from './PhotoWall/PhotoWallGrid.vue'
 import PhotoDetail from '../components/PhotoDetail.vue'
-import PhotoUpload from '../components/PhotoUpload.vue'
+import AddPhotosModal from '../components/AddPhotosModal.vue'
 import SfButton from '../components/ui/SfButton.vue'
 import SfModal from '../components/ui/SfModal.vue'
 import SfDeleteConfirmModal from '../components/ui/SfDeleteConfirmModal.vue'
@@ -114,7 +113,7 @@ export default {
   components: {
     PhotoWallGrid,
     PhotoDetail,
-    PhotoUpload,
+    AddPhotosModal,
     SfButton,
     SfModal,
     SfDeleteConfirmModal,
@@ -200,11 +199,32 @@ export default {
       this.showPhotoDetail = true
     },
     
-    handlePhotoUploaded(uploadedPhotos) {
-      // 更新照片列表
-      this.photos = [...this.photos, ...uploadedPhotos]
-      this.album.photoCount = this.photos.length
+    handlePhotosAdded(result) {
+      // 处理照片添加成功后的更新
+      if (result.type === 'uploaded') {
+        // 上传的新照片，直接添加到列表
+        this.photos = [...this.photos, ...result.photos]
+        this.album.photoCount = this.photos.length
+      } else if (result.type === 'existing') {
+        // 现有照片添加到相册，需要重新获取相册照片
+        // 这里我们可以优化，不重新获取整个相册详情，只获取照片列表
+        this.fetchAlbumPhotos()
+      }
+      
       this.showUploadModal = false
+    },
+    
+    async fetchAlbumPhotos() {
+      try {
+        const albumId = this.$route.params.id
+        const photosResponse = await albumService.getAlbumPhotos(albumId)
+        this.photos = photosResponse.data.data || []
+        this.album.photoCount = this.photos.length
+      } catch (error) {
+        console.error('获取相册照片失败:', error)
+        // 如果获取失败，回退到获取完整的相册详情
+        this.fetchAlbumDetails()
+      }
     },
     
     // 批量管理相关方法
@@ -261,10 +281,7 @@ export default {
       if (this.selectedPhotos.length === 0) return
       
       try {
-        await photoService.removePhotosFromAlbum({
-          albumId: this.album.id,
-          photoIds: this.selectedPhotos
-        })
+        await albumService.removePhotosFromAlbum(this.album.id, this.selectedPhotos)
         
         this.$notify({
           title: '成功',

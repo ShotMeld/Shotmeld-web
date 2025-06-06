@@ -3,41 +3,84 @@
 -->
 
 <template>
-  <div class="page-container">
-    <div class="register-card">
-      <h1 class="brand-title">ShotMeld</h1>
-      <h2 class="register-title">注册账号</h2>
-      <form @submit.prevent="handleRegister">
-        <SfInput v-model="formData.username" label="用户名" required :error="errors.username">
-          <template #prefix>
-            <i class="sf-icon">👤</i>
-          </template>
-        </SfInput>
-
-        <SfInput v-model="formData.email" type="email" label="邮箱地址" required :error="errors.email" @keyup.enter="handleRegister" >
-          <template #prefix>
-            <i class="sf-icon">✉️</i>
-          </template>
-        </SfInput>
-
-        <SfInput v-model="formData.password" type="password" label="密码" required :error="errors.password"
-          hint="密码至少包含8个字符">
-          <template #prefix>
-            <i class="sf-icon">🔒</i>
-          </template>
-        </SfInput>
-
-        <SfButton type="primary" htmlType="submit" rounded full-width :loading="loading" class="register-button">
-          {{ loading ? '注册中...' : '注册' }}
-        </SfButton>
-
-        <div class="additional-links">
-          <router-link to="/login" class="text-link">已有账号？立即登录</router-link>
+  <div class="auth-container">
+    <!-- 背景装饰 -->
+    <div class="auth-background">
+      <div class="floating-circle circle-1"></div>
+      <div class="floating-circle circle-2"></div>
+      <div class="floating-circle circle-3"></div>
+    </div>
+    
+    <div class="auth-content">
+      <!-- Logo 和品牌 -->
+      <div class="brand-section">
+        <!-- <div class="brand-logo">
+          <div class="logo-icon">📸</div>
+        </div> -->
+        <h1 class="brand-title">ShotMeld</h1>
+        <p class="brand-subtitle">开始您的记忆</p>
+      </div>
+      
+      <!-- 注册表单 -->
+      <div class="auth-card">
+        <div class="card-header">
+          <h2 class="auth-title">创建账户</h2>
+          <p class="auth-description">加入我们，体验精致的照片管理</p>
         </div>
         
-        <!-- ICP备案信息 -->
-        <IcpFooter />
-      </form>
+        <form @submit.prevent="handleRegister" class="auth-form">
+          <div class="form-group">
+            <SfInput 
+              v-model="formData.username" 
+              placeholder="用户名" 
+              required 
+              :error="errors.username"
+              class="auth-input"
+            />
+          </div>
+
+          <div class="form-group">
+            <SfInput 
+              v-model="formData.email" 
+              type="email" 
+              placeholder="邮箱地址" 
+              required 
+              :error="errors.email"
+              class="auth-input"
+            />
+          </div>
+
+          <div class="form-group">
+            <SfInput 
+              v-model="formData.password" 
+              type="password" 
+              placeholder="密码（至少8个字符）" 
+              required 
+              :error="errors.password"
+              @keyup.enter="handleRegister"
+              class="auth-input"
+            />
+          </div>
+
+          <SfButton 
+            type="primary" 
+            full-width 
+            :loading="loading" 
+            class="auth-button"
+            @click="handleRegister"
+          >
+            {{ loading ? '注册中...' : '创建账户' }}
+          </SfButton>
+        </form>
+
+        <div class="auth-footer">
+          <span class="footer-text">已有账户？</span>
+          <router-link to="/login" class="footer-link">立即登录</router-link>
+        </div>
+      </div>
+      
+      <!-- ICP备案信息 -->
+      <IcpFooter class="icp-footer" />
     </div>
   </div>
 </template>
@@ -130,7 +173,7 @@ export default {
         return false;
       }
 
-      if (this.formData.password.length < 6) {
+      if (this.formData.password.length < 8) {
         this.errors.password = '密码至少需要8个字符';
         return false;
       }
@@ -209,114 +252,273 @@ export default {
 </script>
 
 <style scoped>
-.page-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+.auth-container {
   min-height: 100vh;
-  padding: var(--spacing-md);
-  background-image: url('https://www.loliapi.com/acg/');
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-lg);
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   position: relative;
+  overflow: hidden;
 }
 
-.page-container::before {
-  content: '';
+.auth-background {
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.3);
-  backdrop-filter: blur(10px);
-  z-index: 0;
+  pointer-events: none;
 }
 
-.register-card {
-  position: relative;
-  z-index: 1;
-  background-color: rgba(255, 255, 255, 0.8);
-  backdrop-filter: blur(20px);
-  border-radius: var(--radius-large);
-  padding: var(--spacing-2xl);
+.floating-circle {
+  position: absolute;
+  border-radius: 50%;
+  background: linear-gradient(45deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+  animation: float 6s ease-in-out infinite;
+}
+
+.circle-1 {
+  width: 120px;
+  height: 120px;
+  top: 15%;
+  right: 10%;
+  animation-delay: 0s;
+}
+
+.circle-2 {
+  width: 80px;
+  height: 80px;
+  top: 70%;
+  left: 15%;
+  animation-delay: -2s;
+}
+
+.circle-3 {
+  width: 60px;
+  height: 60px;
+  bottom: 25%;
+  right: 20%;
+  animation-delay: -4s;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px) scale(1);
+    opacity: 0.4;
+  }
+  50% {
+    transform: translateY(-20px) scale(1.05);
+    opacity: 0.7;
+  }
+}
+
+.auth-content {
   width: 100%;
   max-width: 400px;
-  box-shadow: var(--shadow-large);
-  transition: transform var(--transition-base), box-shadow var(--transition-base);
-  animation: card-appear 0.5s var(--transition-bounce);
+  position: relative;
+  z-index: 1;
 }
 
-.register-card:hover {
-  transform: translateY(-5px);
-  box-shadow: var(--shadow-extra-large);
-}
-
-.brand-title {
-  color: var(--text-primary);
-  font-size: var(--font-size-3xl);
-  margin-bottom: var(--spacing-md);
-  font-weight: 600;
+.brand-section {
   text-align: center;
-  font-family: "Dancing Script", cursive;
+  margin-bottom: var(--spacing-3xl);
+  animation: slideUp 0.8s ease-out;
 }
 
-.register-title {
-  color: var(--text-primary);
-  font-size: var(--font-size-2xl);
-  margin-bottom: var(--spacing-xl);
-  font-weight: var(--font-weight-semibold);
-  text-align: center;
+.brand-logo {
+  margin-bottom: var(--spacing-lg);
 }
 
-.register-button {
-  margin-top: var(--spacing-lg);
-}
-
-.sf-icon {
+.logo-icon {
+  width: 80px;
+  height: 80px;
+  font-size: 36px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-style: normal;
+  background: linear-gradient(135deg, #ff6b6b, #ffa500);
+  border-radius: var(--radius-large);
+  margin: 0 auto;
+  box-shadow: var(--shadow-large);
+  animation: logoFloat 3s ease-in-out infinite;
 }
 
-.additional-links {
-  margin-top: var(--spacing-xl);
-  text-align: center;
-}
-
-.text-link {
-  color: var(--color-primary);
-  text-decoration: none;
-  font-weight: var(--font-weight-medium);
-  transition: color var(--transition-fast);
-}
-
-.text-link:hover {
-  color: rgba(0, 122, 255, 0.8);
-}
-
-@keyframes card-appear {
-  0% {
-    opacity: 0;
-    transform: translateY(20px) scale(0.95);
+@keyframes logoFloat {
+  0%, 100% {
+    transform: translateY(0px);
   }
+  50% {
+    transform: translateY(-8px);
+  }
+}
 
-  100% {
+.brand-title {
+  font-size: var(--font-size-4xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-white);
+  margin-bottom: var(--spacing-xs);
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
+  letter-spacing: -0.02em;
+}
+
+.brand-subtitle {
+  font-size: var(--font-size-base);
+  color: rgba(255, 255, 255, 0.8);
+  font-weight: var(--font-weight-regular);
+}
+
+.auth-card {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  border-radius: var(--radius-large);
+  padding: var(--spacing-3xl);
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.15),
+    0 1px 2px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  animation: cardSlideUp 0.8s ease-out 0.2s both;
+  transition: transform var(--transition-base), box-shadow var(--transition-base);
+}
+
+.auth-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 
+    0 16px 40px rgba(0, 0, 0, 0.2),
+    0 2px 4px rgba(0, 0, 0, 0.12);
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes cardSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(40px) scale(0.95);
+  }
+  to {
     opacity: 1;
     transform: translateY(0) scale(1);
   }
 }
 
-@media (max-width: 480px) {
-  .register-card {
-    padding: var(--spacing-xl);
-    margin: 0 var(--spacing-md);
-  }
+.card-header {
+  text-align: center;
+  margin-bottom: var(--spacing-2xl);
+}
 
-  .register-title {
-    font-size: var(--font-size-xl);
+.auth-title {
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+  margin-bottom: var(--spacing-xs);
+  letter-spacing: -0.01em;
+}
+
+.auth-description {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  font-weight: var(--font-weight-regular);
+}
+
+.auth-form {
+  margin-bottom: var(--spacing-xl);
+}
+
+.form-group {
+  margin-bottom: var(--spacing-lg);
+}
+
+.auth-input {
+  transition: all var(--transition-base);
+}
+
+.auth-input:focus-within {
+  transform: translateY(-2px);
+}
+
+.auth-button {
+  margin-top: var(--spacing-lg);
+  height: 48px;
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+  border-radius: var(--radius-large);
+  transition: all var(--transition-base);
+}
+
+.auth-button:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-large);
+}
+
+.auth-footer {
+  text-align: center;
+  padding-top: var(--spacing-lg);
+  border-top: 1px solid var(--border-color);
+}
+
+.footer-text {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  margin-right: var(--spacing-xs);
+}
+
+.footer-link {
+  font-size: var(--font-size-sm);
+  color: var(--color-primary);
+  text-decoration: none;
+  font-weight: var(--font-weight-semibold);
+  transition: color var(--transition-fast);
+}
+
+.footer-link:hover {
+  color: var(--color-primary-dark);
+}
+
+.icp-footer {
+  margin-top: var(--spacing-xl);
+  opacity: 0.6;
+}
+
+/* 响应式设计 */
+@media (max-width: 480px) {
+  .auth-container {
+    padding: var(--spacing-md);
+  }
+  
+  .auth-card {
+    padding: var(--spacing-xl);
+  }
+  
+  .brand-title {
+    font-size: var(--font-size-3xl);
+  }
+  
+  .logo-icon {
+    width: 60px;
+    height: 60px;
+    font-size: 28px;
+  }
+  
+  .circle-1,
+  .circle-2,
+  .circle-3 {
+    display: none;
+  }
+}
+
+@media (max-width: 320px) {
+  .auth-card {
+    padding: var(--spacing-lg);
   }
 }
 </style>

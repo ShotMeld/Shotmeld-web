@@ -1,12 +1,14 @@
 <template>
   <div id="app">
-    <div class="language-switcher">
-      <select v-model="currentLanguage" @change="changeLanguage">
-        <option value="zh-CN">中文</option>
-        <option value="en">English</option>
-      </select>
-    </div>
-    <router-view></router-view>
+    <router-view v-slot="{ Component, route }">
+      <transition
+        :name="getTransitionName(route)"
+        mode="out-in"
+        appear
+      >
+        <component :is="Component" :key="route.path" />
+      </transition>
+    </router-view>
   </div>
 </template>
 
@@ -15,19 +17,28 @@ import { useI18n } from 'vue-i18n';
 
 export default {
   name: 'App',
-  setup() {
-    const { locale } = useI18n();
-    return { locale };
-  },
   data() {
     return {
-      currentLanguage: 'zh-CN'
+      previousRoute: null
     }
   },
   methods: {
-    changeLanguage() {
-      this.locale = this.currentLanguage;
+    getTransitionName(route) {
+      // 在登录页和主页之间的双向切换都使用过渡动画
+      if (
+        (this.previousRoute?.path === '/login' && route.path === '/photowall') ||
+        (this.previousRoute?.path === '/photowall' && route.path === '/login')
+      ) {
+        return 'page-fade';
+      }
+      return ''; // 其他情况不使用过渡动画
     }
+  },
+  beforeMount() {
+    // 监听路由变化，记录前一个路由
+    this.$router.beforeEach((to, from) => {
+      this.previousRoute = from;
+    });
   }
 }
 </script>
@@ -76,9 +87,22 @@ a:hover {
   opacity: 0;
 }
 
-.language-switcher {
-  position: absolute;
-  top: 10px;
-  right: 10px;
+/* 页面过渡效果 */
+.page-fade-enter-active {
+  transition: all 1.0s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.page-fade-leave-active {
+  transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.page-fade-enter-from {
+  opacity: 0;
+  transform: translateY(30px) scale(0.96);
+}
+
+.page-fade-leave-to {
+  opacity: 0;
+  transform: translateY(-30px) scale(1.04);
 }
 </style>

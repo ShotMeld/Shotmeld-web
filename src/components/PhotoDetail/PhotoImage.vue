@@ -4,17 +4,27 @@
 
 <template>
   <div class="photo-detail-image" :style="{ height: imageHeight, width: imageWidth }">
-    <!-- 缩略图作为背景占位 -->
-    <div v-if="photo?.thumbnailUrl && !imageLoaded" class="thumbnail-placeholder">
-      <img :src="photo.thumbnailUrl" :alt="photo.title" class="thumbnail-bg" />
-    </div>
+    <!-- 缩略图模糊占位 -->
+    <img 
+      v-if="photo && photo.thumbnailUrl && !imageLoaded" 
+      :src="photo.thumbnailUrl" 
+      :alt="photo.title" 
+      class="thumbnail-placeholder"
+      @load="handleThumbnailLoad"
+    />
     
     <!-- 主图片 -->
-    <img v-if="photo" :src="photo.url" :alt="photo.title" @load="handleImageLoad" ref="imageElement" 
-         :class="{ 'image-loaded': imageLoaded }" />
+    <img 
+      v-if="photo" 
+      :src="photo.url" 
+      :alt="photo.title" 
+      @load="handleImageLoad" 
+      ref="imageElement"
+      :class="['main-image', { 'loaded': imageLoaded }]"
+    />
     
-    <!-- 加载旋转器 -->
-    <div v-if="!imageLoaded" class="image-loading">
+    <!-- 加载状态（仅在没有缩略图时显示） -->
+    <div v-if="!imageLoaded && !thumbnailLoaded && (!photo.thumbnailUrl)" class="image-loading">
       <div class="spinner"></div>
     </div>
   </div>
@@ -42,14 +52,24 @@ export default {
     return {
       imageHeight: 'auto', // 初始高度或最小高度
       imageWidth: 'auto', // 容器宽度
-      actualImageDimensions: { width: 0, height: 0 } // 图片实际渲染尺寸
+      actualImageDimensions: { width: 0, height: 0 }, // 图片实际渲染尺寸
+      thumbnailLoaded: false, // 缩略图加载状态
+      minContainerSize: { width: 300, height: 200 } // 最小容器尺寸
     };
   },
   watch: {
-    photo(newPhoto, oldPhoto) {
-      // 如果照片更换，重置高度
-      if (newPhoto && oldPhoto && newPhoto.url !== oldPhoto.url) {
-        this.imageHeight = 'auto'; // 或者一个合适的初始值，比如 min-height
+    photo: {
+      immediate: true,
+      handler(newPhoto, oldPhoto) {
+        if (newPhoto) {
+          // 如果照片更换，重置加载状态
+          if (oldPhoto && newPhoto.url !== oldPhoto.url) {
+            this.thumbnailLoaded = false;
+          }
+          
+          // 立即根据照片的原始尺寸计算容器大小
+          this.calculateContainerSize();
+        }
       }
     },
     targetHeight: {
@@ -62,76 +82,79 @@ export default {
     }
   },
   methods: {
-    calculateDimensionsFromHeight(targetHeight) {
-      if (!this.photo) return;
+    calculateContainerSize() {
+      if (!this.photo || !this.photo.width || !this.photo.height) return;
       
-      // 创建临时图片来获取宽高比
-      const tempImg = new Image();
-      tempImg.onload = () => {
-        const aspectRatio = tempImg.naturalWidth / tempImg.naturalHeight;
-        const calculatedWidth = targetHeight * aspectRatio;
-        
-        this.actualImageDimensions = {
-          width: calculatedWidth,
-          height: targetHeight
-        };
-        
-        this.imageHeight = `${targetHeight}px`;
-        this.imageWidth = `${calculatedWidth}px`;
-      };
-      tempImg.src = this.photo.url;
-    },
-
-    handleImageLoad(event) {
-      this.$emit('image-loaded');
-      
-      // 如果有目标高度（来自父组件计算），直接使用
+      // 如果有目标高度，优先使用
       if (this.targetHeight && this.targetHeight > 0) {
-        // 目标高度已经通过 watch 计算过宽度了，直接返回
+        this.calculateDimensionsFromHeight(this.targetHeight);
         return;
       }
       
-      // 否则使用原有的自适应逻辑
-      const img = event.target;
-      const container = this.$refs.imageElement.parentElement;
-      if (img && container) {
-        const containerWidth = container.offsetWidth;
-        const aspectRatio = img.naturalWidth / img.naturalHeight;
-        
-        // 计算在 contain 模式下的实际渲染尺寸
-        let renderedWidth = containerWidth;
-        let renderedHeight = containerWidth / aspectRatio;
-
-        // 响应式高度限制
-        const isMobile = window.innerWidth < 992;
-        const maxHeightRatio = isMobile ? 0.5 : 0.8; // 移动端限制为50%，桌面端80%
-        const maxHeight = window.innerHeight * maxHeightRatio;
-        
-        if (renderedHeight > maxHeight) {
-            renderedHeight = maxHeight;
-            renderedWidth = renderedHeight * aspectRatio;
-        }
-        
-        // 如果图片原始宽度小于容器宽度，则以图片原始宽度为准
-        if (img.naturalWidth < containerWidth) {
-          renderedWidth = img.naturalWidth;
-          renderedHeight = img.naturalHeight;
-          
-          // 移动端：即使原始尺寸也要限制最大高度
-          if (isMobile && renderedHeight > maxHeight) {
-            renderedHeight = maxHeight;
-            renderedWidth = renderedHeight * aspectRatio;
-          }
-        }
-
-        this.actualImageDimensions = {
-          width: renderedWidth,
-          height: renderedHeight
-        };
-        
-        this.imageHeight = `${renderedHeight}px`;
-        this.imageWidth = `${renderedWidth}px`;
+      // 否则根据照片原始尺寸和视口限制计算
+      const originalWidth = this.photo.width;
+      const originalHeight = this.photo.height;
+      const aspectRatio = originalWidth / originalHeight;
+      
+      // 获取可用的容器宽度（假设为父容器的80%或最大800px）
+      const maxContainerWidth = Math.min(800, window.innerWidth * 0.8);
+      
+      // 响应式高度限制
+      const isMobile = window.innerWidth < 992;
+      const maxHeightRatio = isMobile ? 0.5 : 0.8;
+      const maxHeight = window.innerHeight * maxHeightRatio;
+      
+      let renderedWidth = Math.min(originalWidth, maxContainerWidth);
+      let renderedHeight = renderedWidth / aspectRatio;
+      
+      // 如果高度超过限制，重新计算
+      if (renderedHeight > maxHeight) {
+        renderedHeight = maxHeight;
+        renderedWidth = renderedHeight * aspectRatio;
       }
+      
+      // 确保最小尺寸
+      if (renderedWidth < this.minContainerSize.width || renderedHeight < this.minContainerSize.height) {
+        const scaleX = this.minContainerSize.width / renderedWidth;
+        const scaleY = this.minContainerSize.height / renderedHeight;
+        const scale = Math.max(scaleX, scaleY);
+        
+        renderedWidth *= scale;
+        renderedHeight *= scale;
+      }
+      
+      this.actualImageDimensions = {
+        width: renderedWidth,
+        height: renderedHeight
+      };
+      
+      this.imageHeight = `${renderedHeight}px`;
+      this.imageWidth = `${renderedWidth}px`;
+    },
+
+    calculateDimensionsFromHeight(targetHeight) {
+      if (!this.photo || !this.photo.width || !this.photo.height) return;
+      
+      // 直接使用photo中的尺寸信息计算宽高比
+      const aspectRatio = this.photo.width / this.photo.height;
+      const calculatedWidth = targetHeight * aspectRatio;
+      
+      this.actualImageDimensions = {
+        width: calculatedWidth,
+        height: targetHeight
+      };
+      
+      this.imageHeight = `${targetHeight}px`;
+      this.imageWidth = `${calculatedWidth}px`;
+    },
+
+    handleThumbnailLoad() {
+      this.thumbnailLoaded = true;
+    },
+
+    handleImageLoad() {
+      this.$emit('image-loaded');
+      // 容器尺寸已经预先计算好了，不需要重新计算
     }
   }
 }
@@ -178,13 +201,27 @@ export default {
   height: 100%;
   object-fit: cover; /* 改为 cover 以完全填充容器 */
   display: block; /* 消除图片下方的空白 */
-  position: relative;
-  z-index: 2;
-  opacity: 0;
-  transition: opacity 0.4s ease;
+  position: absolute;
+  top: 0;
+  left: 0;
 }
 
-.photo-detail-image > img.image-loaded {
+/* 缩略图模糊占位 */
+.thumbnail-placeholder {
+  filter: blur(8px);
+  transform: scale(1.1); /* 稍微放大来避免边缘模糊效果 */
+  opacity: 1;
+  z-index: 1;
+}
+
+/* 主图片 */
+.main-image {
+  opacity: 0;
+  z-index: 2;
+  transition: opacity 0.5s ease-in-out;
+}
+
+.main-image.loaded {
   opacity: 1;
 }
 

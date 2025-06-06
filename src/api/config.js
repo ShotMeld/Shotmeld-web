@@ -33,5 +33,11 @@ export const API_ENDPOINTS = {
     BASE: '/albums',
     DETAIL: (id) => `/albums/${id}`,
     PHOTOS: (id) => `/albums/${id}/photos`
+  },
+  
+  // 图片工具
+  PHOTOS_TOOL: {
+    DUPLICATES: '/photos-tool/duplicates',
+    TASK_STATUS: (taskId) => `/photos-tool/task/status/${taskId}`
   }
 };

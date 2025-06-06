@@ -28,6 +28,7 @@ app.config.globalProperties.$http = apiClient
 import './styles/variables.css'
 import './styles/scrollbar.css'
 import './styles/notification.css'
+import './styles/el-select.css'
 
 // 导入UI组件库
 import SfUI from './components/ui'

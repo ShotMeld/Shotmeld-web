@@ -221,47 +221,151 @@ export default {
 .select-wrapper {
   position: relative;
 }
+
+/* 筛选器特定的 el-select 样式调整 */
 :deep(.select) {
   width: 100%;
 }
-:deep(.select .el-input__wrapper) {
-  background-color: var(--bg-secondary);
-  border-radius: var(--radius-round);
-  padding: var(--spacing-xs) var(--spacing-sm);
-  box-shadow: none;
-  border: 2px solid transparent;
-  transition: all var(--transition-base);
+
+:deep(.select .el-input) {
+  height: 40px;
 }
-:deep(.select .el-input__wrapper:hover) {
-  background-color: var(--bg-tertiary);
-}
-:deep(.select .el-input__wrapper.is-focus) {
-  background-color: var(--bg-primary);
-  border-color: var(--color-primary);
-  box-shadow: 0 0 0 2px rgba(var(--color-primary-rgb), 0.15);
-}
+
 :deep(.select .el-input__inner) {
-  color: var(--text-primary);
-  font-family: var(--font-family);
+  height: 38px;
+  line-height: 38px;
   font-size: var(--font-size-base);
+  padding-left: var(--spacing-sm);
 }
+
+/* 日期选择器样式 */
 :deep(.photo-wall-datepicker) {
   width: 100%;
 }
+
+/* 针对日期范围选择器的主容器 */
+:deep(.photo-wall-datepicker.el-date-editor.el-date-editor--daterange) {
+  width: 100%;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.6) 0%, rgba(248, 248, 248, 0.4) 100%) !important;
+  border-radius: var(--radius-medium) !important;
+  border: 1px solid rgba(0, 0, 0, 0.06) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  transition: all var(--transition-fast) !important;
+  height: 40px !important;
+  position: relative !important;
+  overflow: hidden !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.8) !important;
+}
+
+:deep(.photo-wall-datepicker.el-date-editor.el-date-editor--daterange::before) {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Tooltip trigger 样式 */
+:deep(.photo-wall-datepicker .el-tooltip__trigger) {
+  width: 100% !important;
+  height: 100% !important;
+  display: flex !important;
+  align-items: center !important;
+}
+
+/* Range editor 核心容器 */
+:deep(.photo-wall-datepicker .el-range-editor) {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 var(--spacing-sm) !important;
+  position: relative !important;
+  z-index: 2 !important;
+  width: 100% !important;
+  height: 38px !important;
+  display: flex !important;
+  align-items: center !important;
+}
+
+/* Input wrapper 样式重置 */
 :deep(.photo-wall-datepicker .el-input__wrapper) {
-  background-color: var(--bg-secondary);
-  border-radius: var(--radius-round);
-  padding: var(--spacing-xs) var(--spacing-sm);
-  box-shadow: none;
-  border: 2px solid transparent;
-  transition: all var(--transition-base);
+  background-color: transparent !important;
+  box-shadow: none !important;
+  border: none !important;
+  padding: 0 !important;
+  position: relative !important;
+  z-index: 2 !important;
+  height: 100% !important;
+  display: flex !important;
+  align-items: center !important;
 }
-:deep(.photo-wall-datepicker .el-input__wrapper:hover) {
-  background-color: var(--bg-tertiary);
+
+/* 输入框文本样式 */
+:deep(.photo-wall-datepicker .el-range-input) {
+  color: var(--text-primary) !important;
+  background-color: transparent !important;
+  border: none !important;
+  font-weight: var(--font-weight-medium) !important;
+  font-size: var(--font-size-base) !important;
+  line-height: 1 !important;
 }
-:deep(.photo-wall-datepicker .el-input__wrapper.is-focus) {
-  background-color: var(--bg-primary);
-  border-color: var(--color-primary);
-  box-shadow: 0 0 0 2px rgba(var(--color-primary-rgb), 0.15);
+
+/* 分隔符样式 */
+:deep(.photo-wall-datepicker .el-range-separator) {
+  color: var(--text-secondary) !important;
+  font-weight: var(--font-weight-medium) !important;
+  font-size: var(--font-size-sm) !important;
+}
+
+/* Hover 状态 */
+:deep(.photo-wall-datepicker.el-date-editor.el-date-editor--daterange:hover) {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(248, 248, 248, 0.7) 100%) !important;
+  border-color: rgba(0, 122, 255, 0.3) !important;
+  box-shadow: 0 4px 12px rgba(0, 122, 255, 0.12), 0 2px 4px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.9) !important;
+}
+
+/* Focus 状态 */
+:deep(.photo-wall-datepicker.el-date-editor.el-date-editor--daterange.is-focus),
+:deep(.photo-wall-datepicker.el-date-editor.el-date-editor--daterange:focus-within) {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 248, 248, 0.8) 100%) !important;
+  border-color: var(--color-primary) !important;
+  box-shadow: 0 6px 20px rgba(0, 122, 255, 0.15), 0 0 0 3px rgba(0, 122, 255, 0.1), inset 0 1px 0 rgba(255, 255, 255, 1) !important;
+}
+
+/* 深色模式适配 */
+.theme-dark :deep(.photo-wall-datepicker.el-date-editor.el-date-editor--daterange) {
+  background: linear-gradient(135deg, rgba(44, 44, 46, 0.8) 0%, rgba(28, 28, 30, 0.6) 100%) !important;
+  border-color: rgba(84, 84, 88, 0.3) !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+}
+
+.theme-dark :deep(.photo-wall-datepicker.el-date-editor.el-date-editor--daterange::before) {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
+}
+
+.theme-dark :deep(.photo-wall-datepicker.el-date-editor.el-date-editor--daterange:hover) {
+  background: linear-gradient(135deg, rgba(58, 58, 60, 0.9) 0%, rgba(44, 44, 46, 0.8) 100%) !important;
+  border-color: rgba(0, 122, 255, 0.4) !important;
+  box-shadow: 0 4px 12px rgba(0, 122, 255, 0.2), 0 2px 4px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.15) !important;
+}
+
+.theme-dark :deep(.photo-wall-datepicker.el-date-editor.el-date-editor--daterange.is-focus),
+.theme-dark :deep(.photo-wall-datepicker.el-date-editor.el-date-editor--daterange:focus-within) {
+  background: linear-gradient(135deg, rgba(58, 58, 60, 0.95) 0%, rgba(44, 44, 46, 0.9) 100%) !important;
+  border-color: var(--color-primary) !important;
+  box-shadow: 0 6px 20px rgba(0, 122, 255, 0.25), 0 0 0 3px rgba(0, 122, 255, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
+}
+
+.theme-dark :deep(.photo-wall-datepicker .el-range-input) {
+  color: var(--text-primary-dark) !important;
+}
+
+.theme-dark :deep(.photo-wall-datepicker .el-range-separator) {
+  color: var(--text-secondary-dark) !important;
 }
 </style>

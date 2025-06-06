@@ -1,0 +1,677 @@
+/* Element Plus Select */
+
+/* 确保 popper 容器不干扰样式 */
+.el-popper.is-light {
+  background: transparent !important;
+  border: none !important;
+}
+
+.el-popper.is-light .el-popper__arrow,
+.el-popper.is-light .el-popper__arrow::before {
+  display: none !important;
+}
+
+/* 重置 tooltip 样式以免冲突 */
+.el-tooltip.el-select__popper {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  max-width: none !important;
+}
+
+/* 基础选择器样式 */
+.el-select {
+  --el-select-input-font-size: var(--font-size-sm);
+  font-family: var(--font-family);
+  width: 100%;
+}
+
+/* 选择器包装器 */
+.el-select__wrapper {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.6) 0%, rgba(248, 248, 248, 0.4) 100%) !important;
+  border-radius: var(--radius-medium) !important;
+  border: 1px solid rgba(0, 0, 0, 0.06) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  transition: background-color 0.1s ease, border-color 0.1s ease !important;
+  position: relative !important;
+  overflow: hidden !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.8) !important;
+  height: 36px !important;
+  display: flex !important;
+  align-items: center !important;
+}
+
+.el-select__wrapper::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Tooltip trigger 样式重置 */
+.el-tooltip__trigger {
+  width: 100% !important;
+  display: flex !important;
+  align-items: center !important;
+}
+
+/* 选择框输入容器 */
+.el-select .el-input {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.el-select:hover .el-select__wrapper {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(248, 248, 248, 0.7) 100%) !important;
+  border-color: rgba(0, 122, 255, 0.3) !important;
+  box-shadow: 0 2px 6px rgba(0, 122, 255, 0.08), 0 1px 2px rgba(0, 0, 0, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.9) !important;
+}
+
+.el-select.is-focused .el-select__wrapper {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 248, 248, 0.8) 100%) !important;
+  border-color: var(--color-primary) !important;
+  box-shadow: 0 3px 8px rgba(0, 122, 255, 0.1), 0 0 0 2px rgba(0, 122, 255, 0.08), inset 0 1px 0 rgba(255, 255, 255, 1) !important;
+}
+
+/* 输入框包装器 */
+.el-select .el-input__wrapper {
+  background-color: transparent;
+  box-shadow: none;
+  border: none;
+  padding: 0 var(--spacing-sm);
+  position: relative;
+  z-index: 2;
+}
+
+/* 内部输入框 */
+.el-select .el-input__inner {
+  color: var(--text-primary);
+  background-color: transparent;
+  border: none;
+  font-weight: var(--font-weight-medium);
+  font-size: var(--font-size-sm);
+  height: 36px;
+  line-height: 36px;
+  padding: 0 28px 0 0;
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
+}
+
+.el-select .el-input__inner::placeholder {
+  color: var(--text-tertiary);
+  font-weight: var(--font-weight-regular);
+}
+
+/* 后缀图标区域 */
+.el-select .el-input__suffix {
+  right: var(--spacing-sm);
+  position: relative;
+  z-index: 2;
+}
+
+.el-select .el-input__suffix .el-select__caret {
+  color: var(--text-secondary);
+  font-size: 12px;
+  transition: color 0.1s ease;
+  filter: drop-shadow(0 1px 1px rgba(255, 255, 255, 0.5));
+}
+
+.el-select .el-input:hover .el-input__suffix .el-select__caret {
+  color: var(--color-primary);
+}
+
+.el-select .el-input__suffix .el-select__caret.is-reverse {
+  transform: rotateZ(180deg);
+  color: var(--color-primary);
+}
+
+/* 多选标签容器 */
+.el-select .el-select__tags {
+  top: 50%;
+  transform: translateY(-50%);
+  padding-left: var(--spacing-xs);
+  position: relative;
+  z-index: 2;
+}
+
+/* 清除按钮 */
+.el-select .el-select__clear {
+  color: var(--text-secondary);
+  font-size: 12px;
+  transition: color 0.1s ease;
+  filter: drop-shadow(0 1px 1px rgba(255, 255, 255, 0.5));
+}
+
+.el-select .el-select__clear:hover {
+  color: var(--color-primary);
+}
+
+/* 下拉菜单容器样式 - 使用更高优先级的选择器 */
+.el-popper.is-pure.is-light.el-tooltip.el-select__popper,
+.el-popper.is-light.el-select__popper {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+}
+
+.el-popper.is-pure.is-light.el-tooltip.el-select__popper .el-popper__arrow,
+.el-popper.is-light.el-select__popper .el-popper__arrow {
+  display: none !important;
+}
+
+/* 实际的下拉菜单样式 */
+.el-select-dropdown,
+.el-popper .el-select-dropdown {
+  background: rgba(255, 255, 255, 0.9) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  border: 1px solid rgba(0, 0, 0, 0.08) !important;
+  border-radius: var(--radius-medium) !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12), 0 4px 16px rgba(0, 0, 0, 0.08) !important;
+  padding: var(--spacing-xs) !important;
+  margin-top: 4px !important;
+  overflow: hidden !important;
+}
+
+.el-select-dropdown .el-popper__arrow,
+.el-popper .el-select-dropdown .el-popper__arrow {
+  display: none !important;
+}
+
+.el-select-dropdown .el-scrollbar {
+  border-radius: calc(var(--radius-medium) - 2px);
+  overflow: hidden;
+}
+
+.el-select-dropdown .el-select-dropdown__item {
+  height: 36px !important;
+  line-height: 36px !important;
+  padding: 0 var(--spacing-md) !important;
+  margin: 1px var(--spacing-xs);
+  border-radius: calc(var(--radius-medium) - 2px) !important;
+  font-size: var(--font-size-sm) !important;
+  font-weight: var(--font-weight-medium) !important;
+  color: var(--text-primary) !important;
+  background-color: transparent !important;
+  transition: background-color 0.1s ease, color 0.1s ease !important;
+}
+
+.el-select-dropdown .el-select-dropdown__item:hover {
+  background-color: rgba(0, 122, 255, 0.08) !important;
+  color: var(--color-primary) !important;
+}
+
+.el-select-dropdown .el-select-dropdown__item.selected {
+  background: linear-gradient(135deg, rgba(0, 122, 255, 0.1) 0%, rgba(0, 122, 255, 0.15) 100%) !important;
+  color: var(--color-primary) !important;
+  font-weight: var(--font-weight-semibold) !important;
+  position: relative;
+}
+
+.el-select-dropdown .el-select-dropdown__item.selected::after {
+  content: '✓';
+  position: absolute;
+  right: var(--spacing-sm);
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 12px;
+  color: var(--color-primary);
+}
+
+.el-select-dropdown .el-select-dropdown__item.is-disabled {
+  color: var(--text-disabled) !important;
+  cursor: not-allowed !important;
+  background-color: transparent !important;
+}
+
+.el-select-dropdown .el-select-dropdown__item.is-disabled:hover {
+  background-color: transparent !important;
+}
+
+.el-select-dropdown .el-select-dropdown__empty {
+  padding: var(--spacing-lg);
+  color: var(--text-secondary);
+  font-size: var(--font-size-sm);
+  text-align: center;
+}
+
+/* 多选模式标签样式 */
+.el-select__tags .el-tag {
+  background: linear-gradient(135deg, rgba(0, 122, 255, 0.08) 0%, rgba(0, 122, 255, 0.12) 100%);
+  border: 1px solid rgba(0, 122, 255, 0.2);
+  color: var(--color-primary);
+  border-radius: var(--radius-small);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  margin: 2px 4px 2px 0;
+  padding: 2px 6px;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  box-shadow: 0 1px 3px rgba(0, 122, 255, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  transition: background-color 0.1s ease, border-color 0.1s ease;
+}
+
+.el-select__tags .el-tag:hover {
+  background: linear-gradient(135deg, rgba(0, 122, 255, 0.12) 0%, rgba(0, 122, 255, 0.16) 100%);
+  border-color: rgba(0, 122, 255, 0.3);
+  box-shadow: 0 1px 4px rgba(0, 122, 255, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+}
+
+.el-select__tags .el-tag .el-tag__close {
+  color: var(--color-primary);
+  background-color: transparent;
+  border-radius: 50%;
+  width: 14px;
+  height: 14px;
+  font-size: 10px;
+  line-height: 14px;
+  text-align: center;
+  transition: background-color 0.1s ease, color 0.1s ease;
+  margin-left: 4px;
+  filter: drop-shadow(0 1px 1px rgba(255, 255, 255, 0.5));
+}
+
+.el-select__tags .el-tag .el-tag__close:hover {
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+  color: white;
+  box-shadow: 0 1px 3px rgba(0, 122, 255, 0.2);
+}
+
+/* 小尺寸选择器 */
+.el-select.el-select--small .el-input {
+  height: 32px;
+  border-radius: var(--radius-small);
+}
+
+.el-select.el-select--small .el-input__inner {
+  height: 30px;
+  line-height: 30px;
+  font-size: var(--font-size-xs);
+}
+
+.el-select.el-select--small .el-input__wrapper {
+  padding: 0 var(--spacing-xs);
+}
+
+.el-select.el-select--small .el-input__suffix .el-select__caret {
+  font-size: 10px;
+}
+
+/* 大尺寸选择器 */
+.el-select.el-select--large .el-input {
+  height: 44px;
+  border-radius: var(--radius-large);
+}
+
+.el-select.el-select--large .el-input__inner {
+  height: 42px;
+  line-height: 42px;
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-medium);
+}
+
+.el-select.el-select--large .el-input__wrapper {
+  padding: 0 var(--spacing-md);
+}
+
+.el-select.el-select--large .el-input__suffix .el-select__caret {
+  font-size: 14px;
+}
+
+/* 禁用状态 */
+.el-select.is-disabled .el-input {
+  background: linear-gradient(135deg, rgba(248, 248, 248, 0.3) 0%, rgba(240, 240, 240, 0.2) 100%);
+  border-color: rgba(0, 0, 0, 0.04);
+  cursor: not-allowed;
+  opacity: 0.6;
+  box-shadow: none;
+}
+
+.el-select.is-disabled .el-input::before {
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.02) 0%, rgba(0, 0, 0, 0.01) 100%);
+}
+
+.el-select.is-disabled .el-input:hover {
+  background: linear-gradient(135deg, rgba(248, 248, 248, 0.3) 0%, rgba(240, 240, 240, 0.2) 100%);
+  border-color: rgba(0, 0, 0, 0.04);
+}
+
+.el-select.is-disabled .el-input__inner {
+  color: var(--text-disabled);
+  cursor: not-allowed;
+  text-shadow: none;
+}
+
+.el-select.is-disabled .el-input__suffix .el-select__caret {
+  color: var(--text-disabled);
+}
+
+/* 深色模式适配 */
+.theme-dark .el-select .el-input {
+  background: linear-gradient(135deg, rgba(44, 44, 46, 0.8) 0%, rgba(28, 28, 30, 0.6) 100%);
+  border-color: rgba(84, 84, 88, 0.4);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.theme-dark .el-select .el-input::before {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%);
+}
+
+.theme-dark .el-select .el-input:hover {
+  background: linear-gradient(135deg, rgba(58, 58, 60, 0.9) 0%, rgba(44, 44, 46, 0.8) 100%);
+  border-color: rgba(0, 122, 255, 0.5);
+  box-shadow: 0 2px 6px rgba(0, 122, 255, 0.15), 0 1px 2px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+}
+
+.theme-dark .el-select .el-input.is-focus {
+  background: linear-gradient(135deg, rgba(58, 58, 60, 0.95) 0%, rgba(44, 44, 46, 0.9) 100%);
+  border-color: var(--color-primary);
+  box-shadow: 0 3px 8px rgba(0, 122, 255, 0.2), 0 0 0 2px rgba(0, 122, 255, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+
+.theme-dark .el-select .el-input__inner {
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.theme-dark .el-select .el-input__inner::placeholder {
+  color: var(--text-tertiary);
+}
+
+.theme-dark .el-select .el-input__suffix .el-select__caret {
+  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.3));
+}
+
+.theme-dark .el-select .el-select__clear {
+  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.3));
+}
+
+/* 深色模式下拉菜单容器 */
+.theme-dark .el-popper.is-pure.is-light.el-tooltip.el-select__popper,
+.theme-dark .el-popper.is-light.el-select__popper {
+  background: transparent !important;
+}
+
+.theme-dark .el-select-dropdown,
+.theme-dark .el-popper .el-select-dropdown {
+  background: rgba(28, 28, 30, 0.9) !important;
+  border-color: rgba(84, 84, 88, 0.4) !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 4px 16px rgba(0, 0, 0, 0.3) !important;
+  border-radius: var(--radius-medium) !important;
+  padding: var(--spacing-xs) !important;
+  overflow: hidden !important;
+}
+
+.theme-dark .el-select-dropdown .el-scrollbar {
+  border-radius: calc(var(--radius-medium) - 2px);
+  overflow: hidden;
+}
+
+.theme-dark .el-select-dropdown .el-select-dropdown__item {
+  margin: 1px var(--spacing-xs);
+  border-radius: calc(var(--radius-medium) - 2px) !important;
+}
+
+.theme-dark .el-select-dropdown .el-select-dropdown__item:hover {
+  background-color: rgba(0, 122, 255, 0.15) !important;
+}
+
+.theme-dark .el-select-dropdown .el-select-dropdown__item.selected {
+  background: linear-gradient(135deg, rgba(0, 122, 255, 0.2) 0%, rgba(0, 122, 255, 0.25) 100%) !important;
+}
+
+.theme-dark .el-select__tags .el-tag {
+  background: linear-gradient(135deg, rgba(0, 122, 255, 0.15) 0%, rgba(0, 122, 255, 0.2) 100%);
+  border-color: rgba(0, 122, 255, 0.4);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.theme-dark .el-select__tags .el-tag:hover {
+  background: linear-gradient(135deg, rgba(0, 122, 255, 0.2) 0%, rgba(0, 122, 255, 0.25) 100%);
+  border-color: rgba(0, 122, 255, 0.5);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+}
+
+.theme-dark .el-select__tags .el-tag .el-tag__close {
+  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.3));
+}
+
+.theme-dark .el-select.is-disabled .el-input {
+  background: linear-gradient(135deg, rgba(44, 44, 46, 0.3) 0%, rgba(28, 28, 30, 0.2) 100%);
+  border-color: rgba(84, 84, 88, 0.2);
+  box-shadow: none;
+}
+
+.theme-dark .el-select.is-disabled .el-input::before {
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.05) 100%);
+}
+
+/* 日期选择器样式 - 与 el-select 保持一致 */
+.el-date-editor {
+  width: 100%;
+}
+
+/* 日期范围选择器主容器 */
+.el-date-editor.el-date-editor--daterange {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.6) 0%, rgba(248, 248, 248, 0.4) 100%) !important;
+  border-radius: var(--radius-medium) !important;
+  border: 1px solid rgba(0, 0, 0, 0.06) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  transition: background-color 0.1s ease, border-color 0.1s ease !important;
+  position: relative !important;
+  overflow: hidden !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.8) !important;
+  height: 40px !important;
+}
+
+.el-date-editor.el-date-editor--daterange::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Tooltip trigger 重置 */
+.el-date-editor .el-tooltip__trigger {
+  width: 100% !important;
+  height: 100% !important;
+  display: flex !important;
+  align-items: center !important;
+}
+
+/* Range editor 核心样式 */
+.el-date-editor .el-range-editor {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 var(--spacing-sm) !important;
+  position: relative !important;
+  z-index: 2 !important;
+  width: 100% !important;
+  height: 38px !important;
+  display: flex !important;
+  align-items: center !important;
+}
+
+/* Input wrapper 重置 */
+.el-date-editor .el-input__wrapper {
+  background-color: transparent !important;
+  box-shadow: none !important;
+  border: none !important;
+  padding: 0 !important;
+  position: relative !important;
+  z-index: 2 !important;
+  height: 100% !important;
+  display: flex !important;
+  align-items: center !important;
+}
+
+/* 输入框样式 */
+.el-date-editor .el-range-input {
+  color: var(--text-primary) !important;
+  background-color: transparent !important;
+  border: none !important;
+  font-weight: var(--font-weight-medium) !important;
+  font-size: var(--font-size-base) !important;
+  line-height: 1 !important;
+}
+
+.el-date-editor .el-range-separator {
+  color: var(--text-secondary) !important;
+  font-weight: var(--font-weight-medium) !important;
+  font-size: var(--font-size-sm) !important;
+}
+
+/* Hover 和 Focus 状态 */
+.el-date-editor.el-date-editor--daterange:hover {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(248, 248, 248, 0.7) 100%) !important;
+  border-color: rgba(0, 122, 255, 0.3) !important;
+  box-shadow: 0 2px 6px rgba(0, 122, 255, 0.08), 0 1px 2px rgba(0, 0, 0, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.9) !important;
+}
+
+.el-date-editor.el-date-editor--daterange.is-focus,
+.el-date-editor.el-date-editor--daterange:focus-within {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 248, 248, 0.8) 100%) !important;
+  border-color: var(--color-primary) !important;
+  box-shadow: 0 3px 8px rgba(0, 122, 255, 0.1), 0 0 0 2px rgba(0, 122, 255, 0.08), inset 0 1px 0 rgba(255, 255, 255, 1) !important;
+}
+
+/* 传统日期选择器兼容 */
+.el-date-editor .el-input {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.6) 0%, rgba(248, 248, 248, 0.4) 100%) !important;
+  border-radius: var(--radius-medium) !important;
+  border: 1px solid rgba(0, 0, 0, 0.06) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  transition: background-color 0.1s ease, border-color 0.1s ease !important;
+  position: relative !important;
+  overflow: hidden !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.8) !important;
+}
+
+.el-date-editor .el-input::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.el-date-editor:hover .el-input {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(248, 248, 248, 0.7) 100%) !important;
+  border-color: rgba(0, 122, 255, 0.3) !important;
+  box-shadow: 0 4px 12px rgba(0, 122, 255, 0.12), 0 2px 4px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.9) !important;
+}
+
+.el-date-editor.is-focus .el-input,
+.el-date-editor .el-input.is-focus {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 248, 248, 0.8) 100%) !important;
+  border-color: var(--color-primary) !important;
+  box-shadow: 0 6px 20px rgba(0, 122, 255, 0.15), 0 0 0 3px rgba(0, 122, 255, 0.1), inset 0 1px 0 rgba(255, 255, 255, 1) !important;
+}
+
+.el-date-editor .el-input__wrapper {
+  background-color: transparent !important;
+  box-shadow: none !important;
+  border: none !important;
+  padding: 0 var(--spacing-sm) !important;
+  position: relative !important;
+  z-index: 2 !important;
+}
+
+.el-date-editor .el-input__inner {
+  color: var(--text-primary) !important;
+  background-color: transparent !important;
+  border: none !important;
+  font-weight: var(--font-weight-medium) !important;
+  font-size: var(--font-size-base) !important;
+}
+
+/* 日期选择器深色模式 */
+.theme-dark .el-date-editor.el-date-editor--daterange {
+  background: linear-gradient(135deg, rgba(44, 44, 46, 0.8) 0%, rgba(28, 28, 30, 0.6) 100%) !important;
+  border-color: rgba(84, 84, 88, 0.3) !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+}
+
+.theme-dark .el-date-editor.el-date-editor--daterange::before {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
+}
+
+.theme-dark .el-date-editor.el-date-editor--daterange:hover {
+  background: linear-gradient(135deg, rgba(58, 58, 60, 0.9) 0%, rgba(44, 44, 46, 0.8) 100%) !important;
+  border-color: rgba(0, 122, 255, 0.4) !important;
+  box-shadow: 0 2px 6px rgba(0, 122, 255, 0.15), 0 1px 2px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.12) !important;
+}
+
+.theme-dark .el-date-editor.el-date-editor--daterange.is-focus,
+.theme-dark .el-date-editor.el-date-editor--daterange:focus-within {
+  background: linear-gradient(135deg, rgba(58, 58, 60, 0.95) 0%, rgba(44, 44, 46, 0.9) 100%) !important;
+  border-color: var(--color-primary) !important;
+  box-shadow: 0 3px 8px rgba(0, 122, 255, 0.2), 0 0 0 2px rgba(0, 122, 255, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.15) !important;
+}
+
+.theme-dark .el-date-editor .el-input {
+  background: linear-gradient(135deg, rgba(44, 44, 46, 0.8) 0%, rgba(28, 28, 30, 0.6) 100%) !important;
+  border-color: rgba(84, 84, 88, 0.3) !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+}
+
+.theme-dark .el-date-editor .el-input::before {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
+}
+
+.theme-dark .el-date-editor:hover .el-input {
+  background: linear-gradient(135deg, rgba(58, 58, 60, 0.9) 0%, rgba(44, 44, 46, 0.8) 100%) !important;
+  border-color: rgba(0, 122, 255, 0.4) !important;
+  box-shadow: 0 2px 6px rgba(0, 122, 255, 0.15), 0 1px 2px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.12) !important;
+}
+
+.theme-dark .el-date-editor.is-focus .el-input,
+.theme-dark .el-date-editor .el-input.is-focus {
+  background: linear-gradient(135deg, rgba(58, 58, 60, 0.95) 0%, rgba(44, 44, 46, 0.9) 100%) !important;
+  border-color: var(--color-primary) !important;
+  box-shadow: 0 3px 8px rgba(0, 122, 255, 0.2), 0 0 0 2px rgba(0, 122, 255, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.15) !important;
+}
+
+.theme-dark .el-date-editor .el-range-input {
+  color: var(--text-primary-dark) !important;
+}
+
+.theme-dark .el-date-editor .el-range-separator {
+  color: var(--text-secondary-dark) !important;
+}
+
+/* 日期选择器下拉面板样式 */
+.el-picker__popper {
+  background: rgba(255, 255, 255, 0.95) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  border: 1px solid rgba(0, 0, 0, 0.08) !important;
+  border-radius: var(--radius-large) !important;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.08), 0 2px 8px rgba(0, 0, 0, 0.05) !important;
+  overflow: hidden !important;
+}
+
+.theme-dark .el-picker__popper {
+  background: rgba(28, 28, 30, 0.95) !important;
+  border-color: rgba(84, 84, 88, 0.3) !important;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.3), 0 2px 8px rgba(0, 0, 0, 0.15) !important;
+}

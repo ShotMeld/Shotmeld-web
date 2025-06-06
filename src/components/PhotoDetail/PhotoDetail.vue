@@ -123,6 +123,12 @@ export default {
       if (newVal) {
         this.imageLoaded = false;
         this.resetModalStyles();
+        // 模态框打开时，如果有photo信息，立即计算尺寸
+        if (this.photo && this.photo.width && this.photo.height) {
+          this.$nextTick(() => {
+            this.calculateModalSize();
+          });
+        }
       }
     },
     'photo.albums': {
@@ -135,8 +141,14 @@ export default {
     },
     photo: {
       immediate: true,
-      handler() {
+      handler(newPhoto) {
         this.resetModalStyles();
+        // photo变化时，如果有尺寸信息，立即计算模态框尺寸
+        if (newPhoto && newPhoto.width && newPhoto.height) {
+          this.$nextTick(() => {
+            this.calculateModalSize();
+          });
+        }
       }
     }
   },
@@ -156,9 +168,7 @@ export default {
 
     handleImageLoaded() {
       this.imageLoaded = true;
-      this.$nextTick(() => {
-        this.calculateModalSize();
-      });
+      // 图片加载完成后不再需要重新计算尺寸，因为已经在photo数据到达时计算过了
     },
 
     resetModalStyles() {
@@ -167,7 +177,7 @@ export default {
     },
 
     calculateModalSize() {
-      if (!this.photo || !this.imageLoaded) return;
+      if (!this.photo || !this.photo.width || !this.photo.height) return;
       
       // 获取视口尺寸
       const viewportWidth = window.innerWidth;
@@ -180,69 +190,64 @@ export default {
         return;
       }
 
-      // 创建临时图片元素来获取图片实际尺寸
-      const tempImg = new Image();
-      tempImg.onload = () => {
-        const imgNaturalWidth = tempImg.naturalWidth;
-        const imgNaturalHeight = tempImg.naturalHeight;
-        const imgAspectRatio = imgNaturalWidth / imgNaturalHeight;
-        
-        // 计算理想的图片容器宽度（左侧区域宽度）
-        // 首先确保右侧面板宽度固定，左侧宽度基于剩余空间计算
-        const availableWidth = viewportWidth * 0.9 - this.rightPanelWidth - this.modalPadding;
-        let leftPanelWidth = Math.min(
-          availableWidth, // 可用宽度
-          imgNaturalWidth // 但不超过图片原始宽度
-        );
-        
-        // 确保左侧宽度不会太小
-        leftPanelWidth = Math.max(leftPanelWidth, 400);
-        
-        // 根据宽度计算图片高度
-        let calculatedImageHeight = leftPanelWidth / imgAspectRatio;
-        
-        // 计算模态框需要的总高度
-        let totalModalHeight = calculatedImageHeight + this.buttonsHeight + this.headerHeight + this.modalPadding;
-        
-        // 检查是否低于最小高度
-        if (totalModalHeight < this.minModalHeight) {
-          // 重新计算尺寸以满足最小高度
-          const targetImageHeight = this.minModalHeight - this.buttonsHeight - this.headerHeight - this.modalPadding;
-          leftPanelWidth = targetImageHeight * imgAspectRatio;
-          calculatedImageHeight = targetImageHeight;
-          totalModalHeight = this.minModalHeight;
-        }
-        
-        // 检查模态框宽度是否超过最大限制
-        const totalModalWidth = leftPanelWidth + this.rightPanelWidth + this.modalPadding + 32; // 添加间距
-        if (totalModalWidth > this.maxModalWidth) {
-          // 重新计算，保持右侧面板宽度固定，调整左侧宽度
-          leftPanelWidth = this.maxModalWidth - this.rightPanelWidth - this.modalPadding - 32;
-          calculatedImageHeight = leftPanelWidth / imgAspectRatio;
-          totalModalHeight = calculatedImageHeight + this.buttonsHeight + this.headerHeight + this.modalPadding;
-        }
-        
-        // 确保不超过视口高度的85%
-        const maxModalHeight = viewportHeight * 0.85;
-        if (totalModalHeight > maxModalHeight) {
-          const targetImageHeight = maxModalHeight - this.buttonsHeight - this.headerHeight - this.modalPadding;
-          leftPanelWidth = targetImageHeight * imgAspectRatio;
-          calculatedImageHeight = targetImageHeight;
-          totalModalHeight = maxModalHeight;
-        }
-        
-        // 应用计算出的样式
-        this.imageHeight = calculatedImageHeight + 20; // 添加一些额外的间距
-        const finalModalWidth = leftPanelWidth + this.rightPanelWidth + this.modalPadding + 32;
-        this.modalStyles = {
-          width: `${Math.min(finalModalWidth, this.maxModalWidth)}px`,
-          height: `${totalModalHeight}px`,
-          maxHeight: `${maxModalHeight}px`,
-          minWidth: `${this.rightPanelWidth + 400 + this.modalPadding + 32}px` // 确保最小宽度包含固定右侧面板
-        };
-      };
+      // 直接使用photo中的尺寸信息，无需等待图片加载
+      const imgNaturalWidth = this.photo.width;
+      const imgNaturalHeight = this.photo.height;
+      const imgAspectRatio = imgNaturalWidth / imgNaturalHeight;
       
-      tempImg.src = this.photo.url;
+      // 计算理想的图片容器宽度（左侧区域宽度）
+      // 首先确保右侧面板宽度固定，左侧宽度基于剩余空间计算
+      const availableWidth = viewportWidth * 0.9 - this.rightPanelWidth - this.modalPadding;
+      let leftPanelWidth = Math.min(
+        availableWidth, // 可用宽度
+        imgNaturalWidth // 但不超过图片原始宽度
+      );
+      
+      // 确保左侧宽度不会太小
+      leftPanelWidth = Math.max(leftPanelWidth, 400);
+      
+      // 根据宽度计算图片高度
+      let calculatedImageHeight = leftPanelWidth / imgAspectRatio;
+      
+      // 计算模态框需要的总高度
+      let totalModalHeight = calculatedImageHeight + this.buttonsHeight + this.headerHeight + this.modalPadding;
+      
+      // 检查是否低于最小高度
+      if (totalModalHeight < this.minModalHeight) {
+        // 重新计算尺寸以满足最小高度
+        const targetImageHeight = this.minModalHeight - this.buttonsHeight - this.headerHeight - this.modalPadding;
+        leftPanelWidth = targetImageHeight * imgAspectRatio;
+        calculatedImageHeight = targetImageHeight;
+        totalModalHeight = this.minModalHeight;
+      }
+      
+      // 检查模态框宽度是否超过最大限制
+      const totalModalWidth = leftPanelWidth + this.rightPanelWidth + this.modalPadding + 32; // 添加间距
+      if (totalModalWidth > this.maxModalWidth) {
+        // 重新计算，保持右侧面板宽度固定，调整左侧宽度
+        leftPanelWidth = this.maxModalWidth - this.rightPanelWidth - this.modalPadding - 32;
+        calculatedImageHeight = leftPanelWidth / imgAspectRatio;
+        totalModalHeight = calculatedImageHeight + this.buttonsHeight + this.headerHeight + this.modalPadding;
+      }
+      
+      // 确保不超过视口高度的85%
+      const maxModalHeight = viewportHeight * 0.85;
+      if (totalModalHeight > maxModalHeight) {
+        const targetImageHeight = maxModalHeight - this.buttonsHeight - this.headerHeight - this.modalPadding;
+        leftPanelWidth = targetImageHeight * imgAspectRatio;
+        calculatedImageHeight = targetImageHeight;
+        totalModalHeight = maxModalHeight;
+      }
+      
+      // 应用计算出的样式
+      this.imageHeight = calculatedImageHeight + 20; // 添加一些额外的间距
+      const finalModalWidth = leftPanelWidth + this.rightPanelWidth + this.modalPadding + 32;
+      this.modalStyles = {
+        width: `${Math.min(finalModalWidth, this.maxModalWidth)}px`,
+        height: `${totalModalHeight}px`,
+        maxHeight: `${maxModalHeight}px`,
+        minWidth: `${this.rightPanelWidth + 400 + this.modalPadding + 32}px` // 确保最小宽度包含固定右侧面板
+      };
     },
 
     fetchAlbumsInfo(albumIds) {
@@ -275,7 +280,7 @@ export default {
         clearTimeout(this.resizeTimeout);
       }
       this.resizeTimeout = setTimeout(() => {
-        if (this.imageLoaded && this.photo) {
+        if (this.photo && this.photo.width && this.photo.height) {
           this.calculateModalSize();
         }
       }, 200);
