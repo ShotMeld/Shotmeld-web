@@ -1,10 +1,8 @@
 <template>
   <div class="duplicate-detector" v-show="!hasResults">
     <div class="detector-header">
-      <h2>重复图片检测</h2>
-      <p class="detector-description">
-        扫描您的图库，找出重复的照片并帮您整理空间
-      </p>
+      <h1 class="detector-title">{{ $t('duplicatePhotos.detector.title') }}</h1>
+      <p class="detector-description">{{ $t('duplicatePhotos.detector.description') }}</p>
     </div>
 
     <div class="detector-actions">
@@ -20,7 +18,7 @@
             <path d="M21 21L16.514 16.506M19 10.5C19 15.194 15.194 19 10.5 19S2 15.194 2 10.5 5.806 2 10.5 2 19 5.806 19 10.5Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
         </template>
-        开始检测重复图片
+        {{ $t('duplicatePhotos.detector.startScan') }}
       </sf-button>
 
       <sf-button
@@ -177,19 +175,16 @@ export default {
   margin-bottom: var(--spacing-2xl);
 }
 
-.detector-header h2 {
-  font-size: var(--font-size-2xl);
-  font-weight: var(--font-weight-semibold);
+.detector-title {
+  font-size: 32px;
+  font-weight: 600;
   color: var(--text-primary);
-  margin-bottom: var(--spacing-sm);
+  margin-bottom: var(--spacing-md);
 }
 
 .detector-description {
-  font-size: var(--font-size-base);
+  font-size: var(--font-size-lg);
   color: var(--text-secondary);
-  line-height: 1.5;
-  max-width: 400px;
-  margin: 0 auto;
 }
 
 .detector-actions {

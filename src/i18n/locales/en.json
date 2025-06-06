@@ -362,5 +362,155 @@
       "loadFailed": "Load Failed",
       "loadFailedMessage": "Failed to load photo list, please try again"
     }
+  },
+  "albumView": {
+    "loading": "Loading...",
+    "retry": "Retry",
+    "empty": "No albums created yet",
+    "createAlbum": {
+      "title": "Create New Album"
+    },
+    "deleteConfirm": {
+      "itemName": "albums"
+    },
+    "success": "Success",
+    "deleteSuccess": "Deleted {count} albums",
+    "error": {
+      "fetchFailed": "Failed to fetch albums"
+    }
+  },
+  "albumCard": {
+    "photoCount": "{count} photos",
+    "noPhotos": "No Photos"
+  },
+  "albumForm": {
+    "name": {
+      "label": "Album Name*",
+      "placeholder": "Enter album name"
+    },
+    "description": {
+      "label": "Description",
+      "placeholder": "Enter album description"
+    },
+    "actions": {
+      "cancel": "Cancel",
+      "submit": "Confirm",
+      "submitting": "Submitting..."
+    },
+    "success": {
+      "create": "Album created successfully",
+      "update": "Album updated successfully"
+    },
+    "error": {
+      "title": "Error",
+      "message": "Operation failed, please try again"
+    }
+  },
+  "albumPhotos": {
+    "manageToolbar": {
+      "itemUnit": "photos",
+      "actions": {
+        "delete": "Delete Photos",
+        "removeFromAlbum": "Remove from Album"
+      }
+    }
+  },
+  "morePage": {
+    "features": {
+      "duplicatePhotos": {
+        "title": "Duplicate Photos",
+        "description": "Find and manage duplicate photos"
+      },
+      "portraitRecognition": {
+        "title": "Portrait Recognition",
+        "description": "Face attribute recognition"
+      },
+      "feature3": {
+        "title": "Feature 3",
+        "description": "This is a brief description of feature 3."
+      },
+      "feature4": {
+        "title": "Feature 4",
+        "description": "This is a brief description of feature 4."
+      },
+      "feature5": {
+        "title": "Feature 5",
+        "description": "This is a brief description of feature 5."
+      },
+      "feature6": {
+        "title": "Feature 6",
+        "description": "This is a brief description of feature 6."
+      }
+    }
+  },
+  "duplicatePhotos": {
+    "detector": {
+      "title": "Duplicate Photos",
+      "description": "Find and manage duplicate photos",
+      "startScan": "Start Scan",
+      "scanning": "Scanning...",
+      "noPhotos": "No photos",
+      "error": {
+        "scanFailed": "Scan failed, please try again"
+      }
+    },
+    "progress": {
+      "title": "Scan Progress",
+      "scanning": "Scanning...",
+      "progress": "Progress: {percent}%",
+      "status": {
+        "preparing": "Preparing...",
+        "scanning": "Scanning photos...",
+        "analyzing": "Analyzing results...",
+        "completed": "Scan completed"
+      },
+      "cancel": "Cancel Scan"
+    },
+    "results": {
+      "title": "Scan Results",
+      "totalGroups": "Found {count} groups of duplicate photos",
+      "noDuplicates": "No duplicate photos found",
+      "actions": {
+        "selectAll": "Select All",
+        "deselectAll": "Deselect All",
+        "deleteSelected": "Delete Selected",
+        "keepSelected": "Keep Selected"
+      },
+      "confirm": {
+        "delete": {
+          "title": "Confirm Delete",
+          "message": "Are you sure you want to delete {count} selected photos?",
+          "warning": "This action cannot be undone"
+        }
+      },
+      "success": {
+        "delete": "Successfully deleted {count} photos",
+        "keep": "Successfully kept {count} photos"
+      },
+      "error": {
+        "deleteFailed": "Delete failed, please try again",
+        "keepFailed": "Keep failed, please try again"
+      }
+    },
+    "group": {
+      "title": "Group {index}",
+      "count": "{count} photos",
+      "similarity": "Similarity: {percent}%",
+      "actions": {
+        "keep": "Keep",
+        "delete": "Delete"
+      }
+    },
+    "item": {
+      "actions": {
+        "keep": "Keep",
+        "delete": "Delete"
+      },
+      "info": {
+        "size": "Size: {size}",
+        "dimensions": "Dimensions: {width} x {height}",
+        "date": "Taken: {date}"
+      }
+    }
   }
 }

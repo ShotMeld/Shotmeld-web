@@ -6,7 +6,7 @@
   <div class="album-photos-toolbar-container toolbar-visible">
     <ManageToolbar
       :selectedItems="selectedPhotos"
-      itemUnit="张照片"
+      :itemUnit="$t('albumPhotos.manageToolbar.itemUnit')"
       :actions="toolbarActions"
       @select-all="$emit('select-all')"
       @deselect-all="$emit('deselect-all')"
@@ -36,14 +36,14 @@ export default {
     toolbarActions() {
       return [
         {
-          label: '删除照片',
+          label: this.$t('albumPhotos.manageToolbar.actions.delete'),
           event: 'show-delete-selected',
           icon: 'fas fa-trash',
           type: 'danger',
           requireSelection: true
         },
         {
-          label: '从相册移除',
+          label: this.$t('albumPhotos.manageToolbar.actions.removeFromAlbum'),
           event: 'show-remove-from-album',
           icon: 'fas fa-folder-minus',
           type: 'warning',

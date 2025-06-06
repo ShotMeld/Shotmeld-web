@@ -7,23 +7,23 @@
 
     <form @submit.prevent="handleSubmit">
       <div class="form-group">
-        <label for="album-name">相册名称*</label>
-        <input id="album-name" v-model="formData.name" type="text" required placeholder="输入相册名称" class="form-input">
+        <label for="album-name">{{ $t('albumForm.name.label') }}</label>
+        <input id="album-name" v-model="formData.name" type="text" required :placeholder="$t('albumForm.name.placeholder')" class="form-input">
       </div>
 
       <div class="form-group">
-        <label for="album-description">相册描述</label>
-        <textarea id="album-description" v-model="formData.description" placeholder="输入相册描述" class="form-textarea"
+        <label for="album-description">{{ $t('albumForm.description.label') }}</label>
+        <textarea id="album-description" v-model="formData.description" :placeholder="$t('albumForm.description.placeholder')" class="form-textarea"
           rows="3"></textarea>
       </div>
 
       <div class="form-actions">
         <button type="button" @click="$emit('cancel'); $emit('close')" class="cancel-button">
-          取消
+          {{ $t('albumForm.actions.cancel') }}
         </button>
         <button type="submit" :disabled="submitting" class="submit-button">
           <span v-if="submitting" class="button-loader"></span>
-          {{ submitting ? '提交中...' : '确认' }}
+          {{ submitting ? $t('albumForm.actions.submitting') : $t('albumForm.actions.submit') }}
         </button>
       </div>
     </form>
@@ -74,8 +74,8 @@ export default {
           await this.$http.put(`/albums/${this.editingAlbum.id}`, payload)
           this.$emit('success', { ...this.editingAlbum, ...payload })
           this.$notify({
-            title: '成功',
-            message: '相册已更新',
+            title: this.$t('albumView.success'),
+            message: this.$t('albumForm.success.update'),
             type: 'success'
           })
         } else {
@@ -83,8 +83,8 @@ export default {
           const response = await this.$http.post('/albums', payload)
           this.$emit('success', response.data)
           this.$notify({
-            title: '成功',
-            message: '相册已创建',
+            title: this.$t('albumView.success'),
+            message: this.$t('albumForm.success.create'),
             type: 'success'
           })
         }
@@ -93,10 +93,10 @@ export default {
         this.$emit('album-created')
         this.$emit('update:modelValue', false)
       } catch (error) {
-        console.error('操作失败:', error)
+        console.error(this.$t('albumForm.error.message'), error)
         this.$notify.error({
-          title: '错误',
-          message: error.response?.data?.message || '操作失败，请重试'
+          title: this.$t('albumForm.error.title'),
+          message: error.response?.data?.message || this.$t('albumForm.error.message')
         })
       } finally {
         this.submitting = false

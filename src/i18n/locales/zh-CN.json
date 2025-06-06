@@ -368,5 +368,155 @@
       "loadFailed": "加载失败",
       "loadFailedMessage": "获取照片列表失败，请重试"
     }
+  },
+  "albumView": {
+    "loading": "加载中...",
+    "retry": "重试",
+    "empty": "还没有创建任何相册",
+    "createAlbum": {
+      "title": "创建新相册"
+    },
+    "deleteConfirm": {
+      "itemName": "相册"
+    },
+    "success": "成功",
+    "deleteSuccess": "已删除 {count} 个相册",
+    "error": {
+      "fetchFailed": "获取相册列表失败"
+    }
+  },
+  "albumCard": {
+    "photoCount": "{count} 张照片",
+    "noPhotos": "无照片"
+  },
+  "albumForm": {
+    "name": {
+      "label": "相册名称*",
+      "placeholder": "输入相册名称"
+    },
+    "description": {
+      "label": "相册描述",
+      "placeholder": "输入相册描述"
+    },
+    "actions": {
+      "cancel": "取消",
+      "submit": "确认",
+      "submitting": "提交中..."
+    },
+    "success": {
+      "create": "相册已创建",
+      "update": "相册已更新"
+    },
+    "error": {
+      "title": "错误",
+      "message": "操作失败，请重试"
+    }
+  },
+  "albumPhotos": {
+    "manageToolbar": {
+      "itemUnit": "张照片",
+      "actions": {
+        "delete": "删除照片",
+        "removeFromAlbum": "从相册移除"
+      }
+    }
+  },
+  "morePage": {
+    "features": {
+      "duplicatePhotos": {
+        "title": "重复照片检测",
+        "description": "筛选出重复照片并进行管理"
+      },
+      "portraitRecognition": {
+        "title": "人像识别",
+        "description": "人脸属性识别"
+      },
+      "feature3": {
+        "title": "功能三",
+        "description": "这是功能三的简要描述。"
+      },
+      "feature4": {
+        "title": "功能四",
+        "description": "这是功能四的简要描述。"
+      },
+      "feature5": {
+        "title": "功能五",
+        "description": "这是功能五的简要描述。"
+      },
+      "feature6": {
+        "title": "功能六",
+        "description": "这是功能六的简要描述。"
+      }
+    }
+  },
+  "duplicatePhotos": {
+    "detector": {
+      "title": "重复照片检测",
+      "description": "查找并管理重复的照片",
+      "startScan": "开始扫描",
+      "scanning": "正在扫描...",
+      "noPhotos": "暂无照片",
+      "error": {
+        "scanFailed": "扫描失败，请重试"
+      }
+    },
+    "progress": {
+      "title": "扫描进度",
+      "scanning": "正在扫描...",
+      "progress": "扫描进度：{percent}%",
+      "status": {
+        "preparing": "准备中...",
+        "scanning": "正在扫描照片...",
+        "analyzing": "正在分析结果...",
+        "completed": "扫描完成"
+      },
+      "cancel": "取消扫描"
+    },
+    "results": {
+      "title": "扫描结果",
+      "totalGroups": "共发现 {count} 组重复照片",
+      "noDuplicates": "未发现重复照片",
+      "actions": {
+        "selectAll": "全选",
+        "deselectAll": "取消全选",
+        "deleteSelected": "删除选中",
+        "keepSelected": "保留选中"
+      },
+      "confirm": {
+        "delete": {
+          "title": "确认删除",
+          "message": "确定要删除选中的 {count} 张照片吗？",
+          "warning": "此操作无法撤销"
+        }
+      },
+      "success": {
+        "delete": "已成功删除 {count} 张照片",
+        "keep": "已成功保留 {count} 张照片"
+      },
+      "error": {
+        "deleteFailed": "删除失败，请重试",
+        "keepFailed": "保留失败，请重试"
+      }
+    },
+    "group": {
+      "title": "第 {index} 组",
+      "count": "{count} 张照片",
+      "similarity": "相似度：{percent}%",
+      "actions": {
+        "keep": "保留",
+        "delete": "删除"
+      }
+    },
+    "item": {
+      "actions": {
+        "keep": "保留",
+        "delete": "删除"
+      },
+      "info": {
+        "size": "大小：{size}",
+        "dimensions": "尺寸：{width} x {height}",
+        "date": "拍摄时间：{date}"
+      }
+    }
   }
 }
