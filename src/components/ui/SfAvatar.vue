@@ -1,20 +1,14 @@
 <template>
-  <div 
-    class="sf-avatar" 
-    :class="{ 
+  <div
+    class="sf-avatar"
+    :class="{
       [`sf-avatar--${size}`]: true,
       [`sf-avatar--${shape}`]: true,
-      'sf-avatar--with-border': border 
+      'sf-avatar--with-border': border,
     }"
     :style="avatarStyle"
   >
-    <img 
-      v-if="src" 
-      :src="src" 
-      :alt="alt" 
-      class="sf-avatar-image" 
-      @error="handleImageError" 
-    />
+    <img v-if="src" :src="src" :alt="alt" class="sf-avatar-image" @error="handleImageError" />
     <span v-else-if="text" class="sf-avatar-text">{{ displayText }}</span>
     <slot v-else></slot>
   </div>
@@ -26,81 +20,81 @@ export default {
   props: {
     src: {
       type: String,
-      default: ''
+      default: '',
     },
     alt: {
       type: String,
-      default: 'avatar'
+      default: 'avatar',
     },
     text: {
       type: String,
-      default: ''
+      default: '',
     },
     size: {
       type: String,
       default: 'medium',
-      validator: value => ['small', 'medium', 'large', 'xlarge'].includes(value)
+      validator: value => ['small', 'medium', 'large', 'xlarge'].includes(value),
     },
     shape: {
       type: String,
       default: 'circle',
-      validator: value => ['circle', 'square', 'rounded'].includes(value)
+      validator: value => ['circle', 'square', 'rounded'].includes(value),
     },
     border: {
       type: Boolean,
-      default: false
+      default: false,
     },
     backgroundColor: {
       type: String,
-      default: ''
+      default: '',
     },
     color: {
       type: String,
-      default: ''
-    }
+      default: '',
+    },
   },
   data() {
     return {
-      imageError: false
-    };
+      imageError: false,
+    }
   },
   computed: {
     displayText() {
-      if (!this.text) return '';
-      return this.text.charAt(0).toUpperCase();
+      if (!this.text) return ''
+      return this.text.charAt(0).toUpperCase()
     },
     avatarStyle() {
-      const style = {};
-      
+      const style = {}
+
       if (this.backgroundColor) {
-        style.backgroundColor = this.backgroundColor;
+        style.backgroundColor = this.backgroundColor
       } else if (!this.src || this.imageError) {
         // Generate color based on text if no src or image error
-        const hash = this.text ? this.hashCode(this.text) : 0;
-        const hue = hash % 360;
-        style.backgroundColor = `hsl(${hue}, 65%, 50%)`;
+        const hash = this.text ? this.hashCode(this.text) : 0
+        const hue = hash % 360
+        style.backgroundColor = `hsl(${hue}, 65%, 50%)`
       }
-      
+
       if (this.color) {
-        style.color = this.color;
+        style.color = this.color
       }
-      
-      return style;
-    }
+
+      return style
+    },
   },
   methods: {
     handleImageError() {
-      this.imageError = true;
-      this.$emit('error');
+      this.imageError = true
+      this.$emit('error')
     },
     hashCode(str) {
-      let hash = 0;
+      let hash = 0
       for (let i = 0; i < str.length; i++) {
-        hash = str.charCodeAt(i) + ((hash << 5) - hash);
+        hash = str.charCodeAt(i) + ((hash << 5) - hash)
       }
-      return Math.abs(hash);
-    }
-  }
+      return Math.abs(hash)
+    },
+  },
 }
 </script>
 

@@ -3,12 +3,11 @@
     <div class="progress-content">
       <div class="progress-status">{{ $t(`duplicatePhotos.progress.status.${status}`) }}</div>
       <div class="progress-bar">
-        <div 
-          class="progress-fill" 
-          :style="{ width: displayProgress + '%' }"
-        ></div>
+        <div class="progress-fill" :style="{ width: displayProgress + '%' }"></div>
       </div>
-      <div class="progress-percent">{{ $t('duplicatePhotos.progress.progress', { percent: Math.round(displayProgress) }) }}</div>
+      <div class="progress-percent">
+        {{ $t('duplicatePhotos.progress.progress', { percent: Math.round(displayProgress) }) }}
+      </div>
       <button class="cancel-button" @click="$emit('cancel')">
         {{ $t('duplicatePhotos.progress.cancel') }}
       </button>
@@ -22,19 +21,20 @@ export default {
   props: {
     progress: {
       type: Number,
-      required: true
+      required: true,
     },
     status: {
       type: String,
       required: true,
-      validator: (value) => ['pending', 'preparing', 'scanning', 'analyzing', 'completed'].includes(value)
-    }
+      validator: value =>
+        ['pending', 'preparing', 'scanning', 'analyzing', 'completed'].includes(value),
+    },
   },
   emits: ['cancel'],
   data() {
     return {
       fakeProgress: 0,
-      fakeProgressTimer: null
+      fakeProgressTimer: null,
     }
   },
   computed: {
@@ -48,7 +48,7 @@ export default {
     },
     shouldUseFakeProgress() {
       return this.progress === 0 && this.status !== 'completed'
-    }
+    },
   },
   watch: {
     shouldUseFakeProgress: {
@@ -59,8 +59,8 @@ export default {
         } else {
           this.stopFakeProgress()
         }
-      }
-    }
+      },
+    },
   },
   beforeUnmount() {
     this.stopFakeProgress()
@@ -80,10 +80,10 @@ export default {
       if (!this.shouldUseFakeProgress) {
         return
       }
-      
+
       // 计算下次增长的时间间隔 (500ms-1.5秒之间随机)
       const nextInterval = Math.random() * 1000 + 500
-      
+
       this.fakeProgressTimer = setTimeout(() => {
         this.updateFakeProgress()
       }, nextInterval)
@@ -92,17 +92,17 @@ export default {
       if (!this.shouldUseFakeProgress) {
         return
       }
-      
+
       // 计算增长幅度 (1% - 3% 之间随机，但总进度不超过90%)
       const increment = Math.random() * 2 + 1
       const newProgress = Math.min(this.fakeProgress + increment, 90)
-      
+
       this.fakeProgress = Number(newProgress.toFixed(1))
-      
+
       // 调度下次更新
       this.scheduleNextUpdate()
-    }
-  }
+    },
+  },
 }
 </script>
 
@@ -157,7 +157,12 @@ export default {
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.3) 50%, transparent 100%);
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.3) 50%,
+    transparent 100%
+  );
   animation: shimmer 2s infinite;
 }
 
@@ -210,19 +215,19 @@ export default {
     background: rgba(28, 28, 30, 0.8);
     border-color: rgba(255, 255, 255, 0.1);
   }
-  
+
   .progress-title {
     color: #f2f2f7;
   }
-  
+
   .progress-status {
     color: #98989d;
   }
-  
+
   .progress-bar {
     background-color: rgba(255, 255, 255, 0.1);
   }
-  
+
   .progress-percent {
     color: #f2f2f7;
   }
@@ -235,7 +240,7 @@ export default {
     margin: 16px;
     border-radius: 16px;
   }
-  
+
   .progress-title {
     font-size: 24px;
   }

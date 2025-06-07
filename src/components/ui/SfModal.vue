@@ -1,35 +1,35 @@
 <template>
   <teleport to="body">
     <transition name="sf-modal">
-      <div 
-        v-if="modelValue" 
-        class="sf-modal-overlay" 
+      <div
+        v-if="modelValue"
+        class="sf-modal-overlay"
         @click.self="closeOnClickOverlay ? $emit('update:modelValue', false) : null"
       >
-        <div 
-          class="sf-modal" 
-          :class="{ 
-            [`sf-modal--${size}`]: true 
+        <div
+          class="sf-modal"
+          :class="{
+            [`sf-modal--${size}`]: true,
           }"
           :style="customStyles"
         >
           <div v-if="!hideHeader" class="sf-modal-header">
             <slot name="header">
               <div class="sf-modal-title">{{ title }}</div>
-              <button 
-                v-if="showClose" 
-                class="sf-modal-close" 
+              <button
+                v-if="showClose"
+                class="sf-modal-close"
                 @click="$emit('update:modelValue', false)"
               >
                 <span class="sf-modal-close-icon">×</span>
               </button>
             </slot>
           </div>
-          
+
           <div class="sf-modal-body">
             <slot></slot>
           </div>
-          
+
           <div v-if="$slots.footer" class="sf-modal-footer">
             <slot name="footer"></slot>
           </div>
@@ -45,53 +45,53 @@ export default {
   props: {
     modelValue: {
       type: Boolean,
-      default: false
+      default: false,
     },
     title: {
       type: String,
-      default: ''
+      default: '',
     },
     size: {
       type: String,
       default: 'default',
-      validator: value => ['small', 'default', 'large', 'full'].includes(value)
+      validator: value => ['small', 'default', 'large', 'full'].includes(value),
     },
     showClose: {
       type: Boolean,
-      default: true
+      default: true,
     },
     hideHeader: {
       type: Boolean,
-      default: false
+      default: false,
     },
     closeOnClickOverlay: {
       type: Boolean,
-      default: true
+      default: true,
     },
     customStyles: {
       type: Object,
-      default: () => ({})
-    }
+      default: () => ({}),
+    },
   },
   emits: ['update:modelValue', 'close'],
   watch: {
     modelValue(val) {
       if (val) {
-        document.body.style.overflow = 'hidden';
+        document.body.style.overflow = 'hidden'
       } else {
-        document.body.style.overflow = '';
-        this.$emit('close');
+        document.body.style.overflow = ''
+        this.$emit('close')
       }
-    }
+    },
   },
   mounted() {
     if (this.modelValue) {
-      document.body.style.overflow = 'hidden';
+      document.body.style.overflow = 'hidden'
     }
   },
   beforeUnmount() {
-    document.body.style.overflow = '';
-  }
+    document.body.style.overflow = ''
+  },
 }
 </script>
 
@@ -141,8 +141,14 @@ export default {
 }
 
 @keyframes modalFadeIn {
-  from { opacity: 0; transform: scale(0.95); }
-  to { opacity: 1; transform: scale(1); }
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 .sf-modal--small {
@@ -240,7 +246,7 @@ export default {
     max-width: 100% !important;
     border-radius: var(--radius-medium);
   }
-  
+
   .sf-modal--full {
     height: 100%;
     max-height: 100%;

@@ -4,21 +4,32 @@
 
 <template>
   <div class="album-form-container">
-
     <form @submit.prevent="handleSubmit">
       <div class="form-group">
         <label for="album-name">{{ $t('albumForm.name.label') }}</label>
-        <input id="album-name" v-model="formData.name" type="text" required :placeholder="$t('albumForm.name.placeholder')" class="form-input">
+        <input
+          id="album-name"
+          v-model="formData.name"
+          type="text"
+          required
+          :placeholder="$t('albumForm.name.placeholder')"
+          class="form-input"
+        />
       </div>
 
       <div class="form-group">
         <label for="album-description">{{ $t('albumForm.description.label') }}</label>
-        <textarea id="album-description" v-model="formData.description" :placeholder="$t('albumForm.description.placeholder')" class="form-textarea"
-          rows="3"></textarea>
+        <textarea
+          id="album-description"
+          v-model="formData.description"
+          :placeholder="$t('albumForm.description.placeholder')"
+          class="form-textarea"
+          rows="3"
+        ></textarea>
       </div>
 
       <div class="form-actions">
-        <button type="button" @click="$emit('cancel'); $emit('close')" class="cancel-button">
+        <button type="button" @click="handleCancel" class="cancel-button">
           {{ $t('albumForm.actions.cancel') }}
         </button>
         <button type="submit" :disabled="submitting" class="submit-button">
@@ -36,17 +47,17 @@ export default {
   props: {
     editingAlbum: {
       type: Object,
-      default: null
-    }
+      default: null,
+    },
   },
   data() {
     return {
       formData: {
         name: '',
         description: '',
-        coverPhotoId: ''
+        coverPhotoId: '',
       },
-      submitting: false
+      submitting: false,
     }
   },
   created() {
@@ -54,7 +65,7 @@ export default {
       this.formData = {
         name: this.editingAlbum.name,
         description: this.editingAlbum.description,
-        coverPhotoId: this.editingAlbum.coverPhotoId
+        coverPhotoId: this.editingAlbum.coverPhotoId,
       }
     }
   },
@@ -66,7 +77,7 @@ export default {
         const payload = {
           name: this.formData.name,
           description: this.formData.description,
-          coverPhotoId: this.formData.coverPhotoId || null
+          coverPhotoId: this.formData.coverPhotoId || null,
         }
 
         if (this.editingAlbum) {
@@ -76,7 +87,7 @@ export default {
           this.$notify({
             title: this.$t('albumView.success'),
             message: this.$t('albumForm.success.update'),
-            type: 'success'
+            type: 'success',
           })
         } else {
           // 创建相册逻辑
@@ -85,7 +96,7 @@ export default {
           this.$notify({
             title: this.$t('albumView.success'),
             message: this.$t('albumForm.success.create'),
-            type: 'success'
+            type: 'success',
           })
         }
 
@@ -96,13 +107,17 @@ export default {
         console.error(this.$t('albumForm.error.message'), error)
         this.$notify.error({
           title: this.$t('albumForm.error.title'),
-          message: error.response?.data?.message || this.$t('albumForm.error.message')
+          message: error.response?.data?.message || this.$t('albumForm.error.message'),
         })
       } finally {
         this.submitting = false
       }
-    }
-  }
+    },
+    handleCancel() {
+      this.$emit('cancel')
+      this.$emit('close')
+    },
+  },
 }
 </script>
 

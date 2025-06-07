@@ -4,7 +4,13 @@
 
 <template>
   <div class="album-view">
-    <AppNavbar :userName="userName" currentPage="albums" @show-upload="isUploadModalVisible = true" @show-album-form="showCreateModal = true" @toggle-album-manage="toggleManageMode" />
+    <AppNavbar
+      :userName="userName"
+      currentPage="albums"
+      @show-upload="isUploadModalVisible = true"
+      @show-album-form="showCreateModal = true"
+      @toggle-album-manage="toggleManageMode"
+    />
     <div :class="mainContainerClass">
       <div v-if="loading" class="album-view__loading">
         <div class="album-view__spinner"></div>
@@ -13,9 +19,9 @@
 
       <div v-else-if="error" class="album-view__error">
         <p>{{ error }}</p>
-        <sf-button @click="fetchAlbums" variant="outline">
+        <SfButton @click="fetchAlbums" variant="outline">
           {{ $t('albumView.retry') }}
-        </sf-button>
+        </SfButton>
       </div>
 
       <div v-else-if="albums.length === 0" class="album-view__empty">
@@ -24,8 +30,8 @@
 
       <div v-else>
         <!-- 批量管理工具栏 -->
-        <album-manage-toolbar 
-          v-if="isManageMode" 
+        <AlbumManageToolbar
+          v-if="isManageMode"
           :selectedAlbums="selectedAlbums"
           @select-all="selectAll"
           @deselect-all="deselectAll"
@@ -34,10 +40,10 @@
         />
 
         <div class="album-view__grid">
-          <album-card 
-            v-for="album in albums" 
-            :key="album.id" 
-            :album="album" 
+          <AlbumCard
+            v-for="album in albums"
+            :key="album.id"
+            :album="album"
             :isManageMode="isManageMode"
             :isSelected="isSelected(album.id)"
             @click="handleAlbumClick(album)"
@@ -47,12 +53,16 @@
       </div>
     </div>
 
-    <sf-modal v-model="showCreateModal" :title="$t('albumView.createAlbum.title')">
-      <album-form @success="handleAlbumCreated" @close="showCreateModal = false" @cancel="showCreateModal = false" />
-    </sf-modal>
+    <SfModal v-model="showCreateModal" :title="$t('albumView.createAlbum.title')">
+      <AlbumForm
+        @success="handleAlbumCreated"
+        @close="showCreateModal = false"
+        @cancel="showCreateModal = false"
+      />
+    </SfModal>
 
     <!-- 批量删除确认弹窗 -->
-    <sf-delete-confirm-modal
+    <SfDeleteConfirmModal
       v-model="isDeleteSelectedModalVisible"
       :item-name="$t('albumView.deleteConfirm.itemName')"
       :count="selectedAlbums.length"
@@ -81,7 +91,7 @@ export default {
     SfModal,
     SfDeleteConfirmModal,
     AlbumForm,
-    AppNavbar
+    AppNavbar,
   },
   data() {
     return {
@@ -93,7 +103,7 @@ export default {
       // 批量管理相关的状态
       isManageMode: false,
       selectedAlbums: [],
-      isDeleteSelectedModalVisible: false
+      isDeleteSelectedModalVisible: false,
     }
   },
   async created() {
@@ -101,7 +111,7 @@ export default {
     const user = JSON.parse(localStorage.getItem('user') || '{}')
     this.userName = user.username || '用户'
     await this.fetchAlbums()
-    
+
     // 监听新建相册事件
     eventBus.on('show-album-form', () => {
       this.showCreateModal = true
@@ -180,14 +190,12 @@ export default {
     async deleteSelectedAlbums() {
       try {
         // 批量删除选中的相册
-        await Promise.all(
-          this.selectedAlbums.map(albumId => albumService.deleteAlbum(albumId))
-        )
+        await Promise.all(this.selectedAlbums.map(albumId => albumService.deleteAlbum(albumId)))
 
         this.$notify({
           title: this.$t('albumView.success'),
           message: this.$t('albumView.deleteSuccess', { count: this.selectedAlbums.length }),
-          type: 'success'
+          type: 'success',
         })
 
         // 从列表中移除已删除的相册
@@ -199,19 +207,19 @@ export default {
         console.error(this.$t('albumView.error.fetchFailed'), error)
         this.$notify.error({
           title: this.$t('photoWall.error.deleteFailed'),
-          message: error.response?.data?.message || this.$t('photoWall.error.deleteFailedMessage')
+          message: error.response?.data?.message || this.$t('photoWall.error.deleteFailedMessage'),
         })
       }
-    }
+    },
   },
   computed: {
     mainContainerClass() {
       return {
         'album-container': true,
-        'with-toolbar-space': this.isManageMode
-      };
-    }
-  }
+        'with-toolbar-space': this.isManageMode,
+      }
+    },
+  },
 }
 </script>
 
@@ -327,17 +335,17 @@ export default {
   .album-container {
     padding: var(--spacing-lg);
   }
-  
+
   .album-view__header {
     flex-direction: column;
     gap: var(--spacing-lg);
     margin-bottom: var(--spacing-xl);
   }
-  
+
   .album-view__title {
     font-size: var(--font-size-2xl);
   }
-  
+
   .album-view__grid {
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
     gap: var(--spacing-lg);

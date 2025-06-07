@@ -6,8 +6,8 @@
   <div class="album-detail">
     <AppNavbar
       :userName="userName"
-      currentPage="album-detail" 
-      @show-upload="showUploadModal = true" 
+      currentPage="album-detail"
+      @show-upload="showUploadModal = true"
       @toggle-manage="toggleManageMode"
     />
     <div :class="albumDetailContainerClass">
@@ -31,15 +31,13 @@
 
       <div v-else-if="error" class="album-detail__error">
         <p>{{ error }}</p>
-        <sf-button @click="fetchAlbumDetails" variant="outline">
-          重试
-        </sf-button>
+        <SfButton @click="fetchAlbumDetails" variant="outline">重试</SfButton>
       </div>
 
       <div v-else>
         <!-- 批量管理工具栏 -->
-        <album-photos-manage-toolbar 
-          v-if="isManageMode" 
+        <AlbumPhotosManageToolbar
+          v-if="isManageMode"
           :selectedPhotos="selectedPhotos"
           @select-all="selectAll"
           @deselect-all="deselectAll"
@@ -48,7 +46,7 @@
           @exit-manage-mode="exitManageMode"
         />
 
-        <photo-wall-grid
+        <PhotoWallGrid
           :photos="photos"
           :isManageMode="isManageMode"
           :selectedPhotos="selectedPhotos"
@@ -59,7 +57,7 @@
       </div>
     </div>
 
-    <photo-detail
+    <PhotoDetail
       v-if="currentPhoto"
       v-model="showPhotoDetail"
       :photo="currentPhoto"
@@ -67,7 +65,7 @@
     />
 
     <!-- 添加照片模态框 -->
-    <add-photos-modal
+    <AddPhotosModal
       v-model="showUploadModal"
       :albumId="album.id"
       :existingPhotoIds="photos.map(p => p.id)"
@@ -75,7 +73,7 @@
     />
 
     <!-- 批量删除确认模态框 -->
-    <sf-delete-confirm-modal
+    <SfDeleteConfirmModal
       v-model="showDeleteSelectedModal"
       item-name="照片"
       :count="selectedPhotos.length"
@@ -83,16 +81,16 @@
     />
 
     <!-- 从相册移除照片确认模态框 -->
-    <sf-modal v-model="showRemoveFromAlbumModal" title="从相册移除照片">
+    <SfModal v-model="showRemoveFromAlbumModal" title="从相册移除照片">
       <div class="confirm-modal-content">
         <p>确定要将选中的 {{ selectedPhotos.length }} 张照片从相册「{{ album.name }}」中移除吗？</p>
         <p class="confirm-note">注意：照片不会被删除，只会从当前相册中移除</p>
         <div class="confirm-actions">
-          <sf-button @click="showRemoveFromAlbumModal = false" type="secondary">取消</sf-button>
-          <sf-button @click="removeFromAlbum" type="danger">确认移除</sf-button>
+          <SfButton @click="showRemoveFromAlbumModal = false" type="secondary">取消</SfButton>
+          <SfButton @click="removeFromAlbum" type="danger">确认移除</SfButton>
         </div>
       </div>
-    </sf-modal>
+    </SfModal>
   </div>
 </template>
 
@@ -118,7 +116,7 @@ export default {
     SfModal,
     SfDeleteConfirmModal,
     AlbumPhotosManageToolbar,
-    AppNavbar
+    AppNavbar,
   },
   data() {
     return {
@@ -127,7 +125,7 @@ export default {
         name: '',
         description: '',
         photoCount: 0,
-        createdAt: null
+        createdAt: null,
       },
       photos: [],
       loading: false,
@@ -140,15 +138,15 @@ export default {
       isManageMode: false,
       selectedPhotos: [],
       showDeleteSelectedModal: false,
-      showRemoveFromAlbumModal: false
+      showRemoveFromAlbumModal: false,
     }
   },
   computed: {
     albumDetailContainerClass() {
       return {
         'album-detail-container': true,
-        'with-toolbar-space': this.isManageMode
-      };
+        'with-toolbar-space': this.isManageMode,
+      }
     },
   },
   async created() {
@@ -156,7 +154,7 @@ export default {
     const user = JSON.parse(localStorage.getItem('user') || '{}')
     this.userName = user.username || '用户'
     await this.fetchAlbumDetails()
-    
+
     // 监听上传照片事件
     eventBus.on('show-upload-modal', () => {
       this.showUploadModal = true
@@ -171,7 +169,7 @@ export default {
       return new Date(date).toLocaleDateString('zh-CN', {
         year: 'numeric',
         month: 'long',
-        day: 'numeric'
+        day: 'numeric',
       })
     },
     async fetchAlbumDetails() {
@@ -180,7 +178,7 @@ export default {
         const albumId = this.$route.params.id
         const [albumResponse, photosResponse] = await Promise.all([
           albumService.getAlbum(albumId),
-          albumService.getAlbumPhotos(albumId)
+          albumService.getAlbumPhotos(albumId),
         ])
         this.album = albumResponse.data
         this.photos = photosResponse.data.data
@@ -191,14 +189,12 @@ export default {
         this.loading = false
       }
     },
-    
 
-    
     openPhoto(photo) {
       this.currentPhoto = photo
       this.showPhotoDetail = true
     },
-    
+
     handlePhotosAdded(result) {
       // 处理照片添加成功后的更新
       if (result.type === 'uploaded') {
@@ -210,10 +206,10 @@ export default {
         // 这里我们可以优化，不重新获取整个相册详情，只获取照片列表
         this.fetchAlbumPhotos()
       }
-      
+
       this.showUploadModal = false
     },
-    
+
     async fetchAlbumPhotos() {
       try {
         const albumId = this.$route.params.id
@@ -226,13 +222,13 @@ export default {
         this.fetchAlbumDetails()
       }
     },
-    
+
     // 批量管理相关方法
     toggleManageMode() {
       // 立即更新UI状态，提高响应速度
       const willExit = this.isManageMode
       this.isManageMode = !this.isManageMode
-      
+
       // 如果是退出管理模式，使用nextTick延迟清空选择状态
       // 这样可以先完成UI状态更新，提高响应速度
       if (willExit) {
@@ -241,13 +237,13 @@ export default {
         })
       }
     },
-    
+
     exitManageMode() {
       // 立即更新所有状态
       this.isManageMode = false
       this.selectedPhotos = []
     },
-    
+
     toggleSelectPhoto(photoId) {
       const index = this.selectedPhotos.indexOf(photoId)
       if (index === -1) {
@@ -256,39 +252,37 @@ export default {
         this.selectedPhotos.splice(index, 1)
       }
     },
-    
+
     selectAll() {
       this.selectedPhotos = this.photos.map(photo => photo.id)
     },
-    
+
     deselectAll() {
       this.selectedPhotos = []
     },
-    
+
     showRemoveFromAlbumDialog() {
       if (this.selectedPhotos.length === 0) return
       this.showRemoveFromAlbumModal = true
     },
-    
+
     showDeleteSelectedDialog() {
       if (this.selectedPhotos.length === 0) return
       this.showDeleteSelectedModal = true
     },
-    
 
-    
     async removeFromAlbum() {
       if (this.selectedPhotos.length === 0) return
-      
+
       try {
         await albumService.removePhotosFromAlbum(this.album.id, this.selectedPhotos)
-        
+
         this.$notify({
           title: '成功',
           message: `已从相册中移除${this.selectedPhotos.length}张照片`,
-          type: 'success'
+          type: 'success',
         })
-        
+
         // 从当前页面移除照片
         this.photos = this.photos.filter(photo => !this.selectedPhotos.includes(photo.id))
         this.album.photoCount = this.photos.length
@@ -298,23 +292,23 @@ export default {
         console.error('从相册移除照片失败:', error)
         this.$notify.error({
           title: '操作失败',
-          message: error.response?.data?.message || '无法从相册移除照片，请重试'
+          message: error.response?.data?.message || '无法从相册移除照片，请重试',
         })
       }
     },
-    
+
     async deleteSelectedPhotos() {
       if (this.selectedPhotos.length === 0) return
-      
+
       try {
         await photoService.deletePhotos(this.selectedPhotos)
-        
+
         this.$notify({
           title: '成功',
           message: `已删除${this.selectedPhotos.length}张照片`,
-          type: 'success'
+          type: 'success',
         })
-        
+
         // 从当前页面移除照片
         this.photos = this.photos.filter(photo => !this.selectedPhotos.includes(photo.id))
         this.album.photoCount = this.photos.length
@@ -324,17 +318,17 @@ export default {
         console.error('批量删除照片失败:', error)
         this.$notify.error({
           title: '删除失败',
-          message: error.response?.data?.message || '无法删除照片，请重试'
+          message: error.response?.data?.message || '无法删除照片，请重试',
         })
       }
     },
-    
+
     deletePhoto(deletedPhotoId) {
       // 单张照片删除后的处理
       this.photos = this.photos.filter(photo => photo.id !== deletedPhotoId)
       this.album.photoCount = this.photos.length
-    }
-  }
+    },
+  },
 }
 </script>
 
@@ -430,8 +424,6 @@ export default {
   color: var(--error);
 }
 
-
-
 /* 确认模态框样式 */
 .confirm-modal-content {
   padding: var(--spacing-lg);
@@ -481,17 +473,17 @@ export default {
     padding: var(--spacing-lg);
     margin-top: 56px; /* 移动端导航栏高度稍小 */
   }
-  
+
   .album-detail__header {
     flex-direction: column;
     gap: var(--spacing-lg);
     margin-bottom: var(--spacing-xl);
   }
-  
+
   .album-detail__title {
     font-size: var(--font-size-2xl);
   }
-  
+
   .album-detail__description {
     font-size: var(--font-size-md);
   }

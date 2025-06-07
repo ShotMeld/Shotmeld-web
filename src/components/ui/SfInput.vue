@@ -1,21 +1,21 @@
 <template>
-  <div 
+  <div
     class="sf-input-wrapper"
-    :class="{ 
+    :class="{
       'sf-input-wrapper--focused': isFocused,
       'sf-input-wrapper--disabled': disabled,
       'sf-input-wrapper--error': error,
       'sf-input-wrapper--with-prefix': $slots.prefix,
-      'sf-input-wrapper--with-suffix': $slots.suffix
+      'sf-input-wrapper--with-suffix': $slots.suffix,
     }"
   >
     <label v-if="label" :for="id" class="sf-input-label">{{ label }}</label>
-    
+
     <div class="sf-input-container">
       <div v-if="$slots.prefix" class="sf-input-prefix">
         <slot name="prefix"></slot>
       </div>
-      
+
       <input
         :id="id"
         :type="type"
@@ -29,16 +29,16 @@
         @focus="handleFocus"
         @blur="handleBlur"
       />
-      
+
       <div v-if="$slots.suffix" class="sf-input-suffix">
         <slot name="suffix"></slot>
       </div>
-      
+
       <div v-else-if="clearable && modelValue" class="sf-input-clear" @click="clear">
         <span class="sf-input-clear-icon">×</span>
       </div>
     </div>
-    
+
     <span v-if="error" class="sf-input-error">{{ error }}</span>
     <span v-else-if="hint" class="sf-input-hint">{{ hint }}</span>
   </div>
@@ -50,72 +50,72 @@ export default {
   props: {
     modelValue: {
       type: [String, Number],
-      default: ''
+      default: '',
     },
     label: {
       type: String,
-      default: ''
+      default: '',
     },
     type: {
       type: String,
-      default: 'text'
+      default: 'text',
     },
     placeholder: {
       type: String,
-      default: ''
+      default: '',
     },
     disabled: {
       type: Boolean,
-      default: false
+      default: false,
     },
     required: {
       type: Boolean,
-      default: false
+      default: false,
     },
     clearable: {
       type: Boolean,
-      default: false
+      default: false,
     },
     autocomplete: {
       type: String,
-      default: 'off'
+      default: 'off',
     },
     error: {
       type: String,
-      default: ''
+      default: '',
     },
     hint: {
       type: String,
-      default: ''
+      default: '',
     },
     id: {
       type: String,
       default() {
-        return `sf-input-${Math.random().toString(36).substring(2, 9)}`;
-      }
-    }
+        return `sf-input-${Math.random().toString(36).substring(2, 9)}`
+      },
+    },
   },
   emits: ['update:modelValue', 'focus', 'blur', 'clear'],
   data() {
     return {
-      isFocused: false
-    };
+      isFocused: false,
+    }
   },
   methods: {
     handleFocus(event) {
-      this.isFocused = true;
-      this.$emit('focus', event);
+      this.isFocused = true
+      this.$emit('focus', event)
     },
     handleBlur(event) {
-      this.isFocused = false;
-      this.$emit('blur', event);
+      this.isFocused = false
+      this.$emit('blur', event)
     },
     clear() {
-      this.$emit('update:modelValue', '');
-      this.$emit('clear');
-    }
-  }
-};
+      this.$emit('update:modelValue', '')
+      this.$emit('clear')
+    },
+  },
+}
 </script>
 
 <style scoped>

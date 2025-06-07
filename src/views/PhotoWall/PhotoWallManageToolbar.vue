@@ -18,18 +18,18 @@
 </template>
 
 <script>
-import { ManageToolbar } from '../../components/toolbar';
+import { ManageToolbar } from '../../components/toolbar'
 
 export default {
   name: 'PhotoWallManageToolbar',
   components: {
-    ManageToolbar
+    ManageToolbar,
   },
   props: {
     selectedPhotos: {
       type: Array,
-      required: true
-    }
+      required: true,
+    },
   },
   computed: {
     toolbarActions() {
@@ -39,20 +39,26 @@ export default {
           event: 'show-delete-selected',
           icon: 'fas fa-trash',
           type: 'danger',
-          requireSelection: true
+          requireSelection: true,
         },
         {
           label: this.$t('photoWall.manageToolbar.actions.addToAlbum'),
           event: 'show-add-to-album',
           icon: 'fas fa-folder-plus',
           type: 'primary',
-          requireSelection: true
-        }
-      ];
-    }
+          requireSelection: true,
+        },
+      ]
+    },
   },
-  emits: ['select-all', 'deselect-all', 'show-add-to-album', 'show-delete-selected', 'exit-manage-mode']
-};
+  emits: [
+    'select-all',
+    'deselect-all',
+    'show-add-to-album',
+    'show-delete-selected',
+    'exit-manage-mode',
+  ],
+}
 </script>
 
 <style scoped>
@@ -67,7 +73,9 @@ export default {
   margin: 0 auto;
   padding: 0;
   opacity: 0;
-  transition: opacity 0.3s ease, transform 0.3s ease;
+  transition:
+    opacity 0.3s ease,
+    transform 0.3s ease;
 }
 
 .photo-wall-toolbar-container :deep(.manage-toolbar) {
@@ -79,7 +87,9 @@ export default {
 .toolbar-visible {
   opacity: 1;
   transform: translateX(-50%) translateY(0);
-  transition: opacity 0.3s ease, transform 0.3s ease;
+  transition:
+    opacity 0.3s ease,
+    transform 0.3s ease;
 }
 
 @media (max-width: 768px) {

@@ -25,51 +25,49 @@
 </template>
 
 <script>
-import { SfLinkButton } from '../ui';
+import { SfLinkButton } from '../ui'
 
 export default {
   name: 'PhotoLocation',
   components: {
-    SfLinkButton
+    SfLinkButton,
   },
   props: {
     photo: {
       type: Object,
-      default: null
-    }
+      default: null,
+    },
   },
   computed: {
     hasLocation() {
       return !!(this.photo?.location?.latitude && this.photo?.location?.longitude)
-    }
+    },
   },
   methods: {
     formatCoordinate(coord, type) {
       if (type === 'name') {
-        return coord;
+        return coord
       }
-      if (typeof coord !== 'number') return '';
+      if (typeof coord !== 'number') return ''
 
-      const degrees = Math.floor(coord);
-      const minutesValue = (coord - degrees) * 60;
-      const minutes = Math.floor(minutesValue);
-      const seconds = ((minutesValue - minutes) * 60).toFixed(2);
+      const degrees = Math.floor(coord)
+      const minutesValue = (coord - degrees) * 60
+      const minutes = Math.floor(minutesValue)
+      const seconds = ((minutesValue - minutes) * 60).toFixed(2)
 
-      const direction = type === 'lat'
-        ? (coord >= 0 ? 'N' : 'S')
-        : (coord >= 0 ? 'E' : 'W');
+      const direction = type === 'lat' ? (coord >= 0 ? 'N' : 'S') : coord >= 0 ? 'E' : 'W'
 
-      return `${Math.abs(degrees)}° ${minutes}' ${seconds}" ${direction}`;
+      return `${Math.abs(degrees)}° ${minutes}' ${seconds}" ${direction}`
     },
 
     openMap() {
-      if (!this.hasLocation) return;
+      if (!this.hasLocation) return
 
       // 使用系统地图应用打开位置
-      const mapUrl = `https://maps.apple.com/?q=${this.photo.location.latitude},${this.photo.location.longitude}`;
-      window.open(mapUrl, '_blank');
-    }
-  }
+      const mapUrl = `https://maps.apple.com/?q=${this.photo.location.latitude},${this.photo.location.longitude}`
+      window.open(mapUrl, '_blank')
+    },
+  },
 }
 </script>
 

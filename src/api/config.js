@@ -1,5 +1,5 @@
 // API配置文件
-export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://api.shotmeld.seeridia.top';
+export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://api.shotmeld.seeridia.top'
 
 // API端点
 export const API_ENDPOINTS = {
@@ -7,37 +7,37 @@ export const API_ENDPOINTS = {
   AUTH: {
     REGISTER: '/auth/register',
     LOGIN: '/auth/login',
-    ME: '/auth/me'
+    ME: '/auth/me',
   },
-  
+
   // 照片管理
   PHOTOS: {
     BASE: '/photos',
-    DETAIL: (id) => `/photos/${id}`,
+    DETAIL: id => `/photos/${id}`,
     BATCH: '/photos/batch',
     TIMELINE: '/timeline',
     SEARCH: '/photos/semantic-search',
-    SHARE: (id) => `/photos/share/${id}`,
-    SHARED: (id) => `/photos/shared/${id}`
+    SHARE: id => `/photos/share/${id}`,
+    SHARED: id => `/photos/shared/${id}`,
   },
-  
+
   // 标签管理
   TAGS: {
     BASE: '/tags',
-    DETAIL: (id) => `/tags/${id}`,
-    PHOTOS: (id) => `/tags/${id}`
+    DETAIL: id => `/tags/${id}`,
+    PHOTOS: id => `/tags/${id}`,
   },
-  
+
   // 相册管理
   ALBUMS: {
     BASE: '/albums',
-    DETAIL: (id) => `/albums/${id}`,
-    PHOTOS: (id) => `/albums/${id}/photos`
+    DETAIL: id => `/albums/${id}`,
+    PHOTOS: id => `/albums/${id}/photos`,
   },
-  
+
   // 图片工具
   PHOTOS_TOOL: {
     DUPLICATES: '/photos-tool/duplicates',
-    TASK_STATUS: (taskId) => `/photos-tool/task/status/${taskId}`
-  }
-};
+    TASK_STATUS: taskId => `/photos-tool/task/status/${taskId}`,
+  },
+}

@@ -4,73 +4,78 @@
 -->
 
 <template>
-  <sf-modal :modelValue="modelValue" @update:modelValue="$emit('update:modelValue', $event)" :title="title" size="small">
+  <SfModal
+    :modelValue="modelValue"
+    @update:modelValue="$emit('update:modelValue', $event)"
+    :title="title"
+    size="small"
+  >
     <div class="delete-confirm">
       <p>{{ confirmMessage || `确定要删除选中的 ${count} 个${itemName}吗？` }}</p>
       <p class="warning-text">{{ warningText || '此操作不可恢复！' }}</p>
       <div class="modal-footer">
-        <sf-button type="secondary" @click="cancel">{{ cancelText }}</sf-button>
-        <sf-button type="danger" @click="confirm">{{ confirmText }}</sf-button>
+        <SfButton type="secondary" @click="cancel">{{ cancelText }}</SfButton>
+        <SfButton type="danger" @click="confirm">{{ confirmText }}</SfButton>
       </div>
     </div>
-  </sf-modal>
+  </SfModal>
 </template>
 
 <script>
-import SfModal from './SfModal.vue';
-import SfButton from './SfButton.vue';
+import SfModal from './SfModal.vue'
+import SfButton from './SfButton.vue'
 
 export default {
   name: 'SfDeleteConfirmModal',
   components: {
     SfModal,
-    SfButton
+    SfButton,
   },
   props: {
     modelValue: {
       type: Boolean,
-      required: true
+      required: true,
     },
     itemName: {
       type: String,
-      default: '项目'
+      default: '项目',
     },
     count: {
       type: Number,
-      default: 0
+      default: 0,
     },
     title: {
       type: String,
-      default: '删除确认'
+      default: '删除确认',
     },
     confirmMessage: {
       type: String,
-      default: ''
+      default: '',
     },
     warningText: {
       type: String,
-      default: ''
+      default: '',
     },
     cancelText: {
       type: String,
-      default: '取消'
+      default: '取消',
     },
     confirmText: {
       type: String,
-      default: '确认删除'
-    }
+      default: '确认删除',
+    },
   },
   emits: ['update:modelValue', 'cancel', 'confirm'],
   methods: {
     cancel() {
-      this.$emit('update:modelValue', false);
-      this.$emit('cancel');
+      this.$emit('update:modelValue', false)
+      this.$emit('cancel')
     },
     confirm() {
-      this.$emit('confirm');
-      this.$emit('update:modelValue', false);
-    }
-  }
+      this.$emit('confirm')
+      this.$emit('update:modelValue', false)
+    },
+  },
 }
 </script>
 

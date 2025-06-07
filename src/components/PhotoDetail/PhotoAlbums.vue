@@ -20,18 +20,18 @@ export default {
   props: {
     photo: {
       type: Object,
-      default: null
+      default: null,
     },
     albumsMap: {
       type: Object,
-      default: () => ({})
-    }
+      default: () => ({}),
+    },
   },
   methods: {
     getAlbumName(albumId) {
-      return this.albumsMap[albumId] || albumId;
-    }
-  }
+      return this.albumsMap[albumId] || albumId
+    },
+  },
 }
 </script>
 

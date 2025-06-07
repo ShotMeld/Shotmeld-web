@@ -4,14 +4,17 @@
 
 <template>
   <div class="icp-footer">
-    <a href="https://seeridia.top" target="_blank" rel="noopener noreferrer">
-      @{{ currentYear }}
-    </a>
+    <a href="https://seeridia.top" target="_blank" rel="noopener noreferrer">@{{ currentYear }}</a>
     <a href="https://beian.miit.gov.cn" target="_blank" rel="noopener noreferrer">
       闽ICP备2025099091号
     </a>
-    <a href="https://beian.mps.gov.cn/#/query/webSearch?code=35018302000247" rel="noreferrer"
-      target="_blank">闽公网安备35018302000247号</a>
+    <a
+      href="https://beian.mps.gov.cn/#/query/webSearch?code=35018302000247"
+      rel="noreferrer"
+      target="_blank"
+    >
+      闽公网安备35018302000247号
+    </a>
   </div>
 </template>
 
@@ -20,9 +23,9 @@ export default {
   name: 'IcpFooter',
   computed: {
     currentYear() {
-      return new Date().getFullYear();
-    }
-  }
+      return new Date().getFullYear()
+    },
+  },
 }
 </script>
 

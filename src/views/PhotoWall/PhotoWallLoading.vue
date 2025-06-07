@@ -10,8 +10,8 @@
 
 <script>
 export default {
-  name: 'PhotoWallLoading'
-};
+  name: 'PhotoWallLoading',
+}
 </script>
 
 <style scoped>
@@ -34,4 +34,4 @@ export default {
   border-radius: var(--radius-medium);
   background-color: var(--bg-secondary);
 }
-</style> 
+</style>

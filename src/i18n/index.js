@@ -4,7 +4,7 @@ import en from './locales/en.json'
 
 const messages = {
   'zh-CN': zhCN,
-  'en': en
+  en: en,
 }
 
 // 从本地存储中获取用户设置的语言，如果没有则默认使用英文
@@ -26,7 +26,7 @@ const i18n = createI18n({
   globalInjection: true, // 确保全局注入$t
   silentTranslationWarn: false, // 显示翻译警告来帮助调试
   missingWarn: false,
-  silentFallbackWarn: false
+  silentFallbackWarn: false,
 })
 
 export default i18n

@@ -8,45 +8,45 @@
       <h2 class="auth-title">{{ $t('auth.register.title') }}</h2>
       <p class="auth-description">{{ $t('auth.register.description') }}</p>
     </div>
-    
+
     <form @submit.prevent="handleRegister" class="auth-form">
       <div class="form-group">
-        <SfInput 
-          v-model="formData.username" 
+        <SfInput
+          v-model="formData.username"
           :placeholder="$t('auth.register.username')"
-          required 
+          required
           :error="errors.username"
           class="auth-input"
         />
       </div>
 
       <div class="form-group">
-        <SfInput 
-          v-model="formData.email" 
-          type="email" 
+        <SfInput
+          v-model="formData.email"
+          type="email"
           :placeholder="$t('auth.register.email')"
-          required 
+          required
           :error="errors.email"
           class="auth-input"
         />
       </div>
 
       <div class="form-group">
-        <SfInput 
-          v-model="formData.password" 
-          type="password" 
+        <SfInput
+          v-model="formData.password"
+          type="password"
           :placeholder="$t('auth.register.password')"
-          required 
+          required
           :error="errors.password"
           @keyup.enter="handleRegister"
           class="auth-input"
         />
       </div>
 
-      <SfButton 
-        type="primary" 
-        full-width 
-        :loading="loading" 
+      <SfButton
+        type="primary"
+        full-width
+        :loading="loading"
         class="auth-button"
         @click="handleRegister"
       >
@@ -64,7 +64,7 @@
 </template>
 
 <script>
-import { authService } from '../../api';
+import { authService } from '../../api'
 
 export default {
   name: 'RegisterForm',
@@ -74,136 +74,136 @@ export default {
       formData: {
         email: '',
         username: '',
-        password: ''
+        password: '',
       },
       errors: {
         email: '',
         username: '',
-        password: ''
+        password: '',
       },
-      loading: false
+      loading: false,
     }
   },
   watch: {
     'formData.username'() {
       if (this.errors.username) {
-        this.validateUsername();
+        this.validateUsername()
       }
     },
     'formData.email'() {
       if (this.errors.email) {
-        this.validateEmail();
+        this.validateEmail()
       }
     },
     'formData.password'() {
       if (this.errors.password) {
-        this.validatePassword();
+        this.validatePassword()
       }
-    }
+    },
   },
   methods: {
     validateUsername() {
-      this.errors.username = '';
+      this.errors.username = ''
 
       if (!this.formData.username) {
-        this.errors.username = this.$t('auth.register.errors.usernameRequired');
-        return false;
+        this.errors.username = this.$t('auth.register.errors.usernameRequired')
+        return false
       }
 
       if (this.formData.username.includes('@')) {
-        this.errors.username = this.$t('auth.register.errors.usernameNoAt');
-        return false;
+        this.errors.username = this.$t('auth.register.errors.usernameNoAt')
+        return false
       }
 
       if (this.formData.username.length < 3) {
-        this.errors.username = this.$t('auth.register.errors.usernameLength');
-        return false;
+        this.errors.username = this.$t('auth.register.errors.usernameLength')
+        return false
       }
 
-      return true;
+      return true
     },
 
     validateEmail() {
-      this.errors.email = '';
+      this.errors.email = ''
 
       if (!this.formData.email) {
-        this.errors.email = this.$t('auth.register.errors.emailRequired');
-        return false;
+        this.errors.email = this.$t('auth.register.errors.emailRequired')
+        return false
       }
 
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
       if (!emailRegex.test(this.formData.email)) {
-        this.errors.email = this.$t('auth.register.errors.emailInvalid');
-        return false;
+        this.errors.email = this.$t('auth.register.errors.emailInvalid')
+        return false
       }
 
-      return true;
+      return true
     },
 
     validatePassword() {
-      this.errors.password = '';
+      this.errors.password = ''
 
       if (!this.formData.password) {
-        this.errors.password = this.$t('auth.register.errors.passwordRequired');
-        return false;
+        this.errors.password = this.$t('auth.register.errors.passwordRequired')
+        return false
       }
 
       if (this.formData.password.length < 8) {
-        this.errors.password = this.$t('auth.register.errors.passwordLength');
-        return false;
+        this.errors.password = this.$t('auth.register.errors.passwordLength')
+        return false
       }
 
-      return true;
+      return true
     },
 
     validateForm() {
-      const isUsernameValid = this.validateUsername();
-      const isEmailValid = this.validateEmail();
-      const isPasswordValid = this.validatePassword();
+      const isUsernameValid = this.validateUsername()
+      const isEmailValid = this.validateEmail()
+      const isPasswordValid = this.validatePassword()
 
-      return isUsernameValid && isEmailValid && isPasswordValid;
+      return isUsernameValid && isEmailValid && isPasswordValid
     },
 
     async handleRegister() {
       if (!this.validateForm()) {
-        return;
+        return
       }
 
       try {
-        this.loading = true;
-        await authService.register(this.formData);
+        this.loading = true
+        await authService.register(this.formData)
 
-        this.$emit('register-success');
+        this.$emit('register-success')
       } catch (error) {
-        let errorMessage = this.$t('auth.register.errors.registerFailed');
+        let errorMessage = this.$t('auth.register.errors.registerFailed')
         if (error.response) {
-          errorMessage = error.response.data.message || errorMessage;
+          errorMessage = error.response.data.message || errorMessage
 
           const matchesErrorType = (message, keywords) => {
-            return keywords.some(keyword => 
-              message.toLowerCase().includes(keyword.toLowerCase())
-            );
-          };
+            return keywords.some(keyword => message.toLowerCase().includes(keyword.toLowerCase()))
+          }
 
           // 根据错误类型显示不同的错误提示
           if (matchesErrorType(errorMessage, ['email', '邮箱', '该邮箱已被注册'])) {
-            this.errors.email = errorMessage;
-          } else if (matchesErrorType(errorMessage, ['username', '用户名']) &&
-                   matchesErrorType(errorMessage, ['已存在', '已被占用', '重复'])) {
-            this.errors.username = errorMessage;
+            this.errors.email = errorMessage
+          } else if (
+            matchesErrorType(errorMessage, ['username', '用户名']) &&
+            matchesErrorType(errorMessage, ['已存在', '已被占用', '重复'])
+          ) {
+            this.errors.username = errorMessage
           } else if (matchesErrorType(errorMessage, ['password', '密码'])) {
-            this.errors.password = errorMessage;
+            this.errors.password = errorMessage
           } else {
-            this.errors.username = errorMessage;
+            this.errors.username = errorMessage
           }
         }
 
-        console.error('注册失败:', error);
+        console.error('注册失败:', error)
       } finally {
-        this.loading = false;
+        this.loading = false
       }
-    }
-  }
+    },
+  },
 }
 </script>
 
@@ -213,17 +213,19 @@ export default {
   backdrop-filter: blur(20px);
   border-radius: var(--radius-large);
   padding: var(--spacing-3xl);
-  box-shadow: 
+  box-shadow:
     0 8px 32px rgba(0, 0, 0, 0.1),
     0 1px 2px rgba(0, 0, 0, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.2);
   animation: cardSlideUp 0.8s ease-out 0.2s both;
-  transition: transform var(--transition-base), box-shadow var(--transition-base);
+  transition:
+    transform var(--transition-base),
+    box-shadow var(--transition-base);
 }
 
 .auth-card:hover {
   transform: translateY(-4px);
-  box-shadow: 
+  box-shadow:
     0 16px 40px rgba(0, 0, 0, 0.12),
     0 2px 4px rgba(0, 0, 0, 0.08);
 }

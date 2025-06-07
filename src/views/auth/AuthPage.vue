@@ -5,18 +5,18 @@
 <template>
   <div class="auth-container">
     <!-- 登录过渡动画 -->
-    <LoginTransition 
-      :show="showTransition" 
+    <LoginTransition
+      :show="showTransition"
       :user-name="currentUser?.name || currentUser?.username || ''"
       @start-fade-to-main="startFadeToMain"
       @transition-complete="onTransitionComplete"
     />
-    
+
     <!-- 认证表单容器 - 过渡动画显示时隐藏 -->
     <div class="auth-form-container" :class="{ 'fade-out': showTransition }">
       <!-- 背景动画 -->
       <AuthBackground />
-      
+
       <div class="auth-content">
         <!-- Logo 和品牌 -->
         <div class="brand-section">
@@ -25,23 +25,23 @@
             {{ mode === 'login' ? $t('auth.brand.subtitle') : $t('auth.brand.startYourMemory') }}
           </p>
         </div>
-        
+
         <!-- 表单区域 -->
         <transition name="form-switch" mode="out-in">
-          <LoginForm 
+          <LoginForm
             v-if="mode === 'login'"
             key="login"
             @login-success="handleLoginSuccess"
             @switch-mode="handleSwitchMode"
           />
-          <RegisterForm 
+          <RegisterForm
             v-else
             key="register"
             @register-success="handleRegisterSuccess"
             @switch-mode="handleSwitchMode"
           />
         </transition>
-        
+
         <!-- ICP备案信息 -->
         <IcpFooter class="icp-footer" />
       </div>
@@ -50,11 +50,11 @@
 </template>
 
 <script>
-import { LoginTransition } from '../../components/ui';
-import LoginForm from '../../components/auth/LoginForm.vue';
-import RegisterForm from '../../components/auth/RegisterForm.vue';
-import AuthBackground from '../../components/auth/AuthBackground.vue';
-import IcpFooter from '../../layout/IcpFooter.vue';
+import { LoginTransition } from '../../components/ui'
+import LoginForm from '../../components/auth/LoginForm.vue'
+import RegisterForm from '../../components/auth/RegisterForm.vue'
+import AuthBackground from '../../components/auth/AuthBackground.vue'
+import IcpFooter from '../../layout/IcpFooter.vue'
 
 export default {
   name: 'AuthPage',
@@ -63,66 +63,66 @@ export default {
     LoginForm,
     RegisterForm,
     AuthBackground,
-    IcpFooter
+    IcpFooter,
   },
   data() {
     return {
       mode: 'login', // 'login' 或 'register'
       showTransition: false,
-      currentUser: null
+      currentUser: null,
     }
   },
   created() {
     // 根据路由确定初始模式
-    this.mode = this.$route.path === '/register' ? 'register' : 'login';
+    this.mode = this.$route.path === '/register' ? 'register' : 'login'
   },
   watch: {
     '$route.path'(newPath) {
-      this.mode = newPath === '/register' ? 'register' : 'login';
-    }
+      this.mode = newPath === '/register' ? 'register' : 'login'
+    },
   },
   methods: {
     handleSwitchMode(newMode) {
-      this.mode = newMode;
+      this.mode = newMode
       // 更新路由但不触发导航
-      const path = newMode === 'register' ? '/register' : '/login';
+      const path = newMode === 'register' ? '/register' : '/login'
       if (this.$route.path !== path) {
-        this.$router.replace(path);
+        this.$router.replace(path)
       }
     },
-    
+
     handleLoginSuccess(user) {
-      this.currentUser = user;
-      this.showTransition = true;
+      this.currentUser = user
+      this.showTransition = true
     },
-    
+
     handleRegisterSuccess() {
       // 注册成功后切换到登录模式
-      this.mode = 'login';
-      this.$router.replace('/login');
-      
+      this.mode = 'login'
+      this.$router.replace('/login')
+
       // 可以显示成功提示
       this.$nextTick(() => {
         // 这里可以添加成功提示逻辑
-        console.log('注册成功，请登录');
-      });
+        console.log('注册成功，请登录')
+      })
     },
-    
+
     startFadeToMain() {
       setTimeout(() => {
-        this.navigateToPhotoWall();
-      }, 100);
+        this.navigateToPhotoWall()
+      }, 100)
     },
-    
+
     navigateToPhotoWall() {
-      this.$router.push({ path: '/photowall', replace: true });
+      this.$router.push({ path: '/photowall', replace: true })
     },
-    
+
     onTransitionComplete() {
       // 过渡动画完成后的处理
-      this.showTransition = false;
-    }
-  }
+      this.showTransition = false
+    },
+  },
 }
 </script>
 
@@ -167,7 +167,7 @@ export default {
   font-weight: var(--font-weight-bold);
   color: var(--text-primary);
   margin-bottom: var(--spacing-xs);
-  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
   letter-spacing: -0.02em;
 }
 
@@ -183,6 +183,7 @@ export default {
     opacity: 0;
     transform: translateY(30px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -215,7 +216,7 @@ export default {
   .auth-container {
     padding: var(--spacing-md);
   }
-  
+
   .brand-title {
     font-size: var(--font-size-3xl);
   }

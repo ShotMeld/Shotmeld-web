@@ -1,6 +1,4 @@
 // 工具栏组件导出
-import ManageToolbar from './ManageToolbar.vue';
+import ManageToolbar from './ManageToolbar.vue'
 
-export {
-  ManageToolbar
-};
+export { ManageToolbar }

@@ -1,7 +1,12 @@
 <template>
   <div class="photo-card-wrapper">
-    <sf-card class="photo-card" :class="{ 'selected': selected }" hoverable shadow="small"
-      @click="$emit('select', photo)">
+    <SfCard
+      class="photo-card"
+      :class="{ selected: selected }"
+      hoverable
+      shadow="small"
+      @click="$emit('select', photo)"
+    >
       <div class="photo-thumbnail">
         <img :src="photoUrl" :alt="photoName" loading="lazy" @error="handleImageError" />
         <div v-if="selected" class="photo-select-overlay">
@@ -19,7 +24,7 @@
         </div>
         <p class="photo-date">{{ formatDate }}</p>
       </div>
-    </sf-card>
+    </SfCard>
   </div>
 </template>
 
@@ -29,22 +34,22 @@ import SfCard from '@/components/ui/SfCard.vue'
 export default {
   name: 'DuplicateItem',
   components: {
-    SfCard
+    SfCard,
   },
   props: {
     photo: {
       type: Object,
-      required: true
+      required: true,
     },
     selected: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
   emits: ['select'],
   data() {
     return {
-      imageError: false
+      imageError: false,
     }
   },
   computed: {
@@ -58,7 +63,9 @@ export default {
       return this.photo.url || this.photo.thumbnailUrl
     },
     placeholderUrl() {
-      return 'data:image/svg+xml;base64,' + btoa(`
+      return (
+        'data:image/svg+xml;base64,' +
+        btoa(`
         <svg width="300" height="200" xmlns="http://www.w3.org/2000/svg">
           <rect width="100%" height="100%" fill="#f5f5f7"/>
           <text x="50%" y="50%" font-family="Arial" font-size="14" fill="#86868b" text-anchor="middle" dy="0.3em">
@@ -66,6 +73,7 @@ export default {
           </text>
         </svg>
       `)
+      )
     },
     photoName() {
       return this.photo.filename || this.photo.name || this.photo.title || `图片-${this.photoId}`
@@ -96,13 +104,13 @@ export default {
 
       const date = new Date(dateString)
       return date.toLocaleDateString(this.$i18n.locale)
-    }
+    },
   },
   methods: {
     handleImageError() {
       this.imageError = true
-    }
-  }
+    },
+  },
 }
 </script>
 
@@ -120,14 +128,17 @@ export default {
   overflow: hidden;
   cursor: pointer;
   background-color: var(--bg-primary);
-  transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1),
+  transition:
+    transform 0.3s cubic-bezier(0.25, 1, 0.5, 1),
     box-shadow 0.3s cubic-bezier(0.25, 1, 0.5, 1),
     background-color 0.3s ease;
 }
 
 .photo-card:hover {
   transform: scale(1.02) translateY(-5px);
-  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1), 0 4px 12px rgba(0, 0, 0, 0.07);
+  box-shadow:
+    0 12px 24px rgba(0, 0, 0, 0.1),
+    0 4px 12px rgba(0, 0, 0, 0.07);
   z-index: 1;
 }
 

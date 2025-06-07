@@ -1,9 +1,5 @@
 <template>
-  <div 
-    class="link-button" 
-    :class="{ 'danger': type === 'danger' }"
-    @click="onClick"
-  >
+  <div class="link-button" :class="{ danger: type === 'danger' }" @click="onClick">
     <i v-if="icon" :class="icon"></i>
     <span><slot></slot></span>
   </div>
@@ -16,18 +12,18 @@ export default {
     type: {
       type: String,
       default: 'primary',
-      validator: value => ['primary', 'danger'].includes(value)
+      validator: value => ['primary', 'danger'].includes(value),
     },
     icon: {
       type: String,
-      default: ''
-    }
+      default: '',
+    },
   },
   methods: {
     onClick(event) {
-      this.$emit('click', event);
-    }
-  }
+      this.$emit('click', event)
+    },
+  },
 }
 </script>
 

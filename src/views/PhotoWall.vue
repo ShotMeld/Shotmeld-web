@@ -7,12 +7,12 @@
 </template>
 
 <script>
-import PhotoWall from './PhotoWall/PhotoWall.vue';
+import PhotoWall from './PhotoWall/PhotoWall.vue'
 
 export default {
   name: 'PhotoWallPage',
   components: {
-    PhotoWall
-  }
-};
-</script> 
+    PhotoWall,
+  },
+}
+</script>

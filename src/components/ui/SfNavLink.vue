@@ -1,86 +1,66 @@
 <template>
-  <router-link
-    v-if="to"
-    :to="to"
-    :class="navLinkClasses"
-    :active-class="activeClass"
-  >
+  <router-link v-if="to" :to="to" :class="navLinkClasses" :active-class="activeClass">
     <span v-if="$slots.icon" class="sf-navlink-icon">
       <slot name="icon"></slot>
     </span>
     <span class="sf-navlink-label">
       <slot></slot>
     </span>
-    <SfBadge
-      v-if="badge"
-      :type="badgeType"
-      size="small"
-      class="sf-navlink-badge"
-    >
+    <SfBadge v-if="badge" :type="badgeType" size="small" class="sf-navlink-badge">
       {{ badge }}
     </SfBadge>
   </router-link>
-  
-  <a
-    v-else
-    :href="href || '#'"
-    :class="navLinkClasses"
-    @click="onClick"
-  >
+
+  <a v-else :href="href || '#'" :class="navLinkClasses" @click="onClick">
     <span v-if="$slots.icon" class="sf-navlink-icon">
       <slot name="icon"></slot>
     </span>
     <span class="sf-navlink-label">
       <slot></slot>
     </span>
-    <SfBadge
-      v-if="badge"
-      :type="badgeType"
-      size="small"
-      class="sf-navlink-badge"
-    >
+    <SfBadge v-if="badge" :type="badgeType" size="small" class="sf-navlink-badge">
       {{ badge }}
     </SfBadge>
   </a>
 </template>
 
 <script>
-import SfBadge from './SfBadge.vue';
+import SfBadge from './SfBadge.vue'
 
 export default {
   name: 'SfNavLink',
   components: {
-    SfBadge
+    SfBadge,
   },
   props: {
     to: {
       type: [String, Object],
-      default: null
+      default: null,
     },
     href: {
       type: String,
-      default: ''
+      default: '',
     },
     active: {
       type: Boolean,
-      default: false
+      default: false,
     },
     disabled: {
       type: Boolean,
-      default: false
+      default: false,
     },
     badge: {
       type: [String, Number],
-      default: null
+      default: null,
     },
     badgeType: {
       type: String,
-      default: 'primary'
+      default: 'primary',
     },
     activeClass: {
       type: String,
-      default: 'sf-navlink--active'
-    }
+      default: 'sf-navlink--active',
+    },
   },
   computed: {
     navLinkClasses() {
@@ -89,20 +69,20 @@ export default {
         {
           'sf-navlink--active': this.active,
           'sf-navlink--disabled': this.disabled,
-          'sf-navlink--with-badge': this.badge
-        }
-      ];
-    }
+          'sf-navlink--with-badge': this.badge,
+        },
+      ]
+    },
   },
   methods: {
     onClick(event) {
       if (this.disabled) {
-        event.preventDefault();
-        return;
+        event.preventDefault()
+        return
       }
-      this.$emit('click', event);
-    }
-  }
+      this.$emit('click', event)
+    },
+  },
 }
 </script>
 

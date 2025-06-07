@@ -13,7 +13,7 @@
 
 <script>
 export default {
-  name: 'AuthBackground'
+  name: 'AuthBackground',
 }
 </script>
 

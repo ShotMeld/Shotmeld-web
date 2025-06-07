@@ -1,11 +1,7 @@
 <template>
   <div id="app">
     <router-view v-slot="{ Component, route }">
-      <transition
-        :name="getTransitionName(route)"
-        mode="out-in"
-        appear
-      >
+      <transition :name="getTransitionName(route)" mode="out-in" appear>
         <component :is="Component" :key="route.path" />
       </transition>
     </router-view>
@@ -17,7 +13,7 @@ export default {
   name: 'App',
   data() {
     return {
-      previousRoute: null
+      previousRoute: null,
     }
   },
   methods: {
@@ -27,17 +23,17 @@ export default {
         (this.previousRoute?.path === '/login' && route.path === '/photowall') ||
         (this.previousRoute?.path === '/photowall' && route.path === '/login')
       ) {
-        return 'page-fade';
+        return 'page-fade'
       }
-      return ''; // 其他情况不使用过渡动画
-    }
+      return '' // 其他情况不使用过渡动画
+    },
   },
   beforeMount() {
     // 监听路由变化，记录前一个路由
     this.$router.beforeEach((to, from) => {
-      this.previousRoute = from;
-    });
-  }
+      this.previousRoute = from
+    })
+  },
 }
 </script>
 
@@ -87,7 +83,7 @@ a:hover {
 
 /* 页面过渡效果 */
 .page-fade-enter-active {
-  transition: all 1.0s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transition: all 1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
 .page-fade-leave-active {

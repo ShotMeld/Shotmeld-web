@@ -8,7 +8,11 @@
       <template #brand>
         <!-- 移动端菜单按钮和标题 -->
         <div class="navbar-brand">
-          <button class="mobile-menu-button" @click="toggleMobileMenu" :aria-label="$t('navbar.mobile.menuAriaLabel')">
+          <button
+            class="mobile-menu-button"
+            @click="toggleMobileMenu"
+            :aria-label="$t('navbar.mobile.menuAriaLabel')"
+          >
             <span class="menu-icon" :class="{ 'is-active': isMobileMenuOpen }">
               <span></span>
               <span></span>
@@ -21,19 +25,30 @@
       <template #default>
         <!-- 主导航链接容器 -->
         <div class="main-nav">
-          <SfNavLink to="/photowall" class="nav-item" :class="{ active: currentPage === 'photowall' }">
+          <SfNavLink
+            to="/photowall"
+            class="nav-item"
+            :class="{ active: currentPage === 'photowall' }"
+          >
             {{ $t('navbar.menu.photos') }}
           </SfNavLink>
 
-          <SfNavLink to="/timeline" class="nav-item" :class="{ active: currentPage === 'timeline' }">
+          <SfNavLink
+            to="/timeline"
+            class="nav-item"
+            :class="{ active: currentPage === 'timeline' }"
+          >
             {{ $t('navbar.menu.memories') }}
           </SfNavLink>
 
-          <SfNavLink to="/albums" class="nav-item"
-            :class="{ active: currentPage === 'albums' || currentPage === 'album-detail' }">
+          <SfNavLink
+            to="/albums"
+            class="nav-item"
+            :class="{ active: currentPage === 'albums' || currentPage === 'album-detail' }"
+          >
             {{ $t('navbar.menu.albums') }}
           </SfNavLink>
-          
+
           <SfNavLink to="/more" class="nav-item" :class="{ active: currentPage === 'more' }">
             {{ $t('navbar.menu.more') }}
           </SfNavLink>
@@ -44,19 +59,31 @@
       <template #actions>
         <div class="nav-actions">
           <!-- 设置页面导航项 -->
-          <SfNavLink v-if="currentPage === 'settings' && !isMobile" to="/settings" class="nav-item"
-            :class="{ active: currentPage === 'settings' }">
+          <SfNavLink
+            v-if="currentPage === 'settings' && !isMobile"
+            to="/settings"
+            class="nav-item"
+            :class="{ active: currentPage === 'settings' }"
+          >
             {{ $t('navbar.menu.settings') }}
           </SfNavLink>
 
           <!-- 个人页面导航项 -->
-          <SfNavLink v-if="currentPage === 'profile' && !isMobile" to="/profile" class="nav-item"
-            :class="{ active: currentPage === 'profile' }">
+          <SfNavLink
+            v-if="currentPage === 'profile' && !isMobile"
+            to="/profile"
+            class="nav-item"
+            :class="{ active: currentPage === 'profile' }"
+          >
             {{ $t('navbar.menu.profile') }}
           </SfNavLink>
           <!-- 更多页面各个工具的导航页 -->
-          <SfNavLink v-if="currentPage === 'DuplicatePhotos' && !isMobile" to="/duplicate-photos" class="nav-item"
-            :class="{ active: currentPage === 'DuplicatePhotos' }">
+          <SfNavLink
+            v-if="currentPage === 'DuplicatePhotos' && !isMobile"
+            to="/duplicate-photos"
+            class="nav-item"
+            :class="{ active: currentPage === 'DuplicatePhotos' }"
+          >
             {{ $t('navbar.menu.duplicatePhotos') }}
           </SfNavLink>
 
@@ -72,17 +99,29 @@
             <SfButton type="secondary" @click="$emit('show-upload')" class="navbar-button nav-item">
               {{ $t('navbar.actions.upload') }}
             </SfButton>
-            <SfButton type="secondary" @click="$emit('toggle-manage')" class="navbar-button nav-item">
+            <SfButton
+              type="secondary"
+              @click="$emit('toggle-manage')"
+              class="navbar-button nav-item"
+            >
               {{ $t('navbar.actions.manage') }}
             </SfButton>
           </template>
 
           <!-- 相册列表页面按钮 -->
           <template v-if="currentPage === 'albums' && !isMobile">
-            <SfButton type="secondary" @click="$emit('show-album-form')" class="navbar-button nav-item">
+            <SfButton
+              type="secondary"
+              @click="$emit('show-album-form')"
+              class="navbar-button nav-item"
+            >
               {{ $t('navbar.actions.createAlbum') }}
             </SfButton>
-            <SfButton type="secondary" @click="$emit('toggle-album-manage')" class="navbar-button nav-item">
+            <SfButton
+              type="secondary"
+              @click="$emit('toggle-album-manage')"
+              class="navbar-button nav-item"
+            >
               {{ $t('navbar.actions.manage') }}
             </SfButton>
           </template>
@@ -92,7 +131,11 @@
             <SfButton type="secondary" @click="$emit('show-upload')" class="navbar-button nav-item">
               {{ $t('navbar.actions.addPhotos') }}
             </SfButton>
-            <SfButton type="secondary" @click="$emit('toggle-manage')" class="navbar-button nav-item">
+            <SfButton
+              type="secondary"
+              @click="$emit('toggle-manage')"
+              class="navbar-button nav-item"
+            >
               {{ $t('navbar.actions.manage') }}
             </SfButton>
           </template>
@@ -140,31 +183,48 @@
         </div>
 
         <div class="drawer-nav">
-          <SfNavLink to="/photowall" class="drawer-nav-item" :class="{ active: currentPage === 'photowall' }"
-            @click="closeMobileMenu">
+          <SfNavLink
+            to="/photowall"
+            class="drawer-nav-item"
+            :class="{ active: currentPage === 'photowall' }"
+            @click="closeMobileMenu"
+          >
             <template #icon>
               <i class="fas fa-th"></i>
             </template>
             {{ $t('navbar.menu.photos') }}
           </SfNavLink>
 
-          <SfNavLink to="/timeline" class="drawer-nav-item" :class="{ active: currentPage === 'timeline' }"
-            @click="closeMobileMenu">
+          <SfNavLink
+            to="/timeline"
+            class="drawer-nav-item"
+            :class="{ active: currentPage === 'timeline' }"
+            @click="closeMobileMenu"
+          >
             <template #icon>
               <i class="fas fa-calendar-alt"></i>
             </template>
             {{ $t('navbar.menu.memories') }}
           </SfNavLink>
 
-          <SfNavLink to="/albums" class="drawer-nav-item"
-            :class="{ active: currentPage === 'albums' || currentPage === 'album-detail' }" @click="closeMobileMenu">
+          <SfNavLink
+            to="/albums"
+            class="drawer-nav-item"
+            :class="{ active: currentPage === 'albums' || currentPage === 'album-detail' }"
+            @click="closeMobileMenu"
+          >
             <template #icon>
               <i class="fas fa-book-open"></i>
             </template>
             {{ $t('navbar.menu.albums') }}
           </SfNavLink>
-          
-          <SfNavLink to="/more" class="drawer-nav-item" :class="{ active: currentPage === 'more' }" @click="closeMobileMenu">
+
+          <SfNavLink
+            to="/more"
+            class="drawer-nav-item"
+            :class="{ active: currentPage === 'more' }"
+            @click="closeMobileMenu"
+          >
             <template #icon>
               <i class="fas fa-ellipsis-h"></i>
             </template>
@@ -190,30 +250,36 @@
           <!-- 照片墙页面按钮 -->
           <template v-if="currentPage === 'photowall'">
             <SfButton type="primary" @click="showUploadAndCloseMenu" class="drawer-button">
-              <i class="fas fa-upload"></i> {{ $t('navbar.actions.upload') }}
+              <i class="fas fa-upload"></i>
+              {{ $t('navbar.actions.upload') }}
             </SfButton>
             <SfButton type="primary" @click="toggleManageAndCloseMenu" class="drawer-button">
-              <i class="fas fa-tasks"></i> {{ $t('navbar.actions.manage') }}
+              <i class="fas fa-tasks"></i>
+              {{ $t('navbar.actions.manage') }}
             </SfButton>
           </template>
 
           <!-- 相册列表页面按钮 -->
           <template v-if="currentPage === 'albums'">
             <SfButton type="primary" @click="showAlbumFormAndCloseMenu" class="drawer-button">
-              <i class="fas fa-plus"></i> {{ $t('navbar.actions.createAlbum') }}
+              <i class="fas fa-plus"></i>
+              {{ $t('navbar.actions.createAlbum') }}
             </SfButton>
             <SfButton type="primary" @click="toggleAlbumManageAndCloseMenu" class="drawer-button">
-              <i class="fas fa-tasks"></i> {{ $t('navbar.actions.manage') }}
+              <i class="fas fa-tasks"></i>
+              {{ $t('navbar.actions.manage') }}
             </SfButton>
           </template>
 
           <!-- 相册详情页面按钮 -->
           <template v-if="currentPage === 'album-detail'">
             <SfButton type="primary" @click="showUploadAndCloseMenu" class="drawer-button">
-              <i class="fas fa-upload"></i> {{ $t('navbar.actions.addPhotos') }}
+              <i class="fas fa-upload"></i>
+              {{ $t('navbar.actions.addPhotos') }}
             </SfButton>
             <SfButton type="primary" @click="toggleManageAndCloseMenu" class="drawer-button">
-              <i class="fas fa-tasks"></i> {{ $t('navbar.actions.manage') }}
+              <i class="fas fa-tasks"></i>
+              {{ $t('navbar.actions.manage') }}
             </SfButton>
           </template>
 
@@ -238,30 +304,42 @@ export default {
     SfNavbar,
     SfNavLink,
     SfButton,
-    SfAvatar
+    SfAvatar,
   },
   props: {
     userName: {
       type: String,
-      default() { return this.$t('navbar.defaultUser') }
+      default() {
+        return this.$t('navbar.defaultUser')
+      },
     },
     currentPage: {
       type: String,
       default: 'photowall',
-      validator: (value) => ['photowall', 'timeline', 'albums', 'album-detail', 'settings', 'profile', 'more', 'DuplicatePhotos'].includes(value)
-    }
+      validator: value =>
+        [
+          'photowall',
+          'timeline',
+          'albums',
+          'album-detail',
+          'settings',
+          'profile',
+          'more',
+          'DuplicatePhotos',
+        ].includes(value),
+    },
   },
   data() {
     return {
       isMobileMenuOpen: false,
       isUserMenuOpen: false,
-      windowWidth: window.innerWidth
+      windowWidth: window.innerWidth,
     }
   },
   computed: {
     isMobile() {
       return this.windowWidth <= 768
-    }
+    },
   },
   mounted() {
     window.addEventListener('resize', this.handleResize)
@@ -328,8 +406,8 @@ export default {
       localStorage.removeItem('user')
       this.closeAllMenus()
       this.$router.push('/login')
-    }
-  }
+    },
+  },
 }
 </script>
 
@@ -354,7 +432,7 @@ export default {
   font-weight: var(--font-weight-semibold);
   color: var(--text-primary);
   text-decoration: none;
-  font-family: "Dancing Script",cursive;
+  font-family: 'Dancing Script', cursive;
   font-weight: 400;
 }
 
@@ -389,7 +467,9 @@ export default {
   padding: 8px 16px;
   height: 36px;
   border-radius: 18px;
-  transition: background-color 0.2s ease, transform 0.1s ease;
+  transition:
+    background-color 0.2s ease,
+    transform 0.1s ease;
 }
 
 .navbar-button:active {
@@ -432,7 +512,9 @@ export default {
   height: 2px;
   background-color: var(--text-primary);
   border-radius: 1px;
-  transition: transform 0.3s ease, opacity 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    opacity 0.3s ease;
 }
 
 .menu-icon.is-active span:nth-child(1) {
@@ -473,7 +555,9 @@ export default {
   top: calc(100% + 12px);
   background-color: var(--bg-primary);
   border-radius: 16px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08), 0 8px 16px rgba(0, 0, 0, 0.03);
+  box-shadow:
+    0 4px 20px rgba(0, 0, 0, 0.08),
+    0 8px 16px rgba(0, 0, 0, 0.03);
   width: auto;
   z-index: 20;
   overflow: hidden;
@@ -580,7 +664,9 @@ export default {
   text-decoration: none;
   font-size: var(--font-size-md);
   border-radius: 10px;
-  transition: background-color 0.2s ease, color 0.2s ease;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
 }
 
 .drawer-nav-item:active {

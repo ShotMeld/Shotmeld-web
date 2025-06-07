@@ -4,39 +4,65 @@
 
 <template>
   <div class="upload-component">
-    <div class="upload-container" @dragover.prevent="handleDragOver" @dragleave.prevent="isDragging = false"
-      @drop.prevent="handleDrop" :class="{ 'is-dragging': isDragging }">
+    <div
+      class="upload-container"
+      @dragover.prevent="handleDragOver"
+      @dragleave.prevent="isDragging = false"
+      @drop.prevent="handleDrop"
+      :class="{ 'is-dragging': isDragging }"
+    >
       <div class="upload-inner" v-if="!loading">
         <i class="el-icon-upload-fill"></i>
-        <el-upload class="upload-area" :action="actionUrl" :auto-upload="false" :show-file-list="false"
-          :on-change="handleFileChange" :multiple="multiple" :accept="acceptTypes">
+        <el-upload
+          class="upload-area"
+          :action="actionUrl"
+          :auto-upload="false"
+          :show-file-list="false"
+          :on-change="handleFileChange"
+          :multiple="multiple"
+          :accept="acceptTypes"
+        >
           <div class="upload-content">
             <div class="upload-icon">
               <i class="el-icon-upload"></i>
             </div>
             <div class="upload-text">
               <div class="upload-title">{{ displayTitle }}</div>
-              <div class="upload-subtitle">{{ $t('photoUpload.dragText') }} <span class="browse-text">{{ $t('photoUpload.clickToUpload') }}</span></div>
+              <div class="upload-subtitle">
+                {{ $t('photoUpload.dragText') }}
+                <span class="browse-text">{{ $t('photoUpload.clickToUpload') }}</span>
+              </div>
             </div>
           </div>
         </el-upload>
       </div>
       <div class="loading-container" v-else>
-        <el-progress :percentage="uploadProgress" :format="percent => `${percent}%`" type="circle" :stroke-width="6"
-          :status="uploadProgress === 100 ? 'success' : ''"></el-progress>
+        <el-progress
+          :percentage="uploadProgress"
+          :format="percent => `${percent}%`"
+          type="circle"
+          :stroke-width="6"
+          :status="uploadProgress === 100 ? 'success' : ''"
+        ></el-progress>
         <div class="upload-status">{{ uploadStatus }}</div>
       </div>
     </div>
 
     <div class="selected-files" v-if="selectedFiles.length > 0">
       <div class="selected-files-header">
-        <div class="selected-count">{{ $t('photoUpload.selectedFiles', { count: selectedFiles.length }) }}</div>
+        <div class="selected-count">
+          {{ $t('photoUpload.selectedFiles', { count: selectedFiles.length }) }}
+        </div>
         <button class="clear-button" @click="clearFiles">{{ $t('photoUpload.clear') }}</button>
       </div>
       <div class="file-list">
         <div v-for="(file, index) in selectedFiles" :key="index" class="file-item">
           <div class="file-preview">
-            <img v-if="isImageFile(file)" :src="getFilePreview(file)" :alt="$t('photoUpload.preview')" />
+            <img
+              v-if="isImageFile(file)"
+              :src="getFilePreview(file)"
+              :alt="$t('photoUpload.preview')"
+            />
             <div v-else class="file-icon">{{ file.name.slice(-3) }}</div>
           </div>
           <div class="file-info">
@@ -49,10 +75,20 @@
       <div class="upload-options" v-if="showAlbumOption">
         <div class="option-item">
           <label>{{ $t('photoUpload.addToAlbum') }}</label>
-          <el-select v-model="selectedAlbumId" :placeholder="$t('photoUpload.selectAlbum')" clearable popper-class="album-select-dropdown" teleported
-            popper-append-to-body>
-            <el-option v-for="album in albums" :key="album.id" :label="album.name" :value="album.id">
-            </el-option>
+          <el-select
+            v-model="selectedAlbumId"
+            :placeholder="$t('photoUpload.selectAlbum')"
+            clearable
+            popper-class="album-select-dropdown"
+            teleported
+            popper-append-to-body
+          >
+            <el-option
+              v-for="album in albums"
+              :key="album.id"
+              :label="album.name"
+              :value="album.id"
+            ></el-option>
           </el-select>
         </div>
       </div>
@@ -64,31 +100,31 @@
 </template>
 
 <script>
-import { photoService, albumService } from '../api';
+import { photoService, albumService } from '../api'
 
 export default {
   name: 'PhotoUpload',
   props: {
     title: {
       type: String,
-      default: ''
+      default: '',
     },
     multiple: {
       type: Boolean,
-      default: true
+      default: true,
     },
     acceptTypes: {
       type: String,
-      default: 'image/*'
+      default: 'image/*',
     },
     showAlbumOption: {
       type: Boolean,
-      default: true
+      default: true,
     },
     albumId: {
       type: String,
-      default: null
-    }
+      default: null,
+    },
   },
   data() {
     return {
@@ -99,196 +135,202 @@ export default {
       uploadStatus: '',
       selectedAlbumId: null,
       albums: [],
-      actionUrl: '' // 不使用el-upload的自动上传功能
+      actionUrl: '', // 不使用el-upload的自动上传功能
     }
   },
   computed: {
     displayTitle() {
-      return this.title || this.$t('photoUpload.title');
-    }
+      return this.title || this.$t('photoUpload.title')
+    },
   },
   watch: {
     albumId: {
       immediate: true,
       handler(newVal) {
-        this.selectedAlbumId = newVal;
-      }
-    }
+        this.selectedAlbumId = newVal
+      },
+    },
   },
   async created() {
     if (this.showAlbumOption) {
       try {
         // 获取相册列表
-        const albumsResponse = await albumService.getAlbums();
-        this.albums = albumsResponse.data.data || [];
+        const albumsResponse = await albumService.getAlbums()
+        this.albums = albumsResponse.data.data || []
       } catch (error) {
-        console.error(this.$t('photoUpload.error.fetchAlbumsFailed'), error);
+        console.error(this.$t('photoUpload.error.fetchAlbumsFailed'), error)
       }
     }
-  }, methods: {
+  },
+  methods: {
     handleDragOver(event) {
-      this.isDragging = true;
-    }, handleDrop(event) {
-      this.isDragging = false;
-      const files = event.dataTransfer.files;
-      if (!files || files.length === 0) return;
+      this.isDragging = true
+    },
+    handleDrop(event) {
+      this.isDragging = false
+      const files = event.dataTransfer.files
+      if (!files || files.length === 0) return
 
       if (this.multiple) {
         for (let i = 0; i < files.length; i++) {
           if (this.isValidFile(files[i])) {
-            this.selectedFiles.push(files[i]);
+            this.selectedFiles.push(files[i])
           }
         }
       } else if (files.length > 0 && this.isValidFile(files[0])) {
-        this.selectedFiles = [files[0]];
+        this.selectedFiles = [files[0]]
       }
-    }, handleFileChange(file) {
-      if (!file || !this.isValidFile(file.raw)) return;
+    },
+    handleFileChange(file) {
+      if (!file || !this.isValidFile(file.raw)) return
 
       if (this.multiple) {
-        this.selectedFiles.push(file.raw);
+        this.selectedFiles.push(file.raw)
       } else {
-        this.selectedFiles = [file.raw];
+        this.selectedFiles = [file.raw]
       }
     },
     isValidFile(file) {
-      if (!file) return false;
+      if (!file) return false
 
       // 检查文件类型
       if (this.acceptTypes && this.acceptTypes !== '*') {
-        const fileType = file.type;
-        const acceptedTypes = this.acceptTypes.split(',');
+        const fileType = file.type
+        const acceptedTypes = this.acceptTypes.split(',')
 
-        let isValid = false;
+        let isValid = false
         for (const type of acceptedTypes) {
           if (type.endsWith('/*')) {
-            const baseType = type.slice(0, -1);
+            const baseType = type.slice(0, -1)
             if (fileType.startsWith(baseType)) {
-              isValid = true;
-              break;
+              isValid = true
+              break
             }
           } else if (fileType === type) {
-            isValid = true;
-            break;
+            isValid = true
+            break
           }
         }
 
-        if (!isValid) return false;
+        if (!isValid) return false
       }
 
-      return true;
-    }, isImageFile(file) {
-      return file.type.startsWith('image/');
+      return true
+    },
+    isImageFile(file) {
+      return file.type.startsWith('image/')
     },
 
     getFilePreview(file) {
-      if (!this.isImageFile(file)) return '';
+      if (!this.isImageFile(file)) return ''
 
-      return URL.createObjectURL(file);
+      return URL.createObjectURL(file)
     },
     truncateFilename(filename) {
       if (filename.length > 20) {
-        return filename.substring(0, 10) + '...' + filename.substring(filename.length - 7);
+        return filename.substring(0, 10) + '...' + filename.substring(filename.length - 7)
       }
-      return filename;
+      return filename
     },
     formatFileSize(size) {
       if (size < 1024) {
-        return this.$t('photoUpload.fileSize.b', { size });
+        return this.$t('photoUpload.fileSize.b', { size })
       } else if (size < 1024 * 1024) {
-        return this.$t('photoUpload.fileSize.kb', { size: (size / 1024).toFixed(1) });
+        return this.$t('photoUpload.fileSize.kb', { size: (size / 1024).toFixed(1) })
       } else {
-        return this.$t('photoUpload.fileSize.mb', { size: (size / (1024 * 1024)).toFixed(1) });
+        return this.$t('photoUpload.fileSize.mb', { size: (size / (1024 * 1024)).toFixed(1) })
       }
     },
     removeFile(index) {
-      this.selectedFiles.splice(index, 1);
+      this.selectedFiles.splice(index, 1)
     },
     clearFiles() {
-      this.selectedFiles = [];
-      this.uploadProgress = 0;
+      this.selectedFiles = []
+      this.uploadProgress = 0
     },
     async uploadFiles() {
       if (this.selectedFiles.length === 0) {
         this.$notify.warning({
           title: this.$t('navbar.actions.upload'),
-          message: this.$t('photoUpload.uploadWarning')
-        });
-        return;
+          message: this.$t('photoUpload.uploadWarning'),
+        })
+        return
       }
 
-      this.loading = true;
-      this.uploadProgress = 0;
-      this.uploadStatus = this.$t('photoUpload.uploading');
+      this.loading = true
+      this.uploadProgress = 0
+      this.uploadStatus = this.$t('photoUpload.uploading')
 
       // 定义进度更新回调函数
-      const updateProgress = (percent) => {
-        this.uploadProgress = percent;
-        this.uploadStatus = this.$t('photoUpload.uploadingWithProgress', { percent });
-      };
+      const updateProgress = percent => {
+        this.uploadProgress = percent
+        this.uploadStatus = this.$t('photoUpload.uploadingWithProgress', { percent })
+      }
 
       try {
-        if (this.multiple && this.selectedFiles.length > 1) {          // 批量上传
+        if (this.multiple && this.selectedFiles.length > 1) {
+          // 批量上传
           const response = await photoService.batchUploadPhotos(
             this.selectedFiles,
             this.selectedAlbumId,
             null,
             updateProgress // 传入进度更新回调
-          );
+          )
 
-          this.$emit('upload-success', response.data);
-          this.uploadProgress = 100;
-          this.uploadStatus = this.$t('photoUpload.uploadComplete');
+          this.$emit('upload-success', response.data)
+          this.uploadProgress = 100
+          this.uploadStatus = this.$t('photoUpload.uploadComplete')
           this.$notify({
             title: this.$t('photoWall.success'),
             message: this.$t('photoUpload.uploadSuccess', { count: response.data.uploadedCount }),
-            type: 'success'
-          });
+            type: 'success',
+          })
         } else {
           // 单张上传
           const metadata = {
             title: this.selectedFiles[0].name.split('.')[0],
             description: '',
-            albumIds: this.selectedAlbumId ? [this.selectedAlbumId] : []
-          };
+            albumIds: this.selectedAlbumId ? [this.selectedAlbumId] : [],
+          }
 
           const response = await photoService.uploadPhoto(
             this.selectedFiles[0],
             metadata,
             updateProgress // 传入进度更新回调
-          );
+          )
 
-          this.uploadProgress = 100;
-          this.uploadStatus = this.$t('photoUpload.uploadComplete');
-          this.$emit('upload-success', [response.data]);
+          this.uploadProgress = 100
+          this.uploadStatus = this.$t('photoUpload.uploadComplete')
+          this.$emit('upload-success', [response.data])
           this.$notify({
             title: this.$t('photoWall.success'),
             message: this.$t('photoUpload.uploadSuccess', { count: 1 }),
-            type: 'success'
-          });
+            type: 'success',
+          })
         }
 
-        this.clearFiles();
+        this.clearFiles()
       } catch (error) {
-        console.error(this.$t('photoUpload.error.uploadFailed'), error);
+        console.error(this.$t('photoUpload.error.uploadFailed'), error)
         this.$notify.error({
           title: this.$t('photoUpload.error.uploadFailed'),
-          message: error.response?.data?.message || this.$t('photoUpload.error.uploadFailedMessage')
-        });
+          message:
+            error.response?.data?.message || this.$t('photoUpload.error.uploadFailedMessage'),
+        })
       } finally {
         // 短暂延迟后重置状态，让用户有时间看到100%的进度
         setTimeout(() => {
-          this.loading = false;
+          this.loading = false
           // 如果上传成功，uploadProgress会被设置为100
           // 如果上传失败，重置进度
           if (this.uploadProgress !== 100) {
-            this.uploadProgress = 0;
-            this.uploadStatus = this.$t('photoUpload.uploading');
+            this.uploadProgress = 0
+            this.uploadStatus = this.$t('photoUpload.uploading')
           }
-        }, 500);
+        }, 500)
       }
-    }
-  }
+    },
+  },
 }
 </script>
 

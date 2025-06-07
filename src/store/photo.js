@@ -22,7 +22,7 @@ export const usePhotoStore = defineStore('photo', () => {
     }
   }
 
-  const fetchPhotoById = async (id) => {
+  const fetchPhotoById = async id => {
     try {
       loading.value = true
       const response = await photoService.getPhotoById(id)
@@ -36,7 +36,7 @@ export const usePhotoStore = defineStore('photo', () => {
     }
   }
 
-  const uploadPhoto = async (photoData) => {
+  const uploadPhoto = async photoData => {
     try {
       loading.value = true
       const response = await photoService.uploadPhoto(photoData)
@@ -50,7 +50,7 @@ export const usePhotoStore = defineStore('photo', () => {
     }
   }
 
-  const deletePhoto = async (id) => {
+  const deletePhoto = async id => {
     try {
       loading.value = true
       await photoService.deletePhoto(id)
@@ -95,6 +95,6 @@ export const usePhotoStore = defineStore('photo', () => {
     fetchPhotoById,
     uploadPhoto,
     deletePhoto,
-    updatePhoto
+    updatePhoto,
   }
-}) 
+})

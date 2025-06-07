@@ -7,16 +7,25 @@
     <PhotoWallNoPhotos v-if="photos.length === 0" @showUploadModal="$emit('showUploadModal')" />
     <transition-group name="photo-grid" tag="div" class="photo-grid-container">
       <div v-for="photo in photos" :key="photo.id" class="photo-card-wrapper">
-        <SfCard 
-          class="photo-card" 
-          :class="{ 'manage-mode': isManageMode, 'selected': isSelected(photo.id) }" 
-          hoverable 
-          shadow="small" 
-          @click="handleCardClick(photo)">
+        <SfCard
+          class="photo-card"
+          :class="{ 'manage-mode': isManageMode, selected: isSelected(photo.id) }"
+          hoverable
+          shadow="small"
+          @click="handleCardClick(photo)"
+        >
           <div class="photo-thumbnail">
-            <img :src="photo.thumbnailUrl || photo.url" :alt="photo.title || $t('photoWall.noTitle')" loading="lazy" />
-            <div v-if="isManageMode" class="photo-select-overlay" @click.stop="toggleSelect(photo.id)">
-              <div class="select-checkbox" :class="{ 'selected': isSelected(photo.id) }">
+            <img
+              :src="photo.thumbnailUrl || photo.url"
+              :alt="photo.title || $t('photoWall.noTitle')"
+              loading="lazy"
+            />
+            <div
+              v-if="isManageMode"
+              class="photo-select-overlay"
+              @click.stop="toggleSelect(photo.id)"
+            >
+              <div class="select-checkbox" :class="{ selected: isSelected(photo.id) }">
                 <i v-if="isSelected(photo.id)" class="fas fa-check"></i>
               </div>
             </div>
@@ -32,57 +41,57 @@
 </template>
 
 <script>
-import PhotoWallNoPhotos from './PhotoWallNoPhotos.vue';
-import { SfCard } from '../../components/ui';
+import PhotoWallNoPhotos from './PhotoWallNoPhotos.vue'
+import { SfCard } from '../../components/ui'
 
 export default {
   name: 'PhotoWallGrid',
   components: {
-    PhotoWallNoPhotos
+    PhotoWallNoPhotos,
   },
   props: {
     photos: {
       type: Array,
-      required: true
+      required: true,
     },
     isManageMode: {
       type: Boolean,
-      default: false
+      default: false,
     },
     selectedPhotos: {
       type: Array,
-      default: () => []
-    }
+      default: () => [],
+    },
   },
   emits: ['openPhotoDetail', 'showUploadModal', 'toggleSelect'],
   methods: {
     formatDate(dateString) {
-      if (!dateString) return this.$t('photoWall.unknownDate');
-      const date = new Date(dateString);
+      if (!dateString) return this.$t('photoWall.unknownDate')
+      const date = new Date(dateString)
       return date.toLocaleDateString(this.$i18n.locale, {
         year: 'numeric',
         month: '2-digit',
         day: '2-digit',
         hour: '2-digit',
-        minute: '2-digit'
-      });
+        minute: '2-digit',
+      })
     },
     handleCardClick(photo) {
       // 在管理模式下点击卡片切换选择状态，非管理模式下打开照片详情
       if (this.isManageMode) {
-        this.toggleSelect(photo.id);
+        this.toggleSelect(photo.id)
       } else {
-        this.$emit('openPhotoDetail', photo);
+        this.$emit('openPhotoDetail', photo)
       }
     },
     toggleSelect(photoId) {
-      this.$emit('toggleSelect', photoId);
+      this.$emit('toggleSelect', photoId)
     },
     isSelected(photoId) {
-      return this.selectedPhotos.includes(photoId);
-    }
-  }
-};
+      return this.selectedPhotos.includes(photoId)
+    },
+  },
+}
 </script>
 
 <style scoped>
@@ -100,7 +109,9 @@ export default {
 /* Photo Grid Animation */
 .photo-grid-enter-active,
 .photo-grid-leave-active {
-  transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+  transition:
+    opacity 0.4s ease,
+    transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
 .photo-grid-enter-from {
@@ -132,14 +143,17 @@ export default {
   overflow: hidden;
   cursor: pointer;
   background-color: var(--bg-primary);
-  transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1), 
-              box-shadow 0.3s cubic-bezier(0.25, 1, 0.5, 1),
-              background-color 0.3s ease;
+  transition:
+    transform 0.3s cubic-bezier(0.25, 1, 0.5, 1),
+    box-shadow 0.3s cubic-bezier(0.25, 1, 0.5, 1),
+    background-color 0.3s ease;
 }
 
 .photo-card:not(.manage-mode):hover {
   transform: scale(1.02) translateY(-5px);
-  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1), 0 4px 12px rgba(0, 0, 0, 0.07);
+  box-shadow:
+    0 12px 24px rgba(0, 0, 0, 0.1),
+    0 4px 12px rgba(0, 0, 0, 0.07);
   z-index: 1;
 }
 

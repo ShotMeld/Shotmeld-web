@@ -9,8 +9,13 @@
       <SfButton type="primary" size="small" @click="selectAll" class="toolbar-btn">
         {{ $t('manageToolbar.selectAll') }}
       </SfButton>
-      <SfButton type="primary" size="small" @click="deselectAll" class="toolbar-btn"
-        :disabled="selectedItems.length === 0">
+      <SfButton
+        type="primary"
+        size="small"
+        @click="deselectAll"
+        class="toolbar-btn"
+        :disabled="selectedItems.length === 0"
+      >
         {{ $t('manageToolbar.deselectAll') }}
       </SfButton>
       <span class="selected-count" v-if="selectedItems.length > 0">
@@ -19,44 +24,50 @@
     </div>
     <div class="manage-toolbar-right">
       <template v-for="(action, index) in visibleActions" :key="index">
-        <SfButton :type="action.type || 'secondary'" size="small" @click="handleAction(action.event)"
-          class="toolbar-btn" :disabled="action.requireSelection && selectedItems.length === 0">
+        <SfButton
+          :type="action.type || 'secondary'"
+          size="small"
+          @click="handleAction(action.event)"
+          class="toolbar-btn"
+          :disabled="action.requireSelection && selectedItems.length === 0"
+        >
           <i v-if="action.icon" :class="action.icon"></i>
           {{ action.label }}
         </SfButton>
       </template>
       <SfButton type="secondary" size="small" @click="exitManageMode" class="toolbar-btn close-btn">
-        <i class="fas fa-times"></i> {{ $t('manageToolbar.close') }}
+        <i class="fas fa-times"></i>
+        {{ $t('manageToolbar.close') }}
       </SfButton>
     </div>
   </div>
 </template>
 
 <script>
-import { SfButton } from '../ui';
+import { SfButton } from '../ui'
 
 export default {
   name: 'ManageToolbar',
   components: {
-    SfButton
+    SfButton,
   },
   props: {
     // 已选择的项目列表
     selectedItems: {
       type: Array,
-      required: true
+      required: true,
     },
     // 项目单位名称，如"张照片"、"个相册"等
     itemUnit: {
       type: String,
       default() {
         return this.$t('manageToolbar.defaultUnit')
-      }
+      },
     },
     // 操作按钮配置
     actions: {
       type: Array,
-      default: () => []
+      default: () => [],
       /* 
       actions的格式示例:
       [
@@ -73,37 +84,37 @@ export default {
     // 是否使用立即隐藏效果 (用于PhotoAlbumManage)
     useImmediateHide: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
   data() {
     return {
-      shouldHideImmediately: false
-    };
+      shouldHideImmediately: false,
+    }
   },
   computed: {
     // 过滤出需要展示的操作按钮
     visibleActions() {
-      return this.actions.filter(action => action.visible !== false);
-    }
+      return this.actions.filter(action => action.visible !== false)
+    },
   },
   emits: ['select-all', 'deselect-all', 'exit-manage-mode'],
   methods: {
     selectAll() {
-      this.$emit('select-all');
+      this.$emit('select-all')
     },
     deselectAll() {
-      this.$emit('deselect-all');
+      this.$emit('deselect-all')
     },
     handleAction(eventName) {
-      this.$emit(eventName);
+      this.$emit(eventName)
     },
     exitManageMode() {
       // 立即触发退出事件，不再使用延迟
-      this.$emit('exit-manage-mode');
-    }
-  }
-};
+      this.$emit('exit-manage-mode')
+    },
+  },
+}
 </script>
 
 <style scoped>
@@ -198,7 +209,8 @@ export default {
   }
 
   .selected-count {
-    width: 100%;  text-align: center;
+    width: 100%;
+    text-align: center;
     margin: 6px 0;
   }
 }

@@ -9,8 +9,12 @@
         <p>暂无相册，请先创建相册</p>
       </div>
       <div v-else class="album-list">
-        <div v-for="album in albums" :key="album.id" class="album-card-wrapper"
-          :class="{ 'selected': selectedAlbumId === album.id }">
+        <div
+          v-for="album in albums"
+          :key="album.id"
+          class="album-card-wrapper"
+          :class="{ selected: selectedAlbumId === album.id }"
+        >
           <AlbumCard :album="album" @click="selectAlbum(album.id)" />
           <div v-if="selectedAlbumId === album.id" class="selection-indicator">
             <i class="fas fa-check"></i>
@@ -19,75 +23,84 @@
       </div>
       <div class="modal-footer">
         <SfButton type="secondary" @click="handleCancel">取消</SfButton>
-        <SfButton v-if="albums.length > 0" type="primary" @click="handleConfirm" :disabled="!selectedAlbumId">确认</SfButton>
-        <SfButton v-if="albums.length === 0" type="primary" @click="handleCreateAlbum">创建新相册</SfButton>
+        <SfButton
+          v-if="albums.length > 0"
+          type="primary"
+          @click="handleConfirm"
+          :disabled="!selectedAlbumId"
+        >
+          确认
+        </SfButton>
+        <SfButton v-if="albums.length === 0" type="primary" @click="handleCreateAlbum">
+          创建新相册
+        </SfButton>
       </div>
     </div>
   </SfModal>
 </template>
 
 <script>
-import { SfButton, SfModal } from '../../components/ui';
-import AlbumCard from '../../components/album/AlbumCard.vue';
+import { SfButton, SfModal } from '../../components/ui'
+import AlbumCard from '../../components/album/AlbumCard.vue'
 
 export default {
   name: 'PhotoWallAlbumModal',
   components: {
     SfButton,
     SfModal,
-    AlbumCard
+    AlbumCard,
   },
   props: {
     modelValue: {
       type: Boolean,
-      default: false
+      default: false,
     },
     albums: {
       type: Array,
-      default: () => []
-    }
+      default: () => [],
+    },
   },
   emits: ['update:modelValue', 'create-album', 'add-to-album'],
   data() {
     return {
       selectedAlbumId: null,
-    };
+    }
   },
   computed: {
     visible: {
       get() {
-        return this.modelValue;
+        return this.modelValue
       },
       set(value) {
-        this.$emit('update:modelValue', value);
-      }
-    }
+        this.$emit('update:modelValue', value)
+      },
+    },
   },
   watch: {
     modelValue(newValue) {
       if (newValue) {
         // 每次打开弹窗时重置选择的相册ID
-        this.selectedAlbumId = null;
+        this.selectedAlbumId = null
       }
-    }
+    },
   },
   methods: {
     selectAlbum(albumId) {
-      this.selectedAlbumId = albumId;
+      this.selectedAlbumId = albumId
     },
     handleCreateAlbum() {
-      this.$emit('create-album');
+      this.$emit('create-album')
     },
     handleCancel() {
-      this.visible = false;
+      this.visible = false
     },
     handleConfirm() {
-      if (!this.selectedAlbumId) return;
-      this.$emit('add-to-album', this.selectedAlbumId);
-      this.visible = false;
-    }
-  }
-};
+      if (!this.selectedAlbumId) return
+      this.$emit('add-to-album', this.selectedAlbumId)
+      this.visible = false
+    },
+  },
+}
 </script>
 
 <style scoped>

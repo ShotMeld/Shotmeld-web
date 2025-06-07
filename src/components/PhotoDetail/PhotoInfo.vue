@@ -7,10 +7,14 @@
     <h3 class="info-group-title">{{ $t('photoDetail.info.title') }}</h3>
     <div class="info-item">
       <span class="info-label">{{ $t('photoDetail.info.photoTitle') }}</span>
-      <span class="info-value title-value">{{ photo?.title || $t('photoDetail.info.untitled') }}</span>
+      <span class="info-value title-value">
+        {{ photo?.title || $t('photoDetail.info.untitled') }}
+      </span>
     </div>
     <div class="info-item">
-      <span class="info-label">{{ photo?.takenAt ? $t('photoDetail.info.takenTime') : $t('photoDetail.info.createdTime') }}</span>
+      <span class="info-label">
+        {{ photo?.takenAt ? $t('photoDetail.info.takenTime') : $t('photoDetail.info.createdTime') }}
+      </span>
       <span class="info-value">{{ formatDate(photo?.takenAt || photo?.createdAt) }}</span>
     </div>
     <div class="info-item">
@@ -19,7 +23,9 @@
     </div>
     <div class="info-item">
       <span class="info-label">{{ $t('photoDetail.info.dimensions') }}</span>
-      <span class="info-value">{{ photo?.width || 0 }}×{{ photo?.height || 0 }} {{ $t('photoDetail.info.pixels') }}</span>
+      <span class="info-value">
+        {{ photo?.width || 0 }}×{{ photo?.height || 0 }} {{ $t('photoDetail.info.pixels') }}
+      </span>
     </div>
     <div class="info-item" v-if="photo?.metadata?.density">
       <span class="info-label">{{ $t('photoDetail.info.resolution') }}</span>
@@ -34,8 +40,8 @@ export default {
   props: {
     photo: {
       type: Object,
-      default: null
-    }
+      default: null,
+    },
   },
   methods: {
     formatDate(dateString) {
@@ -46,7 +52,7 @@ export default {
         month: '2-digit',
         day: '2-digit',
         hour: '2-digit',
-        minute: '2-digit'
+        minute: '2-digit',
       })
     },
 
@@ -56,8 +62,8 @@ export default {
       const sizes = ['Bytes', 'KB', 'MB', 'GB']
       const i = Math.floor(Math.log(bytes) / Math.log(k))
       return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]
-    }
-  }
+    },
+  },
 }
 </script>
 

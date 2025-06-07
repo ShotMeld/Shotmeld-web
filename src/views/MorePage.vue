@@ -6,7 +6,12 @@
   <div class="more-container">
     <div class="more-content">
       <div class="card-grid">
-        <div v-for="card in cards" :key="card.id" class="feature-card" @click="handleCardClick(card)">
+        <div
+          v-for="card in cards"
+          :key="card.id"
+          class="feature-card"
+          @click="handleCardClick(card)"
+        >
           <h3 class="card-title">{{ $t(`morePage.features.${card.key}.title`) }}</h3>
           <p class="card-description">{{ $t(`morePage.features.${card.key}.description`) }}</p>
         </div>
@@ -26,20 +31,20 @@ export default {
         { id: 3, key: 'feature3' },
         { id: 4, key: 'feature4' },
         { id: 5, key: 'feature5' },
-        { id: 6, key: 'feature6' }
-      ]
-    };
+        { id: 6, key: 'feature6' },
+      ],
+    }
   },
   methods: {
     handleCardClick(card) {
       if (card.id === 1) {
-        this.$router.push('/duplicate-photos');
+        this.$router.push('/duplicate-photos')
       } else {
         // 其他卡片暂时不做跳转，或可以提示功能未开放
-        console.log('Clicked on card:', this.$t(`morePage.features.${card.key}.title`));
+        console.log('Clicked on card:', this.$t(`morePage.features.${card.key}.title`))
       }
-    }
-  }
+    },
+  },
 }
 </script>
 
@@ -77,7 +82,9 @@ export default {
   border-radius: var(--radius-large);
   padding: var(--spacing-xl);
   box-shadow: var(--shadow-small);
-  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+  transition:
+    transform var(--transition-fast),
+    box-shadow var(--transition-fast);
   cursor: pointer;
   border: var(--border-width) solid var(--border-color);
 }

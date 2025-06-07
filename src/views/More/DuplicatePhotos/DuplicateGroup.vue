@@ -1,46 +1,68 @@
 <template>
-  <sf-card class="duplicate-group" shadow="medium" hoverable>
+  <SfCard class="duplicate-group" shadow="medium" hoverable>
     <template #header>
       <div class="group-header">
         <div class="group-info">
           <h3>{{ $t('duplicatePhotos.group.title', { index: groupIndex + 1 }) }}</h3>
-          <span class="group-count">{{ $t('duplicatePhotos.group.count', { count: photos.length }) }}</span>
-          <span class="group-similarity">{{ $t('duplicatePhotos.group.similarity', { percent: similarity }) }}</span>
+          <span class="group-count">
+            {{ $t('duplicatePhotos.group.count', { count: photos.length }) }}
+          </span>
+          <span class="group-similarity">
+            {{ $t('duplicatePhotos.group.similarity', { percent: similarity }) }}
+          </span>
         </div>
         <div class="group-actions">
-          <sf-button type="text" size="small" @click="selectAll" :disabled="isAllSelected">
+          <SfButton type="text" size="small" @click="selectAll" :disabled="isAllSelected">
             全选
-          </sf-button>
-          <sf-button type="text" size="small" @click="clearSelection" :disabled="selectedCount === 0">
+          </SfButton>
+          <SfButton
+            type="text"
+            size="small"
+            @click="clearSelection"
+            :disabled="selectedCount === 0"
+          >
             清除选择
-          </sf-button>
-          <sf-button type="danger" size="small" @click="deleteSelected" :disabled="selectedCount === 0">
+          </SfButton>
+          <SfButton
+            type="danger"
+            size="small"
+            @click="deleteSelected"
+            :disabled="selectedCount === 0"
+          >
             删除选中 ({{ selectedCount }})
-          </sf-button>
+          </SfButton>
         </div>
       </div>
     </template>
 
     <div class="photo-grid">
-      <DuplicateItem v-for="photo in photos" :key="photo.id || photo.filename" :photo="photo"
-        :selected="isPhotoSelected(photo)" @select="toggleSelection" />
+      <DuplicateItem
+        v-for="photo in photos"
+        :key="photo.id || photo.filename"
+        :photo="photo"
+        :selected="isPhotoSelected(photo)"
+        @select="toggleSelection"
+      />
     </div>
 
     <template #footer>
       <div class="group-stats">
-        <span class="photo-count">
-          {{ photos.length }} 张图片
-        </span>
+        <span class="photo-count">{{ photos.length }} 张图片</span>
         <span class="space-info">
-          可释放空间: <strong>{{ estimatedSpace }}</strong>
+          可释放空间:
+          <strong>{{ estimatedSpace }}</strong>
         </span>
       </div>
     </template>
 
     <!-- 删除确认对话框 -->
-    <sf-delete-confirm-modal v-model="showDeleteModal" item-name="图片" :count="selectedCount"
-      @confirm="confirmDeleteSelected" />
-  </sf-card>
+    <SfDeleteConfirmModal
+      v-model="showDeleteModal"
+      item-name="图片"
+      :count="selectedCount"
+      @confirm="confirmDeleteSelected"
+    />
+  </SfCard>
 </template>
 
 <script>
@@ -55,27 +77,27 @@ export default {
     SfCard,
     SfButton,
     SfDeleteConfirmModal,
-    DuplicateItem
+    DuplicateItem,
   },
   props: {
     photos: {
       type: Array,
-      required: true
+      required: true,
     },
     groupIndex: {
       type: Number,
-      required: true
+      required: true,
     },
     similarity: {
       type: Number,
-      required: true
-    }
+      required: true,
+    },
   },
   emits: ['delete-photos', 'selection-change'],
   data() {
     return {
       selectedPhotos: [],
-      showDeleteModal: false // 控制删除确认对话框显示
+      showDeleteModal: false, // 控制删除确认对话框显示
     }
   },
   watch: {
@@ -85,12 +107,12 @@ export default {
         this.$emit('selection-change', {
           groupIndex: this.groupIndex,
           selectedCount: newSelected.length,
-          selectedPhotos: [...newSelected]
+          selectedPhotos: [...newSelected],
         })
       },
       immediate: true,
-      deep: true
-    }
+      deep: true,
+    },
   },
   computed: {
     selectedCount() {
@@ -111,7 +133,7 @@ export default {
         return `${(totalBytes / (1024 * 1024)).toFixed(1)} MB`
       }
       return `${(totalBytes / 1024).toFixed(1)} KB`
-    }
+    },
   },
   methods: {
     getPhotoId(photo) {
@@ -156,8 +178,8 @@ export default {
       })
 
       // 选择除了最大体积之外的所有图片
-      this.selectedPhotos = this.photos.filter(photo =>
-        this.getPhotoId(photo) !== this.getPhotoId(largestPhoto)
+      this.selectedPhotos = this.photos.filter(
+        photo => this.getPhotoId(photo) !== this.getPhotoId(largestPhoto)
       )
     },
     smartSelectByResolution() {
@@ -181,8 +203,8 @@ export default {
       })
 
       // 选择除了像素最高之外的所有图片
-      this.selectedPhotos = this.photos.filter(photo =>
-        this.getPhotoId(photo) !== this.getPhotoId(highestPixelPhoto)
+      this.selectedPhotos = this.photos.filter(
+        photo => this.getPhotoId(photo) !== this.getPhotoId(highestPixelPhoto)
       )
     },
     async deleteSelected() {
@@ -196,8 +218,8 @@ export default {
       // 确认删除选中的图片
       this.$emit('delete-photos', this.selectedPhotos)
       this.selectedPhotos = []
-    }
-  }
+    },
+  },
 }
 </script>
 

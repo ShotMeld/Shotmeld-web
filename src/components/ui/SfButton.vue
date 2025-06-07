@@ -7,7 +7,7 @@
       { 'sf-button--rounded': rounded },
       { 'sf-button--full-width': fullWidth },
       { 'sf-button--icon-only': iconOnly },
-      { 'sf-button--loading': loading }
+      { 'sf-button--loading': loading },
     ]"
     :disabled="disabled || loading"
     @click="$emit('click', $event)"
@@ -30,40 +30,50 @@ export default {
     type: {
       type: String,
       default: 'primary',
-      validator: value => ['primary', 'secondary', 'tertiary', 'danger', 'success', 'warning', 'info', 'text'].includes(value)
+      validator: value =>
+        [
+          'primary',
+          'secondary',
+          'tertiary',
+          'danger',
+          'success',
+          'warning',
+          'info',
+          'text',
+        ].includes(value),
     },
     htmlType: {
       type: String,
       default: 'button',
-      validator: value => ['button', 'submit', 'reset'].includes(value)
+      validator: value => ['button', 'submit', 'reset'].includes(value),
     },
     size: {
       type: String,
       default: 'default',
-      validator: value => ['small', 'default', 'large'].includes(value)
+      validator: value => ['small', 'default', 'large'].includes(value),
     },
     rounded: {
       type: Boolean,
-      default: false
+      default: false,
     },
     fullWidth: {
       type: Boolean,
-      default: false
+      default: false,
     },
     iconOnly: {
       type: Boolean,
-      default: false
+      default: false,
     },
     disabled: {
       type: Boolean,
-      default: false
+      default: false,
     },
     loading: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
-  emits: ['click']
+  emits: ['click'],
 }
 </script>
 
@@ -252,7 +262,7 @@ export default {
   .sf-button {
     padding: var(--spacing-2xs) var(--spacing-sm);
   }
-  
+
   .sf-button--large {
     padding: var(--spacing-xs) var(--spacing-md);
   }

@@ -26,18 +26,18 @@ export default {
   props: {
     currentPage: {
       type: Number,
-      required: true
+      required: true,
     },
     pageSize: {
       type: Number,
-      required: true
+      required: true,
     },
     total: {
       type: Number,
-      required: true
-    }
-  }
-};
+      required: true,
+    },
+  },
+}
 </script>
 
 <style scoped>
@@ -51,7 +51,9 @@ export default {
   border-radius: var(--radius-extra-large);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.08);
+  box-shadow:
+    0 4px 24px rgba(0, 0, 0, 0.04),
+    0 1px 2px rgba(0, 0, 0, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.8);
   position: relative;
   overflow: hidden;
@@ -173,7 +175,9 @@ export default {
 .theme-dark .pagination-container {
   background: rgba(28, 28, 30, 0.8);
   border-color: rgba(84, 84, 88, 0.4);
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2), 0 1px 2px rgba(0, 0, 0, 0.3);
+  box-shadow:
+    0 4px 24px rgba(0, 0, 0, 0.2),
+    0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
 .theme-dark .pagination-container::before {
@@ -202,4 +206,4 @@ export default {
   background-color: rgba(58, 58, 60, 0.8);
   border-color: rgba(0, 122, 255, 0.4);
 }
-</style> 
+</style>

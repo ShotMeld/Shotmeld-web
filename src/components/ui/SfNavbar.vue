@@ -6,11 +6,11 @@
           <router-link to="/" class="sf-navbar-logo">{{ title }}</router-link>
         </slot>
       </div>
-      
+
       <div class="sf-navbar-content">
         <slot></slot>
       </div>
-      
+
       <div class="sf-navbar-actions">
         <slot name="actions"></slot>
       </div>
@@ -24,13 +24,13 @@ export default {
   props: {
     title: {
       type: String,
-      default: 'ShotMeld'
+      default: 'ShotMeld',
     },
     transparent: {
       type: Boolean,
-      default: false
-    }
-  }
+      default: false,
+    },
+  },
 }
 </script>
 
@@ -101,7 +101,7 @@ export default {
   .sf-navbar {
     height: 56px;
   }
-  
+
   .sf-navbar-container {
     padding: 0 var(--spacing-md);
   }

@@ -16,12 +16,12 @@ export const showSuccessNotify = (app, message, title = '成功', duration = 300
       message,
       type: 'success',
       duration,
-      zIndex: 99999
-    });
+      zIndex: 99999,
+    })
   } else {
-    console.warn('通知系统未初始化');
+    console.warn('通知系统未初始化')
   }
-};
+}
 
 /**
  * 显示一个错误通知
@@ -36,12 +36,12 @@ export const showErrorNotify = (app, message, title = '错误', duration = 5000)
       message,
       type: 'error',
       duration,
-      zIndex: 99999
-    });
+      zIndex: 99999,
+    })
   } else {
-    console.error('通知系统未初始化');
+    console.error('通知系统未初始化')
   }
-};
+}
 
 /**
  * 显示一个警告通知
@@ -56,12 +56,12 @@ export const showWarningNotify = (app, message, title = '警告', duration = 400
       message,
       type: 'warning',
       duration,
-      zIndex: 99999
-    });
+      zIndex: 99999,
+    })
   } else {
-    console.warn('通知系统未初始化');
+    console.warn('通知系统未初始化')
   }
-};
+}
 
 /**
  * 显示一个信息通知
@@ -76,9 +76,9 @@ export const showInfoNotify = (app, message, title = '提示', duration = 3000) 
       message,
       type: 'info',
       duration,
-      zIndex: 99999
-    });
+      zIndex: 99999,
+    })
   } else {
-    console.info('通知系统未初始化');
+    console.info('通知系统未初始化')
   }
-};
+}

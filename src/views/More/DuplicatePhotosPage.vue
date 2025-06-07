@@ -25,12 +25,12 @@ export default {
   name: 'DuplicatePhotosPage',
   components: {
     DuplicateDetector,
-    DuplicateResults
+    DuplicateResults,
   },
   data() {
     return {
       showResults: false,
-      duplicateGroups: []
+      duplicateGroups: [],
     }
   },
   methods: {
@@ -42,12 +42,12 @@ export default {
     handleDetectionComplete(results) {
       this.duplicateGroups = results || []
       this.showResults = true
-      
+
       if (this.duplicateGroups.length > 0) {
         this.$notify({
           title: '检测完成',
           message: `发现 ${this.duplicateGroups.length} 组重复图片`,
-          type: 'success'
+          type: 'success',
         })
       }
     },
@@ -74,33 +74,34 @@ export default {
     async handleDeletePhotos(photos) {
       try {
         const photoIds = photos.map(photo => photo.id || photo.filename)
-        
+
         await photoService.deletePhotos(photoIds)
-        
+
         this.$notify({
           title: '成功',
           message: `已删除${photos.length}张照片`,
-          type: 'success'
+          type: 'success',
         })
-        
+
         // 从结果中移除已删除的图片
         this.duplicateGroups = this.duplicateGroups
-          .map(group => group.filter(photo => {
-            const photoId = photo.id || photo.filename
-            return !photoIds.includes(photoId)
-          }))
+          .map(group =>
+            group.filter(photo => {
+              const photoId = photo.id || photo.filename
+              return !photoIds.includes(photoId)
+            })
+          )
           .filter(group => group.length > 1) // 只保留仍有重复的组
-          
       } catch (error) {
         console.error('删除图片失败:', error)
         this.$notify({
           title: '错误',
           message: error.response?.data?.message || '删除图片失败，请重试',
-          type: 'error'
+          type: 'error',
         })
       }
-    }
-  }
+    },
+  },
 }
 </script>
 
@@ -136,11 +137,11 @@ export default {
   .duplicate-photos-page {
     padding: var(--spacing-lg) var(--spacing-md);
   }
-  
+
   .page-header h1 {
     font-size: var(--font-size-2xl);
   }
-  
+
   .page-description {
     font-size: var(--font-size-base);
   }

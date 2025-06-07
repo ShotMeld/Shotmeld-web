@@ -6,11 +6,11 @@ export const useUserStore = defineStore('user', () => {
   const user = ref(null)
   const token = ref(localStorage.getItem('token') || null)
 
-  const setUser = (userData) => {
+  const setUser = userData => {
     user.value = userData
   }
 
-  const setToken = (newToken) => {
+  const setToken = newToken => {
     token.value = newToken
     if (newToken) {
       localStorage.setItem('token', newToken)
@@ -19,7 +19,7 @@ export const useUserStore = defineStore('user', () => {
     }
   }
 
-  const login = async (credentials) => {
+  const login = async credentials => {
     try {
       const response = await authService.login(credentials)
       setUser(response.data.user)
@@ -30,7 +30,7 @@ export const useUserStore = defineStore('user', () => {
     }
   }
 
-  const register = async (userData) => {
+  const register = async userData => {
     try {
       const response = await authService.register(userData)
       setUser(response.data.user)
@@ -46,7 +46,7 @@ export const useUserStore = defineStore('user', () => {
     setToken(null)
   }
 
-  const updateProfile = async (profileData) => {
+  const updateProfile = async profileData => {
     try {
       const response = await authService.getCurrentUser()
       setUser(response.data.user)
@@ -62,6 +62,6 @@ export const useUserStore = defineStore('user', () => {
     login,
     register,
     logout,
-    updateProfile
+    updateProfile,
   }
-}) 
+})

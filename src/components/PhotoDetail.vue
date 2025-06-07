@@ -3,29 +3,34 @@
 -->
 
 <template>
-  <PhotoDetail :modelValue="modelValue" @update:modelValue="$emit('update:modelValue', $event)" :photo="photo"
-    @photo-deleted="$emit('photo-deleted', $event)" @tag-clicked="$emit('tag-clicked', $event)" />
+  <PhotoDetail
+    :modelValue="modelValue"
+    @update:modelValue="$emit('update:modelValue', $event)"
+    :photo="photo"
+    @photo-deleted="$emit('photo-deleted', $event)"
+    @tag-clicked="$emit('tag-clicked', $event)"
+  />
 </template>
 
 <script>
-import PhotoDetail from './PhotoDetail/PhotoDetail.vue';
+import PhotoDetail from './PhotoDetail/PhotoDetail.vue'
 
 export default {
   name: 'PhotoDetailWrapper',
   components: {
-    PhotoDetail
+    PhotoDetail,
   },
   props: {
     modelValue: {
       type: Boolean,
-      required: true
+      required: true,
     },
     photo: {
       type: Object,
-      default: null
-    }
+      default: null,
+    },
   },
-  emits: ['update:modelValue', 'photo-deleted', 'tag-clicked']
+  emits: ['update:modelValue', 'photo-deleted', 'tag-clicked'],
 }
 </script>
 

@@ -1,10 +1,10 @@
 <template>
-  <div 
-    class="sf-badge" 
-    :class="{ 
+  <div
+    class="sf-badge"
+    :class="{
       [`sf-badge--${type}`]: true,
       [`sf-badge--${size}`]: true,
-      'sf-badge--rounded': rounded
+      'sf-badge--rounded': rounded,
     }"
   >
     <slot></slot>
@@ -18,18 +18,19 @@ export default {
     type: {
       type: String,
       default: 'primary',
-      validator: value => ['primary', 'secondary', 'success', 'warning', 'danger', 'info', 'neutral'].includes(value)
+      validator: value =>
+        ['primary', 'secondary', 'success', 'warning', 'danger', 'info', 'neutral'].includes(value),
     },
     size: {
       type: String,
       default: 'default',
-      validator: value => ['small', 'default', 'large'].includes(value)
+      validator: value => ['small', 'default', 'large'].includes(value),
     },
     rounded: {
       type: Boolean,
-      default: true
-    }
-  }
+      default: true,
+    },
+  },
 }
 </script>
 

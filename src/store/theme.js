@@ -4,15 +4,15 @@ import { ref, watch } from 'vue'
 export const useThemeStore = defineStore('theme', () => {
   // 从 localStorage 获取保存的主题设置，默认为 'system'
   const theme = ref(localStorage.getItem('theme') || 'system')
-  
+
   // 监听主题变化并保存到 localStorage
-  watch(theme, (newTheme) => {
+  watch(theme, newTheme => {
     localStorage.setItem('theme', newTheme)
     applyTheme(newTheme)
   })
 
   // 应用主题
-  const applyTheme = (themeValue) => {
+  const applyTheme = themeValue => {
     const root = document.documentElement
     const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
 
@@ -34,7 +34,7 @@ export const useThemeStore = defineStore('theme', () => {
   // 初始化主题
   const initTheme = () => {
     // 监听系统主题变化
-    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
       if (theme.value === 'system') {
         applyTheme('system')
       }
@@ -45,13 +45,13 @@ export const useThemeStore = defineStore('theme', () => {
   }
 
   // 切换主题
-  const setTheme = (newTheme) => {
+  const setTheme = newTheme => {
     theme.value = newTheme
   }
 
   return {
     theme,
     setTheme,
-    initTheme
+    initTheme,
   }
 })

@@ -12,85 +12,90 @@
       {{ $t('photoDetail.actions.share') }}
     </SfLinkButton>
 
-    <SfLinkButton icon="fas fa-trash" type="danger" @click="$emit('delete-click')" class="action-button">
+    <SfLinkButton
+      icon="fas fa-trash"
+      type="danger"
+      @click="$emit('delete-click')"
+      class="action-button"
+    >
       {{ $t('photoDetail.actions.delete') }}
     </SfLinkButton>
   </div>
 </template>
 
 <script>
-import { SfLinkButton } from '../ui';
-import { photoService } from '../../api';
+import { SfLinkButton } from '../ui'
+import { photoService } from '../../api'
 
 export default {
   name: 'PhotoActions',
   components: {
-    SfLinkButton
+    SfLinkButton,
   },
   props: {
     photo: {
       type: Object,
-      default: null
-    }
+      default: null,
+    },
   },
   data() {
     return {
       isNotifying: false,
-      isSharing: false
-    };
+      isSharing: false,
+    }
   },
   emits: ['delete-click'],
   methods: {
     downloadPhoto() {
-      if (!this.photo) return;
+      if (!this.photo) return
 
-      const link = document.createElement('a');
-      link.href = this.photo.url;
-      link.download = this.photo.filename || 'photo.jpg';
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
+      const link = document.createElement('a')
+      link.href = this.photo.url
+      link.download = this.photo.filename || 'photo.jpg'
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
     },
     async sharePhoto() {
-      if (!this.photo || this.isNotifying || this.isSharing) return;
-      
+      if (!this.photo || this.isNotifying || this.isSharing) return
+
       // 设置标志，防止重复操作
-      this.isSharing = true;
-      this.isNotifying = true;
-      
+      this.isSharing = true
+      this.isNotifying = true
+
       try {
         // 调用API设置照片为可分享状态
-        const response = await photoService.sharePhoto(this.photo.id);
-        
+        const response = await photoService.sharePhoto(this.photo.id)
+
         // 生成分享链接
-        const shareUrl = `${window.location.origin}/share/${this.photo.id}`;
-        
+        const shareUrl = `${window.location.origin}/share/${this.photo.id}`
+
         // 复制分享链接到剪贴板
-        await navigator.clipboard.writeText(shareUrl);
-        
+        await navigator.clipboard.writeText(shareUrl)
+
         // 使用消息提示
         this.$notify({
           title: this.$t('photoDetail.actions.shareSuccess.title'),
           message: this.$t('photoDetail.actions.shareSuccess.message'),
-          type: 'success'
-        });
-        
+          type: 'success',
+        })
       } catch (error) {
-        console.error('分享失败: ', error);
+        console.error('分享失败: ', error)
         this.$notify({
           title: this.$t('photoDetail.actions.shareError.title'),
-          message: error.response?.data?.message || this.$t('photoDetail.actions.shareError.message'),
-          type: 'error'
-        });
+          message:
+            error.response?.data?.message || this.$t('photoDetail.actions.shareError.message'),
+          type: 'error',
+        })
       } finally {
         // 重置标志状态
         setTimeout(() => {
-          this.isNotifying = false;
-          this.isSharing = false;
-        }, 100);
+          this.isNotifying = false
+          this.isSharing = false
+        }, 100)
       }
-    }
-  }
+    },
+  },
 }
 </script>
 
@@ -108,7 +113,9 @@ export default {
   height: 36px;
   border: 1px solid var(--border-color);
   border-radius: 18px;
-  transition: background-color 0.2s ease, transform 0.1s ease;
+  transition:
+    background-color 0.2s ease,
+    transform 0.1s ease;
 }
 
 .action-button:hover {

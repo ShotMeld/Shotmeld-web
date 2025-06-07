@@ -3,24 +3,26 @@
 -->
 
 <template>
-  <sf-card 
-    class="album-card" 
-    :class="{ 'manage-mode': isManageMode, 'selected': isSelected }" 
+  <SfCard
+    class="album-card"
+    :class="{ 'manage-mode': isManageMode, selected: isSelected }"
     @click="$emit('click')"
   >
     <div class="album-card__cover">
-      <img 
-        :src="coverImage" 
-        :alt="album.name"
-        class="album-card__image"
-      >
+      <img :src="coverImage" :alt="album.name" class="album-card__image" />
       <div class="album-card__overlay">
         <div class="album-card__info">
-          <span class="album-card__count">{{ $t('albumCard.photoCount', { count: album.photoCount }) }}</span>
+          <span class="album-card__count">
+            {{ $t('albumCard.photoCount', { count: album.photoCount }) }}
+          </span>
         </div>
       </div>
-      <div v-if="isManageMode" class="album-card__select-overlay" @click.stop="$emit('toggleSelect', album.id)">
-        <div class="select-checkbox" :class="{ 'selected': isSelected }">
+      <div
+        v-if="isManageMode"
+        class="album-card__select-overlay"
+        @click.stop="$emit('toggleSelect', album.id)"
+      >
+        <div class="select-checkbox" :class="{ selected: isSelected }">
           <i v-if="isSelected" class="fas fa-check"></i>
         </div>
       </div>
@@ -32,7 +34,7 @@
       </p>
       <p class="album-card__date">{{ formatDate(album.createdAt) }}</p>
     </div>
-  </sf-card>
+  </SfCard>
 </template>
 
 <script>
@@ -42,25 +44,25 @@ import { photoService } from '../../api'
 export default {
   name: 'AlbumCard',
   components: {
-    SfCard
+    SfCard,
   },
   props: {
     album: {
       type: Object,
-      required: true
+      required: true,
     },
     isManageMode: {
       type: Boolean,
-      default: false
+      default: false,
     },
     isSelected: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
   data() {
     return {
-      photoDetails: {}
+      photoDetails: {},
     }
   },
   computed: {
@@ -86,9 +88,9 @@ export default {
           <polyline points="0,28 15,20 50,40" stroke="#999" stroke-width="2" fill="none"/>
         </g>
         <text x="150" y="130" font-family="Arial" font-size="16" fill="#999" text-anchor="middle">${this.$t('albumCard.noPhotos')}</text>
-      </svg>`;
-      return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
-    }
+      </svg>`
+      return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`
+    },
   },
   watch: {
     'album.photos': {
@@ -97,7 +99,7 @@ export default {
         if (newPhotos && newPhotos.length > 0) {
           this.fetchPhotoDetails()
         }
-      }
+      },
     },
     'album.coverPhotoId': {
       immediate: true,
@@ -105,15 +107,15 @@ export default {
         if (newCoverPhotoId) {
           this.fetchPhotoDetails()
         }
-      }
-    }
+      },
+    },
   },
   methods: {
     formatDate(date) {
       return new Date(date).toLocaleDateString(this.$i18n.locale, {
         year: 'numeric',
         month: 'long',
-        day: 'numeric'
+        day: 'numeric',
       })
     },
     async fetchPhotoDetails() {
@@ -142,8 +144,8 @@ export default {
       } catch (error) {
         console.error(this.$t('photoWall.error.fetchFailed'), error)
       }
-    }
-  }
+    },
+  },
 }
 </script>
 
@@ -152,7 +154,9 @@ export default {
   cursor: pointer;
   overflow: hidden;
   background-color: var(--bg-primary);
-  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition:
+    transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
+    box-shadow 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
   height: 100%;
   display: flex;
   flex-direction: column;
@@ -160,7 +164,9 @@ export default {
 
 .album-card:not(.manage-mode):hover {
   transform: scale(1.02) translateY(-5px);
-  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1), 0 4px 12px rgba(0, 0, 0, 0.07);
+  box-shadow:
+    0 12px 24px rgba(0, 0, 0, 0.1),
+    0 4px 12px rgba(0, 0, 0, 0.07);
 }
 
 .album-card.manage-mode {
@@ -301,9 +307,9 @@ export default {
   .album-card__content {
     padding: var(--spacing-sm);
   }
-  
+
   .album-card__title {
     font-size: var(--font-size-md);
   }
 }
-</style> 
+</style>

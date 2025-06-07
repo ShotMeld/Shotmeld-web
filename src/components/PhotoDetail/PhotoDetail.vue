@@ -3,12 +3,22 @@
 -->
 
 <template>
-  <SfModal :modelValue="modelValue" @update:modelValue="$emit('update:modelValue', $event)"
-    :title="photo?.title || $t('photoDetail.untitledPhoto')" size="large" :customStyles="dynamicModalStyles">
+  <SfModal
+    :modelValue="modelValue"
+    @update:modelValue="$emit('update:modelValue', $event)"
+    :title="photo?.title || $t('photoDetail.untitledPhoto')"
+    size="large"
+    :customStyles="dynamicModalStyles"
+  >
     <div class="photo-detail-content">
       <!-- 左侧照片显示组件 -->
       <div class="photo-detail-left">
-        <PhotoImage :photo="photo" :imageLoaded="imageLoaded" :targetHeight="imageHeight" @image-loaded="handleImageLoaded" />
+        <PhotoImage
+          :photo="photo"
+          :imageLoaded="imageLoaded"
+          :targetHeight="imageHeight"
+          @image-loaded="handleImageLoaded"
+        />
         <!-- 操作按钮组件 -->
         <PhotoActions :photo="photo" @delete-click="confirmDelete" />
       </div>
@@ -19,35 +29,46 @@
         <PhotoInfo :photo="photo" />
 
         <!-- 位置信息组件 -->
-        <PhotoLocation v-if="photo?.location?.latitude && photo?.location?.longitude" :photo="photo" />
+        <PhotoLocation
+          v-if="photo?.location?.latitude && photo?.location?.longitude"
+          :photo="photo"
+        />
 
         <!-- 相机参数组件 -->
         <PhotoExif v-if="hasExifData" :photo="photo" />
 
         <!-- 标签组件 -->
-        <PhotoTags v-if="photo?.tags && photo.tags.length > 0" :photo="photo" @tag-clicked="handleTagClick" />
+        <PhotoTags
+          v-if="photo?.tags && photo.tags.length > 0"
+          :photo="photo"
+          @tag-clicked="handleTagClick"
+        />
 
         <!-- 相册组件 -->
-        <PhotoAlbums v-if="photo?.albums && photo.albums.length > 0" :photo="photo" :albumsMap="albumsMap" />
+        <PhotoAlbums
+          v-if="photo?.albums && photo.albums.length > 0"
+          :photo="photo"
+          :albumsMap="albumsMap"
+        />
       </div>
     </div>
   </SfModal>
 
   <!-- 删除确认对话框 -->
-  <DeleteConfirmModal 
-    v-model="showDeleteConfirm" 
+  <DeleteConfirmModal
+    v-model="showDeleteConfirm"
     @confirm="deletePhoto"
     :title="$t('photoDetail.deleteConfirm.title')"
     :itemName="$t('photoDetail.deleteConfirm.itemName')"
     :count="1"
     :confirmMessage="$t('photoDetail.deleteConfirm.message')"
-    :warningText="$t('photoDetail.deleteConfirm.warning')" 
+    :warningText="$t('photoDetail.deleteConfirm.warning')"
   />
 </template>
 
 <script>
-import { SfModal } from '../ui';
-import { albumService } from '../../api';
+import { SfModal } from '../ui'
+import { albumService } from '../../api'
 import {
   PhotoImage,
   PhotoInfo,
@@ -56,8 +77,8 @@ import {
   PhotoTags,
   PhotoAlbums,
   PhotoActions,
-  DeleteConfirmModal
-} from './index';
+  DeleteConfirmModal,
+} from './index'
 
 export default {
   name: 'PhotoDetail',
@@ -70,17 +91,17 @@ export default {
     PhotoTags,
     PhotoAlbums,
     PhotoActions,
-    DeleteConfirmModal
+    DeleteConfirmModal,
   },
   props: {
     modelValue: {
       type: Boolean,
-      required: true
+      required: true,
     },
     photo: {
       type: Object,
-      default: null
-    }
+      default: null,
+    },
   },
   emits: ['update:modelValue', 'photo-deleted', 'tag-clicked'],
   data() {
@@ -96,38 +117,38 @@ export default {
       buttonsHeight: 60, // 底部按钮区域高度
       headerHeight: 70, // 模态框头部高度
       modalPadding: 48, // 模态框内边距
-      resizeTimeout: null // 防抖定时器
+      resizeTimeout: null, // 防抖定时器
     }
   },
   computed: {
     hasExifData() {
-      return !!(this.photo?.metadata?.exif)
+      return !!this.photo?.metadata?.exif
     },
     dynamicModalStyles() {
-      return this.modalStyles;
+      return this.modalStyles
     },
     rightPanelStyles() {
       // 计算右侧面板的高度，使其与左侧区域保持一致
       if (this.imageHeight > 0) {
-        const leftSideHeight = this.imageHeight + this.buttonsHeight;
+        const leftSideHeight = this.imageHeight + this.buttonsHeight
         return {
           height: `${leftSideHeight}px`,
-          maxHeight: `${leftSideHeight}px`
-        };
+          maxHeight: `${leftSideHeight}px`,
+        }
       }
-      return {};
-    }
+      return {}
+    },
   },
   watch: {
     modelValue(newVal) {
       if (newVal) {
-        this.imageLoaded = false;
-        this.resetModalStyles();
+        this.imageLoaded = false
+        this.resetModalStyles()
         // 模态框打开时，如果有photo信息，立即计算尺寸
         if (this.photo && this.photo.width && this.photo.height) {
           this.$nextTick(() => {
-            this.calculateModalSize();
-          });
+            this.calculateModalSize()
+          })
         }
       }
     },
@@ -135,166 +156,171 @@ export default {
       immediate: true,
       handler(albumIds) {
         if (albumIds && albumIds.length > 0) {
-          this.fetchAlbumsInfo(albumIds);
+          this.fetchAlbumsInfo(albumIds)
         }
-      }
+      },
     },
     photo: {
       immediate: true,
       handler(newPhoto) {
-        this.resetModalStyles();
+        this.resetModalStyles()
         // photo变化时，如果有尺寸信息，立即计算模态框尺寸
         if (newPhoto && newPhoto.width && newPhoto.height) {
           this.$nextTick(() => {
-            this.calculateModalSize();
-          });
+            this.calculateModalSize()
+          })
         }
-      }
-    }
+      },
+    },
   },
   methods: {
     confirmDelete() {
-      this.showDeleteConfirm = true;
+      this.showDeleteConfirm = true
     },
 
     deletePhoto() {
-      this.$emit('photo-deleted', this.photo.id);
-      this.showDeleteConfirm = false;
+      this.$emit('photo-deleted', this.photo.id)
+      this.showDeleteConfirm = false
     },
-    
+
     handleTagClick(tag) {
-      this.$emit('tag-clicked', tag);
+      this.$emit('tag-clicked', tag)
     },
 
     handleImageLoaded() {
-      this.imageLoaded = true;
+      this.imageLoaded = true
       // 图片加载完成后不再需要重新计算尺寸，因为已经在photo数据到达时计算过了
     },
 
     resetModalStyles() {
-      this.modalStyles = {};
-      this.imageHeight = 0;
+      this.modalStyles = {}
+      this.imageHeight = 0
     },
 
     calculateModalSize() {
-      if (!this.photo || !this.photo.width || !this.photo.height) return;
-      
+      if (!this.photo || !this.photo.width || !this.photo.height) return
+
       // 获取视口尺寸
-      const viewportWidth = window.innerWidth;
-      const viewportHeight = window.innerHeight;
-      const isMobile = viewportWidth < 992;
-      
+      const viewportWidth = window.innerWidth
+      const viewportHeight = window.innerHeight
+      const isMobile = viewportWidth < 992
+
       if (isMobile) {
         // 移动端保持原有逻辑
-        this.modalStyles = {};
-        return;
+        this.modalStyles = {}
+        return
       }
 
       // 直接使用photo中的尺寸信息，无需等待图片加载
-      const imgNaturalWidth = this.photo.width;
-      const imgNaturalHeight = this.photo.height;
-      const imgAspectRatio = imgNaturalWidth / imgNaturalHeight;
-      
+      const imgNaturalWidth = this.photo.width
+      const imgNaturalHeight = this.photo.height
+      const imgAspectRatio = imgNaturalWidth / imgNaturalHeight
+
       // 计算理想的图片容器宽度（左侧区域宽度）
       // 首先确保右侧面板宽度固定，左侧宽度基于剩余空间计算
-      const availableWidth = viewportWidth * 0.9 - this.rightPanelWidth - this.modalPadding;
+      const availableWidth = viewportWidth * 0.9 - this.rightPanelWidth - this.modalPadding
       let leftPanelWidth = Math.min(
         availableWidth, // 可用宽度
         imgNaturalWidth // 但不超过图片原始宽度
-      );
-      
+      )
+
       // 确保左侧宽度不会太小
-      leftPanelWidth = Math.max(leftPanelWidth, 400);
-      
+      leftPanelWidth = Math.max(leftPanelWidth, 400)
+
       // 根据宽度计算图片高度
-      let calculatedImageHeight = leftPanelWidth / imgAspectRatio;
-      
+      let calculatedImageHeight = leftPanelWidth / imgAspectRatio
+
       // 计算模态框需要的总高度
-      let totalModalHeight = calculatedImageHeight + this.buttonsHeight + this.headerHeight + this.modalPadding;
-      
+      let totalModalHeight =
+        calculatedImageHeight + this.buttonsHeight + this.headerHeight + this.modalPadding
+
       // 检查是否低于最小高度
       if (totalModalHeight < this.minModalHeight) {
         // 重新计算尺寸以满足最小高度
-        const targetImageHeight = this.minModalHeight - this.buttonsHeight - this.headerHeight - this.modalPadding;
-        leftPanelWidth = targetImageHeight * imgAspectRatio;
-        calculatedImageHeight = targetImageHeight;
-        totalModalHeight = this.minModalHeight;
+        const targetImageHeight =
+          this.minModalHeight - this.buttonsHeight - this.headerHeight - this.modalPadding
+        leftPanelWidth = targetImageHeight * imgAspectRatio
+        calculatedImageHeight = targetImageHeight
+        totalModalHeight = this.minModalHeight
       }
-      
+
       // 检查模态框宽度是否超过最大限制
-      const totalModalWidth = leftPanelWidth + this.rightPanelWidth + this.modalPadding + 32; // 添加间距
+      const totalModalWidth = leftPanelWidth + this.rightPanelWidth + this.modalPadding + 32 // 添加间距
       if (totalModalWidth > this.maxModalWidth) {
         // 重新计算，保持右侧面板宽度固定，调整左侧宽度
-        leftPanelWidth = this.maxModalWidth - this.rightPanelWidth - this.modalPadding - 32;
-        calculatedImageHeight = leftPanelWidth / imgAspectRatio;
-        totalModalHeight = calculatedImageHeight + this.buttonsHeight + this.headerHeight + this.modalPadding;
+        leftPanelWidth = this.maxModalWidth - this.rightPanelWidth - this.modalPadding - 32
+        calculatedImageHeight = leftPanelWidth / imgAspectRatio
+        totalModalHeight =
+          calculatedImageHeight + this.buttonsHeight + this.headerHeight + this.modalPadding
       }
-      
+
       // 确保不超过视口高度的85%
-      const maxModalHeight = viewportHeight * 0.85;
+      const maxModalHeight = viewportHeight * 0.85
       if (totalModalHeight > maxModalHeight) {
-        const targetImageHeight = maxModalHeight - this.buttonsHeight - this.headerHeight - this.modalPadding;
-        leftPanelWidth = targetImageHeight * imgAspectRatio;
-        calculatedImageHeight = targetImageHeight;
-        totalModalHeight = maxModalHeight;
+        const targetImageHeight =
+          maxModalHeight - this.buttonsHeight - this.headerHeight - this.modalPadding
+        leftPanelWidth = targetImageHeight * imgAspectRatio
+        calculatedImageHeight = targetImageHeight
+        totalModalHeight = maxModalHeight
       }
-      
+
       // 应用计算出的样式
-      this.imageHeight = calculatedImageHeight + 20; // 添加一些额外的间距
-      const finalModalWidth = leftPanelWidth + this.rightPanelWidth + this.modalPadding + 32;
+      this.imageHeight = calculatedImageHeight + 20 // 添加一些额外的间距
+      const finalModalWidth = leftPanelWidth + this.rightPanelWidth + this.modalPadding + 32
       this.modalStyles = {
         width: `${Math.min(finalModalWidth, this.maxModalWidth)}px`,
         height: `${totalModalHeight}px`,
         maxHeight: `${maxModalHeight}px`,
-        minWidth: `${this.rightPanelWidth + 400 + this.modalPadding + 32}px` // 确保最小宽度包含固定右侧面板
-      };
+        minWidth: `${this.rightPanelWidth + 400 + this.modalPadding + 32}px`, // 确保最小宽度包含固定右侧面板
+      }
     },
 
     fetchAlbumsInfo(albumIds) {
       // 过滤掉已经获取过的相册ID
-      const idsToFetch = albumIds.filter(id => !this.albumsMap[id]);
-      
-      if (idsToFetch.length === 0) return;
-      
+      const idsToFetch = albumIds.filter(id => !this.albumsMap[id])
+
+      if (idsToFetch.length === 0) return
+
       // 为每个相册ID发起请求
-      const promises = idsToFetch.map(id => 
-        albumService.getAlbum(id)
+      const promises = idsToFetch.map(id =>
+        albumService
+          .getAlbum(id)
           .then(response => {
-            this.albumsMap[id] = response.data.name;
+            this.albumsMap[id] = response.data.name
           })
           .catch(err => {
-            console.error(`获取相册信息失败: ${id}`, err);
-            this.albumsMap[id] = '未知相册';
+            console.error(`获取相册信息失败: ${id}`, err)
+            this.albumsMap[id] = '未知相册'
           })
-      );
-      
+      )
+
       // 等待所有请求完成
       Promise.all(promises).catch(err => {
-        console.error('获取相册信息时出错:', err);
-      });
+        console.error('获取相册信息时出错:', err)
+      })
     },
 
     handleResize() {
       // 防抖处理
       if (this.resizeTimeout) {
-        clearTimeout(this.resizeTimeout);
+        clearTimeout(this.resizeTimeout)
       }
       this.resizeTimeout = setTimeout(() => {
         if (this.photo && this.photo.width && this.photo.height) {
-          this.calculateModalSize();
+          this.calculateModalSize()
         }
-      }, 200);
-    }
+      }, 200)
+    },
   },
   mounted() {
-    window.addEventListener('resize', this.handleResize);
+    window.addEventListener('resize', this.handleResize)
   },
   beforeUnmount() {
-    window.removeEventListener('resize', this.handleResize);
+    window.removeEventListener('resize', this.handleResize)
     if (this.resizeTimeout) {
-      clearTimeout(this.resizeTimeout);
+      clearTimeout(this.resizeTimeout)
     }
-  }
+  },
 }
 </script>
 
@@ -351,11 +377,11 @@ export default {
     max-height: none;
     overflow-y: visible;
   }
-  
+
   .photo-detail-left {
     overflow: hidden;
   }
-  
+
   .photo-detail-info {
     /* 移动端：信息区域不设置滚动，让内容自然展开 */
     overflow-y: visible;

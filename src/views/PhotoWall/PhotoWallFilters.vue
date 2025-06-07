@@ -6,10 +6,10 @@
   <div class="filters-section">
     <SfCard class="search-card" shadow="medium">
       <div class="search-container">
-        <SfInput 
-          v-model="localSearchQuery" 
-          :placeholder="$t('photoWall.filters.searchPlaceholder')" 
-          @input="debouncedSearch" 
+        <SfInput
+          v-model="localSearchQuery"
+          :placeholder="$t('photoWall.filters.searchPlaceholder')"
+          @input="debouncedSearch"
           class="search-input"
         >
           <template #prefix>
@@ -28,28 +28,33 @@
       <div class="filter-controls">
         <div class="filter-item">
           <div class="select-wrapper">
-            <el-select 
-              v-model="localFilters.albumId" 
-              :placeholder="$t('photoWall.filters.album.all')" 
-              clearable 
-              @change="handleFilterChange" 
+            <el-select
+              v-model="localFilters.albumId"
+              :placeholder="$t('photoWall.filters.album.all')"
+              clearable
+              @change="handleFilterChange"
               class="select"
             >
-              <el-option v-for="album in albums" :key="album.id" :label="album.name" :value="album.id"></el-option>
+              <el-option
+                v-for="album in albums"
+                :key="album.id"
+                :label="album.name"
+                :value="album.id"
+              ></el-option>
             </el-select>
           </div>
         </div>
         <div class="filter-item">
           <div class="datepicker-wrapper">
-            <el-date-picker 
-              v-model="localDateRange" 
-              type="daterange" 
-              :range-separator="$t('photoWall.filters.date.separator')" 
-              :start-placeholder="$t('photoWall.filters.date.start')" 
-              :end-placeholder="$t('photoWall.filters.date.end')" 
-              format="YYYY-MM-DD" 
-              value-format="YYYY-MM-DD" 
-              @change="handleDateRangeChange" 
+            <el-date-picker
+              v-model="localDateRange"
+              type="daterange"
+              :range-separator="$t('photoWall.filters.date.separator')"
+              :start-placeholder="$t('photoWall.filters.date.start')"
+              :end-placeholder="$t('photoWall.filters.date.end')"
+              format="YYYY-MM-DD"
+              value-format="YYYY-MM-DD"
+              @change="handleDateRangeChange"
               class="photo-wall-datepicker"
             ></el-date-picker>
           </div>
@@ -58,14 +63,23 @@
           <div class="sort-controls">
             <div class="select-wrapper sort-field">
               <el-select v-model="localFilters.sort" @change="handleFilterChange" class="select">
-                <el-option :label="$t('photoWall.filters.sort.takenAt')" value="takenAt"></el-option>
-                <el-option :label="$t('photoWall.filters.sort.createdAt')" value="createdAt"></el-option>
+                <el-option
+                  :label="$t('photoWall.filters.sort.takenAt')"
+                  value="takenAt"
+                ></el-option>
+                <el-option
+                  :label="$t('photoWall.filters.sort.createdAt')"
+                  value="createdAt"
+                ></el-option>
                 <el-option :label="$t('photoWall.filters.sort.title')" value="title"></el-option>
               </el-select>
             </div>
             <div class="select-wrapper sort-order">
               <el-select v-model="localFilters.order" @change="handleFilterChange" class="select">
-                <el-option :label="$t('photoWall.filters.sort.order.desc')" value="desc"></el-option>
+                <el-option
+                  :label="$t('photoWall.filters.sort.order.desc')"
+                  value="desc"
+                ></el-option>
                 <el-option :label="$t('photoWall.filters.sort.order.asc')" value="asc"></el-option>
               </el-select>
             </div>
@@ -77,61 +91,68 @@
 </template>
 
 <script>
-import { photoService } from '../../api';
+import { photoService } from '../../api'
 
 export default {
   name: 'PhotoWallFilters',
   props: {
     searchQuery: {
       type: String,
-      default: ''
+      default: '',
     },
     filters: {
       type: Object,
-      required: true
+      required: true,
     },
     dateRange: {
       type: Array,
-      default: () => null
+      default: () => null,
     },
     albums: {
       type: Array,
-      default: () => []
-    }
+      default: () => [],
+    },
   },
   data() {
     return {
       localSearchQuery: this.searchQuery,
       localFilters: { ...this.filters },
       localDateRange: this.dateRange,
-      searchTimeout: null
-    };
+      searchTimeout: null,
+    }
   },
   watch: {
     searchQuery(val) {
-      this.localSearchQuery = val;
+      this.localSearchQuery = val
       // 如果外部清空了 searchQuery，也触发一次 debouncedSearch 来清空结果
       if (!val || val.trim() === '') {
-        this.debouncedSearch();
+        this.debouncedSearch()
       }
     },
     filters: {
       handler(val) {
-        this.localFilters = { ...val };
+        this.localFilters = { ...val }
       },
-      deep: true
+      deep: true,
     },
     dateRange(val) {
-      this.localDateRange = val;
-    }
+      this.localDateRange = val
+    },
   },
   methods: {
     async executeSearch() {
       if (!this.localSearchQuery || this.localSearchQuery.trim() === '') {
         // 通常由 debouncedSearch 中的逻辑处理清空，这里作为保险
-        this.$emit('update:searchResults', { data: [], total: 0, page: 1, limit: 50, totalPages: 0, searchTerm: '' });
-        this.$emit('fetchPhotos'); // 确保在清除搜索词时重新加载默认照片列表
-        return;
+        this.$emit('update:searchResults', {
+          data: [],
+          total: 0,
+          page: 1,
+          limit: 50,
+          totalPages: 0,
+          searchTerm: '',
+        })
+        this.$emit('fetchPhotos') // 确保在清除搜索词时重新加载默认照片列表
+        return
       }
 
       try {
@@ -140,45 +161,56 @@ export default {
           page: 1, // 注意：分页参数目前是硬编码的
           limit: 50,
           sort: this.localFilters.sort,
-          order: this.localFilters.order
-        });
-        this.$emit('update:searchResults', response.data);
+          order: this.localFilters.order,
+        })
+        this.$emit('update:searchResults', response.data)
       } catch (error) {
-        console.error(this.$t('photoWall.error.searchFailed') + ':', error);
-        this.$emit('update:searchResults', { data: [], error: '搜索失败', searchTerm: this.localSearchQuery.trim() });
+        console.error(this.$t('photoWall.error.searchFailed') + ':', error)
+        this.$emit('update:searchResults', {
+          data: [],
+          error: '搜索失败',
+          searchTerm: this.localSearchQuery.trim(),
+        })
       }
     },
 
     debouncedSearch() {
-      clearTimeout(this.searchTimeout);
+      clearTimeout(this.searchTimeout)
       if (!this.localSearchQuery || this.localSearchQuery.trim() === '') {
         // 当输入框被清空时，清除搜索结果并通知父组件获取所有照片
-        this.$emit('update:searchResults', { data: [], total: 0, page: 1, limit: 50, totalPages: 0, searchTerm: '' });
-        this.$emit('fetchPhotos');
-        return;
+        this.$emit('update:searchResults', {
+          data: [],
+          total: 0,
+          page: 1,
+          limit: 50,
+          totalPages: 0,
+          searchTerm: '',
+        })
+        this.$emit('fetchPhotos')
+        return
       }
       this.searchTimeout = setTimeout(async () => {
-        await this.executeSearch();
-      }, 500);
+        await this.executeSearch()
+      }, 500)
     },
 
     async handleSearchButtonClick() {
-      clearTimeout(this.searchTimeout); // 取消任何待处理的防抖搜索
+      clearTimeout(this.searchTimeout) // 取消任何待处理的防抖搜索
       if (this.localSearchQuery && this.localSearchQuery.trim() !== '') {
-        await this.executeSearch();
+        await this.executeSearch()
       }
     },
 
     handleFilterChange() {
-      this.$emit('update:filters', this.localFilters);
-      this.$emit('fetchPhotos');
+      this.$emit('update:filters', this.localFilters)
+      this.$emit('fetchPhotos')
     },
     handleDateRangeChange(dates) {
-      this.$emit('update:dateRange', dates);
-      this.$emit('fetchPhotos');
-    }
-  }
-};
+      this.$emit('update:dateRange', dates)
+      this.$emit('fetchPhotos')
+    },
+  },
+}
 </script>
 
 <style scoped>
@@ -210,7 +242,7 @@ export default {
   padding-top: 0;
   padding-bottom: 0;
   border-radius: var(--radius-round);
-  display: inline-flex; 
+  display: inline-flex;
   align-items: center;
   justify-content: center;
   min-width: 70px;
@@ -264,7 +296,11 @@ export default {
 /* 针对日期范围选择器的主容器 */
 :deep(.photo-wall-datepicker.el-date-editor.el-date-editor--daterange) {
   width: 100%;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.6) 0%, rgba(248, 248, 248, 0.4) 100%) !important;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.6) 0%,
+    rgba(248, 248, 248, 0.4) 100%
+  ) !important;
   border-radius: var(--radius-medium) !important;
   border: 1px solid rgba(0, 0, 0, 0.06) !important;
   backdrop-filter: blur(12px) !important;
@@ -273,7 +309,9 @@ export default {
   height: 40px !important;
   position: relative !important;
   overflow: hidden !important;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.8) !important;
+  box-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.05),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8) !important;
 }
 
 :deep(.photo-wall-datepicker.el-date-editor.el-date-editor--daterange::before) {
@@ -342,24 +380,44 @@ export default {
 
 /* Hover 状态 */
 :deep(.photo-wall-datepicker.el-date-editor.el-date-editor--daterange:hover) {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(248, 248, 248, 0.7) 100%) !important;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.9) 0%,
+    rgba(248, 248, 248, 0.7) 100%
+  ) !important;
   border-color: rgba(0, 122, 255, 0.3) !important;
-  box-shadow: 0 4px 12px rgba(0, 122, 255, 0.12), 0 2px 4px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.9) !important;
+  box-shadow:
+    0 4px 12px rgba(0, 122, 255, 0.12),
+    0 2px 4px rgba(0, 0, 0, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9) !important;
 }
 
 /* Focus 状态 */
 :deep(.photo-wall-datepicker.el-date-editor.el-date-editor--daterange.is-focus),
 :deep(.photo-wall-datepicker.el-date-editor.el-date-editor--daterange:focus-within) {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 248, 248, 0.8) 100%) !important;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.95) 0%,
+    rgba(248, 248, 248, 0.8) 100%
+  ) !important;
   border-color: var(--color-primary) !important;
-  box-shadow: 0 6px 20px rgba(0, 122, 255, 0.15), 0 0 0 3px rgba(0, 122, 255, 0.1), inset 0 1px 0 rgba(255, 255, 255, 1) !important;
+  box-shadow:
+    0 6px 20px rgba(0, 122, 255, 0.15),
+    0 0 0 3px rgba(0, 122, 255, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 1) !important;
 }
 
 /* 深色模式适配 */
 .theme-dark :deep(.photo-wall-datepicker.el-date-editor.el-date-editor--daterange) {
-  background: linear-gradient(135deg, rgba(44, 44, 46, 0.8) 0%, rgba(28, 28, 30, 0.6) 100%) !important;
+  background: linear-gradient(
+    135deg,
+    rgba(44, 44, 46, 0.8) 0%,
+    rgba(28, 28, 30, 0.6) 100%
+  ) !important;
   border-color: rgba(84, 84, 88, 0.3) !important;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+  box-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
 }
 
 .theme-dark :deep(.photo-wall-datepicker.el-date-editor.el-date-editor--daterange::before) {
@@ -367,16 +425,30 @@ export default {
 }
 
 .theme-dark :deep(.photo-wall-datepicker.el-date-editor.el-date-editor--daterange:hover) {
-  background: linear-gradient(135deg, rgba(58, 58, 60, 0.9) 0%, rgba(44, 44, 46, 0.8) 100%) !important;
+  background: linear-gradient(
+    135deg,
+    rgba(58, 58, 60, 0.9) 0%,
+    rgba(44, 44, 46, 0.8) 100%
+  ) !important;
   border-color: rgba(0, 122, 255, 0.4) !important;
-  box-shadow: 0 4px 12px rgba(0, 122, 255, 0.2), 0 2px 4px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.15) !important;
+  box-shadow:
+    0 4px 12px rgba(0, 122, 255, 0.2),
+    0 2px 4px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15) !important;
 }
 
 .theme-dark :deep(.photo-wall-datepicker.el-date-editor.el-date-editor--daterange.is-focus),
 .theme-dark :deep(.photo-wall-datepicker.el-date-editor.el-date-editor--daterange:focus-within) {
-  background: linear-gradient(135deg, rgba(58, 58, 60, 0.95) 0%, rgba(44, 44, 46, 0.9) 100%) !important;
+  background: linear-gradient(
+    135deg,
+    rgba(58, 58, 60, 0.95) 0%,
+    rgba(44, 44, 46, 0.9) 100%
+  ) !important;
   border-color: var(--color-primary) !important;
-  box-shadow: 0 6px 20px rgba(0, 122, 255, 0.25), 0 0 0 3px rgba(0, 122, 255, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
+  box-shadow:
+    0 6px 20px rgba(0, 122, 255, 0.25),
+    0 0 0 3px rgba(0, 122, 255, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
 }
 
 .theme-dark :deep(.photo-wall-datepicker .el-range-input) {

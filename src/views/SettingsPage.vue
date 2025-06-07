@@ -10,7 +10,7 @@
           <h1>{{ $t('settings.title') }}</h1>
           <p class="settings-subtitle">{{ $t('settings.subtitle') }}</p>
         </div>
-        
+
         <!-- 主题设置 -->
         <div class="settings-section">
           <div class="section-header">
@@ -19,8 +19,8 @@
           </div>
           <p class="section-description">{{ $t('settings.theme.description') }}</p>
           <div class="settings-options">
-            <button 
-              v-for="theme in themes" 
+            <button
+              v-for="theme in themes"
               :key="theme.value"
               class="settings-option"
               :class="{ active: selectedTheme === theme.value }"
@@ -42,8 +42,8 @@
           </div>
           <p class="section-description">{{ $t('settings.language.description') }}</p>
           <div class="settings-options">
-            <button 
-              v-for="lang in languages" 
+            <button
+              v-for="lang in languages"
               :key="lang.value"
               class="settings-option"
               :class="{ active: selectedLanguage === lang.value }"
@@ -63,8 +63,7 @@ import { useThemeStore } from '../store/theme'
 
 export default {
   name: 'SettingsPage',
-  components: {
-  },
+  components: {},
   data() {
     return {
       userName: '',
@@ -73,12 +72,12 @@ export default {
       themes: [
         { value: 'light', label: 'settings.theme.light', icon: 'fas fa-sun' },
         { value: 'dark', label: 'settings.theme.dark', icon: 'fas fa-moon' },
-        { value: 'system', label: 'settings.theme.system', icon: 'fas fa-circle-half-stroke' }
+        { value: 'system', label: 'settings.theme.system', icon: 'fas fa-circle-half-stroke' },
       ],
       languages: [
         { value: 'zh-CN', label: 'settings.language.zh' },
-        { value: 'en', label: 'settings.language.en' }
-      ]
+        { value: 'en', label: 'settings.language.en' },
+      ],
     }
   },
   created() {
@@ -108,8 +107,8 @@ export default {
       this.$i18n.locale = lang
       // 将语言设置保存到本地存储
       localStorage.setItem('locale', lang)
-    }
-  }
+    },
+  },
 }
 </script>
 

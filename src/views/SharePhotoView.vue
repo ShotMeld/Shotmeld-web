@@ -40,8 +40,14 @@
         <!-- 左侧照片显示组件 -->
         <div class="photo-detail-left">
           <div class="photo-image-container">
-            <img v-if="photo?.url" :src="photo.url" :alt="photo.title || $t('sharePhoto.defaultTitle')" class="photo-image"
-              @load="handleImageLoaded" @error="handleImageError" />
+            <img
+              v-if="photo?.url"
+              :src="photo.url"
+              :alt="photo.title || $t('sharePhoto.defaultTitle')"
+              class="photo-image"
+              @load="handleImageLoaded"
+              @error="handleImageError"
+            />
             <div v-if="!imageLoaded && photo?.url" class="image-loading">
               <div class="image-loading-spinner"></div>
               <p>{{ $t('sharePhoto.imageLoading') }}</p>
@@ -55,7 +61,10 @@
           <PhotoInfo :photo="photo" />
 
           <!-- 位置信息组件 -->
-          <PhotoLocation v-if="photo?.location?.latitude && photo?.location?.longitude" :photo="photo" />
+          <PhotoLocation
+            v-if="photo?.location?.latitude && photo?.location?.longitude"
+            :photo="photo"
+          />
 
           <!-- 相机参数组件 -->
           <PhotoExif v-if="hasExifData" :photo="photo" />
@@ -66,14 +75,9 @@
 </template>
 
 <script>
-import { photoService } from '../api';
-import { SfButton } from '../components/ui';
-import {
-  PhotoInfo,
-  PhotoLocation,
-  PhotoExif,
-  PhotoTags
-} from '../components/PhotoDetail';
+import { photoService } from '../api'
+import { SfButton } from '../components/ui'
+import { PhotoInfo, PhotoLocation, PhotoExif, PhotoTags } from '../components/PhotoDetail'
 
 export default {
   name: 'SharePhotoView',
@@ -82,56 +86,56 @@ export default {
     PhotoInfo,
     PhotoLocation,
     PhotoExif,
-    PhotoTags
+    PhotoTags,
   },
   data() {
     return {
       photo: null,
       loading: true,
       error: null,
-      imageLoaded: false
-    };
+      imageLoaded: false,
+    }
   },
   computed: {
     hasExifData() {
-      return !!(this.photo?.metadata?.exif);
-    }
+      return !!this.photo?.metadata?.exif
+    },
   },
   async mounted() {
     // 设置深色模式
-    this.setDarkMode();
-    await this.loadPhoto();
+    this.setDarkMode()
+    await this.loadPhoto()
   },
 
-  beforeDestroy() {
+  beforeUnmount() {
     // 组件销毁时清理深色模式设置
-    this.cleanupDarkMode();
+    this.cleanupDarkMode()
   },
   methods: {
     setDarkMode() {
       // 强制设置深色模式
-      document.documentElement.classList.add('dark');
-      document.documentElement.setAttribute('data-theme', 'dark');
+      document.documentElement.classList.add('dark')
+      document.documentElement.setAttribute('data-theme', 'dark')
 
       // 设置深色模式的CSS变量
-      const root = document.documentElement;
-      root.style.setProperty('--bg-primary', '#000000');
-      root.style.setProperty('--bg-secondary', '#2d2d2d');
-      root.style.setProperty('--text-primary', '#ffffff');
-      root.style.setProperty('--text-secondary', '#b3b3b3');
-      root.style.setProperty('--border-color', '#404040');
-      root.style.setProperty('--border-color-hover', '#606060');
-      root.style.setProperty('--primary-color', '#3b82f6');
-      root.style.setProperty('--primary-color-hover', '#2563eb');
+      const root = document.documentElement
+      root.style.setProperty('--bg-primary', '#000000')
+      root.style.setProperty('--bg-secondary', '#2d2d2d')
+      root.style.setProperty('--text-primary', '#ffffff')
+      root.style.setProperty('--text-secondary', '#b3b3b3')
+      root.style.setProperty('--border-color', '#404040')
+      root.style.setProperty('--border-color-hover', '#606060')
+      root.style.setProperty('--primary-color', '#3b82f6')
+      root.style.setProperty('--primary-color-hover', '#2563eb')
     },
 
     cleanupDarkMode() {
       // 移除深色模式类和属性
-      document.documentElement.classList.remove('dark');
-      document.documentElement.removeAttribute('data-theme');
+      document.documentElement.classList.remove('dark')
+      document.documentElement.removeAttribute('data-theme')
 
       // 清除我们设置的CSS变量，恢复默认值
-      const root = document.documentElement;
+      const root = document.documentElement
       const variablesToClear = [
         '--bg-primary',
         '--bg-secondary',
@@ -140,62 +144,63 @@ export default {
         '--border-color',
         '--border-color-hover',
         '--primary-color',
-        '--primary-color-hover'
-      ];
+        '--primary-color-hover',
+      ]
 
       variablesToClear.forEach(variable => {
-        root.style.removeProperty(variable);
-      });
+        root.style.removeProperty(variable)
+      })
     },
 
     goHome() {
-      window.location.href = '/';
+      window.location.href = '/'
     },
 
     async loadPhoto() {
       try {
-        this.loading = true;
-        this.error = null;
+        this.loading = true
+        this.error = null
 
-        const photoId = this.$route.params.id;
+        const photoId = this.$route.params.id
         if (!photoId) {
-          throw new Error(this.$t('sharePhoto.error.invalidId'));
+          throw new Error(this.$t('sharePhoto.error.invalidId'))
         }
 
-        const response = await photoService.getSharedPhoto(photoId);
-        this.photo = response.data;
+        const response = await photoService.getSharedPhoto(photoId)
+        this.photo = response.data
 
         // 设置页面标题
-        document.title = this.photo.title ? `${this.photo.title} - Shotmeld` : this.$t('sharePhoto.pageTitle');
-
+        document.title = this.photo.title
+          ? `${this.photo.title} - Shotmeld`
+          : this.$t('sharePhoto.pageTitle')
       } catch (error) {
-        console.error(this.$t('sharePhoto.error.loadFailed'), error);
-        this.error = error.response?.data?.message || this.$t('sharePhoto.error.notFound');
+        console.error(this.$t('sharePhoto.error.loadFailed'), error)
+        this.error = error.response?.data?.message || this.$t('sharePhoto.error.notFound')
       } finally {
-        this.loading = false;
+        this.loading = false
       }
     },
 
     downloadPhoto() {
-      if (!this.photo) return;
+      if (!this.photo) return
 
-      const link = document.createElement('a');
-      link.href = this.photo.url;
-      link.download = this.photo.filename || 'photo.jpg';
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
+      const link = document.createElement('a')
+      link.href = this.photo.url
+      link.download = this.photo.filename || 'photo.jpg'
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
     },
 
     handleImageLoaded() {
-      this.imageLoaded = true;
+      this.imageLoaded = true
     },
 
     handleImageError() {
-      this.error = this.$t('sharePhoto.error.imageLoadFailed');
-    }
-  }
-};
+      this.error = this.$t('sharePhoto.error.imageLoadFailed')
+    },
+  },
+}
 </script>
 
 <style scoped>
@@ -365,7 +370,7 @@ export default {
 }
 
 /* 信息组件间距 */
-.photo-detail-info>*+* {
+.photo-detail-info > * + * {
   margin-top: var(--spacing-lg, 24px);
 }
 
@@ -516,7 +521,8 @@ export default {
   .photo-detail-info {
     overflow-y: auto;
     max-height: none;
-    padding: var(--spacing-md, 16px) var(--spacing-lg, 24px) var(--spacing-lg, 24px) var(--spacing-lg, 24px);
+    padding: var(--spacing-md, 16px) var(--spacing-lg, 24px) var(--spacing-lg, 24px)
+      var(--spacing-lg, 24px);
     width: 100%;
     flex-shrink: 0;
   }
@@ -600,7 +606,8 @@ export default {
   }
 
   .photo-detail-info {
-    padding: var(--spacing-sm, 12px) var(--spacing-md, 16px) var(--spacing-md, 16px) var(--spacing-md, 16px);
+    padding: var(--spacing-sm, 12px) var(--spacing-md, 16px) var(--spacing-md, 16px)
+      var(--spacing-md, 16px);
     flex: 1;
     min-height: 0;
   }

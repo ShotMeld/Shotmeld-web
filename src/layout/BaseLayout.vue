@@ -4,7 +4,12 @@
 
 <template>
   <div class="base-layout">
-    <AppNavbar :userName="userName" :currentPage="currentPage" @show-upload="handleShowUpload" @show-album-form="handleShowAlbumForm" />
+    <AppNavbar
+      :userName="userName"
+      :currentPage="currentPage"
+      @show-upload="handleShowUpload"
+      @show-album-form="handleShowAlbumForm"
+    />
     <main class="base-layout__content">
       <router-view ref="routerView"></router-view>
     </main>
@@ -21,33 +26,40 @@ export default {
   name: 'BaseLayout',
   components: {
     AppNavbar,
-    IcpFooter
+    IcpFooter,
   },
   computed: {
     currentPage() {
-      const routeName = this.$route.name;
+      const routeName = this.$route.name
       if (routeName) {
-        const lowerRouteName = routeName.toLowerCase();
+        const lowerRouteName = routeName.toLowerCase()
         // Handle AlbumDetail: expects 'album-detail'
         if (lowerRouteName === 'albumdetail') {
-          return 'album-detail';
+          return 'album-detail'
         }
         // Handle DuplicatePhotos: expects 'DuplicatePhotos' (case-sensitive for AppNavbar prop)
         if (lowerRouteName === 'duplicatephotos') {
-          return 'DuplicatePhotos';
+          return 'DuplicatePhotos'
         }
         // Handle other standard pages that AppNavbar expects in lowercase
-        const validLowercasePages = ['photowall', 'timeline', 'albums', 'settings', 'profile', 'more'];
+        const validLowercasePages = [
+          'photowall',
+          'timeline',
+          'albums',
+          'settings',
+          'profile',
+          'more',
+        ]
         if (validLowercasePages.includes(lowerRouteName)) {
-          return lowerRouteName;
+          return lowerRouteName
         }
       }
-      return 'photowall'; // Default page
+      return 'photowall' // Default page
     },
     userName() {
       const user = JSON.parse(localStorage.getItem('user') || '{}')
       return user.username || '用户'
-    }
+    },
   },
   methods: {
     handleShowUpload() {
@@ -55,8 +67,8 @@ export default {
     },
     handleShowAlbumForm() {
       eventBus.emit('show-album-form')
-    }
-  }
+    },
+  },
 }
 </script>
 

@@ -4,34 +4,48 @@
 -->
 
 <template>
-  <sf-modal v-model="visible" :title="$t('addPhotosModal.title')" size="default" class="add-photos-modal">
-    <photo-selector 
+  <SfModal
+    v-model="visible"
+    :title="$t('addPhotosModal.title')"
+    size="default"
+    class="add-photos-modal"
+  >
+    <PhotoSelector
       :albumId="albumId"
       :existingPhotoIds="existingPhotoIds"
       @update:selectedPhotos="handleSelectedPhotosChange"
     />
-    
+
     <!-- 模态框底部操作按钮 -->
     <div class="modal-footer">
-      <sf-button type="secondary" @click="handleCancel">{{ $t('addPhotosModal.cancel') }}</sf-button>
-      <sf-button type="primary" icon="fas fa-cloud-upload-alt" @click="handleShowUploadModal">{{ $t('addPhotosModal.upload') }}</sf-button>
-      <sf-button 
-        type="primary" 
-        @click="handleAddSelectedPhotos" 
-        :disabled="selectedPhotoIds.length === 0 || isAdding">
-        {{ isAdding ? $t('addPhotosModal.adding') : (selectedPhotoIds.length > 0 ? $t('addPhotosModal.addCount', { count: selectedPhotoIds.length }) : $t('addPhotosModal.addToAlbum')) }}
-      </sf-button>
+      <SfButton type="secondary" @click="handleCancel">{{ $t('addPhotosModal.cancel') }}</SfButton>
+      <SfButton type="primary" icon="fas fa-cloud-upload-alt" @click="handleShowUploadModal">
+        {{ $t('addPhotosModal.upload') }}
+      </SfButton>
+      <SfButton
+        type="primary"
+        @click="handleAddSelectedPhotos"
+        :disabled="selectedPhotoIds.length === 0 || isAdding"
+      >
+        {{
+          isAdding
+            ? $t('addPhotosModal.adding')
+            : selectedPhotoIds.length > 0
+              ? $t('addPhotosModal.addCount', { count: selectedPhotoIds.length })
+              : $t('addPhotosModal.addToAlbum')
+        }}
+      </SfButton>
     </div>
-  </sf-modal>
+  </SfModal>
 
   <!-- 上传照片模态框 -->
-  <sf-modal v-model="showUploadModal" :title="$t('addPhotosModal.uploadTitle')" size="default">
-    <photo-upload 
+  <SfModal v-model="showUploadModal" :title="$t('addPhotosModal.uploadTitle')" size="default">
+    <PhotoUpload
       :albumId="albumId"
       :showAlbumOption="false"
-      @upload-success="handlePhotoUploaded" 
+      @upload-success="handlePhotoUploaded"
     />
-  </sf-modal>
+  </SfModal>
 </template>
 
 <script>
@@ -47,28 +61,28 @@ export default {
     PhotoSelector,
     PhotoUpload,
     SfModal,
-    SfButton
+    SfButton,
   },
   props: {
     modelValue: {
       type: Boolean,
-      default: false
+      default: false,
     },
     albumId: {
       type: String,
-      required: true
+      required: true,
     },
     existingPhotoIds: {
       type: Array,
-      default: () => []
-    }
+      default: () => [],
+    },
   },
   emits: ['update:modelValue', 'photos-added'],
   data() {
     return {
       selectedPhotoIds: [],
       isAdding: false,
-      showUploadModal: false
+      showUploadModal: false,
     }
   },
   computed: {
@@ -78,8 +92,8 @@ export default {
       },
       set(value) {
         this.$emit('update:modelValue', value)
-      }
-    }
+      },
+    },
   },
   watch: {
     modelValue(newValue) {
@@ -89,77 +103,76 @@ export default {
         this.isAdding = false
         this.showUploadModal = false
       }
-    }
+    },
   },
   methods: {
     handleSelectedPhotosChange(photoIds) {
       this.selectedPhotoIds = photoIds
     },
-    
+
     async handleAddSelectedPhotos() {
       if (this.selectedPhotoIds.length === 0) return
-      
+
       try {
         this.isAdding = true
-        
+
         // 调用API将选中的照片添加到相册
         const result = await albumService.addPhotosToAlbum(this.albumId, this.selectedPhotoIds)
-        
+
         this.$notify({
           title: this.$t('addPhotosModal.success'),
           message: this.$t('addPhotosModal.addSuccess', { count: this.selectedPhotoIds.length }),
-          type: 'success'
+          type: 'success',
         })
-        
+
         // 通知父组件照片已添加
         this.$emit('photos-added', {
           type: 'existing',
           photoIds: this.selectedPhotoIds,
-          count: this.selectedPhotoIds.length
+          count: this.selectedPhotoIds.length,
         })
-        
+
         // 关闭模态框
         this.visible = false
-        
       } catch (error) {
         console.error('添加照片到相册失败:', error)
         this.$notify.error({
           title: this.$t('addPhotosModal.addFailed'),
-          message: error.response?.data?.message || this.$t('addPhotosModal.addFailedMessage')
+          message: error.response?.data?.message || this.$t('addPhotosModal.addFailedMessage'),
         })
       } finally {
         this.isAdding = false
       }
     },
-    
+
     handleShowUploadModal() {
       this.showUploadModal = true
     },
-    
+
     handlePhotoUploaded(uploadedPhotos) {
       this.showUploadModal = false
-      
+
       // 通知父组件照片已上传并添加到相册
       this.$emit('photos-added', {
         type: 'uploaded',
         photos: uploadedPhotos,
-        count: uploadedPhotos.length || 1
+        count: uploadedPhotos.length || 1,
       })
-      
+
       this.$notify({
         title: this.$t('addPhotosModal.success'),
         message: this.$t('addPhotosModal.uploadSuccess', { count: uploadedPhotos.length || 1 }),
-        type: 'success'
+        type: 'success',
       })
-      
+
       // 关闭主模态框
       this.visible = false
     },
-    
+
     handleCancel() {
       this.visible = false
-    }
-  }
+    },
+  },
 }
 </script>
 

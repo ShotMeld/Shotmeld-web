@@ -6,7 +6,7 @@
     </div>
 
     <div class="detector-actions">
-      <sf-button
+      <SfButton
         v-if="!isDetecting && !hasResults"
         type="primary"
         size="large"
@@ -14,21 +14,33 @@
         :loading="isStarting"
       >
         <template #icon>
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M21 21L16.514 16.506M19 10.5C19 15.194 15.194 19 10.5 19S2 15.194 2 10.5 5.806 2 10.5 2 19 5.806 19 10.5Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M21 21L16.514 16.506M19 10.5C19 15.194 15.194 19 10.5 19S2 15.194 2 10.5 5.806 2 10.5 2 19 5.806 19 10.5Z"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
           </svg>
         </template>
         {{ $t('duplicatePhotos.detector.startScan') }}
-      </sf-button>
+      </SfButton>
 
-      <sf-button
+      <SfButton
         v-if="hasResults && !isDetecting"
         type="secondary"
         @click="restartDetection"
         :loading="isStarting"
       >
         重新检测
-      </sf-button>
+      </SfButton>
     </div>
 
     <TaskProgress
@@ -38,22 +50,16 @@
       @cancel="cancelDetection"
     />
 
-    <sf-card v-if="error" class="error-message" shadow="small">
+    <SfCard v-if="error" class="error-message" shadow="small">
       <div class="error-content">
         <div class="error-icon">⚠️</div>
         <div class="error-text">
           <h3>检测失败</h3>
           <p>{{ error }}</p>
         </div>
-        <sf-button
-          type="primary"
-          size="small"
-          @click="clearError"
-        >
-          重试
-        </sf-button>
+        <SfButton type="primary" size="small" @click="clearError">重试</SfButton>
       </div>
-    </sf-card>
+    </SfCard>
   </div>
 </template>
 
@@ -68,7 +74,7 @@ export default {
   components: {
     SfButton,
     SfCard,
-    TaskProgress
+    TaskProgress,
   },
   emits: ['detection-complete', 'detection-start'],
   data() {
@@ -80,7 +86,7 @@ export default {
       taskStatus: 'pending',
       taskId: null,
       error: null,
-      pollInterval: null
+      pollInterval: null,
     }
   },
   methods: {
@@ -88,18 +94,17 @@ export default {
       try {
         this.isStarting = true
         this.error = null
-        
+
         const response = await duplicatePhotosAPI.startDetection()
         this.taskId = response.taskId
-        
+
         this.isDetecting = true
         this.hasResults = false
         this.progress = 0
         this.taskStatus = 'pending'
-        
+
         this.$emit('detection-start')
         this.startPolling()
-        
       } catch (error) {
         this.error = error.response?.data?.message || '启动检测失败，请重试'
       } finally {
@@ -116,10 +121,10 @@ export default {
       this.pollInterval = setInterval(async () => {
         try {
           const status = await duplicatePhotosAPI.getTaskStatus(this.taskId)
-          
+
           this.progress = status.progress
           this.taskStatus = status.status
-          
+
           if (status.status === 'completed') {
             this.isDetecting = false
             this.hasResults = true
@@ -152,12 +157,12 @@ export default {
 
     clearError() {
       this.error = null
-    }
+    },
   },
 
   beforeUnmount() {
     this.stopPolling()
-  }
+  },
 }
 </script>
 

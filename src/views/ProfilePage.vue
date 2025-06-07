@@ -22,11 +22,15 @@
         </div>
         <div class="info-item">
           <span class="label">{{ $t('profile.photos') }}</span>
-          <span class="value">{{ user.photoCount != 0 ? user.photoCount : $t('profile.noPhotos') }}</span>
+          <span class="value">
+            {{ user.photoCount != 0 ? user.photoCount : $t('profile.noPhotos') }}
+          </span>
         </div>
         <div class="info-item">
           <span class="label">{{ $t('profile.albums') }}</span>
-          <span class="value">{{ user.albumCount != 0 ? user.albumCount : $t('profile.noAlbums') }}</span>
+          <span class="value">
+            {{ user.albumCount != 0 ? user.albumCount : $t('profile.noAlbums') }}
+          </span>
         </div>
       </div>
       <button @click="handleLogout" class="md-button outlined">{{ $t('profile.logout') }}</button>
@@ -35,28 +39,28 @@
 </template>
 
 <script>
-import { authService } from '@/api';
+import { authService } from '@/api'
 
 export default {
   name: 'ProfilePage',
   data() {
     return {
       user: {},
-      loading: true
+      loading: true,
     }
   },
   created() {
-    this.fetchUserData();
+    this.fetchUserData()
   },
   methods: {
     async fetchUserData() {
       try {
-        const response = await authService.getCurrentUser();
-        this.user = response.data;
-        this.loading = false;
+        const response = await authService.getCurrentUser()
+        this.user = response.data
+        this.loading = false
       } catch (error) {
-        console.error(this.$t('profile.fetchError'), error);
-        this.$router.push('/login');
+        console.error(this.$t('profile.fetchError'), error)
+        this.$router.push('/login')
       }
     },
     formatDate(dateStr) {
@@ -64,14 +68,14 @@ export default {
         year: 'numeric',
         month: 'long',
         day: 'numeric',
-      });
+      })
     },
     handleLogout() {
-      localStorage.removeItem('token');
-      localStorage.removeItem('user');
-      this.$router.push('/login');
-    }
-  }
+      localStorage.removeItem('token')
+      localStorage.removeItem('user')
+      this.$router.push('/login')
+    },
+  },
 }
 </script>
 

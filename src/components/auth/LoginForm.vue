@@ -8,34 +8,34 @@
       <h2 class="auth-title">{{ $t('auth.login.welcome') }}</h2>
       <p class="auth-description">{{ $t('auth.login.description') }}</p>
     </div>
-    
+
     <form @submit.prevent="handleLogin" class="auth-form">
       <div class="form-group">
-        <SfInput 
-          v-model="formData.emailOrUsername" 
+        <SfInput
+          v-model="formData.emailOrUsername"
           :placeholder="$t('auth.login.emailOrUsername')"
-          required 
+          required
           :error="errors.emailOrUsername"
           class="auth-input"
         />
       </div>
 
       <div class="form-group">
-        <SfInput 
-          v-model="formData.password" 
+        <SfInput
+          v-model="formData.password"
           :placeholder="$t('auth.login.password')"
-          type="password" 
-          required 
+          type="password"
+          required
           :error="errors.password"
           @keyup.enter="handleLogin"
           class="auth-input"
         />
       </div>
 
-      <SfButton 
-        type="primary" 
-        full-width 
-        :loading="loading" 
+      <SfButton
+        type="primary"
+        full-width
+        :loading="loading"
         class="auth-button"
         @click="handleLogin"
       >
@@ -53,7 +53,7 @@
 </template>
 
 <script>
-import { authService } from '../../api';
+import { authService } from '../../api'
 
 export default {
   name: 'LoginForm',
@@ -62,77 +62,76 @@ export default {
     return {
       formData: {
         emailOrUsername: '',
-        password: ''
+        password: '',
       },
       errors: {
         emailOrUsername: '',
-        password: ''
+        password: '',
       },
-      loading: false
+      loading: false,
     }
   },
   methods: {
     validateForm() {
-      let isValid = true;
+      let isValid = true
       this.errors = {
         emailOrUsername: '',
-        password: ''
-      };
+        password: '',
+      }
 
       if (!this.formData.emailOrUsername) {
-        this.errors.emailOrUsername = this.$t('auth.login.errors.emailOrUsernameRequired');
-        isValid = false;
+        this.errors.emailOrUsername = this.$t('auth.login.errors.emailOrUsernameRequired')
+        isValid = false
       }
 
       if (!this.formData.password) {
-        this.errors.password = this.$t('auth.login.errors.passwordRequired');
-        isValid = false;
+        this.errors.password = this.$t('auth.login.errors.passwordRequired')
+        isValid = false
       }
 
-      return isValid;
+      return isValid
     },
     async handleLogin() {
       try {
-        if (!this.validateForm()) return;
+        if (!this.validateForm()) return
 
-        this.loading = true;
+        this.loading = true
 
         const response = await authService.login({
           emailOrUsername: this.formData.emailOrUsername,
-          password: this.formData.password
-        });
+          password: this.formData.password,
+        })
 
-        const { token, user } = response.data;
+        const { token, user } = response.data
 
         // 保存认证信息
-        localStorage.setItem('token', token);
-        localStorage.setItem('user', JSON.stringify(user));
-        
-        this.loading = false;
-        
-        // 触发登录成功事件
-        this.$emit('login-success', user);
+        localStorage.setItem('token', token)
+        localStorage.setItem('user', JSON.stringify(user))
 
+        this.loading = false
+
+        // 触发登录成功事件
+        this.$emit('login-success', user)
       } catch (error) {
-        let errorMessage = this.$t('auth.login.errors.loginFailed');
+        let errorMessage = this.$t('auth.login.errors.loginFailed')
         if (error.response) {
-          errorMessage = error.response.data.message || errorMessage;
+          errorMessage = error.response.data.message || errorMessage
 
           // 处理特定错误
           if (error.response.status === 401) {
-            this.errors.password = this.$t('auth.login.errors.invalidCredentials');
+            this.errors.password = this.$t('auth.login.errors.invalidCredentials')
           } else {
-            this.errors.emailOrUsername = errorMessage;
+            this.errors.emailOrUsername = errorMessage
           }
         } else {
-          this.errors.emailOrUsername = errorMessage;
+          this.errors.emailOrUsername = errorMessage
         }
-        console.error('登录失败:', error);
+        console.error('登录失败:', error)
       } finally {
-        this.loading = false;
+        this.loading = false
       }
-    }
-  }
+    },
+  },
 }
 </script>
 
@@ -142,17 +141,19 @@ export default {
   backdrop-filter: blur(20px);
   border-radius: var(--radius-large);
   padding: var(--spacing-3xl);
-  box-shadow: 
+  box-shadow:
     0 8px 32px rgba(0, 0, 0, 0.1),
     0 1px 2px rgba(0, 0, 0, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.2);
   animation: cardSlideUp 0.8s ease-out 0.2s both;
-  transition: transform var(--transition-base), box-shadow var(--transition-base);
+  transition:
+    transform var(--transition-base),
+    box-shadow var(--transition-base);
 }
 
 .auth-card:hover {
   transform: translateY(-4px);
-  box-shadow: 
+  box-shadow:
     0 16px 40px rgba(0, 0, 0, 0.12),
     0 2px 4px rgba(0, 0, 0, 0.08);
 }

@@ -16,14 +16,14 @@
 </template>
 
 <script>
-import { SfButton } from '../../components/ui';
+import { SfButton } from '../../components/ui'
 
 export default {
   name: 'PhotoWallNoPhotos',
   components: {
-    SfButton
-  }
-};
+    SfButton,
+  },
+}
 </script>
 
 <style scoped>
@@ -51,4 +51,4 @@ export default {
   font-size: var(--font-size-lg);
   margin-bottom: var(--spacing-lg);
 }
-</style> 
+</style>

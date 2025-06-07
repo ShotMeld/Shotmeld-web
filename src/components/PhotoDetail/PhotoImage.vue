@@ -5,26 +5,26 @@
 <template>
   <div class="photo-detail-image" :style="{ height: imageHeight, width: imageWidth }">
     <!-- 缩略图模糊占位 -->
-    <img 
-      v-if="photo && photo.thumbnailUrl && !imageLoaded" 
-      :src="photo.thumbnailUrl" 
-      :alt="photo.title" 
+    <img
+      v-if="photo && photo.thumbnailUrl && !imageLoaded"
+      :src="photo.thumbnailUrl"
+      :alt="photo.title"
       class="thumbnail-placeholder"
       @load="handleThumbnailLoad"
     />
-    
+
     <!-- 主图片 -->
-    <img 
-      v-if="photo" 
-      :src="photo.url" 
-      :alt="photo.title" 
-      @load="handleImageLoad" 
+    <img
+      v-if="photo"
+      :src="photo.url"
+      :alt="photo.title"
+      @load="handleImageLoad"
       ref="imageElement"
-      :class="['main-image', { 'loaded': imageLoaded }]"
+      :class="['main-image', { loaded: imageLoaded }]"
     />
-    
+
     <!-- 加载状态（仅在没有缩略图时显示） -->
-    <div v-if="!imageLoaded && !thumbnailLoaded && (!photo.thumbnailUrl)" class="image-loading">
+    <div v-if="!imageLoaded && !thumbnailLoaded && !photo.thumbnailUrl" class="image-loading">
       <div class="spinner"></div>
     </div>
   </div>
@@ -36,16 +36,16 @@ export default {
   props: {
     photo: {
       type: Object,
-      default: null
+      default: null,
     },
     imageLoaded: {
       type: Boolean,
-      default: false
+      default: false,
     },
     targetHeight: {
       type: Number,
-      default: null
-    }
+      default: null,
+    },
   },
   emits: ['image-loaded'],
   data() {
@@ -54,8 +54,8 @@ export default {
       imageWidth: 'auto', // 容器宽度
       actualImageDimensions: { width: 0, height: 0 }, // 图片实际渲染尺寸
       thumbnailLoaded: false, // 缩略图加载状态
-      minContainerSize: { width: 300, height: 200 } // 最小容器尺寸
-    };
+      minContainerSize: { width: 300, height: 200 }, // 最小容器尺寸
+    }
   },
   watch: {
     photo: {
@@ -64,99 +64,102 @@ export default {
         if (newPhoto) {
           // 如果照片更换，重置加载状态
           if (oldPhoto && newPhoto.url !== oldPhoto.url) {
-            this.thumbnailLoaded = false;
+            this.thumbnailLoaded = false
           }
-          
+
           // 立即根据照片的原始尺寸计算容器大小
-          this.calculateContainerSize();
+          this.calculateContainerSize()
         }
-      }
+      },
     },
     targetHeight: {
       immediate: true,
       handler(newHeight) {
         if (newHeight && newHeight > 0) {
-          this.calculateDimensionsFromHeight(newHeight);
+          this.calculateDimensionsFromHeight(newHeight)
         }
-      }
-    }
+      },
+    },
   },
   methods: {
     calculateContainerSize() {
-      if (!this.photo || !this.photo.width || !this.photo.height) return;
-      
+      if (!this.photo || !this.photo.width || !this.photo.height) return
+
       // 如果有目标高度，优先使用
       if (this.targetHeight && this.targetHeight > 0) {
-        this.calculateDimensionsFromHeight(this.targetHeight);
-        return;
+        this.calculateDimensionsFromHeight(this.targetHeight)
+        return
       }
-      
+
       // 否则根据照片原始尺寸和视口限制计算
-      const originalWidth = this.photo.width;
-      const originalHeight = this.photo.height;
-      const aspectRatio = originalWidth / originalHeight;
-      
+      const originalWidth = this.photo.width
+      const originalHeight = this.photo.height
+      const aspectRatio = originalWidth / originalHeight
+
       // 获取可用的容器宽度（假设为父容器的80%或最大800px）
-      const maxContainerWidth = Math.min(800, window.innerWidth * 0.8);
-      
+      const maxContainerWidth = Math.min(800, window.innerWidth * 0.8)
+
       // 响应式高度限制
-      const isMobile = window.innerWidth < 992;
-      const maxHeightRatio = isMobile ? 0.5 : 0.8;
-      const maxHeight = window.innerHeight * maxHeightRatio;
-      
-      let renderedWidth = Math.min(originalWidth, maxContainerWidth);
-      let renderedHeight = renderedWidth / aspectRatio;
-      
+      const isMobile = window.innerWidth < 992
+      const maxHeightRatio = isMobile ? 0.5 : 0.8
+      const maxHeight = window.innerHeight * maxHeightRatio
+
+      let renderedWidth = Math.min(originalWidth, maxContainerWidth)
+      let renderedHeight = renderedWidth / aspectRatio
+
       // 如果高度超过限制，重新计算
       if (renderedHeight > maxHeight) {
-        renderedHeight = maxHeight;
-        renderedWidth = renderedHeight * aspectRatio;
+        renderedHeight = maxHeight
+        renderedWidth = renderedHeight * aspectRatio
       }
-      
+
       // 确保最小尺寸
-      if (renderedWidth < this.minContainerSize.width || renderedHeight < this.minContainerSize.height) {
-        const scaleX = this.minContainerSize.width / renderedWidth;
-        const scaleY = this.minContainerSize.height / renderedHeight;
-        const scale = Math.max(scaleX, scaleY);
-        
-        renderedWidth *= scale;
-        renderedHeight *= scale;
+      if (
+        renderedWidth < this.minContainerSize.width ||
+        renderedHeight < this.minContainerSize.height
+      ) {
+        const scaleX = this.minContainerSize.width / renderedWidth
+        const scaleY = this.minContainerSize.height / renderedHeight
+        const scale = Math.max(scaleX, scaleY)
+
+        renderedWidth *= scale
+        renderedHeight *= scale
       }
-      
+
       this.actualImageDimensions = {
         width: renderedWidth,
-        height: renderedHeight
-      };
-      
-      this.imageHeight = `${renderedHeight}px`;
-      this.imageWidth = `${renderedWidth}px`;
+        height: renderedHeight,
+      }
+
+      this.imageHeight = `${renderedHeight}px`
+      this.imageWidth = `${renderedWidth}px`
     },
 
     calculateDimensionsFromHeight(targetHeight) {
-      if (!this.photo || !this.photo.width || !this.photo.height) return;
-      
+      if (!this.photo || !this.photo.width || !this.photo.height) return
+
       // 直接使用photo中的尺寸信息计算宽高比
-      const aspectRatio = this.photo.width / this.photo.height;
-      const calculatedWidth = targetHeight * aspectRatio;
-      
+      const aspectRatio = this.photo.width / this.photo.height
+      const calculatedWidth = targetHeight * aspectRatio
+
       this.actualImageDimensions = {
         width: calculatedWidth,
-        height: targetHeight
-      };
-      
-      this.imageHeight = `${targetHeight}px`;
-      this.imageWidth = `${calculatedWidth}px`;
+        height: targetHeight,
+      }
+
+      this.imageHeight = `${targetHeight}px`
+      this.imageWidth = `${calculatedWidth}px`
     },
 
     handleThumbnailLoad() {
-      this.thumbnailLoaded = true;
+      this.thumbnailLoaded = true
     },
 
     handleImageLoad() {
-      this.$emit('image-loaded');
+      this.$emit('image-loaded')
       // 容器尺寸已经预先计算好了，不需要重新计算
-    }
-  }
+    },
+  },
 }
 </script>
 

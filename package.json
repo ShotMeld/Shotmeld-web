@@ -6,7 +6,11 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "lint": "eslint . --ext .vue,.js,.jsx,.mjs --fix",
+    "lint:check": "eslint . --ext .vue,.js,.jsx,.mjs",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^6.7.2",
@@ -20,7 +24,17 @@
     "vue-router": "^4.2.0"
   },
   "devDependencies": {
+    "@babel/core": "^7.27.4",
+    "@babel/eslint-parser": "^7.27.5",
+    "@eslint/js": "^9.28.0",
     "@vitejs/plugin-vue": "^5.2.4",
-    "vite": "^6.3.5"
+    "@vue/eslint-config-prettier": "^10.2.0",
+    "eslint": "^9.28.0",
+    "eslint-config-prettier": "^10.1.5",
+    "eslint-plugin-prettier": "^5.4.1",
+    "eslint-plugin-vue": "^10.2.0",
+    "prettier": "^3.5.3",
+    "vite": "^6.3.5",
+    "vue-eslint-parser": "^10.1.3"
   }
 }
