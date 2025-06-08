@@ -1,9 +1,10 @@
+/* global localStorage, document, window */
 import { defineStore } from 'pinia'
 import { ref, watch } from 'vue'
 
 export const useThemeStore = defineStore('theme', () => {
-  // 从 localStorage 获取保存的主题设置，默认为 'system'
-  const theme = ref(localStorage.getItem('theme') || 'system')
+  // 从 localStorage 获取保存的主题设置，默认为 'light'
+  const theme = ref(localStorage.getItem('theme') || 'light')
 
   // 监听主题变化并保存到 localStorage
   watch(theme, newTheme => {
@@ -34,7 +35,7 @@ export const useThemeStore = defineStore('theme', () => {
   // 初始化主题
   const initTheme = () => {
     // 监听系统主题变化
-    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
       if (theme.value === 'system') {
         applyTheme('system')
       }
