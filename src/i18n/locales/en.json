@@ -223,11 +223,11 @@
       }
     },
     "noPhotos": {
-      "message": "",
-      "uploadButton": ""
+      "message": "No photos. \nUpload some photos and start using it!",
+      "uploadButton": "Upload photos"
     },
-    "noTitle": "",
-    "unknownDate": ""
+    "noTitle": "Untitled",
+    "unknownDate": "Unknown date"
   },
   "navbar": {
     "menu": {
