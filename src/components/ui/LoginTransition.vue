@@ -21,7 +21,7 @@
         </div>
         
         <!-- 底部品牌标识 -->
-        <div class="brand-footer" :class="{ animate: step >= 2 }">
+        <div class="brand-footer" :class="{ animate: step >= 1 }">
           <img src="@/assets/LOGO/LOGO.svg" alt="ShotMeld Logo" class="brand-logo" />
           <span class="brand-text">ShotMeld</span>
         </div>
@@ -203,7 +203,6 @@ export default {
   opacity: 0;
   transform: translateY(20px);
   transition: all 1s cubic-bezier(0.23, 1, 0.32, 1);
-  transition-delay: 0.4s;
   margin-bottom: var(--spacing-xl);
 }
 

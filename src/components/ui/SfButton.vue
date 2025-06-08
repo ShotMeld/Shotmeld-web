@@ -103,11 +103,6 @@ export default {
   border-color: var(--color-primary-subtle);
 }
 
-.sf-button--primary:hover {
-  background-color: var(--color-primary-hover, #e6f0ff);
-  border-color: var(--color-primary-hover, #e6f0ff);
-}
-
 /* Secondary Button Style */
 .sf-button--secondary {
   background-color: var(--bg-secondary, #f2f2f7);
