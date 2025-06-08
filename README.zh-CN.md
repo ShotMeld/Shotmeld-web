@@ -5,7 +5,13 @@
 	简体中文
 </p>
 
-# ShotMeld - 照片管理系统
+<div align="center">
+	<img src="./docs/images/logo.png" alt="ShotMeld Logo" width="120" height="120">
+	
+# ShotMeld
+
+照片管理系统 / Photo Management System
+</div>
 
 > CS183FZ[A] — Critical Skills Project 小组作业
 

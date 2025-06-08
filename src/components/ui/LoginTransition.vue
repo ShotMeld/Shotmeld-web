@@ -19,6 +19,12 @@
             {{ userName || $t('loginTransition.defaultUser') }}
           </div>
         </div>
+        
+        <!-- 底部品牌标识 -->
+        <div class="brand-footer" :class="{ animate: step >= 2 }">
+          <img src="@/assets/LOGO/LOGO.svg" alt="ShotMeld Logo" class="brand-logo" />
+          <span class="brand-text">ShotMeld</span>
+        </div>
       </div>
     </div>
   </transition>
@@ -137,6 +143,11 @@ export default {
   text-align: center;
   max-width: 600px;
   padding: var(--spacing-xl);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
 }
 
 /* 欢迎文字序列 */
@@ -146,6 +157,8 @@ export default {
   flex-direction: column;
   align-items: center;
   gap: var(--spacing-md);
+  flex-grow: 1;
+  justify-content: center;
 }
 
 .welcome-text {
@@ -181,6 +194,38 @@ export default {
   transition-delay: 0.2s;
 }
 
+/* 底部品牌标识 */
+.brand-footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-xs);
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 1s cubic-bezier(0.23, 1, 0.32, 1);
+  transition-delay: 0.4s;
+  margin-bottom: var(--spacing-xl);
+}
+
+.brand-footer.animate {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.brand-logo {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+}
+
+.brand-text {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+  font-family: 'Dancing Script', cursive;
+  font-weight: 400;
+}
+
 /* 响应式设计 */
 @media (max-width: 768px) {
   .welcome-sequence {
@@ -193,6 +238,11 @@ export default {
 
   .welcome-text.secondary {
     font-size: clamp(1rem, 3vw, 1.25rem);
+  }
+
+  .brand-logo {
+    width: 28px;
+    height: 28px;
   }
 
   .orb-1,

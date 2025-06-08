@@ -18,7 +18,10 @@
               <span></span>
             </span>
           </button>
-          <router-link to="/photowall" class="navbar-title">ShotMeld</router-link>
+          <router-link to="/photowall" class="navbar-title">
+            <img src="@/assets/LOGO/LOGO.svg" alt="ShotMeld Logo" class="navbar-logo" />
+            ShotMeld
+          </router-link>
         </div>
       </template>
 
@@ -434,6 +437,15 @@ export default {
   text-decoration: none;
   font-family: 'Dancing Script', cursive;
   font-weight: 400;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+.navbar-logo {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
 }
 
 /* 主导航链接容器 */
@@ -590,6 +602,11 @@ export default {
 
   .main-nav {
     display: none;
+  }
+
+  .navbar-logo {
+    width: 28px;
+    height: 28px;
   }
 
   .user-profile {

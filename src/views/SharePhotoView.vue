@@ -68,6 +68,12 @@
 
           <!-- 相机参数组件 -->
           <PhotoExif v-if="hasExifData" :photo="photo" />
+
+          <!-- 底部品牌标识 -->
+          <div class="settings-footer" @click="goHome">
+            <img src="@/assets/LOGO/LOGO.svg" alt="ShotMeld Logo" class="brand-logo" />
+            <span class="brand-text">ShotMeld</span>
+          </div>
         </div>
       </div>
     </div>
@@ -374,6 +380,38 @@ export default {
   margin-top: var(--spacing-lg, 24px);
 }
 
+/* 底部品牌标识 */
+.settings-footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-xs, 8px);
+  margin-top: 40px;
+  padding-top: 32px;
+  border-top: 1px solid var(--border-color, #404040);
+  opacity: 0.8;
+  transition: opacity 0.2s ease;
+  cursor: pointer;
+}
+
+.settings-footer:hover {
+  opacity: 1;
+}
+
+.brand-logo {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+}
+
+.brand-text {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-primary, #ffffff);
+  font-family: 'Dancing Script', cursive;
+  font-weight: 400;
+}
+
 /* 照片图片组件样式优化 */
 .photo-image-container {
   width: 100%;
@@ -610,6 +648,16 @@ export default {
       var(--spacing-md, 16px);
     flex: 1;
     min-height: 0;
+  }
+
+  .brand-logo {
+    width: 28px;
+    height: 28px;
+  }
+
+  .settings-footer {
+    margin-top: 32px;
+    padding-top: 24px;
   }
 }
 </style>

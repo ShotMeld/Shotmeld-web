@@ -5,7 +5,13 @@
 	</a>
 </p>
 
-# ShotMeld - Photo Management System
+<div align="center">
+	<img src="./docs/images/logo.png" alt="ShotMeld Logo" width="120" height="120">
+	
+# ShotMeld
+
+照片管理系统 / Photo Management System
+</div>
 
 > CS183FZ[A] — Critical Skills Project Group Assignment
 
@@ -25,13 +31,13 @@ ShotMeld is a modern photo management system that helps users easily manage and 
 
 ## 📷 Interface Showcase
 
-![Photo Wall](./public/images/photo-wall.png)
+![Photo Wall](./docs/images/photo-wall.png)
 
-![Photo Detail](./public/images/photo-detail.png)
+![Photo Detail](./docs/images/photo-detail.png)
 
-![Timeline](./public/images/timeline.png)
+![Timeline](./docs/images/timeline.png)
 
-![Album](./public/images/photo-album.png)
+![Album](./docs/images/photo-album.png)
 
 ## 📋 System Requirements
 

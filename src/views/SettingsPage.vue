@@ -53,6 +53,12 @@
             </button>
           </div>
         </div>
+        
+        <!-- 底部品牌标识 -->
+        <div class="settings-footer">
+          <img src="@/assets/LOGO/LOGO.svg" alt="ShotMeld Logo" class="brand-logo" />
+          <span class="brand-text">ShotMeld</span>
+        </div>
       </div>
     </div>
   </div>
@@ -247,6 +253,37 @@ h2 {
   opacity: 0.5;
 }
 
+/* 底部品牌标识 */
+.settings-footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-xs);
+  margin-top: 40px;
+  padding-top: 32px;
+  border-top: 1px solid var(--border-color);
+  opacity: 0.8;
+  transition: opacity 0.2s ease;
+}
+
+.settings-footer:hover {
+  opacity: 1;
+}
+
+.brand-logo {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+}
+
+.brand-text {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+  font-family: 'Dancing Script', cursive;
+  font-weight: 400;
+}
+
 @media (max-width: 640px) {
   .settings-content {
     padding: 24px 16px;
@@ -267,6 +304,16 @@ h2 {
   .settings-option {
     width: 100%;
     justify-content: center;
+  }
+
+  .brand-logo {
+    width: 28px;
+    height: 28px;
+  }
+
+  .settings-footer {
+    margin-top: 32px;
+    padding-top: 24px;
   }
 }
 </style>

@@ -20,6 +20,7 @@
       <div class="auth-content">
         <!-- Logo 和品牌 -->
         <div class="brand-section">
+          <img src="@/assets/LOGO/LOGO.svg" alt="ShotMeld Logo" class="brand-logo" />
           <h1 class="brand-title">ShotMeld</h1>
           <p class="brand-subtitle">
             {{ mode === 'login' ? $t('auth.brand.subtitle') : $t('auth.brand.startYourMemory') }}
@@ -162,11 +163,20 @@ export default {
   animation: slideUp 0.8s ease-out;
 }
 
+.brand-logo {
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
 .brand-title {
   font-size: var(--font-size-4xl);
   font-weight: var(--font-weight-bold);
   color: var(--text-primary);
-  margin-bottom: var(--spacing-xs);
+  margin: 0 0 var(--spacing-xs) 0;
   font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
   letter-spacing: -0.02em;
 }
@@ -215,6 +225,12 @@ export default {
 @media (max-width: 480px) {
   .auth-container {
     padding: var(--spacing-md);
+  }
+
+  .brand-logo {
+    width: 56px;
+    height: 56px;
+    margin-bottom: var(--spacing-sm);
   }
 
   .brand-title {
