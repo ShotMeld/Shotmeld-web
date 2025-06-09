@@ -150,7 +150,60 @@ export default {
     transform var(--transition-base),
     box-shadow var(--transition-base);
 }
+/* 深色模式适配 */
+.theme-dark .auth-card {
+  background: rgba(28, 28, 30, 0.95) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.3),
+    0 1px 2px rgba(0, 0, 0, 0.2) !important;
+}
 
+.theme-dark .auth-card:hover {
+  box-shadow:
+    0 16px 40px rgba(0, 0, 0, 0.4),
+    0 2px 4px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* 文字颜色适配 */
+.theme-dark .auth-title {
+  color: rgba(255, 255, 255, 0.9) !important;
+}
+
+.theme-dark .auth-description,
+.theme-dark .footer-text {
+  color: rgba(255, 255, 255, 0.7) !important;
+}
+
+/* 输入框适配 */
+.theme-dark .auth-input {
+  background: rgba(44, 44, 46, 0.8) !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+  color: rgba(255, 255, 255, 0.9) !important;
+}
+
+.theme-dark .auth-input::placeholder {
+  color: rgba(255, 255, 255, 0.5) !important;
+}
+
+/* 按钮适配 */
+.theme-dark .auth-button {
+  box-shadow: 0 4px 12px rgba(0, 122, 255, 0.2) !important;
+}
+
+/* 底部链接适配 */
+.theme-dark .footer-link {
+  color: var(--color-primary-light) !important;
+}
+
+.theme-dark .footer-link:hover {
+  color: var(--color-primary-lighter) !important;
+}
+
+/* 分割线适配 */
+.theme-dark .auth-footer {
+  border-top-color: rgba(255, 255, 255, 0.1) !important;
+}
 .auth-card:hover {
   transform: translateY(-4px);
   box-shadow:
