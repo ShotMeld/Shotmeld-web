@@ -11,6 +11,8 @@
           :placeholder="$t('photoWall.filters.searchPlaceholder')"
           @input="debouncedSearch"
           class="search-input"
+          id="photo-search"
+          name="photo-search"
         >
           <template #prefix>
             <i class="fas fa-search"></i>
@@ -34,6 +36,8 @@
               clearable
               @change="handleFilterChange"
               class="select"
+              id="album-filter"
+              name="album-filter"
             >
               <el-option
                 v-for="album in albums"
@@ -56,13 +60,17 @@
               value-format="YYYY-MM-DD"
               @change="handleDateRangeChange"
               class="photo-wall-datepicker"
+              data-test-id="photo-date-range"
+              :id="['photo-date-range-start', 'photo-date-range-end']"
+              :name="['photo-date-range-start', 'photo-date-range-end']"
+              aria-label="Photo date range selector"
             ></el-date-picker>
           </div>
         </div>
         <div class="filter-item">
           <div class="sort-controls">
             <div class="select-wrapper sort-field">
-              <el-select v-model="localFilters.sort" @change="handleFilterChange" class="select">
+              <el-select v-model="localFilters.sort" @change="handleFilterChange" class="select" id="sort-field" name="sort-field">
                 <el-option
                   :label="$t('photoWall.filters.sort.takenAt')"
                   value="takenAt"
@@ -75,7 +83,7 @@
               </el-select>
             </div>
             <div class="select-wrapper sort-order">
-              <el-select v-model="localFilters.order" @change="handleFilterChange" class="select">
+              <el-select v-model="localFilters.order" @change="handleFilterChange" class="select" id="sort-order" name="sort-order">
                 <el-option
                   :label="$t('photoWall.filters.sort.order.desc')"
                   value="desc"

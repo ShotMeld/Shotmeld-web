@@ -15,9 +15,6 @@ try {
   console.warn('Cannot access localStorage, using default locale zh-CN')
 }
 
-console.log('Initializing i18n with locale:', savedLocale)
-console.log('Available messages:', Object.keys(messages))
-
 const i18n = createI18n({
   legacy: true, // 使用 legacy 模式保证兼容性
   locale: savedLocale,

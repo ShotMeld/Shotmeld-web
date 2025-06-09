@@ -1,0 +1,28 @@
+# Robots.txt for Shotmeld Photo Management App
+
+# Allow all web crawlers to access the site
+User-agent: *
+Allow: /
+
+# Disallow crawling of sensitive or unnecessary paths
+Disallow: /api/
+Disallow: /auth/
+Disallow: /profile/
+Disallow: /settings/
+Disallow: /upload/
+Disallow: /.well-known/
+
+# Disallow crawling of user-specific content and private albums
+Disallow: */private/
+Disallow: */user/
+
+# Allow crawling of public photo galleries and albums (if any)
+Allow: /albums/public/
+Allow: /gallery/
+Allow: /timeline/
+
+# Specify the sitemap location (you may want to generate one)
+# Sitemap: https://yourdomain.com/sitemap.xml
+
+# Crawl delay to be respectful to server resources
+Crawl-delay: 1
