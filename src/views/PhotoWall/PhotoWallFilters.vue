@@ -309,7 +309,7 @@ export default {
   backdrop-filter: blur(12px) !important;
   -webkit-backdrop-filter: blur(12px) !important;
   transition: all var(--transition-fast) !important;
-  height: 40px !important;
+  height: 32px !important;
   position: relative !important;
   overflow: hidden !important;
   box-shadow:
