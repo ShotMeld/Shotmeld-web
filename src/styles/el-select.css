@@ -55,7 +55,15 @@
   background: var(--select-bg-light) !important;
   border: var(--select-border-light) !important;
   box-shadow: var(--select-shadow-light) !important;
-  /* 其他原有样式... */
+  border-radius: var(--radius-medium) !important;
+    backdrop-filter: blur(12px) !important;
+    -webkit-backdrop-filter: blur(12px) !important;
+    transition: background-color 0.1s ease, border-color 0.1s ease !important;
+    position: relative !important;
+    overflow: hidden !important;
+    height: 36px !important;
+    display: flex !important;
+    align-items: center !important;
 }
 
 .theme-dark .el-select__wrapper {
