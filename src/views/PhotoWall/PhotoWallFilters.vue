@@ -304,11 +304,6 @@ export default {
 /* 针对日期范围选择器的主容器 */
 :deep(.photo-wall-datepicker.el-date-editor.el-date-editor--daterange) {
   width: 100%;
-  background: linear-gradient(
-    135deg,
-    rgba(255, 255, 255, 0.6) 0%,
-    rgba(248, 248, 248, 0.4) 100%
-  ) !important;
   border-radius: var(--radius-medium) !important;
   border: 1px solid rgba(0, 0, 0, 0.06) !important;
   backdrop-filter: blur(12px) !important;
