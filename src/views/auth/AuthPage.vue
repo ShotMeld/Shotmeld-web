@@ -134,7 +134,7 @@ export default {
   align-items: center;
   justify-content: center;
   padding: var(--spacing-lg);
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  background: var(--bg-gradient);
   position: relative;
   overflow: hidden;
 }

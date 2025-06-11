@@ -137,14 +137,12 @@ export default {
 
 <style scoped>
 .auth-card {
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(20px);
+  background: var(--blur-bg-strong);
+  backdrop-filter: var(--blur-strong);
   border-radius: var(--radius-large);
   padding: var(--spacing-3xl);
-  box-shadow:
-    0 8px 32px rgba(0, 0, 0, 0.1),
-    0 1px 2px rgba(0, 0, 0, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: var(--blur-shadow-strong), var(--shadow-small);
+  border: 1px solid var(--blur-border-strong);
   animation: cardSlideUp 0.8s ease-out 0.2s both;
   transition:
     transform var(--transition-base),
@@ -153,9 +151,7 @@ export default {
 
 .auth-card:hover {
   transform: translateY(-4px);
-  box-shadow:
-    0 16px 40px rgba(0, 0, 0, 0.12),
-    0 2px 4px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--shadow-extra-large), var(--shadow-medium);
 }
 
 @keyframes cardSlideUp {

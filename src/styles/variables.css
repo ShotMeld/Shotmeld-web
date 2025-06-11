@@ -36,6 +36,11 @@
   --bg-tertiary: #FAFAFC;
   --bg-hover: rgba(0, 0, 0, 0.05);
   
+  /* 渐变背景 */
+  --bg-gradient-start: #f5f7fa;
+  --bg-gradient-end: #c3cfe2;
+  --bg-gradient: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
+  
   /* 文字颜色 */
   --text-primary: var(--color-dark-gray);
   --text-secondary: var(--color-gray);
@@ -137,6 +142,11 @@
   --bg-secondary: #2C2C2E;
   --bg-tertiary: #3A3A3C;
   --bg-hover: rgba(255, 255, 255, 0.1);
+  
+  /* 渐变背景 - 深色模式 */
+  --bg-gradient-start: #1a1a1a;
+  --bg-gradient-end: #2d2d30;
+  --bg-gradient: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
   
   /* 文字颜色 */
   --text-primary: #FFFFFF;
