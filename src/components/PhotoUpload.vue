@@ -135,7 +135,7 @@ export default {
       uploadStatus: '',
       selectedAlbumId: null,
       albums: [],
-      actionUrl: '', // 不使用el-upload的自动上传功能
+      actionUrl: '',
     }
   },
   computed: {
@@ -339,67 +339,53 @@ export default {
   width: 100%;
   max-width: 800px;
   margin: 0 auto;
-  --upload-border-color: var(--el-border-color);
-  --upload-bg-color: var(--el-bg-color);
-  --upload-text-color: var(--el-text-color-primary);
-  --upload-text-color-secondary: var(--el-text-color-secondary);
-  --upload-hover-bg-color: var(--el-fill-color-light);
-  --upload-icon-color: var(--el-text-color-secondary);
 }
 
-/* 全局样式，确保Element Plus的下拉菜单显示在最上层 */
 :global(.el-select__popper) {
   z-index: 10002 !important;
 }
 
-/* 相册下拉菜单样式 */
 :deep(.album-select-dropdown) {
   position: fixed !important;
   margin-top: 5px !important;
   z-index: 10001 !important;
-  /* 确保下拉菜单显示在模态框之上(SfModal的z-index为9999) */
   max-width: 100% !important;
   width: auto !important;
   transform-origin: center top !important;
   overflow: visible !important;
 }
 
-/* 确保下拉菜单的父容器不会限制其位置 */
 .option-item .el-select {
   width: 100%;
 }
 
-/* 确保下拉菜单的弹出层不受限制 */
 :deep(.el-select-dropdown) {
   overflow: visible !important;
   z-index: 10001 !important;
-  /* 确保下拉菜单显示在模态框之上 */
 }
 
-/* 使用teleport确保下拉菜单渲染到body */
 :deep(.el-select) {
   --el-select-dropdown-border-color: var(--border-color);
 }
 
 :deep(.el-popper) {
   z-index: 10001 !important;
-  /* 确保所有弹出层都在模态框之上 */
 }
 
 .upload-container {
-  border: 2px dashed var(--upload-border-color);
+  border: 2px dashed var(--border-color);
   border-radius: 12px;
   padding: 20px;
   text-align: center;
   cursor: pointer;
   margin-bottom: 20px;
   transition: all 0.3s ease;
-  background-color: var(--upload-bg-color);
+  background-color: var(--bg-primary);
 }
 
 .upload-container.is-dragging {
   border-color: var(--el-color-primary);
-  background-color: var(--upload-hover-bg-color);
+  background-color: var(--bg-hover);
 }
 
 .upload-inner {
@@ -423,19 +409,19 @@ export default {
 
 .upload-icon i {
   font-size: 48px;
-  color: var(--upload-icon-color);
+  color: var(--text-secondary);
 }
 
 .upload-title {
   font-size: 18px;
   font-weight: 600;
   margin-bottom: 8px;
-  color: var(--upload-text-color);
+  color: var(--text-primary);
 }
 
 .upload-subtitle {
   font-size: 14px;
-  color: var(--upload-text-color-secondary);
+  color: var(--text-secondary);
 }
 
 .browse-text {
@@ -453,15 +439,15 @@ export default {
 
 .upload-status {
   font-size: 14px;
-  color: var(--upload-text-color-secondary);
+  color: var(--text-secondary);
 }
 
 .selected-files {
   margin-top: 20px;
-  border: 1px solid var(--upload-border-color);
+  border: 1px solid var(--border-color);
   border-radius: 12px;
   overflow: hidden;
-  background-color: var(--upload-bg-color);
+  background-color: var(--bg-primary);
 }
 
 .selected-files-header {
@@ -469,14 +455,14 @@ export default {
   justify-content: space-between;
   align-items: center;
   padding: 12px 16px;
-  background-color: var(--upload-hover-bg-color);
-  border-bottom: 1px solid var(--upload-border-color);
+  background-color: var(--bg-hover);
+  border-bottom: 1px solid var(--border-color);
 }
 
 .selected-count {
   font-weight: 600;
   font-size: 14px;
-  color: var(--upload-text-color);
+  color: var(--text-primary);
 }
 
 .clear-button {
@@ -497,7 +483,7 @@ export default {
   display: flex;
   align-items: center;
   padding: 8px;
-  border-bottom: 1px solid var(--upload-border-color);
+  border-bottom: 1px solid var(--border-color);
   position: relative;
 }
 
@@ -514,7 +500,7 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: var(--upload-hover-bg-color);
+  background-color: var(--bg-hover);
 }
 
 .file-preview img {
@@ -529,8 +515,8 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: var(--upload-text-color-secondary);
-  color: var(--upload-bg-color);
+  background-color: var(--text-secondary);
+  color: var(--bg-primary);
   font-weight: bold;
   text-transform: uppercase;
 }
@@ -543,12 +529,12 @@ export default {
   font-size: 14px;
   margin-bottom: 4px;
   word-break: break-all;
-  color: var(--upload-text-color);
+  color: var(--text-primary);
 }
 
 .file-size {
   font-size: 12px;
-  color: var(--upload-text-color-secondary);
+  color: var(--text-secondary);
 }
 
 .remove-file {
@@ -575,11 +561,11 @@ export default {
 
 .upload-options {
   padding: 16px;
-  border-top: 1px solid var(--upload-border-color);
+  border-top: 1px solid var(--border-color);
   display: flex;
   flex-direction: column;
   gap: 12px;
-  background-color: var(--upload-bg-color);
+  background-color: var(--bg-primary);
 }
 
 .option-item {
@@ -592,7 +578,7 @@ export default {
   width: 100px;
   font-size: 14px;
   text-align: right;
-  color: var(--upload-text-color);
+  color: var(--text-primary);
 }
 
 .upload-button {

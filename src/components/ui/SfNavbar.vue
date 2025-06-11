@@ -41,21 +41,18 @@ export default {
   left: 0;
   right: 0;
   height: 64px;
-  background-color: var(--bg-primary);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  background-color: var(--blur-bg-medium);
+  backdrop-filter: var(--blur-medium);
+  -webkit-backdrop-filter: var(--blur-medium);
   box-shadow: var(--shadow-small);
   z-index: 1000;
   border-bottom: var(--border-width) solid var(--border-color);
 }
 
 .sf-navbar--transparent {
-  background-color: rgba(255, 255, 255, 0.8);
-}
-
-/* 深色模式下的透明导航栏 */
-.theme-dark .sf-navbar--transparent {
-  background-color: rgba(28, 28, 30, 0.9);
+  background-color: var(--blur-bg-light);
+  backdrop-filter: var(--blur-light);
+  -webkit-backdrop-filter: var(--blur-light);
 }
 
 .sf-navbar-container {
