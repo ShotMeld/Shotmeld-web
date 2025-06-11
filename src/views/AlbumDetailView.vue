@@ -4,8 +4,6 @@
 
 <template>
   <div class="album-detail">
-    <AppNavbar :userName="userName" currentPage="album-detail" @show-upload="showUploadModal = true"
-      @toggle-manage="toggleManageMode" />
     <div :class="albumDetailContainerClass">
       <div class="album-detail__header">
         <div class="album-detail__info">
@@ -32,24 +30,50 @@
 
       <div v-else>
         <!-- 批量管理工具栏 -->
-        <AlbumPhotosManageToolbar v-if="isManageMode" :selectedPhotos="selectedPhotos" @select-all="selectAll"
-          @deselect-all="deselectAll" @show-remove-from-album="showRemoveFromAlbumDialog"
-          @show-delete-selected="showDeleteSelectedDialog" @exit-manage-mode="exitManageMode" />
+        <AlbumPhotosManageToolbar
+          v-if="isManageMode"
+          :selectedPhotos="selectedPhotos"
+          @select-all="selectAll"
+          @deselect-all="deselectAll"
+          @show-remove-from-album="showRemoveFromAlbumDialog"
+          @show-delete-selected="showDeleteSelectedDialog"
+          @exit-manage-mode="exitManageMode"
+        />
 
-        <PhotoWallGrid :photos="photos" :isManageMode="isManageMode" :selectedPhotos="selectedPhotos"
-          @openPhotoDetail="openPhoto" @showUploadModal="showUploadModal = true" @toggleSelect="toggleSelectPhoto" />
+        <PhotoWallGrid
+          :photos="photos"
+          :isManageMode="isManageMode"
+          :selectedPhotos="selectedPhotos"
+          @openPhotoDetail="openPhoto"
+          @showUploadModal="showUploadModal = true"
+          @toggleSelect="toggleSelectPhoto"
+        />
       </div>
     </div>
 
-    <PhotoDetail v-if="currentPhoto" v-model="showPhotoDetail" :photo="currentPhoto" @photo-deleted="deletePhoto" />
+    <PhotoDetail
+      v-if="currentPhoto"
+      v-model="showPhotoDetail"
+      :photo="currentPhoto"
+      @photo-deleted="deletePhoto"
+    />
 
     <!-- 添加照片模态框 -->
-    <AddPhotosModal v-model="showUploadModal" :albumId="album.id" :existingPhotoIds="photos.map(p => p.id)"
-      @photos-added="handlePhotosAdded" />
+    <AddPhotosModal
+      v-if="album.id"
+      v-model="showUploadModal"
+      :albumId="album.id"
+      :existingPhotoIds="photos.map(p => p.id)"
+      @photos-added="handlePhotosAdded"
+    />
 
     <!-- 批量删除确认模态框 -->
-    <SfDeleteConfirmModal v-model="showDeleteSelectedModal" item-name="照片" :count="selectedPhotos.length"
-      @confirm="deleteSelectedPhotos" />
+    <SfDeleteConfirmModal
+      v-model="showDeleteSelectedModal"
+      item-name="照片"
+      :count="selectedPhotos.length"
+      @confirm="deleteSelectedPhotos"
+    />
 
     <!-- 从相册移除照片确认模态框 -->
     <SfModal v-model="showRemoveFromAlbumModal" :title="$t('album.removePhotosTitle')">
@@ -73,7 +97,6 @@ import SfButton from '../components/ui/SfButton.vue'
 import SfModal from '../components/ui/SfModal.vue'
 import SfDeleteConfirmModal from '../components/ui/SfDeleteConfirmModal.vue'
 import AlbumPhotosManageToolbar from './Albums/AlbumPhotosManageToolbar.vue'
-import AppNavbar from '../layout/AppNavbar.vue'
 import { albumService, photoService } from '../api'
 import { eventBus } from '../utils/eventBus'
 
@@ -87,7 +110,6 @@ export default {
     SfModal,
     SfDeleteConfirmModal,
     AlbumPhotosManageToolbar,
-    AppNavbar,
   },
   data() {
     return {
@@ -104,7 +126,6 @@ export default {
       currentPhoto: null,
       showPhotoDetail: false,
       showUploadModal: false,
-      userName: '',
       // 批量管理相关的状态
       isManageMode: false,
       selectedPhotos: [],
@@ -121,19 +142,22 @@ export default {
     },
   },
   async created() {
-    // 获取用户信息
-    const user = JSON.parse(localStorage.getItem('user') || '{}')
-    this.userName = user.username || this.$t('common.user')
     await this.fetchAlbumDetails()
 
     // 监听上传照片事件
     eventBus.on('show-upload-modal', () => {
       this.showUploadModal = true
     })
+
+    // 监听管理模式切换事件
+    eventBus.on('toggle-manage', () => {
+      this.toggleManageMode()
+    })
   },
   beforeUnmount() {
     // 清理事件监听
     eventBus.off('show-upload-modal')
+    eventBus.off('toggle-manage')
   },
   methods: {
     formatDate(date) {
@@ -306,7 +330,6 @@ export default {
 <style scoped>
 .album-detail {
   min-height: 100vh;
-  background-color: var(--bg-secondary);
 }
 
 .album-detail-container {
@@ -315,9 +338,10 @@ export default {
   padding: var(--spacing-xl);
 }
 
+/* 为固定工具栏腾出空间 */
 .with-toolbar-space {
   padding-top: var(--spacing-xl);
-  margin-top: 80px;
+  margin-top: 80px; /* 为固定工具栏添加额外的空间 */
   transition: margin-top 0.3s ease;
   position: relative;
 }
@@ -394,6 +418,7 @@ export default {
   color: var(--error);
 }
 
+/* 确认模态框样式 */
 .confirm-modal-content {
   padding: var(--spacing-lg);
 }
@@ -412,12 +437,13 @@ export default {
   margin-top: var(--spacing-lg);
 }
 
+/* 动画 */
 .slide-fade-enter-active {
   transition: all 0.3s ease;
 }
 
 .slide-fade-leave-active {
-  transition: all 0.15s ease;
+  transition: all 0.15s ease; /* 退出动画缩短为0.15秒，加快关闭速度 */
 }
 
 .slide-fade-enter-from {
@@ -439,7 +465,7 @@ export default {
 @media (max-width: 768px) {
   .album-detail__container {
     padding: var(--spacing-lg);
-    margin-top: 56px;
+    margin-top: 56px; /* 移动端导航栏高度稍小 */
   }
 
   .album-detail__header {
