@@ -421,7 +421,8 @@
   },
   "albumCard": {
     "photoCount": "{count} 张照片",
-    "noPhotos": "无照片"
+    "noPhotos": "无照片",
+    "changeCover": "更改封面"
   },
   "albumForm": {
     "name": {
@@ -453,6 +454,12 @@
         "delete": "删除照片",
         "removeFromAlbum": "从相册移除"
       }
+    }
+  },
+  "albumManageToolbar": {
+    "itemUnit": "个相册",
+    "actions": {
+      "delete": "删除"
     }
   },
   "morePage": {

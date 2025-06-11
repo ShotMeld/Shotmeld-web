@@ -28,7 +28,6 @@
           @select-all="selectAll"
           @deselect-all="deselectAll"
           @show-delete-selected="showDeleteSelectedModal"
-          @show-change-cover="showChangeCoverModal"
           @exit-manage-mode="exitManageMode"
         />
 
@@ -41,6 +40,7 @@
             :isSelected="isSelected(album.id)"
             @click="handleAlbumClick(album)"
             @toggleSelect="toggleSelectAlbum"
+            @change-cover="handleChangeCover"
           />
         </div>
       </div>
@@ -63,7 +63,7 @@
     <!-- 更改封面模态框 -->
     <ChangeCoverModal
       v-model="isChangeCoverModalVisible"
-      :albumId="selectedAlbums.length === 1 ? selectedAlbums[0] : ''"
+      :albumId="currentAlbumForCoverChange"
       @cover-updated="handleCoverUpdated"
     />
   </div>
@@ -88,6 +88,7 @@ export default {
     SfModal,
     SfDeleteConfirmModal,
     AlbumForm,
+    ChangeCoverModal,
   },
   data() {
     return {
@@ -100,6 +101,7 @@ export default {
       selectedAlbums: [],
       isDeleteSelectedModalVisible: false,
       isChangeCoverModalVisible: false,
+      currentAlbumForCoverChange: '', // 当前要更改封面的相册ID
     }
   },
   async created() {
@@ -175,13 +177,13 @@ export default {
     },
     isSelected(albumId) {
       return this.selectedAlbums.includes(albumId)
-    },    showDeleteSelectedModal() {
+    },    handleChangeCover(albumId) {
+      this.currentAlbumForCoverChange = albumId
+      this.isChangeCoverModalVisible = true
+    },
+    showDeleteSelectedModal() {
       if (this.selectedAlbums.length === 0) return
       this.isDeleteSelectedModalVisible = true
-    },
-    showChangeCoverModal() {
-      if (this.selectedAlbums.length !== 1) return
-      this.isChangeCoverModalVisible = true
     },
     handleCoverUpdated(result) {
       // 更新相册封面后的处理
@@ -195,6 +197,7 @@ export default {
         })
       }
       this.isChangeCoverModalVisible = false
+      this.currentAlbumForCoverChange = ''
     },
     async deleteSelectedAlbums() {
       try {

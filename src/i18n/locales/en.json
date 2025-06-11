@@ -421,7 +421,8 @@
   },
   "albumCard": {
     "photoCount": "{count} photos",
-    "noPhotos": "No Photos"
+    "noPhotos": "No Photos",
+    "changeCover": "Change Cover"
   },
   "albumForm": {
     "name": {
@@ -453,6 +454,12 @@
         "delete": "Delete Photos",
         "removeFromAlbum": "Remove from Album"
       }
+    }
+  },
+  "albumManageToolbar": {
+    "itemUnit": "albums",
+    "actions": {
+      "delete": "Delete"
     }
   },
   "morePage": {

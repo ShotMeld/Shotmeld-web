@@ -17,6 +17,21 @@
           </span>
         </div>
       </div>
+      <!-- 悬停时显示的更改封面按钮 -->
+      <div
+        v-if="!isManageMode"
+        class="album-card__hover-actions"
+      >
+        <button
+          class="change-cover-btn"
+          @click.stop="$emit('change-cover', album.id)"
+          :title="$t('albumCard.changeCover')"
+        >
+          <i class="fas fa-image"></i>
+          <span>{{ $t('albumCard.changeCover') }}</span>
+        </button>
+      </div>
+
       <div
         v-if="isManageMode"
         class="album-card__select-overlay"
@@ -216,6 +231,46 @@ export default {
 .album-card__count {
   font-size: var(--font-size-sm);
   font-weight: var(--font-weight-medium);
+}
+
+.album-card__hover-actions {
+  position: absolute;
+  top: var(--spacing-sm);
+  left: var(--spacing-sm);
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  z-index: 2;
+}
+
+.album-card:hover .album-card__hover-actions {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.change-cover-btn {
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  border: none;
+  border-radius: var(--radius-small);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  backdrop-filter: blur(10px);
+  transition: all 0.2s ease;
+}
+
+.change-cover-btn:hover {
+  background: rgba(0, 0, 0, 0.9);
+  transform: scale(1.05);
+}
+
+.change-cover-btn i {
+  font-size: var(--font-size-xs);
 }
 
 .album-card__select-overlay {
