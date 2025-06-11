@@ -60,6 +60,7 @@
 
     <!-- 添加照片模态框 -->
     <AddPhotosModal
+      v-if="album.id"
       v-model="showUploadModal"
       :albumId="album.id"
       :existingPhotoIds="photos.map(p => p.id)"
@@ -329,7 +330,6 @@ export default {
 <style scoped>
 .album-detail {
   min-height: 100vh;
-  /* 移除背景颜色，让 BaseLayout 的背景显示 */
 }
 
 .album-detail-container {
