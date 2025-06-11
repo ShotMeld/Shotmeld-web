@@ -3,7 +3,7 @@
 -->
 
 <template>
-  <div class="photo-wall-toolbar-container toolbar-visible">
+  <div class="photo-wall-toolbar-container">
     <ManageToolbar
       :selectedItems="selectedPhotos"
       :itemUnit="$t('photoWall.manageToolbar.itemUnit')"
@@ -66,30 +66,18 @@ export default {
   position: fixed;
   top: 85px;
   left: 50%;
-  transform: translateX(-50%) translateY(-20px);
+  transform: translateX(-50%);
   z-index: 1000;
   width: calc(88% - (var(--spacing-xl) * 2)); /* 与主内容区宽度一致 */
   max-width: var(--container-xl);
   margin: 0 auto;
   padding: 0;
-  opacity: 0;
-  transition:
-    opacity 0.3s ease,
-    transform 0.3s ease;
 }
 
 .photo-wall-toolbar-container :deep(.manage-toolbar) {
   width: 100%;
   box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
   border: 1px solid rgba(0, 0, 0, 0.08);
-}
-
-.toolbar-visible {
-  opacity: 1;
-  transform: translateX(-50%) translateY(0);
-  transition:
-    opacity 0.3s ease,
-    transform 0.3s ease;
 }
 
 @media (max-width: 768px) {

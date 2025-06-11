@@ -17,12 +17,12 @@ export default {
 <style scoped>
 .loading-container {
   padding: var(--spacing-xl);
-  background-color: var(--bg-primary);
+  background-color: var(--blur-bg-strong);
+  backdrop-filter: var(--blur-strong);
+  -webkit-backdrop-filter: var(--blur-strong);
   border-radius: var(--radius-large);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
   box-shadow: var(--shadow-small);
-  border: var(--border-width) solid var(--border-color);
+  border: var(--border-width) solid var(--blur-border);
 }
 :deep(.el-skeleton) {
   --el-skeleton-color: var(--bg-secondary);

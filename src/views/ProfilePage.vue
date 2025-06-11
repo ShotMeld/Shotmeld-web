@@ -85,17 +85,20 @@ export default {
   justify-content: center;
   align-items: flex-start;
   min-height: 100vh;
-  background-color: var(--bg-secondary);
+  /* 移除背景颜色，让全局背景显示 */
   padding: var(--spacing-2xl);
 }
 
 .profile-card {
-  background: var(--bg-primary);
+  background: var(--blur-bg-strong);
+  backdrop-filter: var(--blur-strong);
+  -webkit-backdrop-filter: var(--blur-strong);
   border-radius: var(--radius-extra-large);
   padding: var(--spacing-2xl);
   width: 100%;
   max-width: 500px;
   box-shadow: var(--shadow-medium);
+  border: 1px solid var(--blur-border);
   display: flex;
   flex-direction: column;
   align-items: center;
