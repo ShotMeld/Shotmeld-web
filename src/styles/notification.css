@@ -1,11 +1,33 @@
 /**
  * notification.css - 全局通知组件样式
- * 确保通知组件显示在页面的最高层级
+ * 确保通知组件显示在页面的最高层级，并支持深色模式
  */
 
 /* Element Plus 通知组件样式覆盖 */
 .el-notification {
   z-index: 99999 !important; /* 确保显示在最高层级 */
+  /* 基础样式 - 浅色模式 */
+  background-color: var(--bg-primary) !important;
+  border: var(--border-width) solid var(--border-color) !important;
+  color: var(--text-primary) !important;
+  box-shadow: var(--shadow-large) !important;
+  border-radius: var(--radius-medium) !important;
+  backdrop-filter: var(--blur-light) !important;
+  -webkit-backdrop-filter: var(--blur-light) !important;
+}
+
+/* 通知标题样式 */
+.el-notification__title {
+  color: var(--text-primary) !important;
+  font-weight: var(--font-weight-semibold) !important;
+  font-size: var(--font-size-base) !important;
+}
+
+/* 通知内容样式 */
+.el-notification__content {
+  color: var(--text-secondary) !important;
+  font-size: var(--font-size-sm) !important;
+  line-height: 1.5 !important;
 }
 
 /* 通知层覆盖容器 */
@@ -13,17 +35,74 @@
   overflow-wrap: break-word; /* 确保文本自动换行 */
 }
 
+/* 关闭按钮样式 */
+.el-notification__closeBtn {
+  color: var(--text-tertiary) !important;
+  transition: var(--transition-fast) !important;
+}
+
+.el-notification__closeBtn:hover {
+  color: var(--text-primary) !important;
+}
+
+/* 不同类型通知的样式适配 */
+/* 成功通知 */
+.el-notification--success .el-notification__icon {
+  color: var(--color-success) !important;
+}
+
+/* 警告通知 */
+.el-notification--warning .el-notification__icon {
+  color: var(--color-warning) !important;
+}
+
+/* 错误通知 */
+.el-notification--error .el-notification__icon {
+  color: var(--color-danger) !important;
+}
+
+/* 信息通知 */
+.el-notification--info .el-notification__icon {
+  color: var(--color-info) !important;
+}
+
+/* 深色模式特定样式 */
+.theme-dark .el-notification {
+  background-color: var(--blur-bg-strong) !important;
+  border-color: var(--blur-border-strong) !important;
+  box-shadow: var(--blur-shadow-strong) !important;
+}
+
+/* 深色模式下的图标适配 */
+.theme-dark .el-notification__icon {
+  filter: brightness(1.1) !important;
+}
+
+/* 深色模式下关闭按钮悬停效果 */
+.theme-dark .el-notification__closeBtn:hover {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+  border-radius: var(--radius-small) !important;
+}
+
 /* 通知组件弹出动画效果增强 */
 .el-notification-fade-enter-active {
-  transition: all .3s ease !important;
+  transition: all var(--transition-base) !important;
 }
 
 .el-notification-fade-leave-active {
-  transition: all .4s ease !important;
+  transition: all var(--transition-slow) !important;
 }
 
 .el-notification-fade-enter-from,
 .el-notification-fade-leave-to {
   opacity: 0;
   transform: translateX(100%);
+}
+
+/* 响应式适配 */
+@media (max-width: 768px) {
+  .el-notification {
+    max-width: calc(100vw - var(--spacing-lg)) !important;
+    margin: var(--spacing-xs) !important;
+  }
 }
