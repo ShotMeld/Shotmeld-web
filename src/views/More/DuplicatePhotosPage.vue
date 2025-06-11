@@ -45,8 +45,8 @@ export default {
 
       if (this.duplicateGroups.length > 0) {
         this.$notify({
-          title: '检测完成',
-          message: `发现 ${this.duplicateGroups.length} 组重复图片`,
+          title: this.$t('duplicatePhotos.detectionComplete'),
+          message: this.$t('duplicatePhotos.foundGroups', { count: this.duplicateGroups.length }),
           type: 'success',
         })
       }
@@ -78,8 +78,8 @@ export default {
         await photoService.deletePhotos(photoIds)
 
         this.$notify({
-          title: '成功',
-          message: `已删除${photos.length}张照片`,
+          title: this.$t('common.success'),
+          message: this.$t('photo.deletedCount', { count: photos.length }),
           type: 'success',
         })
 
@@ -93,10 +93,10 @@ export default {
           )
           .filter(group => group.length > 1) // 只保留仍有重复的组
       } catch (error) {
-        console.error('删除图片失败:', error)
+        console.error(this.$t('photo.deleteError'), error)
         this.$notify({
-          title: '错误',
-          message: error.response?.data?.message || '删除图片失败，请重试',
+          title: this.$t('common.error'),
+          message: error.response?.data?.message || this.$t('photo.deleteErrorMessage'),
           type: 'error',
         })
       }

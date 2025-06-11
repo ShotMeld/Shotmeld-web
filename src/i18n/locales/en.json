@@ -31,6 +31,40 @@
     "logout": "Logout",
     "fetchError": "Failed to fetch user information:"
   },
+  "common": {
+    "loading": "Loading...",
+    "retry": "Retry",
+    "cancel": "Cancel",
+    "user": "User",
+    "success": "Success",
+    "error": "Error",
+    "operationFailed": "Operation Failed",
+    "deleteError": "Delete Failed",
+    "confirmDelete": "Confirm Delete"
+  },
+  "album": {
+    "photoCount": "{count} photos",
+    "createdAt": "Created on {date}",
+    "fetchError": "Failed to fetch album details",
+    "fetchPhotosError": "Failed to fetch album photos",
+    "removePhotosTitle": "Remove Photos from Album",
+    "confirmRemovePhotos": "Are you sure you want to remove {count} selected photos from album \"{albumName}\"?",
+    "removePhotosNote": "Note: Photos will not be deleted, only removed from current album",
+    "confirmRemove": "Confirm Remove",
+    "removedPhotos": "Removed {count} photos from album",
+    "removeError": "Failed to remove photos from album",
+    "removeErrorMessage": "Unable to remove photos from album, please try again"
+  },
+  "photo": {
+    "deletedCount": "Deleted {count} photos",
+    "batchDeleteError": "Batch delete photos failed",
+    "deleteError": "Delete photos failed",
+    "deleteErrorMessage": "Unable to delete photos, please try again"
+  },
+  "sfDeleteConfirmModal": {
+    "confirmMessage": "Are you sure you want to delete {count} selected {itemName}?",
+    "warningText": "This action cannot be undone!"
+  },
   "sharePhoto": {
     "loading": "Loading photo...",
     "error": {
@@ -450,6 +484,8 @@
     }
   },
   "duplicatePhotos": {
+    "detectionComplete": "Detection Complete",
+    "foundGroups": "Found {count} groups of duplicate photos",
     "detector": {
       "title": "Duplicate Photos",
       "description": "Find and manage duplicate photos",

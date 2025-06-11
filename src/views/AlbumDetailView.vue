@@ -18,20 +18,20 @@
             {{ album.description }}
           </p>
           <div class="album-detail__meta">
-            <span class="album-detail__count">{{ album.photoCount }} 张照片</span>
-            <span class="album-detail__date">创建于 {{ formatDate(album.createdAt) }}</span>
+            <span class="album-detail__count">{{ $t('album.photoCount', { count: album.photoCount }) }}</span>
+            <span class="album-detail__date">{{ $t('album.createdAt', { date: formatDate(album.createdAt) }) }}</span>
           </div>
         </div>
       </div>
 
       <div v-if="loading" class="album-detail__loading">
         <div class="album-detail__spinner"></div>
-        <p>加载中...</p>
+        <p>{{ $t('common.loading') }}</p>
       </div>
 
       <div v-else-if="error" class="album-detail__error">
         <p>{{ error }}</p>
-        <SfButton @click="fetchAlbumDetails" variant="outline">重试</SfButton>
+        <SfButton @click="fetchAlbumDetails" variant="outline">{{ $t('common.retry') }}</SfButton>
       </div>
 
       <div v-else>
@@ -81,13 +81,13 @@
     />
 
     <!-- 从相册移除照片确认模态框 -->
-    <SfModal v-model="showRemoveFromAlbumModal" title="从相册移除照片">
+    <SfModal v-model="showRemoveFromAlbumModal" :title="$t('album.removePhotosTitle')">
       <div class="confirm-modal-content">
-        <p>确定要将选中的 {{ selectedPhotos.length }} 张照片从相册「{{ album.name }}」中移除吗？</p>
-        <p class="confirm-note">注意：照片不会被删除，只会从当前相册中移除</p>
+        <p>{{ $t('album.confirmRemovePhotos', { count: selectedPhotos.length, albumName: album.name }) }}</p>
+        <p class="confirm-note">{{ $t('album.removePhotosNote') }}</p>
         <div class="confirm-actions">
-          <SfButton @click="showRemoveFromAlbumModal = false" type="secondary">取消</SfButton>
-          <SfButton @click="removeFromAlbum" type="danger">确认移除</SfButton>
+          <SfButton @click="showRemoveFromAlbumModal = false" type="secondary">{{ $t('common.cancel') }}</SfButton>
+          <SfButton @click="removeFromAlbum" type="danger">{{ $t('album.confirmRemove') }}</SfButton>
         </div>
       </div>
     </SfModal>
@@ -152,7 +152,7 @@ export default {
   async created() {
     // 获取用户信息
     const user = JSON.parse(localStorage.getItem('user') || '{}')
-    this.userName = user.username || '用户'
+    this.userName = user.username || this.$t('common.user')
     await this.fetchAlbumDetails()
 
     // 监听上传照片事件
@@ -166,7 +166,7 @@ export default {
   },
   methods: {
     formatDate(date) {
-      return new Date(date).toLocaleDateString('zh-CN', {
+      return new Date(date).toLocaleDateString(this.$i18n.locale, {
         year: 'numeric',
         month: 'long',
         day: 'numeric',
@@ -183,8 +183,8 @@ export default {
         this.album = albumResponse.data
         this.photos = photosResponse.data.data
       } catch (error) {
-        this.error = error.response?.data?.message || '获取相册详情失败'
-        console.error('获取相册详情失败:', error)
+        this.error = error.response?.data?.message || this.$t('album.fetchError')
+        console.error(this.$t('album.fetchError'), error)
       } finally {
         this.loading = false
       }
@@ -217,7 +217,7 @@ export default {
         this.photos = photosResponse.data.data || []
         this.album.photoCount = this.photos.length
       } catch (error) {
-        console.error('获取相册照片失败:', error)
+        console.error(this.$t('album.fetchPhotosError'), error)
         // 如果获取失败，回退到获取完整的相册详情
         this.fetchAlbumDetails()
       }
@@ -278,8 +278,8 @@ export default {
         await albumService.removePhotosFromAlbum(this.album.id, this.selectedPhotos)
 
         this.$notify({
-          title: '成功',
-          message: `已从相册中移除${this.selectedPhotos.length}张照片`,
+          title: this.$t('common.success'),
+          message: this.$t('album.removedPhotos', { count: this.selectedPhotos.length }),
           type: 'success',
         })
 
@@ -289,10 +289,10 @@ export default {
         this.selectedPhotos = []
         this.showRemoveFromAlbumModal = false
       } catch (error) {
-        console.error('从相册移除照片失败:', error)
+        console.error(this.$t('album.removeError'), error)
         this.$notify.error({
-          title: '操作失败',
-          message: error.response?.data?.message || '无法从相册移除照片，请重试',
+          title: this.$t('common.operationFailed'),
+          message: error.response?.data?.message || this.$t('album.removeErrorMessage'),
         })
       }
     },
@@ -304,8 +304,8 @@ export default {
         await photoService.deletePhotos(this.selectedPhotos)
 
         this.$notify({
-          title: '成功',
-          message: `已删除${this.selectedPhotos.length}张照片`,
+          title: this.$t('common.success'),
+          message: this.$t('photo.deletedCount', { count: this.selectedPhotos.length }),
           type: 'success',
         })
 
@@ -315,10 +315,10 @@ export default {
         this.selectedPhotos = []
         this.showDeleteSelectedModal = false
       } catch (error) {
-        console.error('批量删除照片失败:', error)
+        console.error(this.$t('photo.batchDeleteError'), error)
         this.$notify.error({
-          title: '删除失败',
-          message: error.response?.data?.message || '无法删除照片，请重试',
+          title: this.$t('common.deleteError'),
+          message: error.response?.data?.message || this.$t('photo.deleteErrorMessage'),
         })
       }
     },

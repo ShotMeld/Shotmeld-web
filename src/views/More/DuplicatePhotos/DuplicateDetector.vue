@@ -39,7 +39,7 @@
         @click="restartDetection"
         :loading="isStarting"
       >
-        重新检测
+        {{ $t('duplicatePhotos.results.actions.restart') }}
       </SfButton>
     </div>
 
@@ -54,10 +54,10 @@
       <div class="error-content">
         <div class="error-icon">⚠️</div>
         <div class="error-text">
-          <h3>检测失败</h3>
+          <h3>{{ $t('duplicatePhotos.detector.error.scanFailed') }}</h3>
           <p>{{ error }}</p>
         </div>
-        <SfButton type="primary" size="small" @click="clearError">重试</SfButton>
+        <SfButton type="primary" size="small" @click="clearError">{{ $t('timeline.retry') }}</SfButton>
       </div>
     </SfCard>
   </div>
@@ -106,7 +106,7 @@ export default {
         this.$emit('detection-start')
         this.startPolling()
       } catch (error) {
-        this.error = error.response?.data?.message || '启动检测失败，请重试'
+        this.error = error.response?.data?.message || this.$t('duplicatePhotos.detector.error.scanFailed')
       } finally {
         this.isStarting = false
       }

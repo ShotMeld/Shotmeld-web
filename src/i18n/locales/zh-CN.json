@@ -31,6 +31,40 @@
     "logout": "退出登录",
     "fetchError": "获取用户信息失败:"
   },
+  "common": {
+    "loading": "加载中...",
+    "retry": "重试",
+    "cancel": "取消",
+    "user": "用户",
+    "success": "成功",
+    "error": "错误",
+    "operationFailed": "操作失败",
+    "deleteError": "删除失败",
+    "confirmDelete": "确认删除"
+  },
+  "album": {
+    "photoCount": "{count} 张照片",
+    "createdAt": "创建于 {date}",
+    "fetchError": "获取相册详情失败",
+    "fetchPhotosError": "获取相册照片失败",
+    "removePhotosTitle": "从相册移除照片",
+    "confirmRemovePhotos": "确定要将选中的 {count} 张照片从相册「{albumName}」中移除吗？",
+    "removePhotosNote": "注意：照片不会被删除，只会从当前相册中移除",
+    "confirmRemove": "确认移除",
+    "removedPhotos": "已从相册中移除{count}张照片",
+    "removeError": "从相册移除照片失败",
+    "removeErrorMessage": "无法从相册移除照片，请重试"
+  },
+  "photo": {
+    "deletedCount": "已删除{count}张照片",
+    "batchDeleteError": "批量删除照片失败",
+    "deleteError": "删除图片失败",
+    "deleteErrorMessage": "无法删除照片，请重试"
+  },
+  "sfDeleteConfirmModal": {
+    "confirmMessage": "确定要删除选中的 {count} 个{itemName}吗？",
+    "warningText": "此操作不可恢复！"
+  },
   "sharePhoto": {
     "loading": "正在加载照片...",
     "error": {
@@ -450,6 +484,8 @@
     }
   },
   "duplicatePhotos": {
+    "detectionComplete": "检测完成",
+    "foundGroups": "发现 {count} 组重复图片",
     "detector": {
       "title": "重复照片检测",
       "description": "查找并管理重复的照片",
