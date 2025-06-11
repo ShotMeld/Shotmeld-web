@@ -123,44 +123,55 @@ export default {
 
 <style scoped>
 .album-form-container {
-  padding: 8px;
-  max-width: 500px;
+  padding: var(--spacing-xs);
+  max-width: var(--container-sm);
   margin: 0 auto;
+  font-family: var(--font-family);
 }
 
 .form-title {
-  font-size: 1.5rem;
-  color: #333;
-  margin-bottom: 24px;
+  font-size: var(--font-size-xl);
+  color: var(--text-primary);
+  margin-bottom: var(--spacing-xl);
   text-align: center;
+  font-weight: var(--font-weight-semibold);
 }
 
 .form-group {
-  margin-bottom: 20px;
+  margin-bottom: var(--spacing-lg);
 }
 
 .form-group label {
   display: block;
-  margin-bottom: 8px;
-  font-weight: 500;
-  color: #444;
+  margin-bottom: var(--spacing-xs);
+  font-weight: var(--font-weight-medium);
+  color: var(--text-primary);
+  font-size: var(--font-size-base);
 }
 
 .form-input,
 .form-textarea {
   width: 100%;
-  padding: 10px 12px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  font-size: 1rem;
-  transition: border-color 0.3s;
+  padding: var(--spacing-sm) var(--spacing-md);
+  border: var(--border-width) solid var(--border-color);
+  border-radius: var(--radius-medium);
+  font-size: var(--font-size-base);
+  font-family: var(--font-family);
+  color: var(--text-primary);
+  background-color: var(--bg-primary);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
 }
 
 .form-input:focus,
 .form-textarea:focus {
-  border-color: #4361ee;
+  border-color: var(--color-primary);
   outline: none;
-  box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+  box-shadow: 0 0 0 3px rgba(var(--color-primary-rgb), 0.2);
+}
+
+.form-input:hover,
+.form-textarea:hover {
+  border-color: var(--border-color-hover);
 }
 
 .form-textarea {
@@ -169,54 +180,67 @@ export default {
 }
 
 .form-hint {
-  font-size: 0.85rem;
-  color: #666;
-  margin-top: 6px;
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  margin-top: var(--spacing-2xs);
 }
 
 .form-actions {
   display: flex;
   justify-content: flex-end;
-  gap: 12px;
-  margin-top: 24px;
+  gap: var(--spacing-sm);
+  margin-top: var(--spacing-xl);
 }
 
 .cancel-button,
 .submit-button {
-  padding: 10px 20px;
-  border-radius: 8px;
-  font-weight: 500;
+  padding: var(--spacing-sm) var(--spacing-lg);
+  border-radius: var(--radius-medium);
+  font-weight: var(--font-weight-medium);
+  font-size: var(--font-size-base);
   cursor: pointer;
-  transition: all 0.3s;
-}
-
-.cancel-button {
-  background-color: #f8f9fa;
-  color: #333;
-  border: 1px solid #ddd;
-}
-
-.cancel-button:hover {
-  background-color: #e9ecef;
-}
-
-.submit-button {
-  background-color: #4361ee;
-  color: white;
-  border: none;
+  transition: all var(--transition-fast);
+  border: var(--border-width) solid transparent;
+  min-height: 44px;
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.cancel-button {
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+  border-color: var(--border-color);
+}
+
+.cancel-button:hover {
+  background-color: var(--bg-hover);
+  border-color: var(--border-color-hover);
+}
+
+.submit-button {
+  background-color: var(--color-primary);
+  color: var(--color-white);
+  border: none;
   min-width: 100px;
 }
 
 .submit-button:hover {
-  background-color: #3a56d4;
+  background-color: var(--color-primary-dark);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-medium);
+}
+
+.submit-button:active {
+  transform: translateY(0);
+  box-shadow: var(--shadow-small);
 }
 
 .submit-button:disabled {
-  background-color: #a8b1ff;
+  background-color: var(--color-gray);
   cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
 }
 
 .button-loader {
@@ -224,15 +248,23 @@ export default {
   width: 16px;
   height: 16px;
   border: 2px solid rgba(255, 255, 255, 0.3);
-  border-radius: 50%;
-  border-top-color: white;
+  border-radius: var(--radius-round);
+  border-top-color: var(--color-white);
   animation: spin 1s linear infinite;
-  margin-right: 8px;
+  margin-right: var(--spacing-xs);
 }
 
 @keyframes spin {
   to {
     transform: rotate(360deg);
+  }
+}
+
+/* 深色主题适配 */
+@media (prefers-color-scheme: dark) {
+  .form-input:focus,
+  .form-textarea:focus {
+    box-shadow: 0 0 0 3px rgba(var(--color-primary-rgb), 0.3);
   }
 }
 </style>
