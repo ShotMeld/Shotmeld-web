@@ -3,13 +3,6 @@
 -->
 
 <template>
-  <!-- 在 album-detail__actions 部分添加设置封面按钮 -->
-  <div class="album-detail__actions">
-    <SfButton v-if="!isManageMode" @click="showSetCoverModal = true" variant="outline" class="action-btn">
-      <i class="icon-cover"></i>
-      设置封面
-    </SfButton>
-  </div>
   <div class="album-detail">
     <AppNavbar :userName="userName" currentPage="album-detail" @show-upload="showUploadModal = true"
       @toggle-manage="toggleManageMode" />
@@ -70,32 +63,6 @@
       </div>
     </SfModal>
   </div>
-  <!-- 修改设置封面模态框部分 -->
-  <SfModal v-model="showSetCoverModal" title="设置相册封面">
-    <div class="set-cover-modal">
-      <p>请选择一张照片作为相册封面：</p>
-      <div class="cover-photo-grid">
-        <div v-for="photo in photos" :key="photo.id" class="cover-photo-item" :class="{
-          selected: selectedCoverPhoto === photo.id,
-          'current-cover': album.coverPhotoId === photo.id
-        }" @click="selectedCoverPhoto = photo.id">
-          <img :src="photo.thumbnailUrl || photo.url" :alt="photo.name" />
-          <div v-if="album.coverPhotoId === photo.id" class="current-cover-badge">当前封面</div>
-        </div>
-      </div>
-      <div class="modal-actions">
-        <SfButton @click="clearAlbumCover" variant="secondary" :disabled="!album.coverPhotoId">
-          清除封面
-        </SfButton>
-        <div class="action-spacer"></div>
-        <SfButton @click="showSetCoverModal = false" variant="secondary">取消</SfButton>
-        <SfButton @click="setAlbumCover" :disabled="!selectedCoverPhoto || selectedCoverPhoto === album.coverPhotoId"
-          :loading="loading">
-          确认设置
-        </SfButton>
-      </div>
-    </div>
-  </SfModal>
 </template>
 
 <script>
@@ -143,8 +110,6 @@ export default {
       selectedPhotos: [],
       showDeleteSelectedModal: false,
       showRemoveFromAlbumModal: false,
-      showSetCoverModal: false,
-      selectedCoverPhoto: null,
     }
   },
   computed: {
@@ -171,80 +136,6 @@ export default {
     eventBus.off('show-upload-modal')
   },
   methods: {
-    async setAlbumCover() {
-      if (!this.selectedCoverPhoto) return;
-
-      try {
-        this.loading = true;
-        // 调用API更新相册封面
-        await albumService.updateAlbum(this.album.id, {
-          coverPhotoId: this.selectedCoverPhoto
-        });
-
-        this.$notify({
-          title: '成功',
-          message: '相册封面已更新',
-          type: 'success'
-        });
-
-        // 更新本地相册数据
-        this.album.coverPhotoId = this.selectedCoverPhoto;
-        this.showSetCoverModal = false;
-
-        // 通知相册列表更新封面
-        eventBus.emit('album-cover-updated', {
-          albumId: this.album.id,
-          photoId: this.selectedCoverPhoto
-        });
-      } catch (error) {
-        console.error('设置封面失败:', error);
-        this.$notify.error({
-          title: '设置失败',
-          message: error.response?.data?.message || '无法更新相册封面'
-        });
-      } finally {
-        this.loading = false;
-      }
-    },
-    async clearAlbumCover() {
-      try {
-        this.loading = true;
-        // 调用API清除相册封面
-        await albumService.updateAlbum(this.album.id, {
-          coverPhotoId: null
-        });
-
-        this.$notify({
-          title: '成功',
-          message: '已清除相册封面',
-          type: 'success'
-        });
-
-        // 更新本地数据
-        this.album.coverPhotoId = null;
-        this.selectedCoverPhoto = null;
-        this.showSetCoverModal = false;
-
-        // 通知相册列表更新
-        eventBus.emit('album-cover-updated', {
-          albumId: this.album.id,
-          photoId: null
-        });
-      } catch (error) {
-        console.error('清除封面失败:', error);
-        this.$notify.error({
-          title: '清除失败',
-          message: error.response?.data?.message || '无法清除相册封面'
-        });
-      } finally {
-        this.loading = false;
-      }
-    },
-    openSetCoverModal() {
-      this.showSetCoverModal = true;
-      // 初始化选择当前封面照片
-      this.selectedCoverPhoto = this.album.coverPhotoId;
-    },
     formatDate(date) {
       return new Date(date).toLocaleDateString(this.$i18n.locale, {
         year: 'numeric',
@@ -424,10 +315,9 @@ export default {
   padding: var(--spacing-xl);
 }
 
-/* 为固定工具栏腾出空间 */
 .with-toolbar-space {
   padding-top: var(--spacing-xl);
-  margin-top: 80px; /* 为固定工具栏添加额外的空间 */
+  margin-top: 80px;
   transition: margin-top 0.3s ease;
   position: relative;
 }
@@ -504,7 +394,6 @@ export default {
   color: var(--error);
 }
 
-/* 确认模态框样式 */
 .confirm-modal-content {
   padding: var(--spacing-lg);
 }
@@ -523,13 +412,12 @@ export default {
   margin-top: var(--spacing-lg);
 }
 
-/* 动画 */
 .slide-fade-enter-active {
   transition: all 0.3s ease;
 }
 
 .slide-fade-leave-active {
-  transition: all 0.15s ease; /* 退出动画缩短为0.15秒，加快关闭速度 */
+  transition: all 0.15s ease;
 }
 
 .slide-fade-enter-from {
@@ -551,7 +439,7 @@ export default {
 @media (max-width: 768px) {
   .album-detail__container {
     padding: var(--spacing-lg);
-    margin-top: 56px; /* 移动端导航栏高度稍小 */
+    margin-top: 56px;
   }
 
   .album-detail__header {
@@ -568,86 +456,4 @@ export default {
     font-size: var(--font-size-md);
   }
 }
-.set-cover-modal {
-  padding: var(--spacing-lg);
-}
-
-.cover-photo-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-  gap: var(--spacing-md);
-  margin: var(--spacing-lg) 0;
-  max-height: 400px;
-  overflow-y: auto;
-}
-
-
-.cover-photo-item:hover {
-  transform: scale(1.03);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
-
-.cover-photo-item.selected {
-  border-color: var(--primary);
-  box-shadow: 0 4px 12px rgba(var(--primary-rgb), 0.2);
-}
-
-.cover-photo-item img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.icon-cover {
-  display: inline-block;
-  width: 16px;
-  height: 16px;
-  background-image: url('~@/assets/icons/cover.svg');
-  background-repeat: no-repeat;
-  background-position: center;
-  margin-right: var(--spacing-xs);
-}
-
-@media (max-width: 768px) {
-  .cover-photo-grid {
-    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-  }
-  
-  .album-detail__actions {
-    flex-wrap: wrap;
-  }
-  
-  .action-btn {
-    margin-bottom: var(--spacing-sm);
-  }
-}
-.cover-photo-item.current-cover {
-  border-color: var(--success);
-}
-
-.current-cover-badge {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background-color: rgba(var(--success-rgb), 0.8);
-  color: white;
-  font-size: var(--font-size-xs);
-  text-align: center;
-  padding: 2px 0;
-}
-
-.modal-actions {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.action-spacer {
-  flex-grow: 1;
-}
-
-.cover-photo-item {
-  position: relative;
-  }
 </style>
