@@ -201,9 +201,11 @@ export default {
       const { albumId, coverPhotoId } = result
       const albumIndex = this.albums.findIndex(album => album.id === albumId)
       if (albumIndex !== -1) {
-        this.albums[albumIndex].coverPhotoId = coverPhotoId
-        // 强制重新渲染相册卡片以显示新封面
-        this.$forceUpdate()
+        // 使用不可变方式更新相册封面
+        this.albums.splice(albumIndex, 1, { 
+          ...this.albums[albumIndex], 
+          coverPhotoId 
+        })
       }
       this.isChangeCoverModalVisible = false
     },

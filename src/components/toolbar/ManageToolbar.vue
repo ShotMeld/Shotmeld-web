@@ -97,11 +97,12 @@ export default {
     visibleActions() {
       return this.actions.filter(action => action.visible !== false)
     },  },
-  emits: (event) => {
-    // 动态验证事件名，允许 actions 中定义的所有事件
-    const allowedEvents = ['select-all', 'deselect-all', 'exit-manage-mode'];
-    // 同时允许任何以 'show-' 开头的事件（来自 actions 配置）
-    return allowedEvents.includes(event) || event.startsWith('show-');
+  emits: {
+    'select-all': true,
+    'deselect-all': true,
+    'exit-manage-mode': true,
+    // Validator for events starting with 'show-'
+    'show-*': (event) => event.startsWith('show-'),
   },
   methods: {
     selectAll() {
