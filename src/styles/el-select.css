@@ -27,54 +27,22 @@
   width: 100%;
 }
 
-.el-select-dropdown {
-  background: var(--dropdown-bg-light) !important;
-  border: var(--dropdown-border-light) !important;
-  /* 其他原有样式... */
-}
-
-.theme-dark .el-select-dropdown {
-  background: var(--dropdown-bg-dark) !important;
-  border: var(--dropdown-border-dark) !important;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4) !important;
-}
-
-/* 下拉菜单项 */
-.theme-dark .el-select-dropdown__item {
-  color: rgba(255, 255, 255, 0.8) !important;
-}
-
-.theme-dark .el-select-dropdown__item:hover {
-  background: rgba(0, 122, 255, 0.15) !important;
-}
-
-.theme-dark .el-select-dropdown__item.selected {
-  background: linear-gradient(135deg, rgba(0, 122, 255, 0.2) 0%, rgba(0, 122, 255, 0.25) 100%) !important;
-}
+/* 选择器包装器 */
 .el-select__wrapper {
-  background: var(--select-bg-light) !important;
-  border: var(--select-border-light) !important;
-  box-shadow: var(--select-shadow-light) !important;
-  /* 其他原有样式... */
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.6) 0%, rgba(248, 248, 248, 0.4) 100%) !important;
+  border-radius: var(--radius-medium) !important;
+  border: 1px solid rgba(0, 0, 0, 0.06) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  transition: background-color 0.1s ease, border-color 0.1s ease !important;
+  position: relative !important;
+  overflow: hidden !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.8) !important;
+  height: 36px !important;
+  display: flex !important;
+  align-items: center !important;
 }
 
-.theme-dark .el-select__wrapper {
-  background: var(--select-bg-dark) !important;
-  border: var(--select-border-dark) !important;
-  box-shadow: var(--select-shadow-dark) !important;
-  color: rgba(255, 255, 255, 0.9) !important;
-}
-
-/* 悬浮/聚焦状态 */
-.theme-dark .el-select:hover .el-select__wrapper {
-  background: linear-gradient(135deg, rgba(58, 58, 60, 0.9) 0%, rgba(44, 44, 46, 0.8) 100%) !important;
-  border-color: rgba(0, 122, 255, 0.4) !important;
-}
-
-.theme-dark .el-select.is-focused .el-select__wrapper {
-  background: linear-gradient(135deg, rgba(58, 58, 60, 0.95) 0%, rgba(44, 44, 46, 0.9) 100%) !important;
-  border-color: var(--color-primary) !important;
-}
 .el-select__wrapper::before {
   content: '';
   position: absolute;
