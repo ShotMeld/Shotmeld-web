@@ -143,7 +143,7 @@ export default {
 
 .sf-input-wrapper--focused .sf-input-container {
   border-color: var(--color-primary);
-  background-color: var(--color-white);
+  background-color: var(--bg-primary);
   box-shadow: 0 0 0 2px rgba(0, 122, 255, 0.15);
 }
 
