@@ -77,7 +77,7 @@
 </template>
 
 <script>
-import { photoService } from '../api'
+import { photoService, albumService } from '../api'
 
 export default {
   name: 'PhotoSelector',
@@ -89,6 +89,14 @@ export default {
     existingPhotoIds: {
       type: Array,
       default: () => [],
+    },
+    isAlbumMode: {
+      type: Boolean,
+      default: false,
+    },
+    singleSelect: {
+      type: Boolean,
+      default: false,
     },
   },
   emits: ['update:selectedPhotos'],
@@ -114,12 +122,25 @@ export default {
     async fetchPhotos() {
       try {
         this.loading = true
-        const response = await photoService.getPhotos({
-          page: this.currentPage,
-          limit: this.pageSize,
-          sortBy: 'takenAt',
-          sortOrder: 'desc',
-        })
+        
+        let response
+        if (this.isAlbumMode) {
+          // 从相册获取照片
+          response = await albumService.getAlbumPhotos(this.albumId, {
+            page: this.currentPage,
+            limit: this.pageSize,
+            sortBy: 'takenAt',
+            sortOrder: 'desc',
+          })
+        } else {
+          // 获取所有照片
+          response = await photoService.getPhotos({
+            page: this.currentPage,
+            limit: this.pageSize,
+            sortBy: 'takenAt',
+            sortOrder: 'desc',
+          })
+        }
 
         this.photos = response.data.data || []
         this.total = response.data.total || 0
@@ -156,14 +177,19 @@ export default {
       // 如果照片已经在相册中，不允许选择
       if (this.isPhotoInAlbum(photoId)) return
 
-      // 确保类型一致性
-      const photoIdStr = String(photoId)
-      const index = this.selectedPhotos.findIndex(id => String(id) === photoIdStr)
-
-      if (index === -1) {
-        this.selectedPhotos.push(photoId)
+      // 单选模式下，清空其他选择
+      if (this.singleSelect) {
+        this.selectedPhotos = [photoId]
       } else {
-        this.selectedPhotos.splice(index, 1)
+        // 确保类型一致性
+        const photoIdStr = String(photoId)
+        const index = this.selectedPhotos.findIndex(id => String(id) === photoIdStr)
+
+        if (index === -1) {
+          this.selectedPhotos.push(photoId)
+        } else {
+          this.selectedPhotos.splice(index, 1)
+        }
       }
 
       this.$emit('update:selectedPhotos', this.selectedPhotos)
