@@ -109,7 +109,7 @@ export default {
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  background: var(--bg-gradient);
   z-index: 9999;
   display: flex;
   align-items: center;
@@ -180,7 +180,7 @@ export default {
 
 .welcome-text.primary {
   font-size: clamp(2.25rem, 5vw, 3.5rem);
-  color: #1d1d1f;
+  color: var(--text-primary);
   font-weight: 600;
   letter-spacing: -0.025em;
   margin-bottom: var(--spacing-xs);
@@ -188,7 +188,7 @@ export default {
 
 .welcome-text.secondary {
   font-size: clamp(1.125rem, 2.5vw, 1.375rem);
-  color: #86868b;
+  color: var(--text-secondary);
   font-weight: 400;
   letter-spacing: 0.01em;
   transition-delay: 0.2s;

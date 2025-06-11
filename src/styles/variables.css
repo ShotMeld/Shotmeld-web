@@ -36,6 +36,11 @@
   --bg-tertiary: #FAFAFC;
   --bg-hover: rgba(0, 0, 0, 0.05);
   
+  /* 渐变背景 */
+  --bg-gradient-start: #f5f7fa;
+  --bg-gradient-end: #c3cfe2;
+  --bg-gradient: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
+  
   /* 文字颜色 */
   --text-primary: var(--color-dark-gray);
   --text-secondary: var(--color-gray);
@@ -46,6 +51,17 @@
   --border-color: rgba(60, 60, 67, 0.15);
   --border-color-hover: rgba(60, 60, 67, 0.25);
   --border-width: 0.5px;
+  
+  /* 毛玻璃效果 */
+  --blur-bg: rgba(255, 255, 255, 0.8);
+  --blur-bg-light: rgba(255, 255, 255, 0.6);
+  --blur-bg-medium: rgba(255, 255, 255, 0.75);
+  --blur-bg-strong: rgba(255, 255, 255, 0.85);
+  --blur-bg-extra-strong: rgba(255, 255, 255, 0.9);
+  --blur-border: rgba(255, 255, 255, 0.2);
+  --blur-border-strong: rgba(255, 255, 255, 0.3);
+  --blur-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  --blur-shadow-strong: 0 4px 20px rgba(0, 0, 0, 0.08);
   
   /* 滚动条样式变量 */
   --scrollbar-width: 6px;
@@ -104,6 +120,13 @@
   --transition-slow: 0.4s cubic-bezier(0.25, 0.1, 0.25, 1);
   --transition-bounce: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   
+  /* 背景模糊强度 */
+  --blur-light: blur(8px) saturate(1.2);
+  --blur-medium: blur(12px) saturate(1.5);
+  --blur-strong: blur(20px) saturate(1.8);
+  --blur-extra-strong: blur(30px) saturate(2.0);
+  --blur-ultra-strong: blur(40px) saturate(2.2);
+  
   /* 容器宽度 */
   --container-sm: 640px;
   --container-md: 768px;
@@ -120,6 +143,11 @@
   --bg-tertiary: #3A3A3C;
   --bg-hover: rgba(255, 255, 255, 0.1);
   
+  /* 渐变背景 - 深色模式 */
+  --bg-gradient-start: #1a1a1a;
+  --bg-gradient-end: #2d2d30;
+  --bg-gradient: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
+  
   /* 文字颜色 */
   --text-primary: #FFFFFF;
   --text-secondary: rgba(235, 235, 245, 0.6);
@@ -129,6 +157,17 @@
   /* 边框和分割线 */
   --border-color: rgba(235, 235, 245, 0.1);
   --border-color-hover: rgba(235, 235, 245, 0.2);
+  
+  /* 毛玻璃效果 */
+  --blur-bg: rgba(29, 29, 32, 0.7);
+  --blur-bg-light: rgba(29, 29, 32, 0.5);
+  --blur-bg-medium: rgba(29, 29, 32, 0.65);
+  --blur-bg-strong: rgba(29, 29, 32, 0.75);
+  --blur-bg-extra-strong: rgba(29, 29, 32, 0.8);
+  --blur-border: rgba(255, 255, 255, 0.1);
+  --blur-border-strong: rgba(255, 255, 255, 0.15);
+  --blur-shadow: 0 2px 12px rgba(29, 29, 32, 0.3);
+  --blur-shadow-strong: 0 4px 20px rgba(0, 0, 0, 0.4);
   
   /* 阴影 */
   --shadow-small: 0px 1px 2px rgba(0, 0, 0, 0.3);

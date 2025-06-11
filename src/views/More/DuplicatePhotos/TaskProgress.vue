@@ -109,12 +109,10 @@ export default {
 <style scoped>
 .task-progress {
   padding: 40px 32px;
-  background: rgba(255, 255, 255, 0.8);
-  backdrop-filter: blur(20px);
-  border-radius: 20px;
+  background: var(--blur-bg);
+  backdrop-filter: var(--blur-strong);
+  border-radius: var(--radius-large);
   text-align: center;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
   max-width: 480px;
   margin: 0 auto;
 }
@@ -125,9 +123,9 @@ export default {
 }
 
 .progress-status {
-  font-size: 17px;
-  font-weight: 400;
-  color: #86868b;
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-regular);
+  color: var(--text-secondary);
   margin-bottom: 32px;
   line-height: 1.4;
 }
@@ -136,7 +134,7 @@ export default {
   position: relative;
   width: 100%;
   height: 6px;
-  background-color: rgba(0, 0, 0, 0.1);
+  background-color: var(--bg-hover);
   border-radius: 3px;
   overflow: hidden;
   margin-bottom: 24px;
@@ -144,7 +142,7 @@ export default {
 
 .progress-fill {
   height: 100%;
-  background: linear-gradient(90deg, #007aff, #0051d5);
+  background: linear-gradient(90deg, var(--color-primary), var(--color-primary-dark));
   border-radius: 3px;
   transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
@@ -176,21 +174,21 @@ export default {
 }
 
 .progress-percent {
-  font-size: 15px;
-  font-weight: 500;
-  color: #1d1d1f;
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-medium);
+  color: var(--text-primary);
   margin-bottom: 40px;
   font-variant-numeric: tabular-nums;
 }
 
 .cancel-button {
   padding: 12px 24px;
-  font-size: 17px;
-  font-weight: 500;
-  color: #ff3b30;
-  background: rgba(255, 59, 48, 0.1);
-  border: 1px solid rgba(255, 59, 48, 0.2);
-  border-radius: 12px;
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-danger);
+  background: var(--color-danger-subtle);
+  border: 1px solid rgba(var(--color-danger-rgb), 0.2);
+  border-radius: var(--radius-medium);
   cursor: pointer;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   backdrop-filter: blur(10px);
@@ -198,38 +196,38 @@ export default {
 }
 
 .cancel-button:hover {
-  background: rgba(255, 59, 48, 0.15);
-  border-color: rgba(255, 59, 48, 0.3);
+  background: rgba(var(--color-danger-rgb), 0.15);
+  border-color: rgba(var(--color-danger-rgb), 0.3);
   transform: translateY(-1px);
-  box-shadow: 0 4px 16px rgba(255, 59, 48, 0.2);
+  box-shadow: 0 4px 16px rgba(var(--color-danger-rgb), 0.2);
 }
 
 .cancel-button:active {
   transform: translateY(0);
-  box-shadow: 0 2px 8px rgba(255, 59, 48, 0.2);
+  box-shadow: 0 2px 8px rgba(var(--color-danger-rgb), 0.2);
 }
 
 /* 暗色模式适配 */
 @media (prefers-color-scheme: dark) {
   .task-progress {
-    background: rgba(28, 28, 30, 0.8);
-    border-color: rgba(255, 255, 255, 0.1);
+    background: var(--blur-bg);
+    border-color: var(--border-color);
   }
 
   .progress-title {
-    color: #f2f2f7;
+    color: var(--text-primary);
   }
 
   .progress-status {
-    color: #98989d;
+    color: var(--text-secondary);
   }
 
   .progress-bar {
-    background-color: rgba(255, 255, 255, 0.1);
+    background-color: var(--bg-hover);
   }
 
   .progress-percent {
-    color: #f2f2f7;
+    color: var(--text-primary);
   }
 }
 
@@ -238,11 +236,11 @@ export default {
   .task-progress {
     padding: 32px 24px;
     margin: 16px;
-    border-radius: 16px;
+    border-radius: var(--radius-medium);
   }
 
   .progress-title {
-    font-size: 24px;
+    font-size: var(--font-size-3xl);
   }
 }
 </style>

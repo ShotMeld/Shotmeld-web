@@ -122,14 +122,14 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: rgba(250, 250, 250, 0.95);
+  background-color: var(--blur-bg-strong);
   padding: 14px 18px;
   border-radius: 12px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  box-shadow: var(--blur-shadow-strong);
   animation: toolbar-appear 0.35s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(0, 0, 0, 0.06);
+  backdrop-filter: var(--blur-strong);
+  -webkit-backdrop-filter: var(--blur-strong);
+  border: 1px solid var(--blur-border-strong);
 }
 
 .manage-toolbar-left,

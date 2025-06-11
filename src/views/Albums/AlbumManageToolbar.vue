@@ -81,7 +81,7 @@ export default {
 @media (max-width: 768px) {
   .album-toolbar-container {
     top: 60px;
-    width: calc(100% - (var(--spacing-md) * 2)); /* 移动设备上可能使用更小的间距 */
+    width: calc(100% - (var(--spacing-md) * 2));
   }
 }
 </style>
