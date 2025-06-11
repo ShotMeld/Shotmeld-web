@@ -85,17 +85,17 @@ export default {
   justify-content: center;
   align-items: flex-start;
   min-height: 100vh;
-  background-color: #f8f9fa;
-  padding: 32px;
+  background-color: var(--bg-secondary);
+  padding: var(--spacing-2xl);
 }
 
 .profile-card {
-  background: #ffffff;
-  border-radius: 28px;
-  padding: 32px;
+  background: var(--bg-primary);
+  border-radius: var(--radius-extra-large);
+  padding: var(--spacing-2xl);
   width: 100%;
   max-width: 500px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-medium);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -105,37 +105,37 @@ export default {
   width: 80px;
   height: 80px;
   border-radius: 50%;
-  background: #8ebef1;
-  color: white;
+  background: var(--color-primary);
+  color: var(--color-white);
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 2rem;
-  font-weight: 500;
-  margin-bottom: 16px;
+  font-weight: var(--font-weight-medium);
+  margin-bottom: var(--spacing-md);
 }
 
 h1 {
-  color: #1f1f1f;
-  font-size: 1.5rem;
-  margin-bottom: 32px;
-  font-weight: 500;
+  color: var(--text-primary);
+  font-size: var(--font-size-xl);
+  margin-bottom: var(--spacing-2xl);
+  font-weight: var(--font-weight-medium);
 }
 
 .info-container {
   width: 100%;
-  background: #f8f9fa;
-  border-radius: 16px;
-  padding: 16px;
-  margin-bottom: 24px;
+  background: var(--bg-secondary);
+  border-radius: var(--radius-medium);
+  padding: var(--spacing-md);
+  margin-bottom: var(--spacing-xl);
 }
 
 .info-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 12px 16px;
-  border-bottom: 1px solid #e0e0e0;
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-bottom: var(--border-width) solid var(--border-color);
 }
 
 .info-item:last-child {
@@ -143,34 +143,34 @@ h1 {
 }
 
 .label {
-  color: #666;
-  font-size: 0.9rem;
+  color: var(--text-secondary);
+  font-size: var(--font-size-sm);
 }
 
 .value {
-  color: #1f1f1f;
-  font-weight: 500;
+  color: var(--text-primary);
+  font-weight: var(--font-weight-medium);
 }
 
 .md-button {
-  padding: 14px 24px;
+  padding: 14px var(--spacing-xl);
   border: none;
-  border-radius: 100px;
-  font-size: 1rem;
-  font-weight: 500;
+  border-radius: var(--radius-round);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-medium);
   cursor: pointer;
-  transition: all 0.2s;
+  transition: var(--transition-fast);
   min-width: 120px;
 }
 
 .md-button.outlined {
   background: transparent;
-  border: 2px solid #8ebef1;
-  color: #8ebef1;
+  border: 2px solid var(--color-primary);
+  color: var(--color-primary);
 }
 
 .md-button.outlined:hover {
-  background: rgba(103, 80, 164, 0.05);
+  background: var(--color-primary-hover);
 }
 
 .md-button.outlined:active {
@@ -182,17 +182,17 @@ h1 {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: #ffffff;
-  border-radius: 28px;
-  padding: 32px;
+  background: var(--bg-primary);
+  border-radius: var(--radius-extra-large);
+  padding: var(--spacing-2xl);
   width: 100%;
   max-width: 500px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-medium);
 }
 
 .loading p {
-  margin-top: 16px;
-  color: #666;
+  margin-top: var(--spacing-md);
+  color: var(--text-secondary);
 }
 
 .spinner {
@@ -200,7 +200,7 @@ h1 {
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  border-left-color: #8ebef1;
+  border-left-color: var(--color-primary);
   animation: spin 1s linear infinite;
 }
 
