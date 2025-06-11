@@ -4,11 +4,14 @@
 
 <template>
   <div class="base-layout">
+    
     <AppNavbar
       :userName="userName"
       :currentPage="currentPage"
       @show-upload="handleShowUpload"
       @show-album-form="handleShowAlbumForm"
+      @toggle-manage="handleToggleManage"
+      @toggle-album-manage="handleToggleAlbumManage"
     />
     <main class="base-layout__content">
       <router-view ref="routerView"></router-view>
@@ -68,6 +71,12 @@ export default {
     handleShowAlbumForm() {
       eventBus.emit('show-album-form')
     },
+    handleToggleManage() {
+      eventBus.emit('toggle-manage')
+    },
+    handleToggleAlbumManage() {
+      eventBus.emit('toggle-album-manage')
+    },
   },
 }
 </script>
@@ -77,11 +86,15 @@ export default {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  background: var(--bg-gradient);
+  position: relative;
 }
 
 .base-layout__content {
   margin-top: 64px;
   flex: 1;
   width: 100%;
+  position: relative;
+  z-index: 10;
 }
 </style>

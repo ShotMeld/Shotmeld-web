@@ -31,10 +31,12 @@ export default {
   grid-column: 1 / -1;
   text-align: center;
   padding: var(--spacing-3xl);
-  background: var(--bg-primary);
+  background: var(--blur-bg-strong);
+  backdrop-filter: var(--blur-strong);
+  -webkit-backdrop-filter: var(--blur-strong);
   border-radius: var(--radius-large);
   box-shadow: var(--shadow-small);
-  border: var(--border-width) solid var(--border-color);
+  border: var(--border-width) solid var(--blur-border);
   display: flex;
   flex-direction: column;
   align-items: center;

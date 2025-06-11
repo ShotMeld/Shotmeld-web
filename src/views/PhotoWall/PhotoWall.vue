@@ -4,32 +4,25 @@
 
 <template>
   <div class="photo-wall-container">
-    <AppNavbar
-      :userName="userName"
-      currentPage="photowall"
-      @show-upload="isUploadModalVisible = true"
-      @show-album-form="isAlbumFormVisible = true"
-      @toggle-manage="toggleManageMode"
-    />
     <main :class="mainContentClass">
-      <transition name="slide-fade">
-        <PhotoWallFilters
-          v-if="!isManageMode"
-          :searchQuery="searchQuery"
-          :filters="filters"
-          :dateRange="dateRange"
-          :albums="albums"
-          @update:searchQuery="searchQuery = $event"
-          @update:filters="filters = $event"
-          @update:dateRange="dateRange = $event"
-          @fetchPhotos="fetchPhotos"
-          @update:searchResults="handleSearchResultsUpdate"
-        />
-      </transition>
+      <PhotoWallFilters
+        v-if="!isManageMode"
+        :class="filtersAnimationClass"
+        :searchQuery="searchQuery"
+        :filters="filters"
+        :dateRange="dateRange"
+        :albums="albums"
+        @update:searchQuery="searchQuery = $event"
+        @update:filters="filters = $event"
+        @update:dateRange="dateRange = $event"
+        @fetchPhotos="fetchPhotos"
+        @update:searchResults="handleSearchResultsUpdate"
+      />
 
       <!-- 批量管理工具栏 -->
       <PhotoWallManageToolbar
         v-if="isManageMode"
+        :class="toolbarAnimationClass"
         :selectedPhotos="selectedPhotos"
         @select-all="selectAll"
         @deselect-all="deselectAll"
@@ -106,7 +99,6 @@ import PhotoWallAlbumModal from './PhotoWallAlbumModal.vue'
 import PhotoDetail from '../../components/PhotoDetail.vue'
 import PhotoUpload from '../../components/PhotoUpload.vue'
 import AlbumForm from '../../components/album/AlbumForm.vue'
-import AppNavbar from '../../layout/AppNavbar.vue'
 import { SfButton, SfModal, SfDeleteConfirmModal } from '../../components/ui'
 import { photoService, albumService } from '../../api'
 import { eventBus, EventTypes } from '../../utils/eventBus'
@@ -123,7 +115,6 @@ export default {
     PhotoDetail,
     PhotoUpload,
     AlbumForm,
-    AppNavbar,
     SfButton,
     SfModal,
     SfDeleteConfirmModal,
@@ -156,19 +147,35 @@ export default {
       selectedPhotos: [],
       isAddToAlbumModalVisible: false,
       isDeleteSelectedModalVisible: false,
+      // 动画控制状态
+      filtersExiting: false,
+      toolbarEntering: false,
     }
   },
   computed: {
-    userName() {
-      const user = JSON.parse(localStorage.getItem('user') || '{}')
-      return user.username || this.$t('photoWall.defaultUser')
-    },
     // 为主内容添加动态类，当管理工具栏显示时提供额外的顶部间距
     mainContentClass() {
       return {
         'photo-wall-main': true,
         'with-toolbar-space': this.isManageMode,
       }
+    },
+    // 筛选框动画类
+    filtersAnimationClass() {
+      if (this.filtersExiting) {
+        return 'filters-slide-out'
+      }
+      if (!this.isManageMode) {
+        return 'filters-slide-in'
+      }
+      return ''
+    },
+    // 工具栏动画类
+    toolbarAnimationClass() {
+      if (this.toolbarEntering) {
+        return 'toolbar-slide-in'
+      }
+      return ''
     },
   },
   created() {
@@ -183,23 +190,42 @@ export default {
     eventBus.on(EventTypes.SHOW_ALBUM_FORM, () => {
       this.isAlbumFormVisible = true
     })
+
+    // 监听管理模式切换事件
+    eventBus.on('toggle-manage', () => {
+      this.toggleManageMode()
+    })
   },
   beforeUnmount() {
     eventBus.off(EventTypes.SHOW_UPLOAD_MODAL)
     eventBus.off(EventTypes.SHOW_ALBUM_FORM)
+    eventBus.off('toggle-manage')
   },
   methods: {
     // 批量管理相关方法
     toggleManageMode() {
-      this.isManageMode = !this.isManageMode
-      // 进入或退出管理模式时清空选中状态
-      if (!this.isManageMode) {
-        this.selectedPhotos = []
+      if (this.isManageMode) {
+        // 退出管理模式：先播放工具栏退出动画，然后显示筛选框
+        this.exitManageMode()
+      } else {
+        // 进入管理模式：先播放筛选框退出动画，然后显示工具栏
+        this.filtersExiting = true
+        setTimeout(() => {
+          this.isManageMode = true
+          this.toolbarEntering = true
+          this.filtersExiting = false
+          // 重置工具栏动画状态
+          setTimeout(() => {
+            this.toolbarEntering = false
+          }, 500)
+        }, 300)
       }
     },
     exitManageMode() {
       this.isManageMode = false
       this.selectedPhotos = []
+      this.toolbarEntering = false
+      this.filtersExiting = false
     },
     toggleSelectPhoto(photoId) {
       const index = this.selectedPhotos.indexOf(photoId)
@@ -390,7 +416,6 @@ export default {
 <style scoped>
 .photo-wall-container {
   min-height: 100vh;
-  background-color: var(--bg-secondary);
 }
 
 .photo-wall-main {
@@ -400,20 +425,20 @@ export default {
   margin-right: auto;
   width: 100%;
   padding: var(--spacing-xl);
+  position: relative;
 }
 
-/* 为固定定位的工具栏腾出空间 */
 .with-toolbar-space {
-  padding-top: var(--spacing-xl); /* 保持原有的顶部间距 */
-  margin-top: 80px; /* 为固定工具栏添加额外的空间 */
+  padding-top: var(--spacing-xl);
+  margin-top: 80px;
   transition: margin-top 0.3s ease;
-  position: relative; /* 确保正确的堆叠上下文 */
+  position: relative;
 }
 
 @media (max-width: 768px) {
   .with-toolbar-space {
-    padding-top: var(--spacing-md); /* 移动端使用较小的间距 */
-    margin-top: 130px; /* 移动端工具栏可能更高 */
+    padding-top: var(--spacing-md);
+    margin-top: 130px;
   }
 }
 
@@ -422,49 +447,86 @@ export default {
   justify-content: space-between;
   align-items: center;
   margin-bottom: var(--spacing-lg);
-  /* 确保管理工具栏有更好的视觉效果 */
   background-color: var(--bg-primary);
   padding: var(--spacing-md);
   border-radius: var(--radius-large);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   animation: toolbar-appear 0.4s cubic-bezier(0.33, 1, 0.68, 1) forwards;
-  /* Added for sticky behavior */
   position: sticky;
-  top: 0; /* Stick to the top of the main scrolling container's content area */
-  z-index: 10; /* Ensure it's above other scrolled content */
+  top: 0;
+  z-index: 10;
 }
 
-/* 相册模态框的样式已移至 PhotoWallAlbumModal.vue 组件中 */
-
-/* 已移到 SfDeleteConfirmModal 组件中 */
-
-/* 过渡动画样式 */
-.slide-fade-enter-active {
-  transition: all 0.4s cubic-bezier(0.33, 1, 0.68, 1);
-  transform-origin: top center;
+/* 筛选搜索框动画 */
+.filters-slide-in {
+  animation: filtersSlideIn 0.5s cubic-bezier(0.25, 0.8, 0.25, 1) forwards;
 }
 
-.slide-fade-leave-active {
-  transition: all 0.25s cubic-bezier(0.32, 0, 0.67, 0);
-  transform-origin: top center;
-  position: absolute;
-  width: 100%;
-  z-index: -1;
+.filters-slide-out {
+  animation: filtersSlideOut 0.3s cubic-bezier(0.4, 0, 1, 1) forwards;
 }
 
-.slide-fade-enter-from {
-  transform: translateY(-10px);
-  opacity: 0;
-  filter: blur(1px);
+@keyframes filtersSlideIn {
+  from {
+    opacity: 0;
+    filter: blur(10px);
+    transform: translateY(-40px);
+  }
+  to {
+    opacity: 1;
+    filter: blur(0px);
+    transform: translateY(0);
+  }
 }
 
-.slide-fade-leave-to {
-  transform: translateY(-8px);
-  opacity: 0;
-  filter: blur(0.5px);
+@keyframes filtersSlideOut {
+  from {
+    opacity: 1;
+    filter: blur(0px);
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    filter: blur(8px);
+    transform: translateY(-60px);
+  }
 }
 
-/* 确保管理工具栏有更好的视觉效果 */
+/* 工具箱动画 */
+.toolbar-slide-in {
+  animation: toolbarSlideIn 0.5s cubic-bezier(0.25, 0.8, 0.25, 1) forwards;
+}
+
+.toolbar-slide-out {
+  animation: toolbarSlideOut 0.3s cubic-bezier(0.4, 0, 1, 1) forwards;
+}
+
+@keyframes toolbarSlideIn {
+  from {
+    opacity: 0;
+    filter: blur(10px);
+    transform: translateX(-50%) translateY(-50px);
+  }
+  to {
+    opacity: 1;
+    filter: blur(0px);
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+@keyframes toolbarSlideOut {
+  from {
+    opacity: 1;
+    filter: blur(0px);
+    transform: translateX(-50%) translateY(0);
+  }
+  to {
+    opacity: 0;
+    filter: blur(8px);
+    transform: translateX(-50%) translateY(-60px);
+  }
+}
+
 .manage-toolbar {
   background-color: var(--bg-primary);
   padding: var(--spacing-md);
