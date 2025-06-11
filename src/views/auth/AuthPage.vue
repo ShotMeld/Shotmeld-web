@@ -243,33 +243,4 @@ export default {
     max-width: 100%;
   }
 }
-
-.auth-container {
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-}
-
-/* 深色模式全局适配 */
-.theme-dark .auth-container {
-  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%) !important;
-}
-
-/* 品牌区域适配 */
-.theme-dark .brand-title {
-  color: rgba(255, 255, 255, 0.9) !important;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
-}
-
-.theme-dark .brand-subtitle {
-  color: rgba(255, 255, 255, 0.7) !important;
-}
-
-/* ICP备案适配 */
-.theme-dark .icp-footer {
-  color: rgba(255, 255, 255, 0.5) !important;
-}
-
-/* 背景动画容器适配 */
-.theme-dark ::v-deep .auth-background {
-  --particle-color: rgba(255, 255, 255, 0.1);
-}
 </style>
