@@ -5,8 +5,6 @@
 <template>
   <transition name="login-transition" @after-leave="$emit('transition-complete')">
     <div v-if="show" class="login-transition-overlay">
-      <!-- 背景动画层使用独立组件 -->
-      <AuthBackground />
 
       <!-- 内容层 -->
       <div class="transition-content">
@@ -31,13 +29,9 @@
 </template>
 
 <script>
-import AuthBackground from '../auth/AuthBackground.vue'
 
 export default {
   name: 'LoginTransition',
-  components: {
-    AuthBackground,
-  },
   props: {
     show: {
       type: Boolean,

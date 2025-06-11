@@ -14,8 +14,6 @@
 
     <!-- 认证表单容器 - 过渡动画显示时隐藏 -->
     <div class="auth-form-container" :class="{ 'fade-out': showTransition }">
-      <!-- 背景动画 -->
-      <AuthBackground />
 
       <div class="auth-content">
         <!-- Logo 和品牌 -->
@@ -54,7 +52,6 @@
 import { LoginTransition } from '../../components/ui'
 import LoginForm from '../../components/auth/LoginForm.vue'
 import RegisterForm from '../../components/auth/RegisterForm.vue'
-import AuthBackground from '../../components/auth/AuthBackground.vue'
 import IcpFooter from '../../layout/IcpFooter.vue'
 
 export default {
@@ -63,7 +60,6 @@ export default {
     LoginTransition,
     LoginForm,
     RegisterForm,
-    AuthBackground,
     IcpFooter,
   },
   data() {

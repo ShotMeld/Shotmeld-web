@@ -4,8 +4,6 @@
 
 <template>
   <div class="base-layout">
-    <!-- 全局背景动画 -->
-    <AuthBackground />
     
     <AppNavbar
       :userName="userName"
@@ -25,7 +23,6 @@
 <script>
 import AppNavbar from './AppNavbar.vue'
 import IcpFooter from './IcpFooter.vue'
-import AuthBackground from '../components/auth/AuthBackground.vue'
 import { eventBus } from '../utils/eventBus'
 
 export default {
@@ -33,7 +30,6 @@ export default {
   components: {
     AppNavbar,
     IcpFooter,
-    AuthBackground,
   },
   computed: {
     currentPage() {
