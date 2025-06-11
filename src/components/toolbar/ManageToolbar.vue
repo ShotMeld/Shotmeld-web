@@ -96,9 +96,14 @@ export default {
     // 过滤出需要展示的操作按钮
     visibleActions() {
       return this.actions.filter(action => action.visible !== false)
-    },
+    },  },
+  emits: {
+    'select-all': true,
+    'deselect-all': true,
+    'exit-manage-mode': true,
+    // Validator for events starting with 'show-'
+    'show-*': (event) => event.startsWith('show-'),
   },
-  emits: ['select-all', 'deselect-all', 'exit-manage-mode'],
   methods: {
     selectAll() {
       this.$emit('select-all')

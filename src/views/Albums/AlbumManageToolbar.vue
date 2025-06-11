@@ -2,11 +2,10 @@
   AlbumManageToolbar.vue - 相册批量管理工具栏组件
 -->
 
-<template>
-  <div class="album-toolbar-container toolbar-visible">
+<template>  <div class="album-toolbar-container toolbar-visible">
     <ManageToolbar
       :selectedItems="selectedAlbums"
-      itemUnit="个相册"
+      :itemUnit="$t('albumManageToolbar.itemUnit')"
       :actions="toolbarActions"
       @select-all="$emit('select-all')"
       @deselect-all="$emit('deselect-all')"
@@ -29,12 +28,11 @@ export default {
       type: Array,
       required: true,
     },
-  },
-  computed: {
+  },  computed: {
     toolbarActions() {
       return [
         {
-          label: '删除',
+          label: this.$t('albumManageToolbar.actions.delete'),
           event: 'show-delete-selected',
           icon: 'fas fa-trash',
           type: 'danger',
