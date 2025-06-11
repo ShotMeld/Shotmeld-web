@@ -4,11 +4,16 @@
 
 <template>
   <div class="base-layout">
+    <!-- 全局背景动画 -->
+    <AuthBackground />
+    
     <AppNavbar
       :userName="userName"
       :currentPage="currentPage"
       @show-upload="handleShowUpload"
       @show-album-form="handleShowAlbumForm"
+      @toggle-manage="handleToggleManage"
+      @toggle-album-manage="handleToggleAlbumManage"
     />
     <main class="base-layout__content">
       <router-view ref="routerView"></router-view>
@@ -20,6 +25,7 @@
 <script>
 import AppNavbar from './AppNavbar.vue'
 import IcpFooter from './IcpFooter.vue'
+import AuthBackground from '../components/auth/AuthBackground.vue'
 import { eventBus } from '../utils/eventBus'
 
 export default {
@@ -27,6 +33,7 @@ export default {
   components: {
     AppNavbar,
     IcpFooter,
+    AuthBackground,
   },
   computed: {
     currentPage() {
@@ -68,6 +75,12 @@ export default {
     handleShowAlbumForm() {
       eventBus.emit('show-album-form')
     },
+    handleToggleManage() {
+      eventBus.emit('toggle-manage')
+    },
+    handleToggleAlbumManage() {
+      eventBus.emit('toggle-album-manage')
+    },
   },
 }
 </script>
@@ -77,11 +90,15 @@ export default {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  background: var(--bg-gradient);
+  position: relative;
 }
 
 .base-layout__content {
   margin-top: 64px;
   flex: 1;
   width: 100%;
+  position: relative;
+  z-index: 10;
 }
 </style>

@@ -4,13 +4,6 @@
 
 <template>
   <div class="album-view">
-    <AppNavbar
-      :userName="userName"
-      currentPage="albums"
-      @show-upload="isUploadModalVisible = true"
-      @show-album-form="showCreateModal = true"
-      @toggle-album-manage="toggleManageMode"
-    />
     <div :class="mainContainerClass">
       <div v-if="loading" class="album-view__loading">
         <div class="album-view__spinner"></div>
@@ -80,7 +73,6 @@ import SfDeleteConfirmModal from '../components/ui/SfDeleteConfirmModal.vue'
 import AlbumForm from '../components/album/AlbumForm.vue'
 import { albumService } from '../api'
 import { eventBus } from '../utils/eventBus'
-import AppNavbar from '../layout/AppNavbar.vue'
 
 export default {
   name: 'AlbumView',
@@ -91,7 +83,6 @@ export default {
     SfModal,
     SfDeleteConfirmModal,
     AlbumForm,
-    AppNavbar,
   },
   data() {
     return {
@@ -99,7 +90,6 @@ export default {
       albums: [],
       loading: false,
       error: null,
-      userName: '',
       // 批量管理相关的状态
       isManageMode: false,
       selectedAlbums: [],
@@ -107,9 +97,6 @@ export default {
     }
   },
   async created() {
-    // 获取用户信息
-    const user = JSON.parse(localStorage.getItem('user') || '{}')
-    this.userName = user.username || '用户'
     await this.fetchAlbums()
 
     // 监听新建相册事件
@@ -226,7 +213,7 @@ export default {
 <style scoped>
 .album-view {
   min-height: 100vh;
-  background-color: var(--bg-secondary);
+  /* 移除背景颜色，让 BaseLayout 的背景显示 */
 }
 
 .album-container {

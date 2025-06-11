@@ -65,10 +65,13 @@ export default {
 }
 
 .more-content {
-  background-color: var(--bg-secondary);
+  background: var(--blur-bg-strong);
+  backdrop-filter: var(--blur-strong);
+  -webkit-backdrop-filter: var(--blur-strong);
   border-radius: var(--radius-extra-large);
   padding: var(--spacing-2xl);
   min-height: 400px;
+  border: 1px solid var(--blur-border);
 }
 
 .card-grid {
@@ -78,15 +81,18 @@ export default {
 }
 
 .feature-card {
-  background-color: var(--bg-primary);
+  background: var(--blur-bg-medium);
+  backdrop-filter: var(--blur-medium);
+  -webkit-backdrop-filter: var(--blur-medium);
   border-radius: var(--radius-large);
   padding: var(--spacing-xl);
   box-shadow: var(--shadow-small);
   transition:
     transform var(--transition-fast),
-    box-shadow var(--transition-fast);
+    box-shadow var(--transition-fast),
+    background var(--transition-fast);
   cursor: pointer;
-  border: var(--border-width) solid var(--border-color);
+  border: var(--border-width) solid var(--blur-border);
 }
 
 .feature-card:hover {

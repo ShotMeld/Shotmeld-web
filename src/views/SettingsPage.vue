@@ -121,7 +121,7 @@ export default {
 <style scoped>
 .page-container {
   min-height: 100vh;
-  background-color: var(--bg-secondary);
+  /* 移除背景颜色，让全局背景显示 */
 }
 
 .settings-content {
@@ -131,12 +131,15 @@ export default {
 }
 
 .settings-card {
-  background: var(--bg-primary);
+  background: var(--blur-bg-strong);
+  backdrop-filter: var(--blur-strong);
+  -webkit-backdrop-filter: var(--blur-strong);
   border-radius: 28px;
   padding: 40px;
   width: 100%;
   max-width: 680px;
   box-shadow: var(--shadow-medium);
+  border: 1px solid var(--blur-border);
 }
 
 .settings-header {

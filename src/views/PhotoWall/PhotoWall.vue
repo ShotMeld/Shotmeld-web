@@ -4,13 +4,6 @@
 
 <template>
   <div class="photo-wall-container">
-    <AppNavbar
-      :userName="userName"
-      currentPage="photowall"
-      @show-upload="isUploadModalVisible = true"
-      @show-album-form="isAlbumFormVisible = true"
-      @toggle-manage="toggleManageMode"
-    />
     <main :class="mainContentClass">
       <transition name="slide-fade">
         <PhotoWallFilters
@@ -106,7 +99,6 @@ import PhotoWallAlbumModal from './PhotoWallAlbumModal.vue'
 import PhotoDetail from '../../components/PhotoDetail.vue'
 import PhotoUpload from '../../components/PhotoUpload.vue'
 import AlbumForm from '../../components/album/AlbumForm.vue'
-import AppNavbar from '../../layout/AppNavbar.vue'
 import { SfButton, SfModal, SfDeleteConfirmModal } from '../../components/ui'
 import { photoService, albumService } from '../../api'
 import { eventBus, EventTypes } from '../../utils/eventBus'
@@ -123,7 +115,6 @@ export default {
     PhotoDetail,
     PhotoUpload,
     AlbumForm,
-    AppNavbar,
     SfButton,
     SfModal,
     SfDeleteConfirmModal,
@@ -159,10 +150,6 @@ export default {
     }
   },
   computed: {
-    userName() {
-      const user = JSON.parse(localStorage.getItem('user') || '{}')
-      return user.username || this.$t('photoWall.defaultUser')
-    },
     // 为主内容添加动态类，当管理工具栏显示时提供额外的顶部间距
     mainContentClass() {
       return {
@@ -183,10 +170,16 @@ export default {
     eventBus.on(EventTypes.SHOW_ALBUM_FORM, () => {
       this.isAlbumFormVisible = true
     })
+
+    // 监听管理模式切换事件
+    eventBus.on('toggle-manage', () => {
+      this.toggleManageMode()
+    })
   },
   beforeUnmount() {
     eventBus.off(EventTypes.SHOW_UPLOAD_MODAL)
     eventBus.off(EventTypes.SHOW_ALBUM_FORM)
+    eventBus.off('toggle-manage')
   },
   methods: {
     // 批量管理相关方法
@@ -390,7 +383,7 @@ export default {
 <style scoped>
 .photo-wall-container {
   min-height: 100vh;
-  background-color: var(--bg-secondary);
+  /* 移除背景颜色，让 BaseLayout 的背景显示 */
 }
 
 .photo-wall-main {

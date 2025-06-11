@@ -619,10 +619,13 @@ export default {
   min-height: 300px;
   gap: var(--spacing-md);
   color: var(--text-secondary);
-  background-color: var(--bg-primary);
+  background: var(--blur-bg-strong);
+  backdrop-filter: var(--blur-strong);
+  -webkit-backdrop-filter: var(--blur-strong);
   border-radius: var(--radius-large);
   padding: var(--spacing-3xl);
   box-shadow: var(--shadow-medium);
+  border: 1px solid var(--blur-border);
 }
 
 .empty-timeline i {

@@ -4,12 +4,6 @@
 
 <template>
   <div class="album-detail">
-    <AppNavbar
-      :userName="userName"
-      currentPage="album-detail"
-      @show-upload="showUploadModal = true"
-      @toggle-manage="toggleManageMode"
-    />
     <div :class="albumDetailContainerClass">
       <div class="album-detail__header">
         <div class="album-detail__info">
@@ -102,7 +96,6 @@ import SfButton from '../components/ui/SfButton.vue'
 import SfModal from '../components/ui/SfModal.vue'
 import SfDeleteConfirmModal from '../components/ui/SfDeleteConfirmModal.vue'
 import AlbumPhotosManageToolbar from './Albums/AlbumPhotosManageToolbar.vue'
-import AppNavbar from '../layout/AppNavbar.vue'
 import { albumService, photoService } from '../api'
 import { eventBus } from '../utils/eventBus'
 
@@ -116,7 +109,6 @@ export default {
     SfModal,
     SfDeleteConfirmModal,
     AlbumPhotosManageToolbar,
-    AppNavbar,
   },
   data() {
     return {
@@ -133,7 +125,6 @@ export default {
       currentPhoto: null,
       showPhotoDetail: false,
       showUploadModal: false,
-      userName: '',
       // 批量管理相关的状态
       isManageMode: false,
       selectedPhotos: [],
@@ -150,19 +141,22 @@ export default {
     },
   },
   async created() {
-    // 获取用户信息
-    const user = JSON.parse(localStorage.getItem('user') || '{}')
-    this.userName = user.username || this.$t('common.user')
     await this.fetchAlbumDetails()
 
     // 监听上传照片事件
     eventBus.on('show-upload-modal', () => {
       this.showUploadModal = true
     })
+
+    // 监听管理模式切换事件
+    eventBus.on('toggle-manage', () => {
+      this.toggleManageMode()
+    })
   },
   beforeUnmount() {
     // 清理事件监听
     eventBus.off('show-upload-modal')
+    eventBus.off('toggle-manage')
   },
   methods: {
     formatDate(date) {
@@ -335,7 +329,7 @@ export default {
 <style scoped>
 .album-detail {
   min-height: 100vh;
-  background-color: var(--bg-secondary);
+  /* 移除背景颜色，让 BaseLayout 的背景显示 */
 }
 
 .album-detail-container {
