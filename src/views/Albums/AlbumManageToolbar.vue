@@ -2,8 +2,7 @@
   AlbumManageToolbar.vue - 相册批量管理工具栏组件
 -->
 
-<template>
-  <div class="album-toolbar-container toolbar-visible">
+<template>  <div class="album-toolbar-container toolbar-visible">
     <ManageToolbar
       :selectedItems="selectedAlbums"
       itemUnit="个相册"
@@ -11,6 +10,7 @@
       @select-all="$emit('select-all')"
       @deselect-all="$emit('deselect-all')"
       @show-delete-selected="$emit('show-delete-selected')"
+      @show-change-cover="$emit('show-change-cover')"
       @exit-manage-mode="$emit('exit-manage-mode')"
     />
   </div>
@@ -29,10 +29,18 @@ export default {
       type: Array,
       required: true,
     },
-  },
-  computed: {
+  },  computed: {
     toolbarActions() {
       return [
+        {
+          label: '更改封面',
+          event: 'show-change-cover',
+          icon: 'fas fa-image',
+          type: 'primary',
+          requireSelection: true,
+          // 只有选择了一个相册时才可用
+          visible: this.selectedAlbums.length === 1,
+        },
         {
           label: '删除',
           event: 'show-delete-selected',
@@ -43,7 +51,7 @@ export default {
       ]
     },
   },
-  emits: ['select-all', 'deselect-all', 'show-delete-selected', 'exit-manage-mode'],
+  emits: ['select-all', 'deselect-all', 'show-delete-selected', 'show-change-cover', 'exit-manage-mode'],
 }
 </script>
 

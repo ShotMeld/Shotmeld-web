@@ -557,12 +557,45 @@
       "actions": {
         "keep": "Keep",
         "delete": "Delete"
-      },
-      "info": {
+      },      "info": {
         "size": "Size: {size}",
         "dimensions": "Dimensions: {width} x {height}",
         "date": "Taken: {date}"
       }
+    }
+  },  "changeCover": {
+    "title": "Change Album Cover",
+    "selectFromAlbum": "Select from Album",
+    "uploadNew": "Upload New Photo",
+    "noPhotosInAlbum": "No photos in album",
+    "uploadPhotosFirst": "Please upload photos to the album first",
+    "photoAlt": "Photo preview",
+    "cancel": "Cancel",
+    "confirm": "Confirm Change",
+    "loading": "Loading photos...",
+    "updating": "Updating...",
+    "noPhotos": {
+      "title": "No photos in album",
+      "hint": "Please add photos to this album first, then set the cover"
+    },
+    "photo": {
+      "untitled": "Untitled",
+      "unknownDate": "Unknown Date"
+    },
+    "pagination": {
+      "prev": "Previous",
+      "next": "Next",
+      "pageInfo": "Page {current} of {total}"
+    },
+    "success": {
+      "title": "Update Successful",
+      "message": "Album cover has been successfully updated"
+    },
+    "error": {
+      "title": "Update Failed",
+      "message": "Unable to update album cover, please try again",
+      "loadFailed": "Load Failed",
+      "loadFailedMessage": "Unable to fetch album photos, please try again"
     }
   }
 }

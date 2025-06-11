@@ -28,14 +28,14 @@
         <p>{{ $t('albumView.empty') }}</p>
       </div>
 
-      <div v-else>
-        <!-- 批量管理工具栏 -->
+      <div v-else>        <!-- 批量管理工具栏 -->
         <AlbumManageToolbar
           v-if="isManageMode"
           :selectedAlbums="selectedAlbums"
           @select-all="selectAll"
           @deselect-all="deselectAll"
           @show-delete-selected="showDeleteSelectedModal"
+          @show-change-cover="showChangeCoverModal"
           @exit-manage-mode="exitManageMode"
         />
 
@@ -59,14 +59,19 @@
         @close="showCreateModal = false"
         @cancel="showCreateModal = false"
       />
-    </SfModal>
-
-    <!-- 批量删除确认弹窗 -->
+    </SfModal>    <!-- 批量删除确认弹窗 -->
     <SfDeleteConfirmModal
       v-model="isDeleteSelectedModalVisible"
       :item-name="$t('albumView.deleteConfirm.itemName')"
       :count="selectedAlbums.length"
       @confirm="deleteSelectedAlbums"
+    />
+
+    <!-- 更改封面模态框 -->
+    <ChangeCoverModal
+      v-model="isChangeCoverModalVisible"
+      :albumId="selectedAlbums.length === 1 ? selectedAlbums[0] : ''"
+      @cover-updated="handleCoverUpdated"
     />
   </div>
 </template>
@@ -78,19 +83,20 @@ import SfButton from '../components/ui/SfButton.vue'
 import SfModal from '../components/ui/SfModal.vue'
 import SfDeleteConfirmModal from '../components/ui/SfDeleteConfirmModal.vue'
 import AlbumForm from '../components/album/AlbumForm.vue'
+import ChangeCoverModal from '../components/ChangeCoverModal.vue'
 import { albumService } from '../api'
 import { eventBus } from '../utils/eventBus'
 import AppNavbar from '../layout/AppNavbar.vue'
 
 export default {
-  name: 'AlbumView',
-  components: {
+  name: 'AlbumView',  components: {
     AlbumCard,
     AlbumManageToolbar,
     SfButton,
     SfModal,
     SfDeleteConfirmModal,
     AlbumForm,
+    ChangeCoverModal,
     AppNavbar,
   },
   data() {
@@ -99,11 +105,11 @@ export default {
       albums: [],
       loading: false,
       error: null,
-      userName: '',
-      // 批量管理相关的状态
+      userName: '',      // 批量管理相关的状态
       isManageMode: false,
       selectedAlbums: [],
       isDeleteSelectedModalVisible: false,
+      isChangeCoverModalVisible: false,
     }
   },
   async created() {
@@ -182,10 +188,24 @@ export default {
     },
     isSelected(albumId) {
       return this.selectedAlbums.includes(albumId)
-    },
-    showDeleteSelectedModal() {
+    },    showDeleteSelectedModal() {
       if (this.selectedAlbums.length === 0) return
       this.isDeleteSelectedModalVisible = true
+    },
+    showChangeCoverModal() {
+      if (this.selectedAlbums.length !== 1) return
+      this.isChangeCoverModalVisible = true
+    },
+    handleCoverUpdated(result) {
+      // 更新相册封面后的处理
+      const { albumId, coverPhotoId } = result
+      const albumIndex = this.albums.findIndex(album => album.id === albumId)
+      if (albumIndex !== -1) {
+        this.albums[albumIndex].coverPhotoId = coverPhotoId
+        // 强制重新渲染相册卡片以显示新封面
+        this.$forceUpdate()
+      }
+      this.isChangeCoverModalVisible = false
     },
     async deleteSelectedAlbums() {
       try {

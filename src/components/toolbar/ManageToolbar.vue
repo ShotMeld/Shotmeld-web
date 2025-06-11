@@ -96,9 +96,13 @@ export default {
     // 过滤出需要展示的操作按钮
     visibleActions() {
       return this.actions.filter(action => action.visible !== false)
-    },
+    },  },
+  emits: (event) => {
+    // 动态验证事件名，允许 actions 中定义的所有事件
+    const allowedEvents = ['select-all', 'deselect-all', 'exit-manage-mode'];
+    // 同时允许任何以 'show-' 开头的事件（来自 actions 配置）
+    return allowedEvents.includes(event) || event.startsWith('show-');
   },
-  emits: ['select-all', 'deselect-all', 'exit-manage-mode'],
   methods: {
     selectAll() {
       this.$emit('select-all')

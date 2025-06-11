@@ -557,12 +557,45 @@
       "actions": {
         "keep": "保留",
         "delete": "删除"
-      },
-      "info": {
+      },      "info": {
         "size": "大小：{size}",
         "dimensions": "尺寸：{width} x {height}",
         "date": "拍摄时间：{date}"
       }
+    }
+  },  "changeCover": {
+    "title": "更改相册封面",
+    "selectFromAlbum": "从相册选择",
+    "uploadNew": "上传新照片",
+    "noPhotosInAlbum": "相册中暂无照片",
+    "uploadPhotosFirst": "请先上传照片到相册中",
+    "photoAlt": "照片预览",
+    "cancel": "取消",
+    "confirm": "确认更改",
+    "loading": "正在加载照片...",
+    "updating": "正在更新...",
+    "noPhotos": {
+      "title": "相册中暂无照片",
+      "hint": "请先向此相册添加照片，然后再设置封面"
+    },
+    "photo": {
+      "untitled": "无标题",
+      "unknownDate": "未知日期"
+    },
+    "pagination": {
+      "prev": "上一页",
+      "next": "下一页",
+      "pageInfo": "第 {current} 页，共 {total} 页"
+    },
+    "success": {
+      "title": "更新成功",
+      "message": "相册封面已成功更新"
+    },
+    "error": {
+      "title": "更新失败",
+      "message": "无法更新相册封面，请重试",
+      "loadFailed": "加载失败",
+      "loadFailedMessage": "无法获取相册照片，请重试"
     }
   }
 }

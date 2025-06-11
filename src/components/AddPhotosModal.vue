@@ -3,12 +3,10 @@
   专注于从图库选择现有照片进行添加
 -->
 
-<template>
-  <SfModal
+<template>  <SfModal
     v-model="visible"
     :title="$t('addPhotosModal.title')"
     size="default"
-    class="add-photos-modal"
   >
     <PhotoSelector
       :albumId="albumId"

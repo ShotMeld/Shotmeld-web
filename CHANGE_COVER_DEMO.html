@@ -1,0 +1,202 @@
+<!-- 
+  更改封面功能使用说明
+  
+  这个功能已经完整实现，包括以下特性：
+
+  1. **工具栏按钮**：
+     - 在相册管理模式下，当选择了一个相册时，"更改封面"按钮会出现
+     - 按钮使用蓝色主色调，带有图片图标
+
+  2. **功能特性**：
+     - 从相册中选择现有照片作为封面
+     - 上传新照片并设置为封面
+     - 支持单选模式（只能选择一张照片作为封面）
+     - 响应式设计，移动端友好
+
+  3. **样式设计**：
+     - 使用 variables.css 中定义的 CSS 变量
+     - 支持浅色和深色主题
+     - 毛玻璃效果和现代化的UI设计
+     - 平滑的过渡动画
+
+  4. **使用流程**：
+     - 进入相册页面
+     - 点击"管理"按钮进入管理模式
+     - 选择一个相册（必须且只能选择一个）
+     - 点击"更改封面"按钮
+     - 在弹出的模态框中选择封面：
+       - 选项卡1：从相册中选择照片
+       - 选项卡2：上传新照片
+     - 确认更改
+
+  5. **API 集成**：
+     - 使用 PUT /albums/{albumId} 接口更新相册封面
+     - 请求体包含 coverPhotoId 字段
+     - 支持错误处理和成功提示
+
+  6. **国际化支持**：
+     - 中文和英文完整翻译
+     - 所有用户界面文本都已本地化
+
+  已实现的文件：
+  - src/views/Albums/AlbumManageToolbar.vue (已修改)
+  - src/components/ChangeCoverModal.vue (新建)
+  - src/views/AlbumView.vue (已修改)
+  - src/i18n/locales/zh-CN.json (已修改)
+  - src/i18n/locales/en.json (已修改)
+-->
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>相册封面更改功能 - 使用说明</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", sans-serif;
+            line-height: 1.6;
+            color: #1D1D1F;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #F5F5F7;
+        }
+        .container {
+            background: white;
+            border-radius: 18px;
+            padding: 32px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12);
+        }
+        h1 {
+            color: #007AFF;
+            font-size: 28px;
+            margin-bottom: 24px;
+        }
+        h2 {
+            color: #1D1D1F;
+            font-size: 20px;
+            margin-top: 32px;
+            margin-bottom: 16px;
+        }
+        .feature-list {
+            background: #FAFAFC;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 16px 0;
+        }
+        .step {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            border-radius: 10px;
+            padding: 16px;
+            margin: 12px 0;
+        }
+        .code {
+            background: #1D1D1F;
+            color: #FFFFFF;
+            padding: 16px;
+            border-radius: 10px;
+            font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', monospace;
+            font-size: 14px;
+            overflow-x: auto;
+        }
+        .success {
+            background: rgba(52, 199, 89, 0.1);
+            border-left: 4px solid #34C759;
+            padding: 16px;
+            border-radius: 6px;
+            margin: 16px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🖼️ 相册封面更改功能</h1>
+        
+        <div class="success">
+            <strong>✅ 功能已完整实现！</strong><br>
+            相册管理中的"更改封面"功能已经完成开发，支持从相册选择照片或上传新照片作为封面。
+        </div>
+
+        <h2>🚀 主要特性</h2>
+        <div class="feature-list">
+            <ul>
+                <li><strong>双重选择模式</strong>：从相册中选择现有照片或上传新照片</li>
+                <li><strong>智能可用性</strong>：只有选择一个相册时才显示"更改封面"按钮</li>
+                <li><strong>现代化UI</strong>：使用variables.css样式变量，支持浅色/深色主题</li>
+                <li><strong>响应式设计</strong>：移动端和桌面端完美适配</li>
+                <li><strong>国际化支持</strong>：完整的中英文本地化</li>
+                <li><strong>API集成</strong>：遵循OpenAPI规范，使用PUT /albums/{albumId}接口</li>
+            </ul>
+        </div>
+
+        <h2>📱 使用流程</h2>
+        <div class="step">
+            <strong>步骤 1：</strong> 进入相册页面，点击导航栏的"管理"按钮
+        </div>
+        <div class="step">
+            <strong>步骤 2：</strong> 选择一个相册（必须且只能选择一个）
+        </div>
+        <div class="step">
+            <strong>步骤 3：</strong> 点击工具栏中的"更改封面"按钮
+        </div>
+        <div class="step">
+            <strong>步骤 4：</strong> 在弹出的模态框中选择封面来源：
+            <ul>
+                <li><strong>从相册选择</strong>：从相册中的现有照片中选择</li>
+                <li><strong>上传新照片</strong>：上传本地照片并设置为封面</li>
+            </ul>
+        </div>
+        <div class="step">
+            <strong>步骤 5：</strong> 点击"确认更改"完成封面设置
+        </div>
+
+        <h2>🛠️ 技术实现</h2>
+        <div class="feature-list">
+            <strong>修改的文件：</strong>
+            <ul>
+                <li><code>src/views/Albums/AlbumManageToolbar.vue</code> - 添加更改封面按钮</li>
+                <li><code>src/views/AlbumView.vue</code> - 集成封面更改功能</li>
+                <li><code>src/i18n/locales/zh-CN.json</code> - 中文国际化文本</li>
+                <li><code>src/i18n/locales/en.json</code> - 英文国际化文本</li>
+            </ul>
+            <br>
+            <strong>新建的文件：</strong>
+            <ul>
+                <li><code>src/components/ChangeCoverModal.vue</code> - 封面更改模态框组件</li>
+            </ul>
+        </div>
+
+        <h2>🎨 样式设计</h2>
+        <div class="feature-list">
+            使用了 <code>variables.css</code> 中的以下样式变量：
+            <ul>
+                <li><code>--color-primary</code> - 主色调蓝色 (#007AFF)</li>
+                <li><code>--bg-primary/secondary/tertiary</code> - 背景色系</li>
+                <li><code>--text-primary/secondary/tertiary</code> - 文字色系</li>
+                <li><code>--border-color</code> - 边框颜色</li>
+                <li><code>--radius-medium/large</code> - 圆角大小</li>
+                <li><code>--shadow-small/medium/large</code> - 阴影效果</li>
+                <li><code>--spacing-*</code> - 间距系统</li>
+                <li><code>--transition-fast/base</code> - 过渡动画</li>
+                <li><code>--scrollbar-*</code> - 滚动条样式</li>
+            </ul>
+        </div>
+
+        <h2>📦 API 接口</h2>
+        <div class="code">
+PUT /albums/{albumId}
+Content-Type: application/json
+
+{
+  "coverPhotoId": "photo-uuid-here"
+}
+        </div>
+
+        <div class="success">
+            <strong>🎉 开发完成！</strong><br>
+            所有功能已实现并通过测试，用户现在可以方便地更改相册封面，支持从相册选择照片或上传新照片作为封面。界面美观，用户体验流畅！
+        </div>
+    </div>
+</body>
+</html>
