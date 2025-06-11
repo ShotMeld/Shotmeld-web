@@ -117,18 +117,11 @@
           @click="selectedCoverPhoto = photo.id"
         >
           <img :src="photo.thumbnailUrl || photo.url" :alt="photo.name" />
-          <div v-if="album.coverPhotoId === photo.id" class="current-cover-badge">当前封面</div>
         </div>
       </div>
       <div class="modal-actions">
         <SfButton @click="showSetCoverModal = false" variant="secondary">取消</SfButton>
-        <SfButton 
-          @click="setAlbumCover" 
-          :disabled="!selectedCoverPhoto || selectedCoverPhoto === album.coverPhotoId"
-          :loading="settingCover"
-        >
-          确认设置
-        </SfButton>
+        <SfButton @click="setAlbumCover" :disabled="!selectedCoverPhoto">确认设置</SfButton>
       </div>
     </div>
   </SfModal>
@@ -184,43 +177,13 @@ export default {
     }
   },
   computed: {
-    async setAlbumCover() {
-      if (!this.selectedCoverPhoto || this.selectedCoverPhoto === this.album.coverPhotoId) return
-      
-      try {
-        this.settingCover = true
-        // 调用已有接口设置封面
-        await albumService.setAlbumCover(
-          this.album.id, 
-          this.selectedCoverPhoto
-        )
-        
-        this.$notify({
-          title: '成功',
-          message: '相册封面已更新',
-          type: 'success'
-        })
-        
-        // 更新本地相册数据
-        this.album.coverPhotoId = this.selectedCoverPhoto
-        this.showSetCoverModal = false
-        this.selectedCoverPhoto = null
-        
-        // 通知相册列表更新封面
-        eventBus.emit('album-cover-updated', {
-          albumId: this.album.id,
-          photoId: this.selectedCoverPhoto
-        })
-      } catch (error) {
-        console.error('设置封面失败:', error)
-        this.$notify.error({
-          title: '设置失败',
-          message: error.response?.data?.message || '无法更新相册封面'
-        })
-      } finally {
-        this.settingCover = false
+    albumDetailContainerClass() {
+      return {
+        'album-detail-container': true,
+        'with-toolbar-space': this.isManageMode,
       }
     },
+  },
   async created() {
     // 获取用户信息
     const user = JSON.parse(localStorage.getItem('user') || '{}')
@@ -665,70 +628,6 @@ export default {
   
   .action-btn {
     margin-bottom: var(--spacing-sm);
-  }
-}
-.set-cover-modal {
-  padding: var(--spacing-lg);
-}
-
-.cover-photo-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-  gap: var(--spacing-md);
-  margin: var(--spacing-lg) 0;
-  max-height: 400px;
-  overflow-y: auto;
-}
-
-.cover-photo-item {
-  position: relative;
-  aspect-ratio: 1;
-  border: 2px solid transparent;
-  border-radius: var(--radius-md);
-  overflow: hidden;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.cover-photo-item:hover {
-  transform: scale(1.03);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
-
-.cover-photo-item.selected {
-  border-color: var(--primary);
-  box-shadow: 0 4px 12px rgba(var(--primary-rgb), 0.2);
-}
-
-.cover-photo-item img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.current-cover-badge {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background-color: rgba(var(--primary-rgb), 0.8);
-  color: white;
-  font-size: var(--font-size-xs);
-  text-align: center;
-  padding: 2px 0;
-}
-
-.modal-actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: var(--spacing-md);
-  padding-top: var(--spacing-lg);
-  border-top: 1px solid var(--border-color);
-}
-
-@media (max-width: 768px) {
-  .cover-photo-grid {
-    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
   }
 }
 </style>
