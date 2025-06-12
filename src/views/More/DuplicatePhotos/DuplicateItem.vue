@@ -127,7 +127,6 @@ export default {
 .photo-card {
   overflow: hidden;
   cursor: pointer;
-  background-color: var(--bg-primary);
   transition:
     transform 0.3s cubic-bezier(0.25, 1, 0.5, 1),
     box-shadow 0.3s cubic-bezier(0.25, 1, 0.5, 1),

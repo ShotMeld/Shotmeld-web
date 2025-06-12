@@ -16,8 +16,8 @@ export const useBackgroundStore = defineStore('background', {
       if (this.initialized) {
         return this.orbs
       }
-      
-      const orbCount = 2 + Math.floor(Math.random() * 3) // 2-4个小球
+
+      const orbCount = 2 + Math.floor(Math.random() * 6) // 2-7个小球
       const orbs = []
       
       const colors = [
@@ -32,11 +32,11 @@ export const useBackgroundStore = defineStore('background', {
       for (let i = 0; i < orbCount; i++) {
         orbs.push({
           id: i,
-          size: 80 + Math.random() * 220, // 80-300px 随机尺寸
+          size: 580 + Math.random() * 520, // 580-1100px 随机尺寸
           x: Math.random() * 100, // 0-100% 随机位置
           y: Math.random() * 100,
           color: colors[Math.floor(Math.random() * colors.length)],
-          duration: 20 + Math.random() * 15, // 20-35秒动画时长，更慢
+          duration: 20 + Math.random() * 15, // 20-35秒动画时长
           delay: Math.random() * -15, // 随机延迟
           direction: Math.random() > 0.5 ? 1 : -1, // 随机移动方向
           moveX: (Math.random() > 0.5 ? 1 : -1) * (10 + Math.random() * 20), // 预计算移动距离

@@ -50,13 +50,15 @@ export default {
 
 <style scoped>
 .sf-card {
-  background-color: var(--bg-primary);
   border-radius: var(--radius-large);
   overflow: hidden;
   transition:
     transform var(--transition-base),
     box-shadow var(--transition-base);
-  border: 0;
+  background: var(--blur-bg-strong);
+  backdrop-filter: var(--blur-strong);
+  -webkit-backdrop-filter: var(--blur-strong);
+  border: 1px solid var(--blur-border);
 }
 
 .sf-card--none {

@@ -110,12 +110,16 @@ export default {
   async mounted() {
     // 设置深色模式
     this.setDarkMode()
+    // 隐藏全局背景
+    this.hideGlobalBackground()
     await this.loadPhoto()
   },
 
   beforeUnmount() {
     // 组件销毁时清理深色模式设置
     this.cleanupDarkMode()
+    // 恢复全局背景
+    this.showGlobalBackground()
   },
   methods: {
     setDarkMode() {
@@ -156,6 +160,22 @@ export default {
       variablesToClear.forEach(variable => {
         root.style.removeProperty(variable)
       })
+    },
+
+    hideGlobalBackground() {
+      // 隐藏全局背景动画组件
+      const globalBackground = document.querySelector('.global-background')
+      if (globalBackground) {
+        globalBackground.style.display = 'none'
+      }
+    },
+
+    showGlobalBackground() {
+      // 恢复全局背景动画组件
+      const globalBackground = document.querySelector('.global-background')
+      if (globalBackground) {
+        globalBackground.style.display = ''
+      }
     },
 
     goHome() {
@@ -215,6 +235,20 @@ export default {
   background-color: var(--bg-primary, #1a1a1a);
   color: var(--text-primary, #ffffff);
   overflow: hidden;
+  position: relative;
+  z-index: 100; /* 确保分享页内容在全局背景之上 */
+}
+
+/* 为分享页提供纯净的背景，覆盖全局背景 */
+.share-photo-view::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--bg-primary, #1a1a1a);
+  z-index: -1;
 }
 
 /* 加载状态 */

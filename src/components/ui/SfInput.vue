@@ -136,7 +136,7 @@ export default {
   align-items: center;
   background-color: var(--bg-secondary);
   border-radius: var(--radius-round);
-  border: 2px solid transparent;
+  border: 1px solid var(--border-color);
   transition: all var(--transition-base);
   overflow: hidden;
 }

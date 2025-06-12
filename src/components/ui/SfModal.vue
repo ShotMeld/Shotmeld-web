@@ -128,7 +128,11 @@ export default {
 }
 
 .sf-modal {
-  background-color: var(--bg-primary);
+  background: var(--blur-bg-strong);
+  backdrop-filter: var(--blur-strong);
+  -webkit-backdrop-filter: var(--blur-strong);
+  outline: 1px solid var(--blur-border);
+  
   border-radius: var(--radius-large);
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
   position: relative;

@@ -227,7 +227,6 @@ export default {
 }
 .search-card {
   padding: var(--spacing-lg);
-  background-color: var(--bg-primary);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   border: var(--border-width) solid var(--border-color);

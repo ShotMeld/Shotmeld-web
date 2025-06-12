@@ -144,8 +144,8 @@
   --bg-hover: rgba(255, 255, 255, 0.1);
   
   /* 渐变背景 - 深色模式 */
-  --bg-gradient-start: #1a1a1a;
-  --bg-gradient-end: #2d2d30;
+  --bg-gradient-start: #373643;
+  --bg-gradient-end: #002549;
   --bg-gradient: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
   
   /* 文字颜色 */

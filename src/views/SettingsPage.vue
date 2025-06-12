@@ -209,7 +209,9 @@ h2 {
   padding: 16px 24px;
   border-radius: 16px;
   border: 2px solid var(--border-color);
-  background: var(--bg-primary);
+  background: var(--blur-bg-strong);
+  backdrop-filter: var(--blur-strong);
+  -webkit-backdrop-filter: var(--blur-strong);
   color: var(--text-primary);
   font-size: 15px;
   font-weight: 500;

@@ -493,7 +493,6 @@ export default {
   border-radius: 16px;
   cursor: pointer;
   transition: all 0.3s ease;
-  background-color: #f5f5f7;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 

@@ -168,7 +168,6 @@ export default {
 .album-card {
   cursor: pointer;
   overflow: hidden;
-  background-color: var(--bg-primary);
   transition:
     transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
     box-shadow 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
