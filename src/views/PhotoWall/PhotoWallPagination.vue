@@ -1,7 +1,3 @@
-<!--
-  PhotoWallPagination.vue - 照片墙/分页组件
--->
-
 <template>
   <div class="pagination-container">
     <el-pagination
@@ -11,7 +7,7 @@
       :total="total"
       layout="total, sizes, prev, pager, next"
       :hide-on-single-page="false"
-      :small="false"
+      :small="isSmallScreen"
       @update:currentPage="$emit('update:currentPage', $event)"
       @update:pageSize="$emit('update:pageSize', $event)"
       @size-change="$emit('sizeChange', $event)"
@@ -21,6 +17,8 @@
 </template>
 
 <script>
+import { ref, onMounted, onBeforeUnmount } from 'vue'
+
 export default {
   name: 'PhotoWallPagination',
   props: {
@@ -37,6 +35,25 @@ export default {
       required: true,
     },
   },
+  setup() {
+    const isSmallScreen = ref(window.innerWidth < 768)
+
+    const handleResize = () => {
+      isSmallScreen.value = window.innerWidth < 768
+    }
+
+    onMounted(() => {
+      window.addEventListener('resize', handleResize)
+    })
+
+    onBeforeUnmount(() => {
+      window.removeEventListener('resize', handleResize)
+    })
+
+    return {
+      isSmallScreen
+    }
+  }
 }
 </script>
 
@@ -57,6 +74,9 @@ export default {
   border: 1px solid rgba(255, 255, 255, 0.8);
   position: relative;
   overflow: hidden;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .pagination-container::before {
@@ -82,6 +102,23 @@ export default {
   font-weight: var(--font-weight-medium);
   position: relative;
   z-index: 1;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+}
+
+/* 小屏幕样式 */
+:deep(.el-pagination.is-small) {
+  --el-pagination-font-size: var(--font-size-xs);
+  gap: 6px;
+}
+
+/* 分页各部分样式 */
+:deep(.el-pagination > *) {
+  margin: 0 !important;
+  flex-shrink: 0;
 }
 
 /* 页码按钮样式 */
@@ -92,13 +129,20 @@ export default {
   line-height: 34px;
   font-weight: var(--font-weight-medium);
   font-size: var(--font-size-sm);
-  margin: 0 2px;
   transition: all var(--transition-fast);
   background-color: rgba(255, 255, 255, 0.4);
   color: var(--text-primary);
   border: 1px solid rgba(0, 0, 0, 0.06);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
+  margin: 0 1px;
+}
+
+:deep(.el-pagination.is-small .el-pager li) {
+  min-width: 28px;
+  height: 28px;
+  line-height: 26px;
+  font-size: var(--font-size-xs);
 }
 
 :deep(.el-pagination .el-pager li:hover) {
@@ -126,8 +170,14 @@ export default {
   -webkit-backdrop-filter: blur(8px);
   width: 36px;
   height: 36px;
-  margin: 0 4px;
   transition: all var(--transition-fast);
+  margin: 0 2px;
+}
+
+:deep(.el-pagination.is-small .btn-prev),
+:deep(.el-pagination.is-small .btn-next) {
+  width: 28px;
+  height: 28px;
 }
 
 :deep(.el-pagination .btn-prev:hover),
@@ -149,12 +199,16 @@ export default {
   box-shadow: none;
 }
 
-/* 每页数量选择器 - 分页特定样式 */
+/* 每页数量选择器 */
 :deep(.el-pagination .el-select) {
-  margin: 0 var(--spacing-sm);
+  margin: 0 !important;
 }
 
 :deep(.el-pagination .el-select .el-input) {
+  width: 90px;
+}
+
+:deep(.el-pagination.is-small .el-select .el-input) {
   width: 80px;
 }
 
@@ -168,7 +222,29 @@ export default {
   color: var(--text-secondary);
   font-weight: var(--font-weight-medium);
   font-size: var(--font-size-sm);
-  margin-right: var(--spacing-lg);
+  white-space: nowrap;
+}
+
+:deep(.el-pagination.is-small .el-pagination__total) {
+  font-size: var(--font-size-xs);
+}
+
+/* 响应式调整 - 当空间不足时自动换行 */
+@media (max-width: 992px) {
+  :deep(.el-pagination) {
+    row-gap: 12px;
+  }
+}
+
+@media (max-width: 768px) {
+  .pagination-container {
+    padding: var(--spacing-md) var(--spacing-sm);
+    margin: var(--spacing-xl) 0;
+  }
+  
+  :deep(.el-pagination) {
+    row-gap: 8px;
+  }
 }
 
 /* 深色模式适配 */
