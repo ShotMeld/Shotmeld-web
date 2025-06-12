@@ -380,7 +380,6 @@ export default {
   cursor: pointer;
   margin-bottom: 20px;
   transition: all 0.3s ease;
-  background-color: var(--bg-primary);
 }
 
 .upload-container.is-dragging {

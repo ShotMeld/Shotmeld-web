@@ -53,13 +53,13 @@
   --border-width: 0.5px;
   
   /* 毛玻璃效果 */
-  --blur-bg: rgba(255, 255, 255, 0.8);
-  --blur-bg-light: rgba(255, 255, 255, 0.6);
-  --blur-bg-medium: rgba(255, 255, 255, 0.75);
-  --blur-bg-strong: rgba(255, 255, 255, 0.85);
+  --blur-bg: rgba(255, 255, 255, 0.6);
+  --blur-bg-light: rgba(255, 255, 255, 0.4);
+  --blur-bg-medium: rgba(255, 255, 255, 0.55);
+  --blur-bg-strong: rgba(255, 255, 255, 0.7);
   --blur-bg-extra-strong: rgba(255, 255, 255, 0.9);
-  --blur-border: rgba(255, 255, 255, 0.2);
-  --blur-border-strong: rgba(255, 255, 255, 0.3);
+  --blur-border: rgba(255, 255, 255, 0.15);
+  --blur-border-strong: rgba(255, 255, 255, 0.25);
   --blur-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
   --blur-shadow-strong: 0 4px 20px rgba(0, 0, 0, 0.08);
   
