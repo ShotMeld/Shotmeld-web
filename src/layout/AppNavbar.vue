@@ -562,10 +562,15 @@ export default {
 }
 
 .user-dropdown {
+
+  background: var(--blur-bg-extra-strong);
+  backdrop-filter: var(--blur-extra-strong);
+  -webkit-backdrop-filter: var(--blur-extra-strong);
+  border: 1px solid var(--blur-border);
+
   position: absolute;
   right: 0;
   top: calc(100% + 12px);
-  background-color: var(--bg-primary);
   border-radius: 16px;
   box-shadow:
     0 4px 20px rgba(0, 0, 0, 0.08),
@@ -575,7 +580,6 @@ export default {
   overflow: hidden;
   transform-origin: top right;
   transition: all 0.25s cubic-bezier(0.23, 1, 0.32, 1);
-  border: 1px solid rgba(0, 0, 0, 0.03);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
 }

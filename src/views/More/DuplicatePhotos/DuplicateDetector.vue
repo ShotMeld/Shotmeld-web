@@ -168,7 +168,9 @@ export default {
 
 <style scoped>
 .duplicate-detector {
-  background: var(--bg-primary);
+  background: var(--blur-bg-strong);
+  backdrop-filter: var(--blur-strong);
+  -webkit-backdrop-filter: var(--blur-strong);
   border-radius: var(--radius-large);
   padding: var(--spacing-2xl);
   margin-bottom: var(--spacing-xl);
