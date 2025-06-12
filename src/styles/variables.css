@@ -175,3 +175,45 @@
   --shadow-large: 0px 4px 8px rgba(0, 0, 0, 0.45);
   --shadow-extra-large: 0px 8px 16px rgba(0, 0, 0, 0.5);
 }
+
+/* 关闭高级材质时的样式 */
+.no-advanced-material {
+  /* 毛玻璃效果 - 关闭透明度和模糊 */
+  --blur-bg: var(--bg-primary);
+  --blur-bg-light: var(--bg-primary);
+  --blur-bg-medium: var(--bg-primary);
+  --blur-bg-strong: var(--bg-primary);
+  --blur-bg-extra-strong: var(--bg-primary);
+  --blur-border: var(--border-color);
+  --blur-border-strong: var(--border-color);
+  --blur-shadow: var(--shadow-medium);
+  --blur-shadow-strong: var(--shadow-large);
+  
+  /* 背景模糊强度 - 关闭模糊 */
+  --blur-light: none;
+  --blur-medium: none;
+  --blur-strong: none;
+  --blur-extra-strong: none;
+  --blur-ultra-strong: none;
+}
+
+/* 深色主题下关闭高级材质 */
+.theme-dark.no-advanced-material {
+  /* 毛玻璃效果 - 关闭透明度和模糊 */
+  --blur-bg: var(--bg-primary);
+  --blur-bg-light: var(--bg-primary);
+  --blur-bg-medium: var(--bg-primary);
+  --blur-bg-strong: var(--bg-primary);
+  --blur-bg-extra-strong: var(--bg-primary);
+  --blur-border: var(--border-color);
+  --blur-border-strong: var(--border-color);
+  --blur-shadow: var(--shadow-medium);
+  --blur-shadow-strong: var(--shadow-large);
+  
+  /* 背景模糊强度 - 关闭模糊 */
+  --blur-light: none;
+  --blur-medium: none;
+  --blur-strong: none;
+  --blur-extra-strong: none;
+  --blur-ultra-strong: none;
+}

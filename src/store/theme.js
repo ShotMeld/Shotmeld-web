@@ -5,12 +5,31 @@ import { ref, watch } from 'vue'
 export const useThemeStore = defineStore('theme', () => {
   // 从 localStorage 获取保存的主题设置，默认为 'light'
   const theme = ref(localStorage.getItem('theme') || 'light')
+  
+  // 从 localStorage 获取保存的高级材质设置，默认为 true
+  const advancedMaterial = ref(localStorage.getItem('advancedMaterial') !== 'false')
 
   // 监听主题变化并保存到 localStorage
   watch(theme, newTheme => {
     localStorage.setItem('theme', newTheme)
     applyTheme(newTheme)
   })
+
+  // 监听高级材质变化并保存到 localStorage
+  watch(advancedMaterial, newValue => {
+    localStorage.setItem('advancedMaterial', newValue)
+    applyAdvancedMaterial(newValue)
+  })
+
+  // 应用高级材质设置
+  const applyAdvancedMaterial = enabled => {
+    const root = document.documentElement
+    if (enabled) {
+      root.classList.remove('no-advanced-material')
+    } else {
+      root.classList.add('no-advanced-material')
+    }
+  }
 
   // 应用主题
   const applyTheme = themeValue => {
@@ -41,8 +60,9 @@ export const useThemeStore = defineStore('theme', () => {
       }
     })
 
-    // 应用初始主题
+    // 应用初始主题和高级材质
     applyTheme(theme.value)
+    applyAdvancedMaterial(advancedMaterial.value)
   }
 
   // 切换主题
@@ -50,9 +70,16 @@ export const useThemeStore = defineStore('theme', () => {
     theme.value = newTheme
   }
 
+  // 切换高级材质
+  const setAdvancedMaterial = enabled => {
+    advancedMaterial.value = enabled
+  }
+
   return {
     theme,
+    advancedMaterial,
     setTheme,
+    setAdvancedMaterial,
     initTheme,
   }
 })

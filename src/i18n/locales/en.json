@@ -18,6 +18,12 @@
       "description": "Choose your preferred interface language",
       "zh": "中文",
       "en": "English"
+    },
+    "material": {
+      "title": "Material",
+      "description": "Choose interface material effects",
+      "advanced": "Advanced Material",
+      "simple": "Simple Material"
     }
   },
   "profile": {

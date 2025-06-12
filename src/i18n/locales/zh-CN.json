@@ -18,6 +18,12 @@
       "description": "选择您偏好的界面语言",
       "zh": "中文",
       "en": "English"
+    },
+    "material": {
+      "title": "材质",
+      "description": "选择界面材质效果",
+      "advanced": "高级材质",
+      "simple": "朴素材质"
     }
   },
   "profile": {

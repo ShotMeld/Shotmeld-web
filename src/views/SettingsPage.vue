@@ -34,6 +34,28 @@
 
         <div class="settings-divider"></div>
 
+        <!-- 材质设置 -->
+        <div class="settings-section">
+          <div class="section-header">
+            <i class="fas fa-magic section-icon"></i>
+            <h2>{{ $t('settings.material.title') }}</h2>
+          </div>
+          <p class="section-description">{{ $t('settings.material.description') }}</p>
+          <div class="settings-options">
+            <button
+              v-for="material in materials"
+              :key="material.value"
+              class="settings-option"
+              :class="{ active: advancedMaterial === material.value }"
+              @click="selectMaterial(material.value)"
+            >
+              <span>{{ $t(material.label) }}</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="settings-divider"></div>
+
         <!-- 语言设置 -->
         <div class="settings-section">
           <div class="section-header">
@@ -75,6 +97,7 @@ export default {
       userName: '',
       selectedTheme: 'system',
       selectedLanguage: 'zh-CN',
+      advancedMaterial: true,
       themes: [
         { value: 'light', label: 'settings.theme.light', icon: 'fas fa-sun' },
         { value: 'dark', label: 'settings.theme.dark', icon: 'fas fa-moon' },
@@ -83,6 +106,10 @@ export default {
       languages: [
         { value: 'zh-CN', label: 'settings.language.zh' },
         { value: 'en', label: 'settings.language.en' },
+      ],
+      materials: [
+        { value: true, label: 'settings.material.advanced' },
+        { value: false, label: 'settings.material.simple' },
       ],
     }
   },
@@ -94,6 +121,7 @@ export default {
     // 获取当前主题设置
     const themeStore = useThemeStore()
     this.selectedTheme = themeStore.theme
+    this.advancedMaterial = themeStore.advancedMaterial
 
     // 获取当前语言设置
     const savedLocale = localStorage.getItem('locale')
@@ -113,6 +141,16 @@ export default {
       this.$i18n.locale = lang
       // 将语言设置保存到本地存储
       localStorage.setItem('locale', lang)
+    },
+    toggleAdvancedMaterial() {
+      this.advancedMaterial = !this.advancedMaterial
+      const themeStore = useThemeStore()
+      themeStore.setAdvancedMaterial(this.advancedMaterial)
+    },
+    selectMaterial(materialValue) {
+      this.advancedMaterial = materialValue
+      const themeStore = useThemeStore()
+      themeStore.setAdvancedMaterial(materialValue)
     },
   },
 }
@@ -217,7 +255,7 @@ h2 {
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  min-width: 160px;
+  white-space: nowrap;
 }
 
 .settings-option:hover {
@@ -249,13 +287,6 @@ h2 {
 
 .settings-option i {
   font-size: 18px;
-}
-
-.settings-divider {
-  height: 1px;
-  background: var(--border-color);
-  margin: 40px 0;
-  opacity: 0.5;
 }
 
 /* 底部品牌标识 */
@@ -307,8 +338,8 @@ h2 {
   }
 
   .settings-option {
-    width: 100%;
-    justify-content: center;
+    width: auto;
+    justify-content: flex-start;
   }
 
   .brand-logo {
