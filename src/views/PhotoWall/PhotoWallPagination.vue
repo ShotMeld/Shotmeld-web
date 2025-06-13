@@ -36,12 +36,14 @@ export default {
     },
   },
   setup() {
-    const isSmallScreen = ref(window.innerWidth < 768)
+    const isSmallScreen = ref(false)
 
     const handleResize = () => {
       isSmallScreen.value = window.innerWidth < 768
     }
 
+    // Moved initialization of isSmallScreen to onMounted above
+    })
     onMounted(() => {
       window.addEventListener('resize', handleResize)
     })
