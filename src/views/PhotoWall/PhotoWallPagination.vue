@@ -38,13 +38,28 @@ export default {
   setup() {
     const isSmallScreen = ref(false)
 
-    const handleResize = () => {
+    const handleResize = debounce(() => {
+      isSmallScreen.value = window.innerWidth < 768
+    }, 150)
+
+    function debounce(func, wait) {
+      let timeout
+      return function executedFunction(...args) {
+      const later = () => {
+        clearTimeout(timeout)
+        func(...args)
+      }
+      clearTimeout(timeout)
+      timeout = setTimeout(later, wait)
+      }
+    }
+
+    const checkScreenSize = () => {
       isSmallScreen.value = window.innerWidth < 768
     }
 
-    // Moved initialization of isSmallScreen to onMounted above
-    })
     onMounted(() => {
+      handleResize()
       window.addEventListener('resize', handleResize)
     })
 
