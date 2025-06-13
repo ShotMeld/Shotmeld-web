@@ -27,6 +27,14 @@
     <div v-if="!imageLoaded && !thumbnailLoaded && !photo.thumbnailUrl" class="image-loading">
       <div class="spinner"></div>
     </div>
+
+    <!-- 图片加载中状态（有缩略图时显示在正中间） -->
+    <div v-if="!imageLoaded && thumbnailLoaded" class="image-loading-overlay">
+      <div class="loading-content">
+        <div class="spinner"></div>
+        <p class="loading-text">{{ getLoadingMessage() }}</p>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -159,6 +167,22 @@ export default {
       this.$emit('image-loaded')
       // 容器尺寸已经预先计算好了，不需要重新计算
     },
+
+    getLoadingMessage() {
+      if (!this.photo || !this.photo.url) {
+        return this.$t('loading.default')
+      }
+
+      const url = this.photo.url
+      
+      if (url.startsWith('https://api.shotmeld.seeridia.top')) {
+        return this.$t('loading.uploading')
+      } else if (url.startsWith('https://shotmeld-photo.oss-cn-hangzhou.aliyuncs.com')) {
+        return this.$t('loading.default')
+      } else {
+        return this.$t('loading.default')
+      }
+    },
   },
 }
 </script>
@@ -172,14 +196,11 @@ export default {
   position: relative;
   border-radius: var(--radius-medium);
   overflow: hidden;
-  /* 移除固定宽度设置，使用动态计算的尺寸 */
-  transition: all 0.3s ease; /* 添加尺寸过渡动画 */
-  /* 确保容器尺寸精确匹配图片 */
+  transition: all 0.3s ease;
   flex-shrink: 0;
   flex-grow: 0;
 }
 
-/* 缩略图背景占位 */
 .thumbnail-placeholder {
   position: absolute;
   top: 0;
@@ -195,15 +216,15 @@ export default {
   object-fit: cover;
   filter: blur(8px);
   opacity: 0.6;
-  transform: scale(1.1); /* 稍微放大避免边缘露白 */
+  transform: scale(1.1);
 }
 
 /* 主图片 */
 .photo-detail-image > img {
   width: 100%;
   height: 100%;
-  object-fit: cover; /* 改为 cover 以完全填充容器 */
-  display: block; /* 消除图片下方的空白 */
+  object-fit: cover;
+  display: block;
   position: absolute;
   top: 0;
   left: 0;
@@ -212,7 +233,7 @@ export default {
 /* 缩略图模糊占位 */
 .thumbnail-placeholder {
   filter: blur(8px);
-  transform: scale(1.1); /* 稍微放大来避免边缘模糊效果 */
+  transform: scale(1.1);
   opacity: 1;
   z-index: 1;
 }
@@ -257,5 +278,40 @@ export default {
   backdrop-filter: blur(2px);
   -webkit-backdrop-filter: blur(2px);
   z-index: 3;
+}
+
+/* 图片加载覆盖层（在缩略图上方显示） */
+.image-loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(1px);
+  -webkit-backdrop-filter: blur(1px);
+  z-index: 3;
+}
+
+.loading-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 20px;
+  text-align: center;
+}
+
+.loading-text {
+  color: white;
+  font-size: 14px;
+  line-height: 1.4;
+  margin: 0;
+  max-width: 280px;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  font-weight: 500;
 }
 </style>

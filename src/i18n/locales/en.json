@@ -48,6 +48,10 @@
     "deleteError": "Delete Failed",
     "confirmDelete": "Confirm Delete"
   },
+  "loading": {
+    "default": "Loading...",
+    "uploading": "Image is being optimized for transmission. Initial access may be slower, please wait a moment"
+  },
   "album": {
     "photoCount": "{count} photos",
     "createdAt": "Created on {date}",

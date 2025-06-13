@@ -150,6 +150,9 @@ export default {
       // 动画控制状态
       filtersExiting: false,
       toolbarEntering: false,
+      // 自动刷新相关状态
+      autoRefreshTimer: null,
+      autoRefreshInterval: 5000, // 5秒刷新一次
     }
   },
   computed: {
@@ -181,6 +184,9 @@ export default {
   created() {
     this.fetchPhotos()
     this.fetchAlbums()
+    // 启动自动刷新
+    this.startAutoRefresh()
+    
     // 监听上传事件
     eventBus.on(EventTypes.SHOW_UPLOAD_MODAL, () => {
       this.isUploadModalVisible = true
@@ -197,11 +203,62 @@ export default {
     })
   },
   beforeUnmount() {
+    // 清理自动刷新定时器
+    this.stopAutoRefresh()
+    
     eventBus.off(EventTypes.SHOW_UPLOAD_MODAL)
     eventBus.off(EventTypes.SHOW_ALBUM_FORM)
     eventBus.off('toggle-manage')
   },
   methods: {
+    // 自动刷新相关方法
+    startAutoRefresh() {
+      this.stopAutoRefresh() // 确保没有重复的定时器
+      this.autoRefreshTimer = setInterval(() => {
+        // 只有在非管理模式下才自动刷新，避免影响用户选择操作
+        if (!this.isManageMode && !this.loading) {
+          this.silentRefreshPhotos()
+        }
+      }, this.autoRefreshInterval)
+    },
+    
+    stopAutoRefresh() {
+      if (this.autoRefreshTimer) {
+        clearInterval(this.autoRefreshTimer)
+        this.autoRefreshTimer = null
+      }
+    },
+    
+    // 静默刷新照片数据，不显示加载状态
+    async silentRefreshPhotos() {
+      try {
+        const params = {
+          page: this.pagination.page,
+          limit: this.pagination.limit,
+          sort: this.filters.sort,
+          order: this.filters.order,
+        }
+        if (this.filters.albumId) params.albumId = this.filters.albumId
+        if (this.dateRange && this.dateRange.length === 2) {
+          params.startDate = this.dateRange[0]
+          params.endDate = this.dateRange[1]
+        }
+        
+        const response = await photoService.getPhotos(params)
+        const newPhotos = response.data.data || []
+        const newTotal = response.data.total || 0
+        
+        // 只有当数据真正发生变化时才更新
+        if (JSON.stringify(newPhotos) !== JSON.stringify(this.photos) || newTotal !== this.totalPhotos) {
+          this.photos = newPhotos
+          this.totalPhotos = newTotal
+        }
+      } catch (error) {
+        // 静默刷新失败时不显示错误通知，避免干扰用户
+        console.warn('自动刷新照片数据失败:', error)
+      }
+    },
+    
     // 批量管理相关方法
     toggleManageMode() {
       if (this.isManageMode) {
@@ -210,6 +267,8 @@ export default {
       } else {
         // 进入管理模式：先播放筛选框退出动画，然后显示工具栏
         this.filtersExiting = true
+        // 进入管理模式时停止自动刷新
+        this.stopAutoRefresh()
         setTimeout(() => {
           this.isManageMode = true
           this.toolbarEntering = true
@@ -226,6 +285,8 @@ export default {
       this.selectedPhotos = []
       this.toolbarEntering = false
       this.filtersExiting = false
+      // 退出管理模式时重新启动自动刷新
+      this.startAutoRefresh()
     },
     toggleSelectPhoto(photoId) {
       const index = this.selectedPhotos.indexOf(photoId)
@@ -347,6 +408,11 @@ export default {
         const response = await photoService.getPhotos(params)
         this.photos = response.data.data || []
         this.totalPhotos = response.data.total || 0
+        
+        // 手动刷新后重启自动刷新定时器
+        if (!this.isManageMode) {
+          this.startAutoRefresh()
+        }
       } catch (error) {
         console.error(this.$t('photoWall.error.fetchFailed'), error)
         this.$notify.error({
@@ -386,6 +452,8 @@ export default {
     handlePhotoUploaded() {
       this.isUploadModalVisible = false
       this.fetchPhotos()
+      // 上传成功后重启自动刷新，确保能及时获取处理状态更新
+      this.startAutoRefresh()
     },
     handleAlbumCreated() {
       this.isAlbumFormVisible = false
