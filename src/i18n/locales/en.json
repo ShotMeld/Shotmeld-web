@@ -72,8 +72,11 @@
     "deleteErrorMessage": "Unable to delete photos, please try again"
   },
   "sfDeleteConfirmModal": {
+    "title": "Confirm Delete",
     "confirmMessage": "Are you sure you want to delete {count} selected {itemName}?",
-    "warningText": "This action cannot be undone!"
+    "warningText": "This action cannot be undone!",
+    "cancelText": "Cancel",
+    "confirmText": "Confirm Delete"
   },
   "sharePhoto": {
     "loading": "Loading photo...",

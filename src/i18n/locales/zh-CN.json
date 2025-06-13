@@ -72,8 +72,11 @@
     "deleteErrorMessage": "无法删除照片，请重试"
   },
   "sfDeleteConfirmModal": {
+    "title": "删除确认",
     "confirmMessage": "确定要删除选中的 {count} 个{itemName}吗？",
-    "warningText": "此操作不可恢复！"
+    "warningText": "此操作不可恢复！",
+    "cancelText": "取消",
+    "confirmText": "确认删除"
   },
   "sharePhoto": {
     "loading": "正在加载照片...",

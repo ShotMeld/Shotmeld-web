@@ -7,15 +7,15 @@
   <SfModal
     :modelValue="modelValue"
     @update:modelValue="$emit('update:modelValue', $event)"
-    :title="title"
+    :title="modalTitle"
     size="small"
   >
     <div class="delete-confirm">
-      <p>{{ confirmMessage || `确定要删除选中的 ${count} 个${itemName}吗？` }}</p>
-      <p class="warning-text">{{ warningText || '此操作不可恢复！' }}</p>
+      <p>{{ confirmMessage || $t('sfDeleteConfirmModal.confirmMessage', { count, itemName }) }}</p>
+      <p class="warning-text">{{ warningText || $t('sfDeleteConfirmModal.warningText') }}</p>
       <div class="modal-footer">
-        <SfButton type="secondary" @click="cancel">{{ cancelText }}</SfButton>
-        <SfButton type="danger" @click="confirm">{{ confirmText }}</SfButton>
+        <SfButton type="secondary" @click="cancel">{{ modalCancelText }}</SfButton>
+        <SfButton type="danger" @click="confirm">{{ modalConfirmText }}</SfButton>
       </div>
     </div>
   </SfModal>
@@ -38,7 +38,7 @@ export default {
     },
     itemName: {
       type: String,
-      default: '项目',
+      default: 'items',
     },
     count: {
       type: Number,
@@ -46,7 +46,7 @@ export default {
     },
     title: {
       type: String,
-      default: '删除确认',
+      default: '',
     },
     confirmMessage: {
       type: String,
@@ -58,14 +58,26 @@ export default {
     },
     cancelText: {
       type: String,
-      default: '取消',
+      default: '',
     },
     confirmText: {
       type: String,
-      default: '确认删除',
+      default: '',
     },
   },
   emits: ['update:modelValue', 'cancel', 'confirm'],
+  computed: {
+    // 提供国际化的默认值
+    modalTitle() {
+      return this.title || this.$t('sfDeleteConfirmModal.title')
+    },
+    modalCancelText() {
+      return this.cancelText || this.$t('sfDeleteConfirmModal.cancelText')
+    },
+    modalConfirmText() {
+      return this.confirmText || this.$t('sfDeleteConfirmModal.confirmText')
+    },
+  },
   methods: {
     cancel() {
       this.$emit('update:modelValue', false)
