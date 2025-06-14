@@ -20,7 +20,12 @@
           @image-loaded="handleImageLoaded"
         />
         <!-- 操作按钮组件 -->
-        <PhotoActions :photo="photo" @delete-click="confirmDelete" />
+        <PhotoActions 
+          :photo="photo" 
+          @delete-click="confirmDelete" 
+          @photo-updated="handlePhotoUpdated"
+          @photo-replaced="handlePhotoReplaced"
+        />
       </div>
 
       <!-- 右侧信息组件 -->
@@ -103,7 +108,7 @@ export default {
       default: null,
     },
   },
-  emits: ['update:modelValue', 'photo-deleted', 'tag-clicked'],
+  emits: ['update:modelValue', 'photo-deleted', 'photo-updated', 'photo-replaced', 'tag-clicked'],
   data() {
     return {
       imageLoaded: false,
@@ -310,6 +315,20 @@ export default {
           this.calculateModalSize()
         }
       }, 200)
+    },
+
+    handlePhotoUpdated(newPhoto) {
+      // 照片编辑完成，更新照片数据
+      this.$emit('photo-updated', newPhoto)
+    },
+
+    handlePhotoReplaced(photoId) {
+      this.$emit('photo-replaced', photoId)
+    },
+
+    handlePhotoDeleted(photoId) {
+      // 照片被编辑器删除，直接关闭详情页
+      this.$emit('photo-deleted', photoId)
     },
   },
   mounted() {

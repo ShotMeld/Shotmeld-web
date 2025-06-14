@@ -24,6 +24,27 @@
       "description": "选择界面材质效果",
       "advanced": "高级材质",
       "simple": "朴素材质"
+    },
+    "experimental": {
+      "title": "测试功能",
+      "description": "体验最新的实验性功能",
+      "photoEdit": {
+        "title": "图片编辑",
+        "description": "使用在线编辑器编辑照片",
+        "consent": {
+          "title": "隐私同意",
+          "message": "启用图片编辑功能需要将您的照片传输到第三方服务 Photopea 进行处理。",
+          "point1": "您的照片将临时传输到 Photopea 进行编辑",
+          "point2": "我们不会永久存储您在 Photopea 中的编辑数据",
+          "point3": "编辑完成后，只有最终图片会保存到您的账户",
+          "accept": "同意",
+          "decline": "拒绝",
+          "success": {
+            "title": "功能已启用",
+            "message": "您现在可以在照片详情页使用编辑功能了"
+          }
+        }
+      }
     }
   },
   "profile": {
@@ -138,8 +159,6 @@
       "deleteFailedTitle": "删除失败",
       "deleteFailedMessage": "无法删除照片，请重试"
     },
-    "editPhoto": "编辑照片:",
-    "editPhotoComingSoon": "编辑照片功能将在后续版本实现",
     "uploadSuccess": {
       "title": "上传成功",
       "message": "已成功上传 {count} 张照片"
@@ -198,6 +217,7 @@
     "actions": {
       "download": "下载",
       "share": "分享",
+      "edit": "编辑",
       "delete": "删除",
       "shareSuccess": {
         "title": "分享成功",
@@ -213,6 +233,20 @@
     },
     "albums": {
       "title": "相册"
+    }
+  },
+  "photoEditor": {
+    "title": "编辑照片",
+    "loading": "正在加载编辑器...",
+    "loadError": "编辑器加载失败，请重试",
+    "save": "保存",
+    "saveSuccess": {
+      "title": "保存成功",
+      "message": "照片编辑已保存"
+    },
+    "saveError": {
+      "title": "保存失败",
+      "message": "无法保存编辑后的照片，请重试"
     }
   },
   "photoWall": {

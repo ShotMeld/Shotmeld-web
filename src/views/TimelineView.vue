@@ -71,6 +71,8 @@
         v-model="showPhotoDetailModal"
         :photo="currentPhoto"
         @photo-deleted="handlePhotoDeleted"
+        @photo-updated="handlePhotoUpdated"
+        @photo-replaced="handlePhotoReplaced"
       />
 
       <!-- 上传照片模态框 -->
@@ -211,14 +213,19 @@ export default {
       }, 300)
     },
 
-    startEditingPhoto(photo) {
-      console.log(this.$t('timeline.editPhoto'), photo)
-      // TODO: 实现编辑照片的功能
-      alert(this.$t('timeline.editPhotoComingSoon'))
-    },
-
     handlePhotoDeleted(photoId) {
       this.deletePhoto(photoId)
+    },
+
+    handlePhotoUpdated(newPhoto) {
+      // 照片编辑完成，刷新时间轴数据
+      this.showPhotoDetailModal = false
+      this.fetchTimeline()
+    },
+
+    handlePhotoReplaced(photoId) {
+      this.showPhotoDetailModal = false
+      this.fetchTimeline()
     },
 
     handlePhotoUploaded(uploadedPhotos) {
