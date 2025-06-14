@@ -323,7 +323,6 @@ export default {
     },
 
     handlePhotoReplaced(photoId) {
-      // 照片被编辑器替换，关闭详情页但不调用删除API
       this.$emit('photo-replaced', photoId)
     },
 

@@ -67,7 +67,7 @@ export default {
       default: null,
     },
   },
-  emits: ['update:modelValue', 'photo-updated', 'photo-deleted'],
+  emits: ['update:modelValue', 'photo-updated', 'photo-replaced'],
   data() {
     return {
       loading: true,
@@ -279,7 +279,7 @@ export default {
         
         // 删除原图片
         await photoService.deletePhoto(this.photo.id)
-        this.$emit('photo-deleted', this.photo.id)
+        this.$emit('photo-replaced', this.photo.id)
 
         // 上传编辑后的图片
         const uploadResponse = await photoService.batchUploadPhotos([file])

@@ -224,7 +224,6 @@ export default {
     },
 
     handlePhotoReplaced(photoId) {
-      // 照片被编辑器替换，只需关闭详情页和刷新数据，不调用删除API
       this.showPhotoDetailModal = false
       this.fetchTimeline()
     },

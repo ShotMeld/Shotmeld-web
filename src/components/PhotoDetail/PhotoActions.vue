@@ -36,7 +36,7 @@
     v-model="showPhotoEditor"
     :photo="photo"
     @photo-updated="handlePhotoUpdated"
-    @photo-deleted="handlePhotoDeleted"
+    @photo-replaced="handlePhotoReplaced"
   />
 </template>
 
@@ -130,7 +130,7 @@ export default {
       this.showPhotoEditor = false
     },
 
-    handlePhotoDeleted(photoId) {
+    handlePhotoReplaced(photoId) {
       this.$emit('photo-replaced', photoId)
       this.showPhotoEditor = false
     },
