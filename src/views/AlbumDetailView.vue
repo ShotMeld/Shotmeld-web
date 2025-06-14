@@ -402,11 +402,12 @@ export default {
 /* 相册封面头部区域 */
 .album-header {
   position: relative;
-  height: 60vh;
-  min-height: 400px;
-  max-height: 600px;
+  height: 70vh;
+  min-height: 500px;
+  max-height: 700px;
   overflow: hidden;
-  margin-bottom: var(--spacing-2xl);
+  margin-bottom: var(--spacing-lg);
+  margin-top: -60px;
 }
 
 /* 空相册的头部样式 */
@@ -414,6 +415,9 @@ export default {
   height: auto;
   min-height: 200px;
   max-height: 300px;
+  /* 空相册不应用位移，保持正常位置 */
+  transform: none;
+  margin-top: 0;
 }
 
 .album-header__background {
@@ -546,19 +550,22 @@ export default {
 .with-toolbar-space {
   transition: padding-top 0.3s ease;
   position: relative;
-}
+}  @media (max-width: 768px) {
+    .album-header {
+      height: 60vh;
+      min-height: 400px;
+      max-height: 500px;
+      margin-bottom: var(--spacing-md);
+      transform: translateY(-60px);
+      margin-top: -60px;
+    }
 
-@media (max-width: 768px) {
-  .album-header {
-    height: 50vh;
-    min-height: 300px;
-    max-height: 400px;
-  }
-
-  .album-header--empty {
-    min-height: 180px;
-    max-height: 250px;
-  }
+    .album-header--empty {
+      min-height: 180px;
+      max-height: 250px;
+      transform: none;
+      margin-top: 0;
+    }
 
   .album-header__content {
     padding: var(--spacing-2xl) var(--spacing-lg) var(--spacing-xl);
@@ -580,18 +587,20 @@ export default {
   .album-detail-container {
     padding: 0 var(--spacing-lg) var(--spacing-lg);
   }
-}
+}  @media (max-width: 480px) {
+    .album-header {
+      height: 55vh;
+      min-height: 350px;
+      transform: translateY(-60px);
+      margin-top: -60px;
+    }
 
-@media (max-width: 480px) {
-  .album-header {
-    height: 45vh;
-    min-height: 250px;
-  }
-
-  .album-header--empty {
-    min-height: 160px;
-    max-height: 200px;
-  }
+    .album-header--empty {
+      min-height: 160px;
+      max-height: 200px;
+      transform: none;
+      margin-top: 0;
+    }
 
   .album-header__content {
     padding: var(--spacing-xl) var(--spacing-md) var(--spacing-lg);
