@@ -214,7 +214,6 @@ export default {
   flex-direction: column;
   height: 500px;
   overflow: hidden;
-  background: var(--bg-primary);
 }
 
 .photo-grid-container {

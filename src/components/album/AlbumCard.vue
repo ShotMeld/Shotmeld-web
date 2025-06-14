@@ -195,7 +195,7 @@ export default {
   position: relative;
   height: 220px;
   overflow: hidden;
-  background-color: var(--bg-secondary);
+  background-color: var(--bg-hover);
   border-radius: var(--radius-medium);
 }
 
