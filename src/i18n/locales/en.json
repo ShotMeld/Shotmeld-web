@@ -24,6 +24,27 @@
       "description": "Choose interface material effects",
       "advanced": "Advanced Material",
       "simple": "Simple Material"
+    },
+    "experimental": {
+      "title": "Experimental Features",
+      "description": "Try out the latest experimental features",
+      "photoEdit": {
+        "title": "Photo Editing",
+        "description": "Edit photos using online editor",
+        "consent": {
+          "title": "Privacy Consent",
+          "message": "Enabling photo editing requires transferring your photos to third-party service Photopea for processing.",
+          "point1": "Your photos will be temporarily transferred to Photopea.com for editing",
+          "point2": "We do not permanently store your editing data in Photopea",
+          "point3": "After editing, only the final image will be saved to your account",
+          "accept": "I Agree",
+          "decline": "Decline",
+          "success": {
+            "title": "Feature Enabled",
+            "message": "You can now use the edit feature on photo detail pages"
+          }
+        }
+      }
     }
   },
   "profile": {
@@ -170,6 +191,7 @@
     "actions": {
       "download": "Download",
       "share": "Share",
+      "edit": "Edit",
       "delete": "Delete",
       "shareSuccess": {
         "title": "Share Success",
@@ -185,6 +207,20 @@
     },
     "albums": {
       "title": "Albums"
+    }
+  },
+  "photoEditor": {
+    "title": "Edit Photo",
+    "loading": "Loading editor...",
+    "loadError": "Failed to load editor, please try again",
+    "save": "Save",
+    "saveSuccess": {
+      "title": "Save Success",
+      "message": "Photo edits have been saved"
+    },
+    "saveError": {
+      "title": "Save Failed",
+      "message": "Unable to save edited photo, please try again"
     }
   },
   "timeline": {

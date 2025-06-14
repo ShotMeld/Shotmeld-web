@@ -8,6 +8,8 @@
     @update:modelValue="$emit('update:modelValue', $event)"
     :photo="photo"
     @photo-deleted="$emit('photo-deleted', $event)"
+    @photo-updated="$emit('photo-updated', $event)"
+    @photo-replaced="$emit('photo-replaced', $event)"
     @tag-clicked="$emit('tag-clicked', $event)"
   />
 </template>
@@ -30,7 +32,7 @@ export default {
       default: null,
     },
   },
-  emits: ['update:modelValue', 'photo-deleted', 'tag-clicked'],
+  emits: ['update:modelValue', 'photo-deleted', 'photo-updated', 'photo-replaced', 'tag-clicked'],
 }
 </script>
 

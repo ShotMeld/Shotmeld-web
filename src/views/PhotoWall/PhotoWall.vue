@@ -61,6 +61,8 @@
         v-model="showPhotoDetail"
         :photo="currentPhoto"
         @photo-deleted="deletePhoto"
+        @photo-updated="handlePhotoUpdated"
+        @photo-replaced="handlePhotoReplaced"
       />
       <SfModal
         v-model="isUploadModalVisible"
@@ -539,6 +541,18 @@ export default {
           message: error.response?.data?.message || this.$t('photoWall.error.deleteFailedMessage'),
         })
       }
+    },
+
+    handlePhotoUpdated(newPhoto) {
+      // 照片编辑完成，更新照片列表并关闭详情页
+      this.closePhotoDetail()
+      this.fetchPhotos()
+    },
+
+    handlePhotoReplaced(photoId) {
+      // 照片被编辑器替换，只需关闭详情页和刷新数据，不调用删除API
+      this.closePhotoDetail()
+      this.fetchPhotos()
     },
   },
 }

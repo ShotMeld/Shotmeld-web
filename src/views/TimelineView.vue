@@ -71,6 +71,8 @@
         v-model="showPhotoDetailModal"
         :photo="currentPhoto"
         @photo-deleted="handlePhotoDeleted"
+        @photo-updated="handlePhotoUpdated"
+        @photo-replaced="handlePhotoReplaced"
       />
 
       <!-- 上传照片模态框 -->
@@ -219,6 +221,18 @@ export default {
 
     handlePhotoDeleted(photoId) {
       this.deletePhoto(photoId)
+    },
+
+    handlePhotoUpdated(newPhoto) {
+      // 照片编辑完成，刷新时间轴数据
+      this.showPhotoDetailModal = false
+      this.fetchTimeline()
+    },
+
+    handlePhotoReplaced(photoId) {
+      // 照片被编辑器替换，只需关闭详情页和刷新数据，不调用删除API
+      this.showPhotoDetailModal = false
+      this.fetchTimeline()
     },
 
     handlePhotoUploaded(uploadedPhotos) {

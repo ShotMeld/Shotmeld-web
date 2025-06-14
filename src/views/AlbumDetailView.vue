@@ -73,6 +73,8 @@
       v-model="showPhotoDetail"
       :photo="currentPhoto"
       @photo-deleted="deletePhoto"
+      @photo-updated="handlePhotoUpdated"
+      @photo-replaced="handlePhotoReplaced"
     />
 
     <!-- 添加照片模态框 -->
@@ -389,6 +391,19 @@ export default {
       // 单张照片删除后的处理
       this.photos = this.photos.filter(photo => photo.id !== deletedPhotoId)
       this.album.photoCount = this.photos.length
+    },
+
+    handlePhotoUpdated(newPhoto) {
+      // 照片编辑完成，更新照片列表并关闭详情页
+      this.showPhotoDetail = false
+      // 重新获取相册照片以确保数据同步
+      this.getAlbumPhotos()
+    },
+
+    handlePhotoReplaced(photoId) {
+      // 照片被编辑器替换，只需关闭详情页和刷新数据，不调用删除API
+      this.showPhotoDetail = false
+      this.getAlbumPhotos()
     },
   },
 }

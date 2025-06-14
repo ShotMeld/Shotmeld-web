@@ -75,6 +75,33 @@
             </button>
           </div>
         </div>
+
+        <div class="settings-divider"></div>
+
+        <!-- 测试功能设置 -->
+        <div class="settings-section">
+          <div class="section-header">
+            <i class="fas fa-flask section-icon"></i>
+            <h2>{{ $t('settings.experimental.title') }}</h2>
+          </div>
+          <p class="section-description">{{ $t('settings.experimental.description') }}</p>
+          
+          <!-- 图片编辑功能开关 -->
+          <div class="feature-toggle">
+            <div class="feature-info">
+              <div class="feature-name">{{ $t('settings.experimental.photoEdit.title') }}</div>
+              <div class="feature-description">{{ $t('settings.experimental.photoEdit.description') }}</div>
+            </div>
+            <label class="toggle-switch">
+              <input
+                type="checkbox"
+                v-model="photoEditEnabled"
+                @change="handlePhotoEditToggle"
+              />
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+        </div>
         
         <!-- 底部品牌标识 -->
         <div class="settings-footer">
@@ -83,21 +110,60 @@
         </div>
       </div>
     </div>
+
+    <!-- 图片编辑功能隐私同意模态框 -->
+    <SfModal
+      v-model="showPhotoEditConsent"
+      :title="$t('settings.experimental.photoEdit.consent.title')"
+      size="default"
+      :close-on-click-overlay="false"
+    >
+      <div class="consent-content">
+        <div class="consent-icon">
+          <i class="fas fa-shield-alt"></i>
+        </div>
+        <p class="consent-text">
+          {{ $t('settings.experimental.photoEdit.consent.message') }}
+        </p>
+        <ul class="consent-points">
+          <li>{{ $t('settings.experimental.photoEdit.consent.point1') }}</li>
+          <li>{{ $t('settings.experimental.photoEdit.consent.point2') }}</li>
+          <li>{{ $t('settings.experimental.photoEdit.consent.point3') }}</li>
+        </ul>
+      </div>
+
+      <template #footer>
+        <div class="consent-actions">
+          <SfButton variant="secondary" @click="cancelPhotoEditToggle">
+            {{ $t('settings.experimental.photoEdit.consent.decline') }}
+          </SfButton>
+          <SfButton variant="primary" @click="confirmPhotoEditToggle">
+            {{ $t('settings.experimental.photoEdit.consent.accept') }}
+          </SfButton>
+        </div>
+      </template>
+    </SfModal>
   </div>
 </template>
 
 <script>
 import { useThemeStore } from '../store/theme'
+import { SfModal, SfButton } from '../components/ui'
 
 export default {
   name: 'SettingsPage',
-  components: {},
+  components: {
+    SfModal,
+    SfButton,
+  },
   data() {
     return {
       userName: '',
       selectedTheme: 'system',
       selectedLanguage: 'zh-CN',
       advancedMaterial: true,
+      photoEditEnabled: false,
+      showPhotoEditConsent: false,
       themes: [
         { value: 'light', label: 'settings.theme.light', icon: 'fas fa-sun' },
         { value: 'dark', label: 'settings.theme.dark', icon: 'fas fa-moon' },
@@ -129,6 +195,9 @@ export default {
       this.selectedLanguage = savedLocale
       this.$i18n.locale = savedLocale
     }
+
+    // 获取图片编辑功能设置
+    this.photoEditEnabled = localStorage.getItem('photoEditEnabled') === 'true'
   },
   methods: {
     selectTheme(theme) {
@@ -151,6 +220,39 @@ export default {
       this.advancedMaterial = materialValue
       const themeStore = useThemeStore()
       themeStore.setAdvancedMaterial(materialValue)
+    },
+
+    handlePhotoEditToggle() {
+      // 如果是从关闭切换到开启，显示隐私同意模态框
+      if (this.photoEditEnabled && !localStorage.getItem('photoEditConsentGiven')) {
+        this.showPhotoEditConsent = true
+      } else {
+        // 如果是关闭功能，直接保存设置
+        this.savePhotoEditSetting()
+      }
+    },
+
+    confirmPhotoEditToggle() {
+      // 用户同意，保存同意状态和功能开启状态
+      localStorage.setItem('photoEditConsentGiven', 'true')
+      this.savePhotoEditSetting()
+      this.showPhotoEditConsent = false
+      
+      this.$notify({
+        title: this.$t('settings.experimental.photoEdit.consent.success.title'),
+        message: this.$t('settings.experimental.photoEdit.consent.success.message'),
+        type: 'success',
+      })
+    },
+
+    cancelPhotoEditToggle() {
+      // 用户拒绝，恢复开关状态
+      this.photoEditEnabled = false
+      this.showPhotoEditConsent = false
+    },
+
+    savePhotoEditSetting() {
+      localStorage.setItem('photoEditEnabled', this.photoEditEnabled.toString())
     },
   },
 }
@@ -300,6 +402,124 @@ h2 {
   border-top: 1px solid var(--border-color);
   opacity: 0.8;
   transition: opacity 0.2s ease;
+}
+
+.feature-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 0;
+}
+
+.feature-info {
+  flex: 1;
+}
+
+.feature-name {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-medium);
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+
+.feature-description {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 50px;
+  height: 28px;
+  cursor: pointer;
+}
+
+.toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggle-slider {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--bg-tertiary);
+  border: 2px solid var(--border-color);
+  border-radius: 15px;
+  transition: all 0.3s ease;
+}
+
+.toggle-slider:before {
+  position: absolute;
+  content: '';
+  height: 20px;
+  width: 20px;
+  left: 2px;
+  bottom: 2px;
+  background-color: var(--text-primary);
+  border-radius: 50%;
+  transition: all 0.3s ease;
+}
+
+input:checked + .toggle-slider {
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+input:checked + .toggle-slider:before {
+  transform: translateX(22px);
+  background-color: white;
+}
+
+.consent-content {
+  text-align: center;
+  padding: 24px 0;
+}
+
+.consent-icon {
+  font-size: 48px;
+  color: var(--color-primary);
+  margin-bottom: 24px;
+}
+
+.consent-text {
+  font-size: var(--font-size-lg);
+  color: var(--text-primary);
+  margin-bottom: 24px;
+  line-height: 1.6;
+}
+
+.consent-points {
+  text-align: left;
+  list-style: none;
+  padding: 0;
+  margin: 0 0 24px 0;
+}
+
+.consent-points li {
+  position: relative;
+  padding: 8px 0 8px 24px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.consent-points li:before {
+  content: '•';
+  position: absolute;
+  left: 0;
+  color: var(--color-primary);
+  font-weight: bold;
+}
+
+.consent-actions {
+  display: flex;
+  gap: var(--spacing-md);
+  justify-content: flex-end;
 }
 
 .settings-footer:hover {

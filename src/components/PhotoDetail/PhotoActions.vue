@@ -12,6 +12,15 @@
       {{ $t('photoDetail.actions.share') }}
     </SfLinkButton>
 
+    <SfLinkButton 
+      v-if="isPhotoEditEnabled"
+      icon="fas fa-edit" 
+      @click="editPhoto" 
+      class="action-button"
+    >
+      {{ $t('photoDetail.actions.edit') }}
+    </SfLinkButton>
+
     <SfLinkButton
       icon="fas fa-trash"
       type="danger"
@@ -21,16 +30,26 @@
       {{ $t('photoDetail.actions.delete') }}
     </SfLinkButton>
   </div>
+
+  <!-- Photopea编辑器模态框 -->
+  <PhotopeaEditor
+    v-model="showPhotoEditor"
+    :photo="photo"
+    @photo-updated="handlePhotoUpdated"
+    @photo-deleted="handlePhotoDeleted"
+  />
 </template>
 
 <script>
 import { SfLinkButton } from '../ui'
+import { PhotopeaEditor } from '../PhotoEditor'
 import { photoService } from '../../api'
 
 export default {
   name: 'PhotoActions',
   components: {
     SfLinkButton,
+    PhotopeaEditor,
   },
   props: {
     photo: {
@@ -42,9 +61,15 @@ export default {
     return {
       isNotifying: false,
       isSharing: false,
+      showPhotoEditor: false,
     }
   },
-  emits: ['delete-click'],
+  computed: {
+    isPhotoEditEnabled() {
+      return localStorage.getItem('photoEditEnabled') === 'true'
+    },
+  },
+  emits: ['delete-click', 'photo-updated', 'photo-replaced'],
   methods: {
     downloadPhoto() {
       if (!this.photo) return
@@ -94,6 +119,21 @@ export default {
           this.isSharing = false
         }, 100)
       }
+    },
+
+    editPhoto() {
+      this.showPhotoEditor = true
+    },
+
+    handlePhotoUpdated(newPhoto) {
+      this.$emit('photo-updated', newPhoto)
+      this.showPhotoEditor = false
+    },
+
+    handlePhotoDeleted(photoId) {
+      // 照片在编辑器中被删除并替换，通知父组件照片已被替换（不需要删除API调用）
+      this.$emit('photo-replaced', photoId)
+      this.showPhotoEditor = false
     },
   },
 }
