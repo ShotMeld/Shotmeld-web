@@ -1,5 +1,8 @@
 // API配置文件
-export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://api.shotmeld.seeridia.top'
+const isDev = import.meta.env.DEV
+export const API_BASE_URL = isDev
+  ? '/api' // 开发环境使用代理
+  : import.meta.env.VITE_API_BASE_URL || 'https://api.shotmeld.seeridia.top'
 
 // API端点
 export const API_ENDPOINTS = {

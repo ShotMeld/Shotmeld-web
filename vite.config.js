@@ -121,6 +121,25 @@ export default defineConfig({
     fs: {
       strict: false,
     },
+    proxy: {
+      '/api': {
+        target: 'https://api.shotmeld.seeridia.top',
+        changeOrigin: true,
+        rewrite: path => path.replace(/^\/api/, ''),
+        secure: true,
+        configure: (proxy, _options) => {
+          proxy.on('error', (err, _req, _res) => {
+            console.log('proxy error', err)
+          })
+          proxy.on('proxyReq', (proxyReq, req, _res) => {
+            console.log('Sending Request to the Target:', req.method, req.url)
+          })
+          proxy.on('proxyRes', (proxyRes, req, _res) => {
+            console.log('Received Response from the Target:', proxyRes.statusCode, req.url)
+          })
+        },
+      },
+    },
   },
   // 预构建依赖优化
   optimizeDeps: {

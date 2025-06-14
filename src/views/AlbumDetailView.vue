@@ -126,7 +126,7 @@
 
 <script>
 import PhotoWallGrid from './PhotoWall/PhotoWallGrid.vue'
-import PhotoDetail from '../components/PhotoDetail.vue'
+import PhotoDetail from '../components/PhotoDetail/PhotoDetail.vue'
 import AddPhotosModal from '../components/AddPhotosModal.vue'
 import ChangeCoverModal from '../components/ChangeCoverModal.vue'
 import SfButton from '../components/ui/SfButton.vue'

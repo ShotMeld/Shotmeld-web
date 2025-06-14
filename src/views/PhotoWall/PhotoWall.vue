@@ -105,10 +105,10 @@ import PhotoWallLoading from './PhotoWallLoading.vue'
 import PhotoWallPagination from './PhotoWallPagination.vue'
 import PhotoWallManageToolbar from './PhotoWallManageToolbar.vue'
 import PhotoWallAlbumModal from './PhotoWallAlbumModal.vue'
-import PhotoDetail from '../../components/PhotoDetail.vue'
+import PhotoDetail from '../../components/PhotoDetail/PhotoDetail.vue'
 import PhotoUpload from '../../components/PhotoUpload.vue'
 import AlbumForm from '../../components/album/AlbumForm.vue'
-import { SfButton, SfModal, SfDeleteConfirmModal } from '../../components/ui'
+import { SfModal, SfDeleteConfirmModal } from '../../components/ui'
 import { photoService, albumService } from '../../api'
 import { eventBus, EventTypes } from '../../utils/eventBus'
 import { useUserStore } from '../../store/user'
@@ -125,7 +125,6 @@ export default {
     PhotoDetail,
     PhotoUpload,
     AlbumForm,
-    SfButton,
     SfModal,
     SfDeleteConfirmModal,
   },

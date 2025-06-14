@@ -87,7 +87,7 @@
 import { photoService } from '../api'
 import apiClient from '../api'
 import PhotoUpload from '../components/PhotoUpload.vue'
-import PhotoDetail from '../components/PhotoDetail.vue'
+import PhotoDetail from '../components/PhotoDetail/PhotoDetail.vue'
 import { SfModal } from '../components/ui'
 import PhotoWallNoPhotos from './PhotoWall/PhotoWallNoPhotos.vue'
 import { eventBus } from '../utils/eventBus'
