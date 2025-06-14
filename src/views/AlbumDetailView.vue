@@ -12,12 +12,9 @@
           class="album-header__cover"
           :style="{ backgroundImage: `url(${coverPhoto.url || coverPhoto.thumbnailUrl})` }"
         ></div>
-        <div
-          v-else
-          class="album-header__placeholder"
-        ></div>
+        <div v-else class="album-header__placeholder"></div>
       </div>
-      
+
       <div class="album-header__content">
         <div class="album-header__info">
           <h1 class="album-header__title">{{ album.name }}</h1>
@@ -25,15 +22,18 @@
             {{ album.description }}
           </p>
           <div class="album-header__meta">
-            <span class="album-header__count">{{ $t('album.photoCount', { count: album.photoCount }) }}</span>
-            <span class="album-header__date">{{ $t('album.createdAt', { date: formatDate(album.createdAt) }) }}</span>
+            <span class="album-header__count">
+              {{ $t('album.photoCount', { count: album.photoCount }) }}
+            </span>
+            <span class="album-header__date">
+              {{ $t('album.createdAt', { date: formatDate(album.createdAt) }) }}
+            </span>
           </div>
         </div>
       </div>
     </div>
 
     <div :class="albumDetailContainerClass">
-
       <div v-if="loading" class="album-detail__loading">
         <div class="album-detail__spinner"></div>
         <p>{{ $t('common.loading') }}</p>
@@ -105,11 +105,19 @@
     <!-- 从相册移除照片确认模态框 -->
     <SfModal v-model="showRemoveFromAlbumModal" :title="$t('album.removePhotosTitle')">
       <div class="confirm-modal-content">
-        <p>{{ $t('album.confirmRemovePhotos', { count: selectedPhotos.length, albumName: album.name }) }}</p>
+        <p>
+          {{
+            $t('album.confirmRemovePhotos', { count: selectedPhotos.length, albumName: album.name })
+          }}
+        </p>
         <p class="confirm-note">{{ $t('album.removePhotosNote') }}</p>
         <div class="confirm-actions">
-          <SfButton @click="showRemoveFromAlbumModal = false" type="secondary">{{ $t('common.cancel') }}</SfButton>
-          <SfButton @click="removeFromAlbum" type="danger">{{ $t('album.confirmRemove') }}</SfButton>
+          <SfButton @click="showRemoveFromAlbumModal = false" type="secondary">
+            {{ $t('common.cancel') }}
+          </SfButton>
+          <SfButton @click="removeFromAlbum" type="danger">
+            {{ $t('album.confirmRemove') }}
+          </SfButton>
         </div>
       </div>
     </SfModal>
@@ -208,7 +216,7 @@ export default {
         ])
         this.album = albumResponse.data
         this.photos = photosResponse.data.data
-        
+
         // 设置封面照片，优先使用相册指定的封面
         this.setCoverPhoto()
       } catch (error) {
@@ -230,7 +238,7 @@ export default {
         // 上传的新照片，直接添加到列表
         this.photos = [...this.photos, ...result.photos]
         this.album.photoCount = this.photos.length
-        
+
         // 重新设置封面照片
         this.setCoverPhoto()
       } else if (result.type === 'existing') {
@@ -251,7 +259,7 @@ export default {
           return
         }
       }
-      
+
       // 如果没有指定封面或找不到指定的封面照片，则使用第一张照片
       if (this.photos.length > 0) {
         this.coverPhoto = this.photos[0]
@@ -264,7 +272,7 @@ export default {
         const photosResponse = await albumService.getAlbumPhotos(albumId)
         this.photos = photosResponse.data.data || []
         this.album.photoCount = this.photos.length
-        
+
         // 重新设置封面照片
         this.setCoverPhoto()
       } catch (error) {
@@ -377,13 +385,13 @@ export default {
     handleCoverChanged(result) {
       // 更新相册的封面照片ID
       this.album.coverPhotoId = result.coverPhotoId
-      
+
       // 重新设置封面照片显示
       this.setCoverPhoto()
-      
+
       // 关闭模态框
       this.showChangeCoverModal = false
-      
+
       // 显示成功提示（ChangeCoverModal 组件内部已经显示了，这里可以不重复显示）
     },
 
@@ -503,8 +511,7 @@ export default {
 
 .album-header__info {
   color: white;
-  text-shadow: 
-    0 2px 4px rgba(0, 0, 0, 0.3);
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .album-header__title {
@@ -565,22 +572,23 @@ export default {
 .with-toolbar-space {
   transition: padding-top 0.3s ease;
   position: relative;
-}  @media (max-width: 768px) {
-    .album-header {
-      height: 60vh;
-      min-height: 400px;
-      max-height: 500px;
-      margin-bottom: var(--spacing-md);
-      transform: translateY(-60px);
-      margin-top: -60px;
-    }
+}
+@media (max-width: 768px) {
+  .album-header {
+    height: 60vh;
+    min-height: 400px;
+    max-height: 500px;
+    margin-bottom: var(--spacing-md);
+    transform: translateY(-60px);
+    margin-top: -60px;
+  }
 
-    .album-header--empty {
-      min-height: 180px;
-      max-height: 250px;
-      transform: none;
-      margin-top: 0;
-    }
+  .album-header--empty {
+    min-height: 180px;
+    max-height: 250px;
+    transform: none;
+    margin-top: 0;
+  }
 
   .album-header__content {
     padding: var(--spacing-2xl) var(--spacing-lg) var(--spacing-xl);
@@ -602,20 +610,21 @@ export default {
   .album-detail-container {
     padding: 0 var(--spacing-lg) var(--spacing-lg);
   }
-}  @media (max-width: 480px) {
-    .album-header {
-      height: 55vh;
-      min-height: 350px;
-      transform: translateY(-60px);
-      margin-top: -60px;
-    }
+}
+@media (max-width: 480px) {
+  .album-header {
+    height: 55vh;
+    min-height: 350px;
+    transform: translateY(-60px);
+    margin-top: -60px;
+  }
 
-    .album-header--empty {
-      min-height: 160px;
-      max-height: 200px;
-      transform: none;
-      margin-top: 0;
-    }
+  .album-header--empty {
+    min-height: 160px;
+    max-height: 200px;
+    transform: none;
+    margin-top: 0;
+  }
 
   .album-header__content {
     padding: var(--spacing-xl) var(--spacing-md) var(--spacing-lg);

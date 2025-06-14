@@ -1,57 +1,57 @@
 :root {
   /* 颜色系统 */
-  --color-primary: #007AFF;  /* 蓝色 */
+  --color-primary: #007aff; /* 蓝色 */
   --color-primary-hover: aliceblue;
   --color-primary-dark: #005ecb; /* 深蓝色 */
   --color-primary-light: #4da3ff; /* 浅蓝色 */
   --color-primary-subtle: rgba(0, 122, 255, 0.1); /* 淡蓝色 */
   --color-primary-rgb: 0, 122, 255; /* RGB值 */
-  
-  --color-secondary: #5AC8FA; /* 浅蓝色 */
-  --color-success: #34C759;  /* 绿色 */
+
+  --color-secondary: #5ac8fa; /* 浅蓝色 */
+  --color-success: #34c759; /* 绿色 */
   --color-success-dark: #2ca349; /* 深绿色 */
   --color-success-light: #5cdb7a; /* 浅绿色 */
   --color-success-subtle: rgba(52, 199, 89, 0.1); /* 淡绿色 */
   --color-success-rgb: 52, 199, 89; /* RGB值 */
-  
-  --color-warning: #ffa474;  /* 橙色 */
-  --color-danger: #FF3B30;   /* 红色 */
+
+  --color-warning: #ffa474; /* 橙色 */
+  --color-danger: #ff3b30; /* 红色 */
   --color-danger-dark: #d92c23; /* 深红色 */
   --color-danger-light: #ff6b63; /* 浅红色 */
   --color-danger-subtle: rgba(255, 59, 48, 0.1); /* 淡红色 */
   --color-danger-rgb: 255, 59, 48; /* RGB值 */
-  
-  --color-info: #5856D6;     /* 紫色 */
-  
+
+  --color-info: #5856d6; /* 紫色 */
+
   /* 中性色调 */
   --color-black: #000000;
-  --color-dark-gray: #1D1D1F; /* 深灰色 */
-  --color-gray: #86868B;      /* 中灰色 */
-  --color-light-gray: #F5F5F7; /* 浅灰色 */
-  --color-white: #FFFFFF;
-  
+  --color-dark-gray: #1d1d1f; /* 深灰色 */
+  --color-gray: #86868b; /* 中灰色 */
+  --color-light-gray: #f5f5f7; /* 浅灰色 */
+  --color-white: #ffffff;
+
   /* 背景颜色 */
   --bg-primary: var(--color-white);
   --bg-secondary: var(--color-light-gray);
-  --bg-tertiary: #FAFAFC;
+  --bg-tertiary: #fafafc;
   --bg-hover: rgba(0, 0, 0, 0.05);
-  
+
   /* 渐变背景 */
   --bg-gradient-start: #f5f7fa;
   --bg-gradient-end: #c3cfe2;
   --bg-gradient: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
-  
+
   /* 文字颜色 */
   --text-primary: var(--color-dark-gray);
   --text-secondary: var(--color-gray);
-  --text-tertiary: #AEAEB2;
+  --text-tertiary: #aeaeb2;
   --text-disabled: rgba(60, 60, 67, 0.3);
-  
+
   /* 边框和分割线 */
   --border-color: rgba(60, 60, 67, 0.15);
   --border-color-hover: rgba(60, 60, 67, 0.25);
   --border-width: 0.5px;
-  
+
   /* 毛玻璃效果 */
   --blur-bg: rgba(255, 255, 255, 0.6);
   --blur-bg-light: rgba(255, 255, 255, 0.4);
@@ -62,7 +62,7 @@
   --blur-border-strong: rgba(255, 255, 255, 0.25);
   --blur-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
   --blur-shadow-strong: 0 4px 20px rgba(0, 0, 0, 0.08);
-  
+
   /* 滚动条样式变量 */
   --scrollbar-width: 6px;
   --scrollbar-height: 6px;
@@ -70,23 +70,24 @@
   --scrollbar-thumb-color: rgba(0, 0, 0, 0.2);
   --scrollbar-thumb-hover-color: rgba(0, 0, 0, 0.3);
   --scrollbar-thumb-radius: 3px;
-  
+
   /* 圆角 */
   --radius-small: 6px;
   --radius-medium: 10px;
   --radius-large: 18px;
   --radius-extra-large: 24px;
   --radius-round: 100px;
-  
+
   /* 阴影 */
   --shadow-small: 0px 1px 2px rgba(0, 0, 0, 0.05);
   --shadow-medium: 0px 2px 4px rgba(0, 0, 0, 0.1);
   --shadow-large: 0px 4px 8px rgba(0, 0, 0, 0.12);
   --shadow-extra-large: 0px 8px 16px rgba(0, 0, 0, 0.15);
-  
+
   /* 字体 */
-  --font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", sans-serif;
-  
+  --font-family:
+    -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Helvetica Neue', sans-serif;
+
   /* 字体大小 */
   --font-size-xs: 11px;
   --font-size-sm: 13px;
@@ -96,13 +97,13 @@
   --font-size-2xl: 22px;
   --font-size-3xl: 28px;
   --font-size-4xl: 34px;
-  
+
   /* 字体粗细 */
   --font-weight-regular: 400;
   --font-weight-medium: 500;
   --font-weight-semibold: 600;
   --font-weight-bold: 700;
-  
+
   /* 间距 */
   --spacing-2xs: 4px;
   --spacing-xs: 8px;
@@ -113,20 +114,20 @@
   --spacing-2xl: 32px;
   --spacing-3xl: 40px;
   --spacing-4xl: 48px;
-  
+
   /* 动画 */
   --transition-fast: 0.2s cubic-bezier(0.25, 0.1, 0.25, 1);
   --transition-base: 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
   --transition-slow: 0.4s cubic-bezier(0.25, 0.1, 0.25, 1);
   --transition-bounce: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  
+
   /* 背景模糊强度 */
   --blur-light: blur(8px) saturate(1.2);
   --blur-medium: blur(12px) saturate(1.5);
   --blur-strong: blur(20px) saturate(1.8);
-  --blur-extra-strong: blur(30px) saturate(2.0);
+  --blur-extra-strong: blur(30px) saturate(2);
   --blur-ultra-strong: blur(40px) saturate(2.2);
-  
+
   /* 容器宽度 */
   --container-sm: 640px;
   --container-md: 768px;
@@ -136,28 +137,28 @@
 
 /* 深色主题 */
 .theme-dark {
-  --color-primary-hover: #3e4854;   /* 深蓝色 */
+  --color-primary-hover: #3e4854; /* 深蓝色 */
   /* 背景颜色 */
-  --bg-primary: #1C1C1E;
-  --bg-secondary: #2C2C2E;
-  --bg-tertiary: #3A3A3C;
+  --bg-primary: #1c1c1e;
+  --bg-secondary: #2c2c2e;
+  --bg-tertiary: #3a3a3c;
   --bg-hover: rgba(255, 255, 255, 0.1);
-  
+
   /* 渐变背景 - 深色模式 */
   --bg-gradient-start: #373643;
   --bg-gradient-end: #002549;
   --bg-gradient: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
-  
+
   /* 文字颜色 */
-  --text-primary: #FFFFFF;
+  --text-primary: #ffffff;
   --text-secondary: rgba(235, 235, 245, 0.6);
   --text-tertiary: rgba(235, 235, 245, 0.4);
   --text-disabled: rgba(235, 235, 245, 0.2);
-  
+
   /* 边框和分割线 */
   --border-color: rgba(235, 235, 245, 0.1);
   --border-color-hover: rgba(235, 235, 245, 0.2);
-  
+
   /* 毛玻璃效果 */
   --blur-bg: rgba(29, 29, 32, 0.7);
   --blur-bg-light: rgba(29, 29, 32, 0.5);
@@ -168,7 +169,7 @@
   --blur-border-strong: rgba(255, 255, 255, 0.15);
   --blur-shadow: 0 2px 12px rgba(29, 29, 32, 0.3);
   --blur-shadow-strong: 0 4px 20px rgba(0, 0, 0, 0.4);
-  
+
   /* 阴影 */
   --shadow-small: 0px 1px 2px rgba(0, 0, 0, 0.3);
   --shadow-medium: 0px 2px 4px rgba(0, 0, 0, 0.4);
@@ -188,7 +189,7 @@
   --blur-border-strong: var(--border-color);
   --blur-shadow: var(--shadow-medium);
   --blur-shadow-strong: var(--shadow-large);
-  
+
   /* 背景模糊强度 - 关闭模糊 */
   --blur-light: none;
   --blur-medium: none;
@@ -209,7 +210,7 @@
   --blur-border-strong: var(--border-color);
   --blur-shadow: var(--shadow-medium);
   --blur-shadow-strong: var(--shadow-large);
-  
+
   /* 背景模糊强度 - 关闭模糊 */
   --blur-light: none;
   --blur-medium: none;

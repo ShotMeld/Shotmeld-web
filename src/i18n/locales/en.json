@@ -613,13 +613,15 @@
       "actions": {
         "keep": "Keep",
         "delete": "Delete"
-      },      "info": {
+      },
+      "info": {
         "size": "Size: {size}",
         "dimensions": "Dimensions: {width} x {height}",
         "date": "Taken: {date}"
       }
     }
-  },  "changeCover": {
+  },
+  "changeCover": {
     "title": "Change Album Cover",
     "selectFromAlbum": "Select from Album",
     "uploadNew": "Upload New Photo",

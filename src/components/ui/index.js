@@ -9,6 +9,7 @@ import SfNavLink from './SfNavLink.vue'
 import SfLinkButton from './SfLinkButton.vue'
 import SfDeleteConfirmModal from './SfDeleteConfirmModal.vue'
 import LoginTransition from './LoginTransition.vue'
+import LazyImage from './LazyImage.vue'
 
 export {
   SfButton,
@@ -22,6 +23,7 @@ export {
   SfLinkButton,
   SfDeleteConfirmModal,
   LoginTransition,
+  LazyImage,
 }
 
 export default {
@@ -37,5 +39,6 @@ export default {
     app.component('SfLinkButton', SfLinkButton)
     app.component('SfDeleteConfirmModal', SfDeleteConfirmModal)
     app.component('LoginTransition', LoginTransition)
+    app.component('LazyImage', LazyImage)
   },
 }

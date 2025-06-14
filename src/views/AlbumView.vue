@@ -21,7 +21,8 @@
         <p>{{ $t('albumView.empty') }}</p>
       </div>
 
-      <div v-else>        <!-- 批量管理工具栏 -->
+      <div v-else>
+        <!-- 批量管理工具栏 -->
         <AlbumManageToolbar
           v-if="isManageMode"
           :selectedAlbums="selectedAlbums"
@@ -52,7 +53,8 @@
         @close="showCreateModal = false"
         @cancel="showCreateModal = false"
       />
-    </SfModal>    <!-- 批量删除确认弹窗 -->
+    </SfModal>
+    <!-- 批量删除确认弹窗 -->
     <SfDeleteConfirmModal
       v-model="isDeleteSelectedModalVisible"
       :item-name="$t('albumView.deleteConfirm.itemName')"
@@ -81,7 +83,8 @@ import { albumService } from '../api'
 import { eventBus } from '../utils/eventBus'
 
 export default {
-  name: 'AlbumView',  components: {
+  name: 'AlbumView',
+  components: {
     AlbumCard,
     AlbumManageToolbar,
     SfButton,
@@ -96,7 +99,7 @@ export default {
       albums: [],
       loading: false,
       error: null,
-      userName: '',      // 批量管理相关的状态
+      userName: '', // 批量管理相关的状态
       isManageMode: false,
       selectedAlbums: [],
       isDeleteSelectedModalVisible: false,
@@ -177,7 +180,8 @@ export default {
     },
     isSelected(albumId) {
       return this.selectedAlbums.includes(albumId)
-    },    handleChangeCover(albumId) {
+    },
+    handleChangeCover(albumId) {
       this.currentAlbumForCoverChange = albumId
       this.isChangeCoverModalVisible = true
     },
@@ -191,9 +195,9 @@ export default {
       const albumIndex = this.albums.findIndex(album => album.id === albumId)
       if (albumIndex !== -1) {
         // 使用不可变方式更新相册封面
-        this.albums.splice(albumIndex, 1, { 
-          ...this.albums[albumIndex], 
-          coverPhotoId 
+        this.albums.splice(albumIndex, 1, {
+          ...this.albums[albumIndex],
+          coverPhotoId,
         })
       }
       this.isChangeCoverModalVisible = false

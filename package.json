@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "build:analyze": "vite build && npx vite-bundle-analyzer dist",
     "preview": "vite preview",
     "lint": "eslint . --ext .vue,.js,.jsx,.mjs --fix",
     "lint:check": "eslint . --ext .vue,.js,.jsx,.mjs",
@@ -34,7 +35,12 @@
     "eslint-plugin-prettier": "^5.4.1",
     "eslint-plugin-vue": "^10.2.0",
     "prettier": "^3.5.3",
+    "unplugin-auto-import": "^19.3.0",
+    "unplugin-vue-components": "^28.7.0",
     "vite": "^6.3.5",
-    "vue-eslint-parser": "^10.1.3"
+    "vite-plugin-imagemin": "^0.6.1",
+    "vite-plugin-pwa": "^1.0.0",
+    "vue-eslint-parser": "^10.1.3",
+    "workbox-window": "^7.3.0"
   }
 }

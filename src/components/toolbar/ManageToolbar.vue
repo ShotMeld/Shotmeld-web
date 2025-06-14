@@ -96,7 +96,8 @@ export default {
     // 过滤出需要展示的操作按钮
     visibleActions() {
       return this.actions.filter(action => action.visible !== false)
-    },  },
+    },
+  },
   emits: {
     'select-all': true,
     'deselect-all': true,

@@ -88,8 +88,12 @@ export default {
   computed: {
     hasPhoto() {
       // 检查是否有封面照片或相册中的照片
-      return (this.album.coverPhotoId && this.photoDetails[this.album.coverPhotoId]?.thumbnailUrl) ||
-             (this.album.photos && this.album.photos.length > 0 && this.photoDetails[this.album.photos[0]]?.thumbnailUrl)
+      return (
+        (this.album.coverPhotoId && this.photoDetails[this.album.coverPhotoId]?.thumbnailUrl) ||
+        (this.album.photos &&
+          this.album.photos.length > 0 &&
+          this.photoDetails[this.album.photos[0]]?.thumbnailUrl)
+      )
     },
     coverImage() {
       // 如果有封面照片ID，使用封面照片的缩略图

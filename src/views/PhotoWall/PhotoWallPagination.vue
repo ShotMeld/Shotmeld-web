@@ -45,12 +45,12 @@ export default {
     function debounce(func, wait) {
       let timeout
       return function executedFunction(...args) {
-      const later = () => {
+        const later = () => {
+          clearTimeout(timeout)
+          func(...args)
+        }
         clearTimeout(timeout)
-        func(...args)
-      }
-      clearTimeout(timeout)
-      timeout = setTimeout(later, wait)
+        timeout = setTimeout(later, wait)
       }
     }
 
@@ -68,9 +68,9 @@ export default {
     })
 
     return {
-      isSmallScreen
+      isSmallScreen,
     }
-  }
+  },
 }
 </script>
 
@@ -258,7 +258,7 @@ export default {
     padding: var(--spacing-md) var(--spacing-sm);
     margin: var(--spacing-xl) 0;
   }
-  
+
   :deep(.el-pagination) {
     row-gap: 8px;
   }

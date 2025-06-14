@@ -2,7 +2,7 @@
   <div id="app">
     <!-- 全局背景动画 -->
     <GlobalBackground />
-    
+
     <router-view v-slot="{ Component, route }">
       <transition :name="getTransitionName(route)" mode="out-in" appear>
         <component :is="Component" :key="route.path" />

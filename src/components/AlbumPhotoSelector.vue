@@ -19,11 +19,7 @@
       <SfButton type="secondary" @click="$emit('cancel')">
         {{ $t('changeCover.cancel') }}
       </SfButton>
-      <SfButton 
-        type="primary" 
-        @click="confirmSelection"
-        :disabled="!selectedPhotoId"
-      >
+      <SfButton type="primary" @click="confirmSelection" :disabled="!selectedPhotoId">
         {{ $t('changeCover.confirm') }}
       </SfButton>
     </div>
@@ -63,27 +59,29 @@ export default {
       if (selectedPhotos.length > 0) {
         this.selectedPhotoId = selectedPhotos[0]
         // 从PhotoSelector组件中获取照片信息
-        this.selectedPhoto = this.$refs.photoSelector?.photos?.find(photo => photo.id === this.selectedPhotoId)
+        this.selectedPhoto = this.$refs.photoSelector?.photos?.find(
+          photo => photo.id === this.selectedPhotoId
+        )
       } else {
         this.selectedPhotoId = null
         this.selectedPhoto = null
       }
-      
+
       // 如果隐藏操作按钮，直接触发选择事件
       if (this.hideActions && this.selectedPhotoId) {
         this.$emit('photo-selected', {
           photoId: this.selectedPhotoId,
-          photo: this.selectedPhoto
+          photo: this.selectedPhoto,
         })
       }
     },
 
     confirmSelection() {
       if (!this.selectedPhotoId) return
-      
+
       this.$emit('photo-selected', {
         photoId: this.selectedPhotoId,
-        photo: this.selectedPhoto
+        photo: this.selectedPhoto,
       })
     },
   },

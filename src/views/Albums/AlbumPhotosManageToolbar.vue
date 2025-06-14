@@ -56,7 +56,7 @@ export default {
           icon: 'fas fa-image',
           type: 'secondary',
           requireSelection: false,
-        }
+        },
       ]
     },
   },

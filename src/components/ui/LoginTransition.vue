@@ -5,7 +5,6 @@
 <template>
   <transition name="login-transition" @after-leave="$emit('transition-complete')">
     <div v-if="show" class="login-transition-overlay">
-
       <!-- 内容层 -->
       <div class="transition-content">
         <!-- 欢迎文字动画 -->
@@ -17,7 +16,7 @@
             {{ userName || $t('loginTransition.defaultUser') }}
           </div>
         </div>
-        
+
         <!-- 底部品牌标识 -->
         <div class="brand-footer" :class="{ animate: step >= 1 }">
           <img src="@/assets/LOGO/LOGO.svg" alt="ShotMeld Logo" class="brand-logo" />
@@ -29,7 +28,6 @@
 </template>
 
 <script>
-
 export default {
   name: 'LoginTransition',
   props: {

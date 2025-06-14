@@ -5,12 +5,7 @@
 
 <template>
   <div class="global-background">
-    <div 
-      v-for="orb in orbs" 
-      :key="orb.id"
-      class="gradient-orb"
-      :style="orbStyle(orb)"
-    ></div>
+    <div v-for="orb in orbs" :key="orb.id" class="gradient-orb" :style="orbStyle(orb)"></div>
   </div>
 </template>
 
@@ -26,7 +21,7 @@ export default {
   computed: {
     orbs() {
       return this.backgroundStore.getOrbs
-    }
+    },
   },
   created() {
     // 确保小球只初始化一次，全应用共享
@@ -43,10 +38,10 @@ export default {
         animationDuration: `${orb.duration}s`,
         animationDelay: `${orb.delay}s`,
         '--move-x': `${orb.moveX}px`,
-        '--move-y': `${orb.moveY}px`
+        '--move-y': `${orb.moveY}px`,
       }
-    }
-  }
+    },
+  },
 }
 </script>
 
@@ -78,22 +73,23 @@ export default {
     transform: translate(-50%, -50%) translate(0, 0) scale(1);
     opacity: 0.6;
   }
-  
+
   25% {
     transform: translate(-50%, -50%) translate(var(--move-x), calc(var(--move-y) * 0.5)) scale(1.05);
     opacity: 0.4;
   }
-  
+
   50% {
     transform: translate(-50%, -50%) translate(calc(var(--move-x) * 1.2), var(--move-y)) scale(0.95);
     opacity: 0.7;
   }
-  
+
   75% {
-    transform: translate(-50%, -50%) translate(calc(var(--move-x) * 0.3), calc(var(--move-y) * 1.1)) scale(1.1);
+    transform: translate(-50%, -50%) translate(calc(var(--move-x) * 0.3), calc(var(--move-y) * 1.1))
+      scale(1.1);
     opacity: 0.5;
   }
-  
+
   100% {
     transform: translate(-50%, -50%) translate(0, 0) scale(1);
     opacity: 0.6;

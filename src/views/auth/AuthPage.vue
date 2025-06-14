@@ -14,7 +14,6 @@
 
     <!-- 认证表单容器 - 过渡动画显示时隐藏 -->
     <div class="auth-form-container" :class="{ 'fade-out': showTransition }">
-
       <div class="auth-content">
         <!-- Logo 和品牌 -->
         <div class="brand-section">

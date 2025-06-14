@@ -14,9 +14,9 @@
     @show-delete-selected="showDeleteSelectedModal"
     @exit-manage-mode="exitManageMode"
   />
-  
-  <div 
-    class="photo-wall-container" 
+
+  <div
+    class="photo-wall-container"
     :class="{ 'page-entering': isPageEntering }"
     @dragover.prevent="handleDragOver"
     @dragleave.prevent="handleDragLeave"
@@ -215,7 +215,7 @@ export default {
     this.fetchAlbums()
     // 启动自动刷新
     this.startAutoRefresh()
-    
+
     // 监听上传事件
     eventBus.on(EventTypes.SHOW_UPLOAD_MODAL, () => {
       this.isUploadModalVisible = true
@@ -234,7 +234,7 @@ export default {
   beforeUnmount() {
     // 清理自动刷新定时器
     this.stopAutoRefresh()
-    
+
     eventBus.off(EventTypes.SHOW_UPLOAD_MODAL)
     eventBus.off(EventTypes.SHOW_ALBUM_FORM)
     eventBus.off('toggle-manage')
@@ -244,12 +244,12 @@ export default {
     handleDragOver(e) {
       e.preventDefault()
       e.stopPropagation()
-      
+
       // 检查是否包含文件
       if (e.dataTransfer.types.includes('Files')) {
         this.dragCounter++
         this.isDragOver = true
-        
+
         // 一旦检测到拖拽文件，立即打开上传模态框
         if (!this.isUploadModalVisible) {
           this.isUploadModalVisible = true
@@ -260,7 +260,7 @@ export default {
     handleDragLeave(e) {
       e.preventDefault()
       e.stopPropagation()
-      
+
       this.dragCounter--
       if (this.dragCounter <= 0) {
         this.dragCounter = 0
@@ -271,7 +271,7 @@ export default {
     handleDrop(e) {
       e.preventDefault()
       e.stopPropagation()
-      
+
       this.isDragOver = false
       this.dragCounter = 0
     },
@@ -286,14 +286,14 @@ export default {
         }
       }, this.autoRefreshInterval)
     },
-    
+
     stopAutoRefresh() {
       if (this.autoRefreshTimer) {
         clearInterval(this.autoRefreshTimer)
         this.autoRefreshTimer = null
       }
     },
-    
+
     // 静默刷新照片数据，不显示加载状态
     async silentRefreshPhotos() {
       try {
@@ -308,13 +308,16 @@ export default {
           params.startDate = this.dateRange[0]
           params.endDate = this.dateRange[1]
         }
-        
+
         const response = await photoService.getPhotos(params)
         const newPhotos = response.data.data || []
         const newTotal = response.data.total || 0
-        
+
         // 只有当数据真正发生变化时才更新
-        if (JSON.stringify(newPhotos) !== JSON.stringify(this.photos) || newTotal !== this.totalPhotos) {
+        if (
+          JSON.stringify(newPhotos) !== JSON.stringify(this.photos) ||
+          newTotal !== this.totalPhotos
+        ) {
           this.photos = newPhotos
           this.totalPhotos = newTotal
         }
@@ -323,7 +326,7 @@ export default {
         console.warn('自动刷新照片数据失败:', error)
       }
     },
-    
+
     // 批量管理相关方法
     toggleManageMode() {
       if (this.isManageMode) {
@@ -473,7 +476,7 @@ export default {
         const response = await photoService.getPhotos(params)
         this.photos = response.data.data || []
         this.totalPhotos = response.data.total || 0
-        
+
         // 手动刷新后重启自动刷新定时器
         if (!this.isManageMode) {
           this.startAutoRefresh()

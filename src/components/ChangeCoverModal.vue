@@ -3,11 +3,8 @@
   从相册中选择照片作为封面
 -->
 
-<template>  <SfModal
-    v-model="visible"
-    :title="$t('changeCover.title')"
-    size="default"
-  >
+<template>
+  <SfModal v-model="visible" :title="$t('changeCover.title')" size="default">
     <AlbumPhotoSelector
       :albumId="albumId"
       :hideActions="true"
@@ -25,11 +22,7 @@
         @click="handleConfirmSelection"
         :disabled="!selectedPhotoId || isUpdating"
       >
-        {{
-          isUpdating
-            ? $t('changeCover.updating')
-            : $t('changeCover.confirm')
-        }}
+        {{ isUpdating ? $t('changeCover.updating') : $t('changeCover.confirm') }}
       </SfButton>
     </div>
   </SfModal>
@@ -98,10 +91,10 @@ export default {
 
       try {
         this.isUpdating = true
-        
+
         // 更新相册封面
         await albumService.updateAlbum(this.albumId, {
-          coverPhotoId: this.selectedPhotoId
+          coverPhotoId: this.selectedPhotoId,
         })
 
         this.$notify({
@@ -114,7 +107,7 @@ export default {
         this.$emit('cover-updated', {
           albumId: this.albumId,
           coverPhotoId: this.selectedPhotoId,
-          newPhoto: this.selectedPhoto
+          newPhoto: this.selectedPhoto,
         })
 
         // 关闭模态框

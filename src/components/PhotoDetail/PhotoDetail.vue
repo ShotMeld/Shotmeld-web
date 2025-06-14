@@ -20,9 +20,9 @@
           @image-loaded="handleImageLoaded"
         />
         <!-- 操作按钮组件 -->
-        <PhotoActions 
-          :photo="photo" 
-          @delete-click="confirmDelete" 
+        <PhotoActions
+          :photo="photo"
+          @delete-click="confirmDelete"
           @photo-updated="handlePhotoUpdated"
           @photo-replaced="handlePhotoReplaced"
         />

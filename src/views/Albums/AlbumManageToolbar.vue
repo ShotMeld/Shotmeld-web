@@ -2,7 +2,8 @@
   AlbumManageToolbar.vue - 相册批量管理工具栏组件
 -->
 
-<template>  <div class="album-toolbar-container toolbar-visible">
+<template>
+  <div class="album-toolbar-container toolbar-visible">
     <ManageToolbar
       :selectedItems="selectedAlbums"
       :itemUnit="$t('albumManageToolbar.itemUnit')"
@@ -28,7 +29,8 @@ export default {
       type: Array,
       required: true,
     },
-  },  computed: {
+  },
+  computed: {
     toolbarActions() {
       return [
         {

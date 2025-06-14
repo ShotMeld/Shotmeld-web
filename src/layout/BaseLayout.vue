@@ -4,7 +4,6 @@
 
 <template>
   <div class="base-layout">
-    
     <AppNavbar
       :userName="userName"
       :currentPage="currentPage"

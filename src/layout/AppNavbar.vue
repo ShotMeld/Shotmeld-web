@@ -562,7 +562,6 @@ export default {
 }
 
 .user-dropdown {
-
   background: var(--blur-bg-extra-strong);
   backdrop-filter: var(--blur-extra-strong);
   -webkit-backdrop-filter: var(--blur-extra-strong);

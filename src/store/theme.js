@@ -5,7 +5,7 @@ import { ref, watch } from 'vue'
 export const useThemeStore = defineStore('theme', () => {
   // 从 localStorage 获取保存的主题设置，默认为 'light'
   const theme = ref(localStorage.getItem('theme') || 'light')
-  
+
   // 从 localStorage 获取保存的高级材质设置，默认为 true
   const advancedMaterial = ref(localStorage.getItem('advancedMaterial') !== 'false')
 

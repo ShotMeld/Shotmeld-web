@@ -1,10 +1,11 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import AuthPage from '../views/auth/AuthPage.vue'
-import ProfilePage from '../views/ProfilePage.vue'
-import SettingsPage from '../views/SettingsPage.vue'
-import MorePage from '../views/MorePage.vue'
-import DuplicatePhotosPage from '../views/More/DuplicatePhotosPage.vue'
-import BaseLayout from '../layout/BaseLayout.vue'
+// 将非首屏必需的组件改为懒加载
+const AuthPage = () => import('../views/auth/AuthPage.vue')
+const ProfilePage = () => import('../views/ProfilePage.vue')
+const SettingsPage = () => import('../views/SettingsPage.vue')
+const MorePage = () => import('../views/MorePage.vue')
+const DuplicatePhotosPage = () => import('../views/More/DuplicatePhotosPage.vue')
+const BaseLayout = () => import('../layout/BaseLayout.vue')
 
 const routes = [
   {

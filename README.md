@@ -11,6 +11,7 @@
 # ShotMeld
 
 照片管理系统 / Photo Management System
+
 </div>
 
 > CS183FZ[A] — Critical Skills Project Group Assignment
@@ -47,12 +48,14 @@ ShotMeld is a modern photo management system that helps users easily manage and 
 ## 🛠️ Installation and Running
 
 1. Clone the repository
+
 ```bash
 git clone https://github.com/ShotMeld/Shotmeld-web.git
 cd shotmeld-web
 ```
 
 2. Install dependencies
+
 ```bash
 npm install
 # or
@@ -60,12 +63,15 @@ yarn install
 ```
 
 3. Configure environment variables
+
 ```bash
 cp .env.example .env
 ```
+
 Edit the `.env` file to set necessary environment variables.
 
 4. Start development server
+
 ```bash
 npm run dev
 # or
@@ -73,6 +79,7 @@ yarn dev
 ```
 
 5. Build for production
+
 ```bash
 npm run build
 # or

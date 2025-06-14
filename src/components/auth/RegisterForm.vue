@@ -210,21 +210,21 @@ export default {
 <style scoped>
 .auth-card {
   background: var(--blur-bg-strong);
-    backdrop-filter: var(--blur-strong);
-    border-radius: var(--radius-large);
-    padding: var(--spacing-3xl);
-    box-shadow: var(--blur-shadow-strong), var(--shadow-small);
-    border: 1px solid var(--blur-border-strong);
-    animation: cardSlideUp 0.8s ease-out 0.2s both;
-    transition:
-      transform var(--transition-base),
-      box-shadow var(--transition-base);
+  backdrop-filter: var(--blur-strong);
+  border-radius: var(--radius-large);
+  padding: var(--spacing-3xl);
+  box-shadow: var(--blur-shadow-strong), var(--shadow-small);
+  border: 1px solid var(--blur-border-strong);
+  animation: cardSlideUp 0.8s ease-out 0.2s both;
+  transition:
+    transform var(--transition-base),
+    box-shadow var(--transition-base);
 }
 
 .auth-card:hover {
   transform: translateY(-4px);
-    box-shadow: var(--shadow-extra-large), var(--shadow-medium);
-  }
+  box-shadow: var(--shadow-extra-large), var(--shadow-medium);
+}
 
 @keyframes cardSlideUp {
   from {

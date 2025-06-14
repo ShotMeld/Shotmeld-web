@@ -85,24 +85,22 @@
             <h2>{{ $t('settings.experimental.title') }}</h2>
           </div>
           <p class="section-description">{{ $t('settings.experimental.description') }}</p>
-          
+
           <!-- 图片编辑功能开关 -->
           <div class="feature-toggle">
             <div class="feature-info">
               <div class="feature-name">{{ $t('settings.experimental.photoEdit.title') }}</div>
-              <div class="feature-description">{{ $t('settings.experimental.photoEdit.description') }}</div>
+              <div class="feature-description">
+                {{ $t('settings.experimental.photoEdit.description') }}
+              </div>
             </div>
             <label class="toggle-switch">
-              <input
-                type="checkbox"
-                v-model="photoEditEnabled"
-                @change="handlePhotoEditToggle"
-              />
+              <input type="checkbox" v-model="photoEditEnabled" @change="handlePhotoEditToggle" />
               <span class="toggle-slider"></span>
             </label>
           </div>
         </div>
-        
+
         <!-- 底部品牌标识 -->
         <div class="settings-footer">
           <img src="@/assets/LOGO/LOGO.svg" alt="ShotMeld Logo" class="brand-logo" />
@@ -237,7 +235,7 @@ export default {
       localStorage.setItem('photoEditConsentGiven', 'true')
       this.savePhotoEditSetting()
       this.showPhotoEditConsent = false
-      
+
       this.$notify({
         title: this.$t('settings.experimental.photoEdit.consent.success.title'),
         message: this.$t('settings.experimental.photoEdit.consent.success.message'),

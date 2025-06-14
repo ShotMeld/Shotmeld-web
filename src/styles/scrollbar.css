@@ -11,7 +11,9 @@
 }
 
 /* 强制隐藏 Firefox 的滚动条 */
-html, body, * {
+html,
+body,
+* {
   scrollbar-width: none !important;
   -ms-overflow-style: none !important; /* IE and Edge (legacy) */
 }

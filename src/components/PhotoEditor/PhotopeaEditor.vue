@@ -16,7 +16,7 @@
         <div class="loading-spinner"></div>
         <p>{{ $t('photoEditor.loading') }}</p>
       </div>
-      
+
       <div v-if="error" class="error-container">
         <p class="error-message">{{ error }}</p>
         <SfButton @click="retry">{{ $t('common.retry') }}</SfButton>
@@ -36,11 +36,7 @@
         <SfButton variant="secondary" @click="handleClose">
           {{ $t('common.cancel') }}
         </SfButton>
-        <SfButton 
-          variant="primary" 
-          :loading="saving"
-          @click="saveImage"
-        >
+        <SfButton variant="primary" :loading="saving" @click="saveImage">
           {{ $t('photoEditor.save') }}
         </SfButton>
       </div>
@@ -91,7 +87,7 @@ export default {
       if (this.photo && this.photo.url) {
         // 构建包含图片URL的Photopea链接
         const config = {
-          files: [this.photo.url]
+          files: [this.photo.url],
         }
         return `https://www.photopea.com/#${encodeURIComponent(JSON.stringify(config))}`
       }
@@ -122,20 +118,19 @@ export default {
         this.loading = true
         this.error = null
         this.isPhotopeaReady = false
-        
+
         // 等待iframe渲染到DOM中
         await this.waitForFrameRender()
-        
+
         // 等待iframe加载完成
         if (!this.isFrameLoaded) {
           await this.waitForFrameLoad()
         }
-        
+
         // 等待Photopea准备就绪
         await this.waitForPhotopeaReady()
-        
+
         this.loading = false
-        
       } catch (error) {
         console.error('初始化编辑器失败:', error)
         this.error = this.$t('photoEditor.loadError')
@@ -144,7 +139,7 @@ export default {
     },
 
     waitForFrameRender() {
-      return new Promise((resolve) => {
+      return new Promise(resolve => {
         const checkFrame = () => {
           if (this.$refs.photopeaFrame) {
             resolve()
@@ -157,7 +152,7 @@ export default {
     },
 
     waitForPhotopeaReady() {
-      return new Promise((resolve) => {
+      return new Promise(resolve => {
         const checkReady = () => {
           if (this.isPhotopeaReady) {
             resolve()
@@ -172,7 +167,7 @@ export default {
     handlePhotopeaMessage(event) {
       // 确保消息来自Photopea
       if (event.origin !== 'https://www.photopea.com') return
-      
+
       if (event.data === 'done') {
         // Photopea准备就绪或完成操作
         if (!this.isPhotopeaReady) {
@@ -191,7 +186,7 @@ export default {
     waitForFrameLoad() {
       return new Promise((resolve, reject) => {
         const frame = this.$refs.photopeaFrame
-        
+
         const timeout = setTimeout(() => {
           reject(new Error('Frame load timeout'))
         }, 30000)
@@ -219,9 +214,8 @@ export default {
         // 向Photopea发送导出命令
         const script = 'app.activeDocument.saveToOE("png");'
         this.$refs.photopeaFrame.contentWindow.postMessage(script, '*')
-        
+
         // saveImage方法不直接等待响应，而是通过handleExportedImage处理
-        
       } catch (error) {
         console.error('保存编辑后的图片失败:', error)
         this.$notify({
@@ -237,10 +231,11 @@ export default {
       try {
         // 将ArrayBuffer转换为File对象
         const blob = new Blob([arrayBuffer], { type: 'image/png' })
-        const file = new File([blob], `edited_${this.photo.filename || 'photo.png'}`, { type: 'image/png' })
-        
+        const file = new File([blob], `edited_${this.photo.filename || 'photo.png'}`, {
+          type: 'image/png',
+        })
+
         await this.processEditedPhoto(file)
-        
       } catch (error) {
         console.error('处理导出图片失败:', error)
         this.$notify({
@@ -257,10 +252,11 @@ export default {
         // 将base64转换为File对象
         const response = await fetch(dataUrl)
         const blob = await response.blob()
-        const file = new File([blob], `edited_${this.photo.filename || 'photo.png'}`, { type: 'image/png' })
-        
+        const file = new File([blob], `edited_${this.photo.filename || 'photo.png'}`, {
+          type: 'image/png',
+        })
+
         await this.processEditedPhoto(file)
-        
       } catch (error) {
         console.error('处理导出图片失败:', error)
         this.$notify({
@@ -276,22 +272,22 @@ export default {
       try {
         // 导入photoService
         const { photoService } = await import('../../api')
-        
+
         // 删除原图片
         await photoService.deletePhoto(this.photo.id)
         this.$emit('photo-replaced', this.photo.id)
 
         // 上传编辑后的图片
         const uploadResponse = await photoService.batchUploadPhotos([file])
-        
+
         if (uploadResponse.data && uploadResponse.data.length > 0) {
           const newPhoto = uploadResponse.data[0]
-          
+
           // 如果原图片有标题，更新新图片的标题
           if (this.photo.title) {
             try {
               await photoService.updatePhoto(newPhoto.id, {
-                title: this.photo.title
+                title: this.photo.title,
               })
               // 更新本地的newPhoto对象
               newPhoto.title = this.photo.title
@@ -299,18 +295,17 @@ export default {
               console.warn('更新图片标题失败:', error)
             }
           }
-          
+
           this.$emit('photo-updated', newPhoto)
-          
+
           this.$notify({
             title: this.$t('photoEditor.saveSuccess.title'),
             message: this.$t('photoEditor.saveSuccess.message'),
             type: 'success',
           })
-          
+
           this.handleClose()
         }
-        
       } catch (error) {
         console.error('处理编辑后的图片失败:', error)
         this.$notify({
@@ -377,8 +372,12 @@ export default {
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .error-container {
@@ -405,7 +404,7 @@ export default {
   .photopea-editor {
     height: 70vh;
   }
-  
+
   .editor-actions {
     flex-direction: column-reverse;
   }

@@ -70,7 +70,13 @@
         <div class="filter-item">
           <div class="sort-controls">
             <div class="select-wrapper sort-field">
-              <el-select v-model="localFilters.sort" @change="handleFilterChange" class="select" id="sort-field" name="sort-field">
+              <el-select
+                v-model="localFilters.sort"
+                @change="handleFilterChange"
+                class="select"
+                id="sort-field"
+                name="sort-field"
+              >
                 <el-option
                   :label="$t('photoWall.filters.sort.takenAt')"
                   value="takenAt"
@@ -83,7 +89,13 @@
               </el-select>
             </div>
             <div class="select-wrapper sort-order">
-              <el-select v-model="localFilters.order" @change="handleFilterChange" class="select" id="sort-order" name="sort-order">
+              <el-select
+                v-model="localFilters.order"
+                @change="handleFilterChange"
+                class="select"
+                id="sort-order"
+                name="sort-order"
+              >
                 <el-option
                   :label="$t('photoWall.filters.sort.order.desc')"
                   value="desc"

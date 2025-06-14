@@ -12,10 +12,10 @@
       {{ $t('photoDetail.actions.share') }}
     </SfLinkButton>
 
-    <SfLinkButton 
+    <SfLinkButton
       v-if="isPhotoEditEnabled"
-      icon="fas fa-edit" 
-      @click="editPhoto" 
+      icon="fas fa-edit"
+      @click="editPhoto"
       class="action-button"
     >
       {{ $t('photoDetail.actions.edit') }}
@@ -119,8 +119,8 @@ export default {
 
     async editPhoto() {
       if (!this.PhotopeaEditor) {
-      const { PhotopeaEditor } = await import('../PhotoEditor')
-      this.$options.components.PhotopeaEditor = PhotopeaEditor
+        const { PhotopeaEditor } = await import('../PhotoEditor')
+        this.$options.components.PhotopeaEditor = PhotopeaEditor
       }
       this.showPhotoEditor = true
     },

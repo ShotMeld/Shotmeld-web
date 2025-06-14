@@ -174,7 +174,7 @@ export default {
       }
 
       const url = this.photo.url
-      
+
       if (url.startsWith('https://api.shotmeld.seeridia.top')) {
         return this.$t('loading.uploading')
       } else if (url.startsWith('https://shotmeld-photo.oss-cn-hangzhou.aliyuncs.com')) {

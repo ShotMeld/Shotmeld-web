@@ -611,13 +611,15 @@
       "actions": {
         "keep": "保留",
         "delete": "删除"
-      },      "info": {
+      },
+      "info": {
         "size": "大小：{size}",
         "dimensions": "尺寸：{width} x {height}",
         "date": "拍摄时间：{date}"
       }
     }
-  },  "changeCover": {
+  },
+  "changeCover": {
     "title": "更改相册封面",
     "selectFromAlbum": "从相册选择",
     "uploadNew": "上传新照片",

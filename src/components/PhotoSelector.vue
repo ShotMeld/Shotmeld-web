@@ -122,7 +122,7 @@ export default {
     async fetchPhotos() {
       try {
         this.loading = true
-        
+
         let response
         if (this.isAlbumMode) {
           // 从相册获取照片
