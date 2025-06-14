@@ -62,12 +62,8 @@ export default {
       isNotifying: false,
       isSharing: false,
       showPhotoEditor: false,
+      isPhotoEditEnabled: localStorage.getItem('photoEditEnabled') === 'true',
     }
-  },
-  computed: {
-    isPhotoEditEnabled() {
-      return localStorage.getItem('photoEditEnabled') === 'true'
-    },
   },
   emits: ['delete-click', 'photo-updated', 'photo-replaced'],
   methods: {
@@ -121,13 +117,17 @@ export default {
       }
     },
 
-    editPhoto() {
+    async editPhoto() {
+      if (!this.PhotopeaEditor) {
+      const { PhotopeaEditor } = await import('../PhotoEditor')
+      this.$options.components.PhotopeaEditor = PhotopeaEditor
+      }
       this.showPhotoEditor = true
     },
 
     handlePhotoUpdated(newPhoto) {
       this.$emit('photo-updated', newPhoto)
-      this.showPhotoEditor = false
+      this.$emit('photo-deleted', photoId)
     },
 
     handlePhotoReplaced(photoId) {
