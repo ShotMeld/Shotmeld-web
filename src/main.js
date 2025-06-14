@@ -3,13 +3,10 @@ import { createPinia } from 'pinia'
 import App from './App.vue'
 import router from './router'
 import apiClient from './api'
-// Element Plus 现在通过按需导入自动处理
 import '@fortawesome/fontawesome-free/css/all.min.css'
 import { useThemeStore } from './store/theme'
 import { configureNotification } from './utils/notification'
 import i18n from './i18n'
-
-// apiClient已经在api/index.js中配置完成，这里不需要额外配置
 
 // 创建Vue应用实例
 const app = createApp(App)
@@ -32,8 +29,7 @@ import './styles/el-select.css'
 // 导入UI组件库
 import SfUI from './components/ui'
 
-// 使用Element Plus (逐步替换为SfUI) - 现在通过按需导入自动处理
-// app.use(ElementPlus) // 不再需要全量导入
+// app.use(ElementPlus)
 app.use(SfUI)
 app.use(router)
 app.use(pinia)

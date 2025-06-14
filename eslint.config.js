@@ -18,6 +18,15 @@ export default [
       globals: {
         console: 'readonly',
         process: 'readonly',
+        window: 'readonly',
+        document: 'readonly',
+        localStorage: 'readonly',
+        sessionStorage: 'readonly',
+        FormData: 'readonly',
+        FileReader: 'readonly',
+        Blob: 'readonly',
+        URL: 'readonly',
+        fetch: 'readonly',
       },
     },
     rules: {

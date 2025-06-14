@@ -45,7 +45,7 @@
 
               <div class="photos-grid">
                 <div
-                  v-for="(photo, index) in getOptimizedPhotoLayout(monthGroup.photos)"
+                  v-for="photo in getOptimizedPhotoLayout(monthGroup.photos)"
                   :key="photo.id"
                   class="photo-card"
                   :class="photo.gridSize"
@@ -77,7 +77,7 @@
 
       <!-- 上传照片模态框 -->
       <SfModal v-model="showUploadModal" :title="$t('timeline.uploadModal.title')">
-        <PhotoUpload :showAlbumOption="true" @upload-success="handlePhotoUploaded" />
+        <PhotoUpload showAlbumOption @upload-success="handlePhotoUploaded" />
       </SfModal>
     </main>
   </div>
@@ -451,9 +451,9 @@ export default {
 .year-header {
   font-size: 1.8rem;
   margin-bottom: 1.5rem;
-  border-bottom: 2px solid var(--color-primary);
+  border-bottom: 2px solid var(--text-primary);
   padding-bottom: 0.5rem;
-  color: var(--color-primary);
+  color: var(--text-primary);
   display: flex;
   justify-content: space-between;
   align-items: baseline;
@@ -461,7 +461,7 @@ export default {
 
 .year-photo-count {
   font-size: 0.9rem;
-  color: #6c757d;
+  color: var(--text-secondary);
   font-weight: normal;
 }
 
@@ -472,7 +472,7 @@ export default {
 .month-header {
   font-size: 1.4rem;
   margin-bottom: 1rem;
-  color: #6c757d;
+  color: var(--text-secondary);
   display: flex;
   justify-content: space-between;
   align-items: baseline;
@@ -480,7 +480,7 @@ export default {
 
 .month-photo-count {
   font-size: 0.8rem;
-  color: #adb5bd;
+  color: var(--text-tertiary);
   font-weight: normal;
 }
 
