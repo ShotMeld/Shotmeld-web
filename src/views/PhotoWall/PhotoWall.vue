@@ -3,7 +3,13 @@
 -->
 
 <template>
-  <div class="photo-wall-container" :class="{ 'page-entering': isPageEntering }">
+  <div 
+    class="photo-wall-container" 
+    :class="{ 'page-entering': isPageEntering }"
+    @dragover.prevent="handleDragOver"
+    @dragleave.prevent="handleDragLeave"
+    @drop.prevent="handleDrop"
+  >
     <main :class="mainContentClass">
       <PhotoWallFilters
         v-if="!isManageMode"
@@ -160,6 +166,9 @@ export default {
       // 自动刷新相关状态
       autoRefreshTimer: null,
       autoRefreshInterval: 5000, // 5秒刷新一次
+      // 拖拽相关状态
+      isDragOver: false,
+      dragCounter: 0, // 用于跟踪拖拽事件的计数器
     }
   },
   computed: {
@@ -229,6 +238,42 @@ export default {
     eventBus.off('toggle-manage')
   },
   methods: {
+    // 拖拽处理方法
+    handleDragOver(e) {
+      e.preventDefault()
+      e.stopPropagation()
+      
+      // 检查是否包含文件
+      if (e.dataTransfer.types.includes('Files')) {
+        this.dragCounter++
+        this.isDragOver = true
+        
+        // 一旦检测到拖拽文件，立即打开上传模态框
+        if (!this.isUploadModalVisible) {
+          this.isUploadModalVisible = true
+        }
+      }
+    },
+
+    handleDragLeave(e) {
+      e.preventDefault()
+      e.stopPropagation()
+      
+      this.dragCounter--
+      if (this.dragCounter <= 0) {
+        this.dragCounter = 0
+        this.isDragOver = false
+      }
+    },
+
+    handleDrop(e) {
+      e.preventDefault()
+      e.stopPropagation()
+      
+      this.isDragOver = false
+      this.dragCounter = 0
+    },
+
     // 自动刷新相关方法
     startAutoRefresh() {
       this.stopAutoRefresh() // 确保没有重复的定时器
