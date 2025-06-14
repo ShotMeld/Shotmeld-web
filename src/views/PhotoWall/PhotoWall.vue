@@ -3,6 +3,18 @@
 -->
 
 <template>
+  <!-- 批量管理工具栏 -->
+  <PhotoWallManageToolbar
+    v-if="isManageMode"
+    :class="toolbarAnimationClass"
+    :selectedPhotos="selectedPhotos"
+    @select-all="selectAll"
+    @deselect-all="deselectAll"
+    @show-add-to-album="showAddToAlbumModal"
+    @show-delete-selected="showDeleteSelectedModal"
+    @exit-manage-mode="exitManageMode"
+  />
+  
   <div 
     class="photo-wall-container" 
     :class="{ 'page-entering': isPageEntering }"
@@ -23,18 +35,6 @@
         @update:dateRange="dateRange = $event"
         @fetchPhotos="fetchPhotos"
         @update:searchResults="handleSearchResultsUpdate"
-      />
-
-      <!-- 批量管理工具栏 -->
-      <PhotoWallManageToolbar
-        v-if="isManageMode"
-        :class="toolbarAnimationClass"
-        :selectedPhotos="selectedPhotos"
-        @select-all="selectAll"
-        @deselect-all="deselectAll"
-        @show-add-to-album="showAddToAlbumModal"
-        @show-delete-selected="showDeleteSelectedModal"
-        @exit-manage-mode="exitManageMode"
       />
 
       <PhotoWallGrid
