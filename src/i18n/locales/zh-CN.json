@@ -34,10 +34,10 @@
         "consent": {
           "title": "隐私同意",
           "message": "启用图片编辑功能需要将您的照片传输到第三方服务 Photopea 进行处理。",
-          "point1": "您的照片将临时传输到 Photopea.com 进行编辑",
+          "point1": "您的照片将临时传输到 Photopea 进行编辑",
           "point2": "我们不会永久存储您在 Photopea 中的编辑数据",
           "point3": "编辑完成后，只有最终图片会保存到您的账户",
-          "accept": "我同意",
+          "accept": "同意",
           "decline": "拒绝",
           "success": {
             "title": "功能已启用",

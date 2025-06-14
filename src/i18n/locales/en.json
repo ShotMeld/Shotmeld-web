@@ -34,10 +34,10 @@
         "consent": {
           "title": "Privacy Consent",
           "message": "Enabling photo editing requires transferring your photos to third-party service Photopea for processing.",
-          "point1": "Your photos will be temporarily transferred to Photopea.com for editing",
+          "point1": "Your photos will be temporarily transferred to Photopea for editing",
           "point2": "We do not permanently store your editing data in Photopea",
           "point3": "After editing, only the final image will be saved to your account",
-          "accept": "I Agree",
+          "accept": "Agree",
           "decline": "Decline",
           "success": {
             "title": "Feature Enabled",
