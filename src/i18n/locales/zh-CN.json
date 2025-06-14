@@ -159,8 +159,6 @@
       "deleteFailedTitle": "删除失败",
       "deleteFailedMessage": "无法删除照片，请重试"
     },
-    "editPhoto": "编辑照片:",
-    "editPhotoComingSoon": "编辑照片功能将在后续版本实现",
     "uploadSuccess": {
       "title": "上传成功",
       "message": "已成功上传 {count} 张照片"

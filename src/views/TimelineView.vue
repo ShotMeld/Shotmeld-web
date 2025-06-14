@@ -213,12 +213,6 @@ export default {
       }, 300)
     },
 
-    startEditingPhoto(photo) {
-      console.log(this.$t('timeline.editPhoto'), photo)
-      // TODO: 实现编辑照片的功能
-      alert(this.$t('timeline.editPhotoComingSoon'))
-    },
-
     handlePhotoDeleted(photoId) {
       this.deletePhoto(photoId)
     },

@@ -131,7 +131,6 @@ export default {
     },
 
     handlePhotoDeleted(photoId) {
-      // 照片在编辑器中被删除并替换，通知父组件照片已被替换（不需要删除API调用）
       this.$emit('photo-replaced', photoId)
       this.showPhotoEditor = false
     },
