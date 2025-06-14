@@ -3,11 +3,11 @@
 -->
 
 <template>
-  <div class="photo-wall-container">
+  <div class="photo-wall-container" :class="{ 'page-entering': isPageEntering }">
     <main :class="mainContentClass">
       <PhotoWallFilters
         v-if="!isManageMode"
-        :class="filtersAnimationClass"
+        :class="[filtersAnimationClass, { 'content-entering': isPageEntering }]"
         :searchQuery="searchQuery"
         :filters="filters"
         :dateRange="dateRange"
@@ -33,6 +33,7 @@
 
       <PhotoWallGrid
         v-if="!loading"
+        :class="{ 'content-entering': isPageEntering }"
         :photos="photos"
         :isManageMode="isManageMode"
         :selectedPhotos="selectedPhotos"
@@ -102,6 +103,7 @@ import AlbumForm from '../../components/album/AlbumForm.vue'
 import { SfButton, SfModal, SfDeleteConfirmModal } from '../../components/ui'
 import { photoService, albumService } from '../../api'
 import { eventBus, EventTypes } from '../../utils/eventBus'
+import { useUserStore } from '../../store/user'
 
 export default {
   name: 'PhotoWall',
@@ -118,6 +120,10 @@ export default {
     SfButton,
     SfModal,
     SfDeleteConfirmModal,
+  },
+  setup() {
+    const userStore = useUserStore()
+    return { userStore }
   },
   data() {
     return {
@@ -150,6 +156,7 @@ export default {
       // 动画控制状态
       filtersExiting: false,
       toolbarEntering: false,
+      isPageEntering: true, // 页面进入动画状态
       // 自动刷新相关状态
       autoRefreshTimer: null,
       autoRefreshInterval: 5000, // 5秒刷新一次
@@ -180,6 +187,17 @@ export default {
       }
       return ''
     },
+  },
+  mounted() {
+    // 页面进入动画 - 只有在用户已登录时才显示进入动画
+    if (this.userStore.token) {
+      setTimeout(() => {
+        this.isPageEntering = false
+      }, 50) // 让路由过渡先完成
+    } else {
+      // 如果用户未登录，立即显示内容
+      this.isPageEntering = false
+    }
   },
   created() {
     this.fetchPhotos()
@@ -484,6 +502,25 @@ export default {
 <style scoped>
 .photo-wall-container {
   min-height: 100vh;
+  opacity: 1;
+  filter: blur(0px);
+  transform: scale(1);
+  transition: all 1.5s cubic-bezier(0.23, 1, 0.32, 1);
+  will-change: opacity, filter, transform;
+}
+
+.photo-wall-container.page-entering {
+  opacity: 0;
+  filter: blur(15px);
+  transform: scale(0.92);
+}
+
+/* 内容元素渐入动画 */
+.content-entering {
+  opacity: 0 !important;
+  transform: translateY(20px) !important;
+  transition: all 1.8s cubic-bezier(0.23, 1, 0.32, 1) !important;
+  transition-delay: 0.3s !important;
 }
 
 .photo-wall-main {
