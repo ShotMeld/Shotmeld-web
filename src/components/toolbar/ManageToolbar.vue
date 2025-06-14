@@ -101,8 +101,11 @@ export default {
     'select-all': true,
     'deselect-all': true,
     'exit-manage-mode': true,
-    // Validator for events starting with 'show-'
-    'show-*': (event) => event.startsWith('show-'),
+    'show-add-to-album': true,
+    'show-move-to-album': true,
+    'show-remove-from-album': true,
+    'show-delete-selected': true,
+    'show-change-cover': true,
   },
   methods: {
     selectAll() {

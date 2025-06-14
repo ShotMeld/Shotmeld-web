@@ -13,6 +13,7 @@
       @show-move-to-album="$emit('show-move-to-album')"
       @show-remove-from-album="$emit('show-remove-from-album')"
       @show-delete-selected="$emit('show-delete-selected')"
+      @show-change-cover="$emit('show-change-cover')"
       @exit-manage-mode="$emit('exit-manage-mode')"
     />
   </div>
@@ -49,6 +50,13 @@ export default {
           type: 'warning',
           requireSelection: true,
         },
+        {
+          label: this.$t('albumCard.changeCover'),
+          event: 'show-change-cover',
+          icon: 'fas fa-image',
+          type: 'secondary',
+          requireSelection: false,
+        }
       ]
     },
   },
@@ -58,6 +66,7 @@ export default {
     'show-move-to-album',
     'show-remove-from-album',
     'show-delete-selected',
+    'show-change-cover',
     'exit-manage-mode',
   ],
 }
@@ -97,7 +106,7 @@ export default {
 @media (max-width: 768px) {
   .album-photos-toolbar-container {
     top: 60px;
-    width: calc(100% - (var(--spacing-md) * 2)); /* 移动设备上可能使用更小的间距 */
+    width: calc(100% - (var(--spacing-md) * 2));
   }
 }
 </style>

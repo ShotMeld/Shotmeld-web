@@ -9,8 +9,16 @@
     @click="$emit('click')"
   >
     <div class="album-card__cover">
-      <img :src="coverImage" :alt="album.name" class="album-card__image" />
-      <div class="album-card__overlay">
+      <div v-if="hasPhoto" class="album-card__image-container">
+        <img :src="coverImage" :alt="album.name" class="album-card__image" />
+      </div>
+      <div v-else class="album-card__empty">
+        <div class="album-card__empty-icon">
+          <i class="fas fa-images"></i>
+        </div>
+        <span class="album-card__empty-text">{{ $t('albumCard.noPhotos') }}</span>
+      </div>
+      <div v-if="hasPhoto" class="album-card__overlay">
         <div class="album-card__info">
           <span class="album-card__count">
             {{ $t('albumCard.photoCount', { count: album.photoCount }) }}
@@ -18,10 +26,7 @@
         </div>
       </div>
       <!-- 悬停时显示的更改封面按钮 -->
-      <div
-        v-if="!isManageMode"
-        class="album-card__hover-actions"
-      >
+      <div v-if="hasPhoto && !isManageMode" class="album-card__hover-actions">
         <button
           class="change-cover-btn"
           @click.stop="$emit('change-cover', album.id)"
@@ -81,6 +86,11 @@ export default {
     }
   },
   computed: {
+    hasPhoto() {
+      // 检查是否有封面照片或相册中的照片
+      return (this.album.coverPhotoId && this.photoDetails[this.album.coverPhotoId]?.thumbnailUrl) ||
+             (this.album.photos && this.album.photos.length > 0 && this.photoDetails[this.album.photos[0]]?.thumbnailUrl)
+    },
     coverImage() {
       // 如果有封面照片ID，使用封面照片的缩略图
       if (this.album.coverPhotoId && this.photoDetails[this.album.coverPhotoId]?.thumbnailUrl) {
@@ -93,18 +103,7 @@ export default {
           return this.photoDetails[firstPhotoId].thumbnailUrl
         }
       }
-      // 否则创建一个包含"无照片"文字和图标的SVG数据URL
-      const svg = `
-      <svg xmlns="http://www.w3.org/2000/svg" width="300" height="200" viewBox="0 0 300 200">
-        <rect width="100%" height="100%" fill="#f5f5f5"/>
-        <g transform="translate(125,65)">
-          <rect x="0" y="0" width="50" height="40" rx="4" stroke="#999" stroke-width="2" fill="none"/>
-          <circle cx="38" cy="12" r="4" fill="#999"/>
-          <polyline points="0,28 15,20 50,40" stroke="#999" stroke-width="2" fill="none"/>
-        </g>
-        <text x="150" y="130" font-family="Arial" font-size="16" fill="#999" text-anchor="middle">${this.$t('albumCard.noPhotos')}</text>
-      </svg>`
-      return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`
+      return null
     },
   },
   watch: {
@@ -200,6 +199,11 @@ export default {
   border-radius: var(--radius-medium);
 }
 
+.album-card__image-container {
+  width: 100%;
+  height: 100%;
+}
+
 .album-card__image {
   width: 100%;
   height: 100%;
@@ -209,6 +213,28 @@ export default {
 
 .album-card:not(.manage-mode):hover .album-card__image {
   transform: scale(1.05);
+}
+
+.album-card__empty {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-primary);
+  gap: var(--spacing-sm);
+}
+
+.album-card__empty-icon {
+  font-size: 3rem;
+  opacity: 0.6;
+}
+
+.album-card__empty-text {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  opacity: 0.8;
 }
 
 .album-card__overlay {

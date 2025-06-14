@@ -4,19 +4,35 @@
 
 <template>
   <div class="album-detail">
-    <div :class="albumDetailContainerClass">
-      <div class="album-detail__header">
-        <div class="album-detail__info">
-          <h1 class="album-detail__title">{{ album.name }}</h1>
-          <p v-if="album.description" class="album-detail__description">
+    <!-- 相册封面头部区域 -->
+    <div class="album-header" :class="{ 'album-header--empty': !coverPhoto }">
+      <div class="album-header__background">
+        <div
+          v-if="coverPhoto"
+          class="album-header__cover"
+          :style="{ backgroundImage: `url(${coverPhoto.url || coverPhoto.thumbnailUrl})` }"
+        ></div>
+        <div
+          v-else
+          class="album-header__placeholder"
+        ></div>
+      </div>
+      
+      <div class="album-header__content">
+        <div class="album-header__info">
+          <h1 class="album-header__title">{{ album.name }}</h1>
+          <p v-if="album.description" class="album-header__description">
             {{ album.description }}
           </p>
-          <div class="album-detail__meta">
-            <span class="album-detail__count">{{ $t('album.photoCount', { count: album.photoCount }) }}</span>
-            <span class="album-detail__date">{{ $t('album.createdAt', { date: formatDate(album.createdAt) }) }}</span>
+          <div class="album-header__meta">
+            <span class="album-header__count">{{ $t('album.photoCount', { count: album.photoCount }) }}</span>
+            <span class="album-header__date">{{ $t('album.createdAt', { date: formatDate(album.createdAt) }) }}</span>
           </div>
         </div>
       </div>
+    </div>
+
+    <div :class="albumDetailContainerClass">
 
       <div v-if="loading" class="album-detail__loading">
         <div class="album-detail__spinner"></div>
@@ -37,6 +53,7 @@
           @deselect-all="deselectAll"
           @show-remove-from-album="showRemoveFromAlbumDialog"
           @show-delete-selected="showDeleteSelectedDialog"
+          @show-change-cover="showChangeCoverModal = true"
           @exit-manage-mode="exitManageMode"
         />
 
@@ -67,6 +84,14 @@
       @photos-added="handlePhotosAdded"
     />
 
+    <!-- 更改封面模态框 -->
+    <ChangeCoverModal
+      v-if="album.id"
+      v-model="showChangeCoverModal"
+      :albumId="album.id"
+      @cover-updated="handleCoverChanged"
+    />
+
     <!-- 批量删除确认模态框 -->
     <SfDeleteConfirmModal
       v-model="showDeleteSelectedModal"
@@ -93,6 +118,7 @@
 import PhotoWallGrid from './PhotoWall/PhotoWallGrid.vue'
 import PhotoDetail from '../components/PhotoDetail.vue'
 import AddPhotosModal from '../components/AddPhotosModal.vue'
+import ChangeCoverModal from '../components/ChangeCoverModal.vue'
 import SfButton from '../components/ui/SfButton.vue'
 import SfModal from '../components/ui/SfModal.vue'
 import SfDeleteConfirmModal from '../components/ui/SfDeleteConfirmModal.vue'
@@ -106,6 +132,7 @@ export default {
     PhotoWallGrid,
     PhotoDetail,
     AddPhotosModal,
+    ChangeCoverModal,
     SfButton,
     SfModal,
     SfDeleteConfirmModal,
@@ -121,11 +148,13 @@ export default {
         createdAt: null,
       },
       photos: [],
+      coverPhoto: null, // 封面照片
       loading: false,
       error: null,
       currentPhoto: null,
       showPhotoDetail: false,
       showUploadModal: false,
+      showChangeCoverModal: false,
       // 批量管理相关的状态
       isManageMode: false,
       selectedPhotos: [],
@@ -177,6 +206,9 @@ export default {
         ])
         this.album = albumResponse.data
         this.photos = photosResponse.data.data
+        
+        // 设置封面照片，优先使用相册指定的封面
+        this.setCoverPhoto()
       } catch (error) {
         this.error = error.response?.data?.message || this.$t('album.fetchError')
         console.error(this.$t('album.fetchError'), error)
@@ -196,6 +228,9 @@ export default {
         // 上传的新照片，直接添加到列表
         this.photos = [...this.photos, ...result.photos]
         this.album.photoCount = this.photos.length
+        
+        // 重新设置封面照片
+        this.setCoverPhoto()
       } else if (result.type === 'existing') {
         // 现有照片添加到相册，需要重新获取相册照片
         // 这里我们可以优化，不重新获取整个相册详情，只获取照片列表
@@ -205,12 +240,31 @@ export default {
       this.showUploadModal = false
     },
 
+    setCoverPhoto() {
+      // 优先使用相册指定的封面照片
+      if (this.album.coverPhotoId && this.photos.length > 0) {
+        const coverPhoto = this.photos.find(photo => photo.id === this.album.coverPhotoId)
+        if (coverPhoto) {
+          this.coverPhoto = coverPhoto
+          return
+        }
+      }
+      
+      // 如果没有指定封面或找不到指定的封面照片，则使用第一张照片
+      if (this.photos.length > 0) {
+        this.coverPhoto = this.photos[0]
+      }
+    },
+
     async fetchAlbumPhotos() {
       try {
         const albumId = this.$route.params.id
         const photosResponse = await albumService.getAlbumPhotos(albumId)
         this.photos = photosResponse.data.data || []
         this.album.photoCount = this.photos.length
+        
+        // 重新设置封面照片
+        this.setCoverPhoto()
       } catch (error) {
         console.error(this.$t('album.fetchPhotosError'), error)
         // 如果获取失败，回退到获取完整的相册详情
@@ -318,6 +372,19 @@ export default {
       }
     },
 
+    handleCoverChanged(result) {
+      // 更新相册的封面照片ID
+      this.album.coverPhotoId = result.coverPhotoId
+      
+      // 重新设置封面照片显示
+      this.setCoverPhoto()
+      
+      // 关闭模态框
+      this.showChangeCoverModal = false
+      
+      // 显示成功提示（ChangeCoverModal 组件内部已经显示了，这里可以不重复显示）
+    },
+
     deletePhoto(deletedPhotoId) {
       // 单张照片删除后的处理
       this.photos = this.photos.filter(photo => photo.id !== deletedPhotoId)
@@ -332,70 +399,203 @@ export default {
   min-height: 100vh;
 }
 
-.album-detail-container {
-  max-width: var(--container-xl);
-  margin: 0 auto;
-  padding: var(--spacing-xl);
-}
-
-/* 为固定工具栏腾出空间 */
-.with-toolbar-space {
-  padding-top: var(--spacing-xl);
-  margin-top: 80px; /* 为固定工具栏添加额外的空间 */
-  transition: margin-top 0.3s ease;
+/* 相册封面头部区域 */
+.album-header {
   position: relative;
-}
-
-@media (max-width: 768px) {
-  .with-toolbar-space {
-    margin-top: 100px;
-  }
-}
-
-.album-detail__header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
+  height: 60vh;
+  min-height: 400px;
+  max-height: 600px;
+  overflow: hidden;
   margin-bottom: var(--spacing-2xl);
 }
 
-.album-detail__info {
-  flex: 1;
+/* 空相册的头部样式 */
+.album-header--empty {
+  height: auto;
+  min-height: 200px;
+  max-height: 300px;
 }
 
-.album-detail__actions {
+.album-header__background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+  mask: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 1) 0%,
+    rgba(0, 0, 0, 1) 60%,
+    rgba(0, 0, 0, 0.8) 70%,
+    rgba(0, 0, 0, 0.5) 80%,
+    rgba(0, 0, 0, 0.2) 90%,
+    rgba(0, 0, 0, 0) 100%
+  );
+  -webkit-mask: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 1) 0%,
+    rgba(0, 0, 0, 1) 60%,
+    rgba(0, 0, 0, 0.8) 70%,
+    rgba(0, 0, 0, 0.5) 80%,
+    rgba(0, 0, 0, 0.2) 90%,
+    rgba(0, 0, 0, 0) 100%
+  );
+}
+
+.album-header__cover {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  filter: blur(0.5px);
+  transform: scale(1.05);
+}
+
+.album-header__placeholder {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    135deg,
+    var(--primary) 0%,
+    var(--primary-dark) 50%,
+    var(--secondary) 100%
+  );
+  opacity: 0.8;
+}
+
+.album-header__content {
+  position: relative;
+  z-index: 2;
+  height: 100%;
   display: flex;
-  gap: var(--spacing-md);
+  align-items: flex-end;
+  padding: var(--spacing-3xl) var(--spacing-xl) var(--spacing-2xl);
+  max-width: var(--container-xl);
+  margin: 0 auto;
 }
 
-.action-btn {
+.album-header__info {
+  color: white;
+  text-shadow: 
+    0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.album-header__title {
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  font-weight: 700;
+  line-height: 1.1;
+  margin: 0 0 var(--spacing-sm);
+  letter-spacing: -0.02em;
+  opacity: 0;
+  transform: translateY(20px);
+  animation: slideUpFadeIn 0.8s ease-out 0.2s forwards;
+}
+
+.album-header__description {
+  font-size: var(--font-size-lg);
+  font-weight: 400;
+  line-height: 1.4;
+  margin: 0 0 var(--spacing-lg);
+  max-width: 600px;
+  opacity: 0.9;
+  opacity: 0;
+  transform: translateY(20px);
+  animation: slideUpFadeIn 0.8s ease-out 0.4s forwards;
+}
+
+.album-header__meta {
+  display: flex;
+  gap: var(--spacing-lg);
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  opacity: 0.8;
+  opacity: 0;
+  transform: translateY(20px);
+  animation: slideUpFadeIn 0.8s ease-out 0.6s forwards;
+}
+
+.album-header__count,
+.album-header__date {
   display: flex;
   align-items: center;
   gap: var(--spacing-xs);
 }
 
-.action-btn.active {
-  background-color: var(--primary-dark);
+/* 动画效果 */
+@keyframes slideUpFadeIn {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-.album-detail__title {
-  font-size: var(--font-size-3xl);
-  font-weight: var(--font-weight-bold);
-  color: var(--text-primary);
-  margin: 0 0 var(--spacing-xs);
+.album-detail-container {
+  max-width: var(--container-xl);
+  margin: 0 auto;
+  padding: 0 var(--spacing-xl) var(--spacing-xl);
 }
 
-.album-detail__description {
-  font-size: var(--font-size-lg);
-  color: var(--text-secondary);
-  margin: 0 0 var(--spacing-md);
+.with-toolbar-space {
+  transition: padding-top 0.3s ease;
+  position: relative;
 }
 
-.album-detail__meta {
-  display: flex;
-  gap: var(--spacing-lg);
-  color: var(--text-tertiary);
-  font-size: var(--font-size-sm);
+@media (max-width: 768px) {
+  .album-header {
+    height: 50vh;
+    min-height: 300px;
+    max-height: 400px;
+  }
+
+  .album-header--empty {
+    min-height: 180px;
+    max-height: 250px;
+  }
+
+  .album-header__content {
+    padding: var(--spacing-2xl) var(--spacing-lg) var(--spacing-xl);
+  }
+
+  .album-header__title {
+    font-size: clamp(1.5rem, 8vw, 2.5rem);
+  }
+
+  .album-header__description {
+    font-size: var(--font-size-md);
+  }
+
+  .album-header__meta {
+    flex-direction: column;
+    gap: var(--spacing-sm);
+  }
+
+  .album-detail-container {
+    padding: 0 var(--spacing-lg) var(--spacing-lg);
+  }
+}
+
+@media (max-width: 480px) {
+  .album-header {
+    height: 45vh;
+    min-height: 250px;
+  }
+
+  .album-header--empty {
+    min-height: 160px;
+    max-height: 200px;
+  }
+
+  .album-header__content {
+    padding: var(--spacing-xl) var(--spacing-md) var(--spacing-lg);
+  }
 }
 
 .album-detail__loading,
@@ -459,27 +659,6 @@ export default {
 @keyframes spin {
   to {
     transform: rotate(360deg);
-  }
-}
-
-@media (max-width: 768px) {
-  .album-detail__container {
-    padding: var(--spacing-lg);
-    margin-top: 56px; /* 移动端导航栏高度稍小 */
-  }
-
-  .album-detail__header {
-    flex-direction: column;
-    gap: var(--spacing-lg);
-    margin-bottom: var(--spacing-xl);
-  }
-
-  .album-detail__title {
-    font-size: var(--font-size-2xl);
-  }
-
-  .album-detail__description {
-    font-size: var(--font-size-md);
   }
 }
 </style>
