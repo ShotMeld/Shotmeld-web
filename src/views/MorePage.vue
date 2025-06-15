@@ -27,7 +27,7 @@ export default {
     return {
       cards: [
         { id: 1, key: 'duplicatePhotos' },
-        { id: 2, key: 'portraitRecognition' },
+        { id: 2, key: 'feature2' },
         { id: 3, key: 'feature3' },
         { id: 4, key: 'feature4' },
         { id: 5, key: 'feature5' },

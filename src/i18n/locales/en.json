@@ -526,9 +526,9 @@
         "title": "Duplicate Photos",
         "description": "Find and manage duplicate photos"
       },
-      "portraitRecognition": {
-        "title": "Portrait Recognition",
-        "description": "Face attribute recognition"
+      "feature2": {
+        "title": "Feature 2",
+        "description": "This is a brief description of feature 2."
       },
       "feature3": {
         "title": "Feature 3",

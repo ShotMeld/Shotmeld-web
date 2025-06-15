@@ -524,9 +524,9 @@
         "title": "重复照片检测",
         "description": "筛选出重复照片并进行管理"
       },
-      "portraitRecognition": {
-        "title": "人像识别",
-        "description": "人脸属性识别"
+      "feature2": {
+        "title": "功能二",
+        "description": "这是功能二的简要描述。"
       },
       "feature3": {
         "title": "功能三",

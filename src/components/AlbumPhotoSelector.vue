@@ -93,7 +93,6 @@ export default {
   display: flex;
   flex-direction: column;
   height: 600px;
-  background: var(--bg-primary);
 }
 
 .selector-actions {
