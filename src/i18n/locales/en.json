@@ -6,6 +6,12 @@
   "settings": {
     "title": "Settings",
     "subtitle": "Customize your ShotMeld experience",
+    "version": "Version",
+    "lastUpdate": "Last Update",
+    "versionInfo": {
+      "title": "Version Information",
+      "description": "View current application version and update details"
+    },
     "theme": {
       "title": "Theme",
       "description": "Choose your preferred interface theme",
@@ -49,6 +55,8 @@
   },
   "profile": {
     "loading": "Loading profile information...",
+    "welcome": "Welcome back",
+    "accountInfo": "Account Information",
     "email": "Email",
     "registerDate": "Registration Date",
     "photos": "Photos",

@@ -6,6 +6,12 @@
   "settings": {
     "title": "设置",
     "subtitle": "自定义您的 ShotMeld 体验",
+    "version": "版本",
+    "lastUpdate": "更新时间",
+    "versionInfo": {
+      "title": "版本信息",
+      "description": "查看当前应用的版本和更新信息"
+    },
     "theme": {
       "title": "主题",
       "description": "选择您喜欢的界面主题",
@@ -49,6 +55,8 @@
   },
   "profile": {
     "loading": "正在加载个人信息...",
+    "welcome": "欢迎回来",
+    "accountInfo": "账户信息",
     "email": "邮箱",
     "registerDate": "注册时间",
     "photos": "照片",

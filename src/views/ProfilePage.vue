@@ -4,36 +4,89 @@
 
 <template>
   <div class="page-container">
-    <div v-if="loading" class="loading">
-      <div class="spinner"></div>
-      <p>{{ $t('profile.loading') }}</p>
+    <div v-if="loading" class="loading-container">
+      <div class="loading-content">
+        <div class="spinner"></div>
+        <p class="loading-text">{{ $t('profile.loading') }}</p>
+      </div>
     </div>
-    <div v-else class="profile-card">
-      <div class="avatar">{{ user.username?.[0]?.toUpperCase() || '?' }}</div>
-      <h1>{{ user.username }}</h1>
-      <div class="info-container">
-        <div class="info-item">
-          <span class="label">{{ $t('profile.email') }}</span>
-          <span class="value">{{ user.email }}</span>
+
+    <div v-else class="profile-container">
+      <!-- Header Section -->
+      <div class="profile-header">
+        <div class="avatar-container">
+          <div class="avatar">
+            {{ user.username?.[0]?.toUpperCase() || '?' }}
+          </div>
+          <div class="avatar-ring"></div>
         </div>
-        <div class="info-item">
-          <span class="label">{{ $t('profile.registerDate') }}</span>
-          <span class="value">{{ formatDate(user.createdAt) }}</span>
+        <h1 class="username">{{ user.username }}</h1>
+        <p class="user-subtitle">{{ $t('profile.welcome') }}</p>
+      </div>
+
+      <!-- Info Section -->
+      <div class="info-section">
+        <div class="section-header">
+          <h2>{{ $t('profile.accountInfo') }}</h2>
         </div>
-        <div class="info-item">
-          <span class="label">{{ $t('profile.photos') }}</span>
-          <span class="value">
-            {{ user.photoCount != 0 ? user.photoCount : $t('profile.noPhotos') }}
-          </span>
-        </div>
-        <div class="info-item">
-          <span class="label">{{ $t('profile.albums') }}</span>
-          <span class="value">
-            {{ user.albumCount != 0 ? user.albumCount : $t('profile.noAlbums') }}
-          </span>
+
+        <div class="info-list">
+          <div class="info-item">
+            <div class="info-icon">
+              <i class="fas fa-envelope"></i>
+            </div>
+            <div class="info-content">
+              <div class="info-label">{{ $t('profile.email') }}</div>
+              <div class="info-value">{{ user.email }}</div>
+            </div>
+          </div>
+
+          <div class="info-item">
+            <div class="info-icon">
+              <i class="fas fa-calendar"></i>
+            </div>
+            <div class="info-content">
+              <div class="info-label">{{ $t('profile.registerDate') }}</div>
+              <div class="info-value">{{ formatDate(user.createdAt) }}</div>
+            </div>
+          </div>
         </div>
       </div>
-      <button @click="handleLogout" class="md-button outlined">{{ $t('profile.logout') }}</button>
+
+      <!-- Stats Section -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon">
+            <i class="fas fa-images"></i>
+          </div>
+          <div class="stat-content">
+            <div class="stat-value">
+              {{ user.photoCount || 0 }}
+            </div>
+            <div class="stat-label">{{ $t('profile.photos') }}</div>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon">
+            <i class="fas fa-folder"></i>
+          </div>
+          <div class="stat-content">
+            <div class="stat-value">
+              {{ user.albumCount || 0 }}
+            </div>
+            <div class="stat-label">{{ $t('profile.albums') }}</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Actions Section -->
+      <div class="actions-section">
+        <button @click="handleLogout" class="logout-button">
+          <i class="fas fa-sign-out-alt"></i>
+          <span>{{ $t('profile.logout') }}</span>
+        </button>
+      </div>
     </div>
   </div>
 </template>
@@ -81,138 +134,353 @@ export default {
 
 <style scoped>
 .page-container {
+  min-height: 100vh;
+  padding: var(--spacing-xl) var(--spacing-md);
   display: flex;
   justify-content: center;
   align-items: flex-start;
-  min-height: 100vh;
-  /* 移除背景颜色，让全局背景显示 */
-  padding: var(--spacing-2xl);
 }
 
-.profile-card {
+/* Loading State */
+.loading-container {
+  width: 100%;
+  max-width: 480px;
+  padding: var(--spacing-4xl) var(--spacing-xl);
+}
+
+.loading-content {
   background: var(--blur-bg-strong);
   backdrop-filter: var(--blur-strong);
   -webkit-backdrop-filter: var(--blur-strong);
   border-radius: var(--radius-extra-large);
-  padding: var(--spacing-2xl);
-  width: 100%;
-  max-width: 500px;
-  box-shadow: var(--shadow-medium);
-  border: 1px solid var(--blur-border);
+  padding: var(--spacing-4xl) var(--spacing-xl);
   display: flex;
   flex-direction: column;
   align-items: center;
+  border: 1px solid var(--blur-border);
+  box-shadow: var(--blur-shadow-strong);
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid var(--border-color);
+  border-top: 3px solid var(--color-primary);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+.loading-text {
+  margin-top: var(--spacing-lg);
+  color: var(--text-secondary);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-medium);
+}
+
+/* Main Profile Container */
+.profile-container {
+  width: 100%;
+  max-width: 480px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2xl);
+}
+
+/* Header Section */
+.profile-header {
+  background: var(--blur-bg-strong);
+  backdrop-filter: var(--blur-strong);
+  -webkit-backdrop-filter: var(--blur-strong);
+  border-radius: var(--radius-extra-large);
+  padding: var(--spacing-4xl) var(--spacing-2xl);
+  text-align: center;
+  border: 1px solid var(--blur-border);
+  box-shadow: var(--blur-shadow-strong);
+  position: relative;
+  overflow: hidden;
+}
+
+.avatar-container {
+  position: relative;
+  display: inline-block;
+  margin-bottom: var(--spacing-xl);
 }
 
 .avatar {
-  width: 80px;
-  height: 80px;
+  width: 100px;
+  height: 100px;
   border-radius: 50%;
-  background: var(--color-primary);
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
   color: var(--color-white);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 2rem;
-  font-weight: var(--font-weight-medium);
-  margin-bottom: var(--spacing-md);
+  font-size: var(--font-size-4xl);
+  font-weight: var(--font-weight-semibold);
+  position: relative;
+  z-index: 2;
+  box-shadow: 0 8px 32px rgba(var(--color-primary-rgb), 0.3);
+  transition: var(--transition-base);
 }
 
-h1 {
+.avatar-ring {
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+  opacity: 0.3;
+  z-index: 1;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.username {
+  font-size: var(--font-size-3xl);
+  font-weight: var(--font-weight-bold);
   color: var(--text-primary);
-  font-size: var(--font-size-xl);
-  margin-bottom: var(--spacing-2xl);
+  margin: 0 0 var(--spacing-xs) 0;
+  letter-spacing: -0.5px;
+}
+
+.user-subtitle {
+  font-size: var(--font-size-base);
+  color: var(--text-secondary);
+  margin: 0;
   font-weight: var(--font-weight-medium);
 }
 
-.info-container {
-  width: 100%;
-  background: var(--bg-secondary);
+/* Stats Section */
+.stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-md);
+}
+
+.stat-card {
+  background: var(--blur-bg-strong);
+  backdrop-filter: var(--blur-strong);
+  -webkit-backdrop-filter: var(--blur-strong);
+  border-radius: var(--radius-large);
+  padding: var(--spacing-xl);
+  border: 1px solid var(--blur-border);
+  box-shadow: var(--blur-shadow);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  transition: var(--transition-base);
+  cursor: default;
+}
+
+.stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--blur-shadow-strong);
+}
+
+.stat-icon {
+  width: 48px;
+  height: 48px;
   border-radius: var(--radius-medium);
-  padding: var(--spacing-md);
-  margin-bottom: var(--spacing-xl);
+  background: var(--color-primary-subtle);
+  color: var(--color-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--font-size-lg);
+  flex-shrink: 0;
+}
+
+.stat-content {
+  min-width: 0;
+}
+
+.stat-value {
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--text-primary);
+  line-height: 1.2;
+  margin-bottom: var(--spacing-2xs);
+}
+
+.stat-label {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  font-weight: var(--font-weight-medium);
+}
+
+/* Info Section */
+.info-section {
+  background: var(--blur-bg-strong);
+  backdrop-filter: var(--blur-strong);
+  -webkit-backdrop-filter: var(--blur-strong);
+  border-radius: var(--radius-extra-large);
+  border: 1px solid var(--blur-border);
+  box-shadow: var(--blur-shadow-strong);
+  overflow: hidden;
+}
+
+.section-header {
+  padding: var(--spacing-xl) var(--spacing-xl) var(--spacing-md);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.section-header h2 {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+  margin: 0;
+  letter-spacing: -0.3px;
+}
+
+.info-list {
+  padding: var(--spacing-md) 0;
 }
 
 .info-item {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  padding: var(--spacing-sm) var(--spacing-md);
-  border-bottom: var(--border-width) solid var(--border-color);
-}
-
-.info-item:last-child {
-  border-bottom: none;
-}
-
-.label {
-  color: var(--text-secondary);
-  font-size: var(--font-size-sm);
-}
-
-.value {
-  color: var(--text-primary);
-  font-weight: var(--font-weight-medium);
-}
-
-.md-button {
-  padding: 14px var(--spacing-xl);
-  border: none;
-  border-radius: var(--radius-round);
-  font-size: var(--font-size-base);
-  font-weight: var(--font-weight-medium);
-  cursor: pointer;
+  gap: var(--spacing-md);
+  padding: var(--spacing-md) var(--spacing-xl);
   transition: var(--transition-fast);
-  min-width: 120px;
 }
 
-.md-button.outlined {
-  background: transparent;
-  border: 2px solid var(--color-primary);
-  color: var(--color-primary);
+.info-item:hover {
+  background: var(--bg-hover);
 }
 
-.md-button.outlined:hover {
-  background: var(--color-primary-hover);
-}
-
-.md-button.outlined:active {
-  transform: scale(0.98);
-}
-
-.loading {
+.info-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-medium);
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: var(--bg-primary);
-  border-radius: var(--radius-extra-large);
-  padding: var(--spacing-2xl);
-  width: 100%;
-  max-width: 500px;
-  box-shadow: var(--shadow-medium);
+  font-size: var(--font-size-base);
+  flex-shrink: 0;
 }
 
-.loading p {
-  margin-top: var(--spacing-md);
+.info-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.info-label {
+  font-size: var(--font-size-sm);
   color: var(--text-secondary);
+  font-weight: var(--font-weight-medium);
+  margin-bottom: var(--spacing-2xs);
 }
 
-.spinner {
-  border: 4px solid rgba(0, 0, 0, 0.1);
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  border-left-color: var(--color-primary);
-  animation: spin 1s linear infinite;
+.info-value {
+  font-size: var(--font-size-base);
+  color: var(--text-primary);
+  font-weight: var(--font-weight-medium);
+  word-break: break-word;
 }
 
+/* Actions Section */
+.actions-section {
+  display: flex;
+  justify-content: center;
+}
+
+.logout-button {
+  background: transparent;
+  border: 2px solid var(--color-danger);
+  color: var(--color-danger);
+  border-radius: var(--radius-round);
+  padding: var(--spacing-md) var(--spacing-2xl);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  cursor: pointer;
+  transition: var(--transition-base);
+  outline: none;
+  min-width: 140px;
+  justify-content: center;
+}
+
+.logout-button:hover {
+  background: var(--color-danger-subtle);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(var(--color-danger-rgb), 0.2);
+}
+
+.logout-button:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 6px rgba(var(--color-danger-rgb), 0.15);
+}
+
+/* Animations */
 @keyframes spin {
   0% {
     transform: rotate(0deg);
   }
   100% {
     transform: rotate(360deg);
+  }
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.3;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 0.1;
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 640px) {
+  .page-container {
+    padding: var(--spacing-lg) var(--spacing-sm);
+  }
+
+  .profile-header {
+    padding: var(--spacing-3xl) var(--spacing-xl);
+  }
+
+  .avatar {
+    width: 80px;
+    height: 80px;
+    font-size: var(--font-size-3xl);
+  }
+
+  .username {
+    font-size: var(--font-size-2xl);
+  }
+
+  .stats-grid {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-sm);
+  }
+
+  .stat-card {
+    padding: var(--spacing-lg);
+  }
+
+  .info-item {
+    padding: var(--spacing-sm) var(--spacing-lg);
+  }
+
+  .section-header {
+    padding: var(--spacing-lg) var(--spacing-lg) var(--spacing-sm);
+  }
+}
+
+@media (max-width: 480px) {
+  .profile-container {
+    gap: var(--spacing-xl);
+  }
+
+  .logout-button {
+    padding: var(--spacing-sm) var(--spacing-xl);
+    font-size: var(--font-size-sm);
   }
 }
 </style>

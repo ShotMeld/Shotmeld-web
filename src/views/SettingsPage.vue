@@ -4,112 +4,183 @@
 
 <template>
   <div class="page-container">
-    <div class="settings-content">
-      <div class="settings-card">
-        <div class="settings-header">
-          <h1>{{ $t('settings.title') }}</h1>
-          <p class="settings-subtitle">{{ $t('settings.subtitle') }}</p>
+    <div class="settings-container">
+      <!-- Header Section -->
+      <div class="settings-header">
+        <div class="header-icon">
+          <i class="fas fa-cog"></i>
         </div>
+        <h1>{{ $t('settings.title') }}</h1>
+        <p class="settings-subtitle">{{ $t('settings.subtitle') }}</p>
+      </div>
 
-        <!-- 主题设置 -->
+      <!-- Settings Sections -->
+      <div class="settings-content">
+        <!-- Theme Settings -->
         <div class="settings-section">
           <div class="section-header">
-            <i class="fas fa-palette section-icon"></i>
-            <h2>{{ $t('settings.theme.title') }}</h2>
+            <div class="section-icon">
+              <i class="fas fa-palette"></i>
+            </div>
+            <div class="section-title">
+              <h2>{{ $t('settings.theme.title') }}</h2>
+              <p class="section-description">{{ $t('settings.theme.description') }}</p>
+            </div>
           </div>
-          <p class="section-description">{{ $t('settings.theme.description') }}</p>
-          <div class="settings-options">
+
+          <div class="options-grid">
             <button
               v-for="theme in themes"
               :key="theme.value"
-              class="settings-option"
+              class="option-card"
               :class="{ active: selectedTheme === theme.value }"
               @click="selectTheme(theme.value)"
             >
-              <i :class="theme.icon"></i>
-              <span>{{ $t(theme.label) }}</span>
+              <div class="option-icon">
+                <i :class="theme.icon"></i>
+              </div>
+              <span class="option-label">{{ $t(theme.label) }}</span>
             </button>
           </div>
         </div>
 
-        <div class="settings-divider"></div>
-
-        <!-- 材质设置 -->
+        <!-- Material Settings -->
         <div class="settings-section">
           <div class="section-header">
-            <i class="fas fa-magic section-icon"></i>
-            <h2>{{ $t('settings.material.title') }}</h2>
+            <div class="section-icon">
+              <i class="fas fa-magic"></i>
+            </div>
+            <div class="section-title">
+              <h2>{{ $t('settings.material.title') }}</h2>
+              <p class="section-description">{{ $t('settings.material.description') }}</p>
+            </div>
           </div>
-          <p class="section-description">{{ $t('settings.material.description') }}</p>
-          <div class="settings-options">
+
+          <div class="options-grid">
             <button
               v-for="material in materials"
               :key="material.value"
-              class="settings-option"
+              class="option-card"
               :class="{ active: advancedMaterial === material.value }"
               @click="selectMaterial(material.value)"
             >
-              <span>{{ $t(material.label) }}</span>
+              <div class="option-icon">
+                <i :class="material.value ? 'fas fa-gem' : 'fas fa-cube'"></i>
+              </div>
+              <span class="option-label">{{ $t(material.label) }}</span>
             </button>
           </div>
         </div>
 
-        <div class="settings-divider"></div>
-
-        <!-- 语言设置 -->
+        <!-- Language Settings -->
         <div class="settings-section">
           <div class="section-header">
-            <i class="fas fa-language section-icon"></i>
-            <h2>{{ $t('settings.language.title') }}</h2>
+            <div class="section-icon">
+              <i class="fas fa-language"></i>
+            </div>
+            <div class="section-title">
+              <h2>{{ $t('settings.language.title') }}</h2>
+              <p class="section-description">{{ $t('settings.language.description') }}</p>
+            </div>
           </div>
-          <p class="section-description">{{ $t('settings.language.description') }}</p>
-          <div class="settings-options">
+
+          <div class="options-grid">
             <button
               v-for="lang in languages"
               :key="lang.value"
-              class="settings-option"
+              class="option-card"
               :class="{ active: selectedLanguage === lang.value }"
               @click="selectLanguage(lang.value)"
             >
-              <span>{{ $t(lang.label) }}</span>
+              <div class="option-icon language-icon">
+                <span class="language-text">{{ lang.value === 'zh-CN' ? '中' : 'EN' }}</span>
+              </div>
+              <span class="option-label">{{ $t(lang.label) }}</span>
             </button>
           </div>
         </div>
 
-        <div class="settings-divider"></div>
-
-        <!-- 测试功能设置 -->
+        <!-- Experimental Features -->
         <div class="settings-section">
           <div class="section-header">
-            <i class="fas fa-flask section-icon"></i>
-            <h2>{{ $t('settings.experimental.title') }}</h2>
-          </div>
-          <p class="section-description">{{ $t('settings.experimental.description') }}</p>
-
-          <!-- 图片编辑功能开关 -->
-          <div class="feature-toggle">
-            <div class="feature-info">
-              <div class="feature-name">{{ $t('settings.experimental.photoEdit.title') }}</div>
-              <div class="feature-description">
-                {{ $t('settings.experimental.photoEdit.description') }}
-              </div>
+            <div class="section-icon">
+              <i class="fas fa-flask"></i>
             </div>
-            <label class="toggle-switch">
-              <input type="checkbox" v-model="photoEditEnabled" @change="handlePhotoEditToggle" />
-              <span class="toggle-slider"></span>
-            </label>
+            <div class="section-title">
+              <h2>{{ $t('settings.experimental.title') }}</h2>
+              <p class="section-description">{{ $t('settings.experimental.description') }}</p>
+            </div>
+          </div>
+
+          <div class="feature-list">
+            <div class="feature-item">
+              <div class="feature-content">
+                <div class="feature-icon">
+                  <i class="fas fa-edit"></i>
+                </div>
+                <div class="feature-info">
+                  <div class="feature-name">{{ $t('settings.experimental.photoEdit.title') }}</div>
+                  <div class="feature-description">
+                    {{ $t('settings.experimental.photoEdit.description') }}
+                  </div>
+                </div>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" v-model="photoEditEnabled" @change="handlePhotoEditToggle" />
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Version Info Section -->
+      <div v-if="versionInfo.version || versionInfo.updateDate" class="settings-section">
+        <div class="section-header">
+          <div class="section-icon">
+            <i class="fas fa-info-circle"></i>
+          </div>
+          <div class="section-title">
+            <h2>{{ $t('settings.versionInfo.title') }}</h2>
+            <p class="section-description">{{ $t('settings.versionInfo.description') }}</p>
           </div>
         </div>
 
-        <!-- 底部品牌标识 -->
-        <div class="settings-footer">
-          <img src="@/assets/LOGO/LOGO.svg" alt="ShotMeld Logo" class="brand-logo" />
-          <span class="brand-text">ShotMeld</span>
+        <div class="options-grid">
+          <div v-if="versionInfo.version" class="option-card version-card">
+            <div class="option-icon">
+              <i class="fas fa-code-branch"></i>
+            </div>
+            <div class="version-content">
+              <span class="option-label">{{ $t('settings.version') }}</span>
+              <span class="version-value">{{ ' ' + versionInfo.version }}</span>
+            </div>
+          </div>
+
+          <div v-if="versionInfo.updateDate" class="option-card version-card">
+            <div class="option-icon">
+              <i class="fas fa-clock"></i>
+            </div>
+            <div class="version-content">
+              <span class="option-label">{{ $t('settings.lastUpdate') }}</span>
+              <span class="version-value">{{ ' ' + formatDate(versionInfo.updateDate) }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div class="settings-footer">
+        <div class="footer-content">
+          <div class="brand-container">
+            <img src="@/assets/LOGO/LOGO.svg" alt="ShotMeld Logo" class="brand-logo" />
+            <span class="brand-text">ShotMeld</span>
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- 图片编辑功能隐私同意模态框 -->
+    <!-- Photo Edit Consent Modal -->
     <SfModal
       v-model="showPhotoEditConsent"
       :title="$t('settings.experimental.photoEdit.consent.title')"
@@ -175,6 +246,10 @@ export default {
         { value: true, label: 'settings.material.advanced' },
         { value: false, label: 'settings.material.simple' },
       ],
+      versionInfo: {
+        version: '',
+        updateDate: '',
+      },
     }
   },
   created() {
@@ -196,6 +271,9 @@ export default {
 
     // 获取图片编辑功能设置
     this.photoEditEnabled = localStorage.getItem('photoEditEnabled') === 'true'
+
+    // 获取版本信息
+    this.fetchVersionInfo()
   },
   methods: {
     selectTheme(theme) {
@@ -252,6 +330,35 @@ export default {
     savePhotoEditSetting() {
       localStorage.setItem('photoEditEnabled', this.photoEditEnabled.toString())
     },
+
+    async fetchVersionInfo() {
+      try {
+        const response = await fetch(
+          'https://api.github.com/repos/ShotMeld/Shotmeld-web/commits?per_page=1'
+        )
+        if (response.ok) {
+          const commits = await response.json()
+          if (commits && commits.length > 0) {
+            const latestCommit = commits[0]
+            this.versionInfo.version = latestCommit.sha.substring(0, 7) // 取前7位作为版本号
+            this.versionInfo.updateDate = latestCommit.commit.author.date
+          }
+        }
+      } catch (error) {
+        console.warn('Failed to fetch version info from GitHub:', error)
+        // 静默失败，不显示版本信息
+      }
+    },
+
+    formatDate(dateStr) {
+      if (!dateStr) return ''
+      const date = new Date(dateStr)
+      return date.toLocaleString(this.$i18n.locale, {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+      })
+    },
   },
 }
 </script>
@@ -259,165 +366,252 @@ export default {
 <style scoped>
 .page-container {
   min-height: 100vh;
-  /* 移除背景颜色，让全局背景显示 */
-}
-
-.settings-content {
-  padding: 32px 16px;
+  padding: var(--spacing-xl) var(--spacing-md);
   display: flex;
   justify-content: center;
+  align-items: flex-start;
 }
 
-.settings-card {
+/* Main Container */
+.settings-container {
+  width: 100%;
+  max-width: 600px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2xl);
+}
+
+/* Header Section */
+.settings-header {
   background: var(--blur-bg-strong);
   backdrop-filter: var(--blur-strong);
   -webkit-backdrop-filter: var(--blur-strong);
-  border-radius: 28px;
-  padding: 40px;
-  width: 100%;
-  max-width: 680px;
-  box-shadow: var(--shadow-medium);
+  border-radius: var(--radius-extra-large);
+  padding: var(--spacing-4xl) var(--spacing-2xl);
+  text-align: center;
   border: 1px solid var(--blur-border);
+  box-shadow: var(--blur-shadow-strong);
+  position: relative;
+  overflow: hidden;
 }
 
-.settings-header {
-  margin-bottom: 40px;
-  text-align: center;
+.header-icon {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+  color: var(--color-white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--font-size-3xl);
+  margin: 0 auto var(--spacing-xl);
+  box-shadow: 0 8px 32px rgba(var(--color-primary-rgb), 0.3);
+  animation: rotate 8s linear infinite;
 }
 
 h1 {
-  color: var(--color-primary-light);
-  font-size: 32px;
-  font-weight: 600;
-  margin-bottom: 8px;
+  font-size: var(--font-size-3xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--text-primary);
+  margin: 0 0 var(--spacing-xs) 0;
   letter-spacing: -0.5px;
 }
 
 .settings-subtitle {
+  font-size: var(--font-size-base);
   color: var(--text-secondary);
-  font-size: 16px;
   margin: 0;
+  font-weight: var(--font-weight-medium);
 }
 
+/* Content Container */
+.settings-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xl);
+}
+
+/* Settings Section */
 .settings-section {
-  margin-bottom: 40px;
-}
-
-.settings-section:last-child {
-  margin-bottom: 0;
+  background: var(--blur-bg-strong);
+  backdrop-filter: var(--blur-strong);
+  -webkit-backdrop-filter: var(--blur-strong);
+  border-radius: var(--radius-extra-large);
+  border: 1px solid var(--blur-border);
+  box-shadow: var(--blur-shadow-strong);
+  overflow: hidden;
 }
 
 .section-header {
   display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 8px;
+  align-items: flex-start;
+  gap: var(--spacing-md);
+  padding: var(--spacing-xl) var(--spacing-xl) var(--spacing-lg);
+  border-bottom: 1px solid var(--border-color);
 }
 
 .section-icon {
-  font-size: 20px;
-  color: var(--color-primary-light);
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-medium);
+  background: var(--color-primary-subtle);
+  color: var(--color-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--font-size-lg);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.section-title {
+  flex: 1;
+  min-width: 0;
 }
 
 h2 {
-  color: var(--color-primary-light);
-  font-size: 20px;
-  font-weight: 600;
-  margin: 0;
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+  margin: 0 0 var(--spacing-xs) 0;
   letter-spacing: -0.3px;
 }
 
 .section-description {
+  font-size: var(--font-size-sm);
   color: var(--text-secondary);
-  font-size: 14px;
-  margin: 0 0 20px 0;
+  margin: 0;
+  line-height: 1.5;
 }
 
-.settings-options {
-  display: flex;
-  gap: 16px;
-  flex-wrap: wrap;
+/* Options Grid */
+.options-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: var(--spacing-md);
+  padding: var(--spacing-lg) var(--spacing-xl) var(--spacing-xl);
 }
 
-.settings-option {
-  position: relative;
+.option-card {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 12px;
-  padding: 16px 24px;
-  border-radius: 16px;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-lg);
+  border-radius: var(--radius-large);
   border: 2px solid var(--border-color);
-  background: var(--blur-bg-strong);
-  backdrop-filter: var(--blur-strong);
-  -webkit-backdrop-filter: var(--blur-strong);
+  background: var(--bg-secondary);
   color: var(--text-primary);
-  font-size: 15px;
-  font-weight: 500;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
   cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  white-space: nowrap;
+  transition: var(--transition-base);
+  outline: none;
+  position: relative;
+  overflow: hidden;
 }
 
-.settings-option:hover {
-  background: var(--bg-hover);
+.option-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+  opacity: 0;
+  transition: var(--transition-base);
+}
+
+.option-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-medium);
   border-color: var(--border-color-hover);
-  transform: translateY(-1px);
 }
 
-.settings-option:active {
+.option-card:active {
   transform: translateY(0);
 }
 
-.settings-option.active {
-  color: var(--color-primary-light);
-  background: rgba(var(--color-primary-light), 0.08);
-  border-color: var(--color-primary-light);
+.option-card.active {
+  color: var(--color-white);
+  border-color: var(--color-primary);
+  background: var(--color-primary);
+  box-shadow: 0 4px 16px rgba(var(--color-primary-rgb), 0.3);
 }
 
-.settings-option.active::after {
-  content: '';
-  position: absolute;
-  bottom: -4px;
-  left: 0;
-  width: 100%;
-  height: 2px;
-  background-color: var(--primary);
-  border-radius: 1px;
+.option-card.active::before {
+  opacity: 1;
 }
 
-.settings-option i {
-  font-size: 18px;
-}
-
-/* 底部品牌标识 */
-.settings-footer {
+.option-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-medium);
+  background: rgba(255, 255, 255, 0.1);
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: var(--spacing-xs);
-  margin-top: 40px;
-  padding-top: 32px;
-  border-top: 1px solid var(--border-color);
-  opacity: 0.8;
-  transition: opacity 0.2s ease;
+  font-size: var(--font-size-lg);
+  position: relative;
+  z-index: 1;
 }
 
-.feature-toggle {
+.option-card:not(.active) .option-icon {
+  background: var(--bg-primary);
+  color: var(--text-secondary);
+}
+
+.option-label {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  line-height: 1.3;
+}
+
+/* Feature List */
+.feature-list {
+  padding: var(--spacing-lg) var(--spacing-xl) var(--spacing-xl);
+}
+
+.feature-item {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 16px 0;
+  gap: var(--spacing-lg);
+  padding: var(--spacing-lg) 0;
+}
+
+.feature-content {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  flex: 1;
+  min-width: 0;
+}
+
+.feature-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-medium);
+  background: var(--color-warning);
+  color: var(--color-white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--font-size-lg);
+  flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(255, 164, 116, 0.3);
 }
 
 .feature-info {
   flex: 1;
+  min-width: 0;
 }
 
 .feature-name {
-  font-size: var(--font-size-lg);
-  font-weight: var(--font-weight-medium);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
   color: var(--text-primary);
-  margin-bottom: 4px;
+  margin-bottom: var(--spacing-2xs);
 }
 
 .feature-description {
@@ -426,12 +620,14 @@ h2 {
   line-height: 1.4;
 }
 
+/* Toggle Switch */
 .toggle-switch {
   position: relative;
   display: inline-block;
-  width: 50px;
-  height: 28px;
+  width: 56px;
+  height: 32px;
   cursor: pointer;
+  flex-shrink: 0;
 }
 
 .toggle-switch input {
@@ -448,47 +644,133 @@ h2 {
   bottom: 0;
   background-color: var(--bg-tertiary);
   border: 2px solid var(--border-color);
-  border-radius: 15px;
-  transition: all 0.3s ease;
+  border-radius: 16px;
+  transition: var(--transition-base);
 }
 
 .toggle-slider:before {
   position: absolute;
   content: '';
-  height: 20px;
-  width: 20px;
+  height: 24px;
+  width: 24px;
   left: 2px;
   bottom: 2px;
   background-color: var(--text-primary);
   border-radius: 50%;
-  transition: all 0.3s ease;
+  transition: var(--transition-base);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 input:checked + .toggle-slider {
-  background-color: var(--color-primary);
-  border-color: var(--color-primary);
+  background-color: var(--color-success);
+  border-color: var(--color-success);
 }
 
 input:checked + .toggle-slider:before {
-  transform: translateX(22px);
-  background-color: white;
+  transform: translateX(24px);
+  background-color: var(--color-white);
 }
 
+input:focus + .toggle-slider {
+  box-shadow: 0 0 0 3px rgba(var(--color-primary-rgb), 0.1);
+}
+
+/* Footer */
+.settings-footer {
+  background: var(--blur-bg-strong);
+  backdrop-filter: var(--blur-strong);
+  -webkit-backdrop-filter: var(--blur-strong);
+  border-radius: var(--radius-extra-large);
+  padding: var(--spacing-xl);
+  border: 1px solid var(--blur-border);
+  box-shadow: var(--blur-shadow);
+  display: flex;
+  justify-content: center;
+}
+
+.footer-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-lg);
+  width: 100%;
+  max-width: 320px;
+}
+
+.brand-container {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  opacity: 0.8;
+  transition: var(--transition-base);
+}
+
+.brand-container:hover {
+  opacity: 1;
+}
+
+.version-card {
+  cursor: default;
+  pointer-events: none;
+}
+
+.version-card .version-card .version-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2xs);
+  flex: 1;
+  min-width: 0;
+}
+
+.version-card .version-value {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+  font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', monospace;
+  letter-spacing: 0.2px;
+}
+
+/* Special version icon styles */
+.version-card:first-child .option-icon {
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+  color: white;
+}
+
+.version-card:last-child .option-icon {
+  background: linear-gradient(135deg, var(--color-success) 0%, #10b981 100%);
+  color: white;
+}
+
+.brand-logo {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+}
+
+.brand-text {
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-medium);
+  color: var(--text-primary);
+  font-family: 'Dancing Script', cursive;
+}
+
+/* Modal Styles */
 .consent-content {
   text-align: center;
-  padding: 24px 0;
+  padding: var(--spacing-xl) 0;
 }
 
 .consent-icon {
-  font-size: 48px;
+  font-size: 64px;
   color: var(--color-primary);
-  margin-bottom: 24px;
+  margin-bottom: var(--spacing-xl);
+  animation: pulse-scale 2s ease-in-out infinite;
 }
 
 .consent-text {
-  font-size: var(--font-size-lg);
+  font-size: var(--font-size-base);
   color: var(--text-primary);
-  margin-bottom: 24px;
+  margin-bottom: var(--spacing-xl);
   line-height: 1.6;
 }
 
@@ -496,12 +778,12 @@ input:checked + .toggle-slider:before {
   text-align: left;
   list-style: none;
   padding: 0;
-  margin: 0 0 24px 0;
+  margin: 0 0 var(--spacing-xl) 0;
 }
 
 .consent-points li {
   position: relative;
-  padding: 8px 0 8px 24px;
+  padding: var(--spacing-xs) 0 var(--spacing-xs) var(--spacing-xl);
   color: var(--text-secondary);
   line-height: 1.5;
 }
@@ -512,6 +794,7 @@ input:checked + .toggle-slider:before {
   left: 0;
   color: var(--color-primary);
   font-weight: bold;
+  font-size: var(--font-size-lg);
 }
 
 .consent-actions {
@@ -520,54 +803,174 @@ input:checked + .toggle-slider:before {
   justify-content: flex-end;
 }
 
-.settings-footer:hover {
-  opacity: 1;
+/* Special icon effects */
+.language-icon {
+  background: var(--color-primary-subtle) !important;
 }
 
-.brand-logo {
-  width: 32px;
-  height: 32px;
-  object-fit: contain;
+.language-text {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-primary);
+  user-select: none;
 }
 
-.brand-text {
-  font-size: var(--font-size-xl);
-  font-weight: var(--font-weight-semibold);
-  color: var(--text-primary);
-  font-family: 'Dancing Script', cursive;
-  font-weight: 400;
+.option-card.active .language-icon {
+  background: rgba(255, 255, 255, 0.2) !important;
+  border-color: rgba(255, 255, 255, 0.3);
 }
 
+.option-card.active .language-text {
+  color: white;
+}
+
+.option-icon .fa-gem {
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #ec4899 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: gem-shine 3s ease-in-out infinite;
+}
+
+.option-card.active .option-icon .fa-gem {
+  -webkit-text-fill-color: white;
+  background: none;
+}
+
+.option-icon .fa-cube {
+  color: var(--text-secondary);
+}
+
+.option-card.active .option-icon .fa-cube {
+  color: white;
+}
+
+@keyframes gem-shine {
+  0%,
+  100% {
+    filter: brightness(1) saturate(1);
+  }
+  50% {
+    filter: brightness(1.2) saturate(1.3);
+  }
+}
+
+/* Animations */
+@keyframes rotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes pulse-scale {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+@keyframes fadeInUp {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInLeft {
+  0% {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Responsive Design */
 @media (max-width: 640px) {
-  .settings-content {
-    padding: 24px 16px;
+  .page-container {
+    padding: var(--spacing-lg) var(--spacing-sm);
   }
 
-  .settings-card {
-    padding: 24px;
+  .settings-header {
+    padding: var(--spacing-3xl) var(--spacing-xl);
+  }
+
+  .header-icon {
+    width: 64px;
+    height: 64px;
+    font-size: var(--font-size-2xl);
   }
 
   h1 {
-    font-size: 28px;
+    font-size: var(--font-size-2xl);
   }
 
-  .settings-options {
-    flex-direction: column;
+  .section-header {
+    padding: var(--spacing-lg) var(--spacing-lg) var(--spacing-md);
   }
 
-  .settings-option {
-    width: auto;
+  .options-grid {
+    grid-template-columns: 1fr;
+    padding: var(--spacing-md) var(--spacing-lg) var(--spacing-lg);
+  }
+
+  .option-card {
+    flex-direction: row;
     justify-content: flex-start;
+    text-align: left;
+  }
+
+  .feature-list {
+    padding: var(--spacing-md) var(--spacing-lg) var(--spacing-lg);
+  }
+
+  .feature-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-md);
+  }
+
+  .feature-content {
+    width: 100%;
+  }
+
+  .toggle-switch {
+    align-self: flex-end;
+  }
+
+  .version-card .version-value {
+    font-size: var(--font-size-xs);
+  }
+}
+
+@media (max-width: 480px) {
+  .settings-container {
+    gap: var(--spacing-xl);
+  }
+
+  .settings-content {
+    gap: var(--spacing-md);
   }
 
   .brand-logo {
-    width: 28px;
-    height: 28px;
+    width: 40px;
+    height: 40px;
   }
 
-  .settings-footer {
-    margin-top: 32px;
-    padding-top: 24px;
+  .brand-text {
+    font-size: var(--font-size-xl);
   }
 }
 </style>
