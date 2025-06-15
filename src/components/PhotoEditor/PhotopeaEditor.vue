@@ -12,10 +12,7 @@
     @close="handleClose"
   >
     <div class="photopea-editor">
-      <div v-if="loading" class="loading-container">
-        <div class="loading-spinner"></div>
-        <p>{{ $t('photoEditor.loading') }}</p>
-      </div>
+      <LoadingSpinner v-if="loading" target="编辑器" padding="large" />
 
       <div v-if="error" class="error-container">
         <p class="error-message">{{ error }}</p>
@@ -45,13 +42,14 @@
 </template>
 
 <script>
-import { SfModal, SfButton } from '../ui'
+import { SfModal, SfButton, LoadingSpinner } from '../ui'
 
 export default {
   name: 'PhotopeaEditor',
   components: {
     SfModal,
     SfButton,
+    LoadingSpinner,
   },
   props: {
     modelValue: {
@@ -360,24 +358,6 @@ export default {
   justify-content: center;
   height: 100%;
   gap: var(--spacing-md);
-}
-
-.loading-spinner {
-  width: 40px;
-  height: 40px;
-  border: 4px solid var(--border-color);
-  border-top: 4px solid var(--color-primary);
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
 }
 
 .error-container {

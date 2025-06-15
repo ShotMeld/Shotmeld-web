@@ -4,12 +4,7 @@
 
 <template>
   <div class="page-container">
-    <div v-if="loading" class="loading-container">
-      <div class="loading-content">
-        <div class="spinner"></div>
-        <p class="loading-text">{{ $t('profile.loading') }}</p>
-      </div>
-    </div>
+    <LoadingSpinner v-if="loading" target="用户信息" padding="large" />
 
     <div v-else class="profile-container">
       <!-- Header Section -->
@@ -93,9 +88,13 @@
 
 <script>
 import { authService } from '@/api'
+import LoadingSpinner from '../components/ui/LoadingSpinner.vue'
 
 export default {
   name: 'ProfilePage',
+  components: {
+    LoadingSpinner,
+  },
   data() {
     return {
       user: {},
@@ -139,42 +138,6 @@ export default {
   display: flex;
   justify-content: center;
   align-items: flex-start;
-}
-
-/* Loading State */
-.loading-container {
-  width: 100%;
-  max-width: 480px;
-  padding: var(--spacing-4xl) var(--spacing-xl);
-}
-
-.loading-content {
-  background: var(--blur-bg-strong);
-  backdrop-filter: var(--blur-strong);
-  -webkit-backdrop-filter: var(--blur-strong);
-  border-radius: var(--radius-extra-large);
-  padding: var(--spacing-4xl) var(--spacing-xl);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  border: 1px solid var(--blur-border);
-  box-shadow: var(--blur-shadow-strong);
-}
-
-.spinner {
-  width: 40px;
-  height: 40px;
-  border: 3px solid var(--border-color);
-  border-top: 3px solid var(--color-primary);
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-}
-
-.loading-text {
-  margin-top: var(--spacing-lg);
-  color: var(--text-secondary);
-  font-size: var(--font-size-base);
-  font-weight: var(--font-weight-medium);
 }
 
 /* Main Profile Container */

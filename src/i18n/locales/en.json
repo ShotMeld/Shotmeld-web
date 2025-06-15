@@ -79,6 +79,7 @@
   },
   "loading": {
     "default": "Loading...",
+    "target": "Loading {target}...",
     "uploading": "Image is being optimized for transmission. Initial access may be slower, please wait a moment"
   },
   "album": {

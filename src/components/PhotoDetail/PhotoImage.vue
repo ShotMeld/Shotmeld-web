@@ -19,28 +19,37 @@
       :src="photo.url"
       :alt="photo.title"
       @load="handleImageLoad"
-      ref="imageElement"
       :class="['main-image', { loaded: imageLoaded }]"
     />
 
     <!-- 加载状态（仅在没有缩略图时显示） -->
-    <div v-if="!imageLoaded && !thumbnailLoaded && !photo.thumbnailUrl" class="image-loading">
-      <div class="spinner"></div>
-    </div>
+    <LoadingSpinner
+      v-if="!imageLoaded && !thumbnailLoaded && !photo.thumbnailUrl"
+      text="正在加载图片..."
+      size="medium"
+      padding="normal"
+    />
 
     <!-- 图片加载中状态（有缩略图时显示在正中间） -->
     <div v-if="!imageLoaded && thumbnailLoaded" class="image-loading-overlay">
-      <div class="loading-content">
-        <div class="spinner"></div>
-        <p class="loading-text">{{ getLoadingMessage() }}</p>
-      </div>
+      <LoadingSpinner
+        :text="getLoadingMessage()"
+        size="medium"
+        padding="small"
+        container-class="overlay-loading"
+      />
     </div>
   </div>
 </template>
 
 <script>
+import LoadingSpinner from '../ui/LoadingSpinner.vue'
+
 export default {
   name: 'PhotoImage',
+  components: {
+    LoadingSpinner,
+  },
   props: {
     photo: {
       type: Object,
@@ -249,37 +258,6 @@ export default {
   opacity: 1;
 }
 
-/* 加载状态 */
-.spinner {
-  width: 40px;
-  height: 40px;
-  border: 3px solid rgba(0, 122, 255, 0.1);
-  border-top-color: var(--color-primary);
-  border-radius: 50%;
-  animation: spin 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite;
-}
-
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-.image-loading {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(2px);
-  -webkit-backdrop-filter: blur(2px);
-  z-index: 3;
-}
-
 /* 图片加载覆盖层（在缩略图上方显示） */
 .image-loading-overlay {
   position: absolute;
@@ -296,16 +274,13 @@ export default {
   z-index: 3;
 }
 
-.loading-content {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 16px;
-  padding: 20px;
-  text-align: center;
+.image-loading-overlay :deep(.overlay-loading) {
+  background: transparent;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
 }
 
-.loading-text {
+.image-loading-overlay :deep(.loading-text) {
   color: white;
   font-size: 14px;
   line-height: 1.4;

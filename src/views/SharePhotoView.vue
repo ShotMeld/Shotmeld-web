@@ -5,10 +5,7 @@
 <template>
   <div class="share-photo-view">
     <!-- 加载状态 -->
-    <div v-if="loading" class="loading-container">
-      <div class="loading-spinner"></div>
-      <p>{{ $t('sharePhoto.loading') }}</p>
-    </div>
+    <LoadingSpinner v-if="loading" target="照片" padding="large" />
 
     <!-- 错误状态 -->
     <div v-else-if="error" class="error-container">
@@ -48,10 +45,12 @@
               @load="handleImageLoaded"
               @error="handleImageError"
             />
-            <div v-if="!imageLoaded && photo?.url" class="image-loading">
-              <div class="image-loading-spinner"></div>
-              <p>{{ $t('sharePhoto.imageLoading') }}</p>
-            </div>
+            <LoadingSpinner
+              v-if="!imageLoaded && photo?.url"
+              text="正在加载图片..."
+              size="medium"
+              padding="normal"
+            />
           </div>
         </div>
 
@@ -82,17 +81,17 @@
 
 <script>
 import { photoService } from '../api'
-import { SfButton } from '../components/ui'
-import { PhotoInfo, PhotoLocation, PhotoExif, PhotoTags } from '../components/PhotoDetail'
+import { SfButton, LoadingSpinner } from '../components/ui'
+import { PhotoInfo, PhotoLocation, PhotoExif } from '../components/PhotoDetail'
 
 export default {
   name: 'SharePhotoView',
   components: {
     SfButton,
+    LoadingSpinner,
     PhotoInfo,
     PhotoLocation,
     PhotoExif,
-    PhotoTags,
   },
   data() {
     return {
@@ -260,26 +259,6 @@ export default {
   height: 100vh;
   background-color: var(--bg-primary, #1a1a1a);
   color: var(--text-primary, #ffffff);
-}
-
-.loading-spinner {
-  width: 40px;
-  height: 40px;
-  border: 3px solid var(--border-color, #404040);
-  border-top: 3px solid var(--primary-color, #3b82f6);
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-  margin-bottom: 16px;
-}
-
-@keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-
-  100% {
-    transform: rotate(360deg);
-  }
 }
 
 /* 错误状态 */
@@ -475,16 +454,6 @@ export default {
   flex-direction: column;
   align-items: center;
   color: var(--text-secondary, #b3b3b3);
-}
-
-.image-loading-spinner {
-  width: 32px;
-  height: 32px;
-  border: 2px solid var(--border-color, #404040);
-  border-top: 2px solid var(--primary-color, #3b82f6);
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-  margin-bottom: 12px;
 }
 
 .photo-detail-left :deep(.photo-image-container) {

@@ -10,6 +10,7 @@ import SfLinkButton from './SfLinkButton.vue'
 import SfDeleteConfirmModal from './SfDeleteConfirmModal.vue'
 import LoginTransition from './LoginTransition.vue'
 import LazyImage from './LazyImage.vue'
+import LoadingSpinner from './LoadingSpinner.vue'
 
 export {
   SfButton,
@@ -24,6 +25,7 @@ export {
   SfDeleteConfirmModal,
   LoginTransition,
   LazyImage,
+  LoadingSpinner,
 }
 
 export default {
@@ -40,5 +42,6 @@ export default {
     app.component('SfDeleteConfirmModal', SfDeleteConfirmModal)
     app.component('LoginTransition', LoginTransition)
     app.component('LazyImage', LazyImage)
+    app.component('LoadingSpinner', LoadingSpinner)
   },
 }

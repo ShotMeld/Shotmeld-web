@@ -43,12 +43,7 @@
       </div>
     </div>
 
-    <div v-if="loading" class="loading-container">
-      <div class="loading-spinner">
-        <div class="spinner"></div>
-      </div>
-      <p class="loading-text">{{ $t('photoSelector.loading') }}</p>
-    </div>
+    <LoadingSpinner v-if="loading" target="照片" padding="large" />
 
     <div class="selector-footer" v-if="totalPages > 1">
       <div class="pagination">
@@ -78,9 +73,13 @@
 
 <script>
 import { photoService, albumService } from '../api'
+import { LoadingSpinner } from './ui'
 
 export default {
   name: 'PhotoSelector',
+  components: {
+    LoadingSpinner,
+  },
   props: {
     albumId: {
       type: String,
@@ -364,26 +363,6 @@ export default {
   height: 100%;
   padding: var(--spacing-2xl);
   color: var(--text-secondary);
-}
-
-.loading-spinner {
-  margin-bottom: var(--spacing-lg);
-}
-
-.spinner {
-  width: 40px;
-  height: 40px;
-  border: 3px solid var(--bg-tertiary);
-  border-top-color: var(--color-primary);
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-}
-
-.loading-text {
-  font-size: var(--font-size-base);
-  font-weight: var(--font-weight-medium);
-  color: var(--text-secondary);
-  margin: 0;
 }
 
 .selector-footer {

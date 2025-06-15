@@ -34,10 +34,7 @@
     </div>
 
     <div :class="albumDetailContainerClass">
-      <div v-if="loading" class="album-detail__loading">
-        <div class="album-detail__spinner"></div>
-        <p>{{ $t('common.loading') }}</p>
-      </div>
+      <LoadingSpinner v-if="loading" target="相册详情" padding="large" />
 
       <div v-else-if="error" class="album-detail__error">
         <p>{{ error }}</p>
@@ -132,6 +129,7 @@ import ChangeCoverModal from '../components/ChangeCoverModal.vue'
 import SfButton from '../components/ui/SfButton.vue'
 import SfModal from '../components/ui/SfModal.vue'
 import SfDeleteConfirmModal from '../components/ui/SfDeleteConfirmModal.vue'
+import LoadingSpinner from '../components/ui/LoadingSpinner.vue'
 import AlbumPhotosManageToolbar from './Albums/AlbumPhotosManageToolbar.vue'
 import { albumService, photoService } from '../api'
 import { eventBus } from '../utils/eventBus'
@@ -146,6 +144,7 @@ export default {
     SfButton,
     SfModal,
     SfDeleteConfirmModal,
+    LoadingSpinner,
     AlbumPhotosManageToolbar,
   },
   data() {
@@ -635,16 +634,6 @@ export default {
 .album-detail__error {
   text-align: center;
   padding: var(--spacing-3xl) 0;
-}
-
-.album-detail__spinner {
-  width: 40px;
-  height: 40px;
-  margin: 0 auto var(--spacing-md);
-  border: 3px solid var(--bg-tertiary);
-  border-top-color: var(--primary);
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
 }
 
 .album-detail__error {
