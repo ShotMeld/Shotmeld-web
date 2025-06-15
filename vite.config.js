@@ -16,6 +16,12 @@ export default defineConfig({
     vue(),
     AutoImport({
       resolvers: [ElementPlusResolver()],
+      imports: [
+        'vue',
+        {
+          'element-plus': ['ElNotification', 'ElMessage', 'ElMessageBox'],
+        },
+      ],
     }),
     Components({
       resolvers: [ElementPlusResolver()],
