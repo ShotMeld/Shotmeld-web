@@ -186,6 +186,7 @@
       :title="$t('settings.experimental.photoEdit.consent.title')"
       size="default"
       :close-on-click-overlay="false"
+      @update:modelValue="handleModalClose"
     >
       <div class="consent-content">
         <div class="consent-icon">
@@ -229,7 +230,7 @@ export default {
     return {
       userName: '',
       selectedTheme: 'system',
-      selectedLanguage: 'zh-CN',
+      selectedLanguage: '', // 默认为空，在created中根据实际情况设置
       advancedMaterial: true,
       photoEditEnabled: false,
       showPhotoEditConsent: false,
@@ -267,6 +268,8 @@ export default {
     if (savedLocale) {
       this.selectedLanguage = savedLocale
       this.$i18n.locale = savedLocale
+    } else {
+      this.selectedLanguage = this.$i18n.locale
     }
 
     // 获取图片编辑功能设置
@@ -325,6 +328,17 @@ export default {
       // 用户拒绝，恢复开关状态
       this.photoEditEnabled = false
       this.showPhotoEditConsent = false
+    },
+
+    handleModalClose(isOpen) {
+      // 当模态框关闭时（包括点击右上角关闭按钮），如果用户没有同意，恢复开关状态
+      if (!isOpen) {
+        // 检查是否是通过右上角关闭按钮关闭的（没有通过确认或取消按钮）
+        // 如果用户还没有给出同意，就恢复开关状态
+        if (!localStorage.getItem('photoEditConsentGiven')) {
+          this.photoEditEnabled = false
+        }
+      }
     },
 
     savePhotoEditSetting() {
