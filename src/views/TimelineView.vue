@@ -5,8 +5,8 @@
 <template>
   <div class="timeline-container">
     <main class="timeline-content">
-      <div v-if="loading" class="loading-container" v-loading="true">
-        <p>{{ $t('timeline.loading') }}</p>
+      <div v-if="loading" class="loading-container">
+        <LoadingSpinner target="时间线" size="large" padding="large" />
       </div>
 
       <div v-else-if="error" class="error-message">
@@ -90,6 +90,7 @@ import PhotoUpload from '../components/PhotoUpload.vue'
 import PhotoDetail from '../components/PhotoDetail/PhotoDetail.vue'
 import { SfModal } from '../components/ui'
 import PhotoWallNoPhotos from './PhotoWall/PhotoWallNoPhotos.vue'
+import LoadingSpinner from '../components/ui/LoadingSpinner.vue'
 import { eventBus } from '../utils/eventBus'
 
 export default {
@@ -99,6 +100,7 @@ export default {
     PhotoDetail,
     SfModal,
     PhotoWallNoPhotos,
+    LoadingSpinner,
   },
   data() {
     return {
@@ -587,9 +589,7 @@ export default {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  min-height: 300px;
-  gap: var(--spacing-md);
-  color: var(--text-secondary);
+  min-height: 400px;
 }
 
 .error-message {
