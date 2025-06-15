@@ -453,7 +453,7 @@ export default {
 .year-header {
   font-size: 1.8rem;
   margin-bottom: 1.5rem;
-  border-bottom: 2px solid var(--text-primary);
+  border-bottom: 2px solid var(--color-primary);
   padding-bottom: 0.5rem;
   color: var(--text-primary);
   display: flex;
