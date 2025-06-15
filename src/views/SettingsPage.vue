@@ -5,17 +5,68 @@
 <template>
   <div class="page-container">
     <div class="settings-container">
-      <!-- Header Section -->
-      <div class="settings-header">
-        <div class="header-icon">
-          <i class="fas fa-cog"></i>
+      <!-- Left Column: Header, Logo, Version -->
+      <div class="left-column">
+        <!-- Header Section -->
+        <div class="settings-header">
+          <div class="header-icon">
+            <i class="fas fa-cog"></i>
+          </div>
+          <h1>{{ $t('settings.title') }}</h1>
+          <p class="settings-subtitle">{{ $t('settings.subtitle') }}</p>
         </div>
-        <h1>{{ $t('settings.title') }}</h1>
-        <p class="settings-subtitle">{{ $t('settings.subtitle') }}</p>
+
+        <!-- Brand/Logo Section -->
+        <div class="settings-section brand-section">
+          <div class="brand-content">
+            <div class="brand-container">
+              <img src="@/assets/LOGO/LOGO.svg" alt="ShotMeld Logo" class="brand-logo" />
+              <span class="brand-text">ShotMeld</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Version Info Section -->
+        <div
+          v-if="versionInfo.version || versionInfo.updateDate"
+          class="settings-section version-section"
+        >
+          <div class="section-header">
+            <div class="section-icon">
+              <i class="fas fa-info-circle"></i>
+            </div>
+            <div class="section-title">
+              <h2>{{ $t('settings.versionInfo.title') }}</h2>
+              <p class="section-description">{{ $t('settings.versionInfo.description') }}</p>
+            </div>
+          </div>
+
+          <div class="version-list">
+            <div v-if="versionInfo.version" class="version-item">
+              <div class="version-icon">
+                <i class="fas fa-code-branch"></i>
+              </div>
+              <div class="version-info">
+                <span class="version-label">{{ $t('settings.version') }}</span>
+                <span class="version-value">{{ versionInfo.version }}</span>
+              </div>
+            </div>
+
+            <div v-if="versionInfo.updateDate" class="version-item">
+              <div class="version-icon">
+                <i class="fas fa-clock"></i>
+              </div>
+              <div class="version-info">
+                <span class="version-label">{{ $t('settings.lastUpdate') }}</span>
+                <span class="version-value">{{ formatDate(versionInfo.updateDate) }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <!-- Settings Sections -->
-      <div class="settings-content">
+      <!-- Right Column: Settings -->
+      <div class="right-column">
         <!-- Theme Settings -->
         <div class="settings-section">
           <div class="section-header">
@@ -133,51 +184,6 @@
           </div>
         </div>
       </div>
-
-      <!-- Version Info Section -->
-      <div v-if="versionInfo.version || versionInfo.updateDate" class="settings-section">
-        <div class="section-header">
-          <div class="section-icon">
-            <i class="fas fa-info-circle"></i>
-          </div>
-          <div class="section-title">
-            <h2>{{ $t('settings.versionInfo.title') }}</h2>
-            <p class="section-description">{{ $t('settings.versionInfo.description') }}</p>
-          </div>
-        </div>
-
-        <div class="options-grid">
-          <div v-if="versionInfo.version" class="option-card version-card">
-            <div class="option-icon">
-              <i class="fas fa-code-branch"></i>
-            </div>
-            <div class="version-content">
-              <span class="option-label">{{ $t('settings.version') }}</span>
-              <span class="version-value">{{ ' ' + versionInfo.version }}</span>
-            </div>
-          </div>
-
-          <div v-if="versionInfo.updateDate" class="option-card version-card">
-            <div class="option-icon">
-              <i class="fas fa-clock"></i>
-            </div>
-            <div class="version-content">
-              <span class="option-label">{{ $t('settings.lastUpdate') }}</span>
-              <span class="version-value">{{ ' ' + formatDate(versionInfo.updateDate) }}</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Footer -->
-      <div class="settings-footer">
-        <div class="footer-content">
-          <div class="brand-container">
-            <img src="@/assets/LOGO/LOGO.svg" alt="ShotMeld Logo" class="brand-logo" />
-            <span class="brand-text">ShotMeld</span>
-          </div>
-        </div>
-      </div>
     </div>
 
     <!-- Photo Edit Consent Modal -->
@@ -230,7 +236,7 @@ export default {
     return {
       userName: '',
       selectedTheme: 'system',
-      selectedLanguage: '', // 默认为空，在created中根据实际情况设置
+      selectedLanguage: '',
       advancedMaterial: true,
       photoEditEnabled: false,
       showPhotoEditConsent: false,
@@ -389,10 +395,25 @@ export default {
 /* Main Container */
 .settings-container {
   width: 100%;
-  max-width: 600px;
+  max-width: 1200px;
+  display: grid;
+  grid-template-columns: 400px 1fr;
+  gap: var(--spacing-2xl);
+  align-items: start;
+}
+
+/* Left Column */
+.left-column {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-2xl);
+  gap: var(--spacing-xl);
+}
+
+/* Right Column */
+.right-column {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xl);
 }
 
 /* Header Section */
@@ -441,9 +462,112 @@ h1 {
 
 /* Content Container */
 .settings-content {
+  display: contents;
+}
+
+/* Brand Section */
+.brand-section {
+  padding: var(--spacing-2xl);
+  text-align: center;
+}
+
+.brand-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.brand-container {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  opacity: 0.9;
+  transition: var(--transition-base);
+}
+
+.brand-container:hover {
+  opacity: 1;
+}
+
+.brand-logo {
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
+}
+
+.brand-text {
+  font-size: var(--font-size-3xl);
+  font-weight: var(--font-weight-medium);
+  color: var(--text-primary);
+  font-family: 'Dancing Script', cursive;
+}
+
+/* Version Section */
+.version-section .section-header {
+  padding-bottom: var(--spacing-md);
+}
+
+.version-list {
+  padding: var(--spacing-lg) var(--spacing-xl) var(--spacing-xl);
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-xl);
+  gap: var(--spacing-md);
+}
+
+.version-item {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-md);
+  background: var(--blur-bg-medium);
+  backdrop-filter: var(--blur-medium);
+  -webkit-backdrop-filter: var(--blur-medium);
+  border-radius: var(--radius-large);
+  box-shadow: var(--shadow-small);
+  border: var(--border-width) solid var(--blur-border);
+  transition: var(--transition-base);
+}
+
+.version-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-medium);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--font-size-lg);
+  color: var(--color-white);
+  flex-shrink: 0;
+}
+
+.version-item:first-child .version-icon {
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+}
+
+.version-item:last-child .version-icon {
+  background: linear-gradient(135deg, var(--color-success) 0%, #10b981 100%);
+}
+
+.version-info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2xs);
+  flex: 1;
+  min-width: 0;
+}
+
+.version-label {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  font-weight: var(--font-weight-medium);
+}
+
+.version-value {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+  font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', monospace;
+  letter-spacing: 0.2px;
 }
 
 /* Settings Section */
@@ -459,7 +583,7 @@ h1 {
 
 .section-header {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   gap: var(--spacing-md);
   padding: var(--spacing-xl) var(--spacing-xl) var(--spacing-lg);
   border-bottom: 1px solid var(--border-color);
@@ -476,27 +600,31 @@ h1 {
   justify-content: center;
   font-size: var(--font-size-lg);
   flex-shrink: 0;
-  margin-top: 2px;
 }
 
 .section-title {
   flex: 1;
   min-width: 0;
+  height: 48px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 h2 {
   font-size: var(--font-size-xl);
   font-weight: var(--font-weight-semibold);
   color: var(--text-primary);
-  margin: 0 0 var(--spacing-xs) 0;
+  margin: 0 0 var(--spacing-2xs) 0;
   letter-spacing: -0.3px;
+  line-height: 1.2;
 }
 
 .section-description {
   font-size: var(--font-size-sm);
   color: var(--text-secondary);
   margin: 0;
-  line-height: 1.5;
+  line-height: 1.3;
 }
 
 /* Options Grid */
@@ -513,9 +641,12 @@ h2 {
   align-items: center;
   gap: var(--spacing-sm);
   padding: var(--spacing-lg);
+  background: var(--blur-bg-medium);
+  backdrop-filter: var(--blur-medium);
+  -webkit-backdrop-filter: var(--blur-medium);
   border-radius: var(--radius-large);
-  border: 2px solid var(--border-color);
-  background: var(--bg-secondary);
+  box-shadow: var(--shadow-small);
+  border: var(--border-width) solid var(--blur-border);
   color: var(--text-primary);
   font-size: var(--font-size-sm);
   font-weight: var(--font-weight-medium);
@@ -689,40 +820,6 @@ input:focus + .toggle-slider {
   box-shadow: 0 0 0 3px rgba(var(--color-primary-rgb), 0.1);
 }
 
-/* Footer */
-.settings-footer {
-  background: var(--blur-bg-strong);
-  backdrop-filter: var(--blur-strong);
-  -webkit-backdrop-filter: var(--blur-strong);
-  border-radius: var(--radius-extra-large);
-  padding: var(--spacing-xl);
-  border: 1px solid var(--blur-border);
-  box-shadow: var(--blur-shadow);
-  display: flex;
-  justify-content: center;
-}
-
-.footer-content {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--spacing-lg);
-  width: 100%;
-  max-width: 320px;
-}
-
-.brand-container {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-sm);
-  opacity: 0.8;
-  transition: var(--transition-base);
-}
-
-.brand-container:hover {
-  opacity: 1;
-}
-
 .version-card {
   cursor: default;
   pointer-events: none;
@@ -753,19 +850,6 @@ input:focus + .toggle-slider {
 .version-card:last-child .option-icon {
   background: linear-gradient(135deg, var(--color-success) 0%, #10b981 100%);
   color: white;
-}
-
-.brand-logo {
-  width: 48px;
-  height: 48px;
-  object-fit: contain;
-}
-
-.brand-text {
-  font-size: var(--font-size-2xl);
-  font-weight: var(--font-weight-medium);
-  color: var(--text-primary);
-  font-family: 'Dancing Script', cursive;
 }
 
 /* Modal Styles */
@@ -912,6 +996,18 @@ input:focus + .toggle-slider {
 }
 
 /* Responsive Design */
+@media (max-width: 1024px) {
+  .settings-container {
+    grid-template-columns: 1fr;
+    max-width: 600px;
+  }
+
+  .left-column,
+  .right-column {
+    width: 100%;
+  }
+}
+
 @media (max-width: 640px) {
   .page-container {
     padding: var(--spacing-lg) var(--spacing-sm);
@@ -974,17 +1070,18 @@ input:focus + .toggle-slider {
     gap: var(--spacing-xl);
   }
 
-  .settings-content {
+  .left-column,
+  .right-column {
     gap: var(--spacing-md);
   }
 
   .brand-logo {
-    width: 40px;
-    height: 40px;
+    width: 48px;
+    height: 48px;
   }
 
   .brand-text {
-    font-size: var(--font-size-xl);
+    font-size: var(--font-size-2xl);
   }
 }
 </style>
