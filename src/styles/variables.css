@@ -123,7 +123,7 @@
   --transition-bounce: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 
   /* 材质强度控制 */
-  --material-intensity: 0.5; /* 0-1之间的值，控制材质强度 */
+  --material-intensity: 0.8; /* 0-1之间的值，控制材质强度 */
 
   /* 背景模糊强度 */
   --blur-light: blur(calc(4px + var(--material-intensity) * 25px)) saturate(calc(1.0 + var(--material-intensity) * 1.5));

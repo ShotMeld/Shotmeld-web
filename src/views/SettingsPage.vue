@@ -299,7 +299,7 @@ export default {
 
     // 获取材质强度设置
     const savedMaterialIntensity = localStorage.getItem('materialIntensity')
-    this.materialIntensity = savedMaterialIntensity ? parseFloat(savedMaterialIntensity) : 0.5
+    this.materialIntensity = savedMaterialIntensity ? parseFloat(savedMaterialIntensity) : 0.8
     this.updateMaterialIntensity()
 
     // 获取当前语言设置
