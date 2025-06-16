@@ -30,7 +30,7 @@
         :filters="filters"
         :dateRange="dateRange"
         :albums="albums"
-        @update:searchQuery="searchQuery = $event"
+        @update:searchQuery="handleSearchQueryUpdate"
         @update:filters="filters = $event"
         @update:dateRange="dateRange = $event"
         @fetchPhotos="fetchPhotos"
@@ -279,8 +279,8 @@ export default {
     startAutoRefresh() {
       this.stopAutoRefresh() // 确保没有重复的定时器
       this.autoRefreshTimer = setInterval(() => {
-        // 只有在非管理模式下才自动刷新，避免影响用户选择操作
-        if (!this.isManageMode && !this.loading) {
+        // 只有在非管理模式且非搜索模式下才自动刷新，避免影响用户选择操作和搜索结果
+        if (!this.isManageMode && !this.loading && !this.searchQuery.trim()) {
           this.silentRefreshPhotos()
         }
       }, this.autoRefreshInterval)
@@ -352,8 +352,10 @@ export default {
       this.selectedPhotos = []
       this.toolbarEntering = false
       this.filtersExiting = false
-      // 退出管理模式时重新启动自动刷新
-      this.startAutoRefresh()
+      // 退出管理模式时重新启动自动刷新（如果不在搜索模式下）
+      if (!this.searchQuery.trim()) {
+        this.startAutoRefresh()
+      }
     },
     toggleSelectPhoto(photoId) {
       const index = this.selectedPhotos.indexOf(photoId)
@@ -436,6 +438,21 @@ export default {
       }
     },
 
+    // 处理搜索查询更新，控制自动刷新
+    handleSearchQueryUpdate(newQuery) {
+      const oldQuery = this.searchQuery
+      this.searchQuery = newQuery
+
+      // 如果从无搜索变为有搜索，停止自动刷新
+      if (!oldQuery.trim() && newQuery.trim()) {
+        this.stopAutoRefresh()
+      }
+      // 如果从有搜索变为无搜索，且不在管理模式下，启动自动刷新
+      else if (oldQuery.trim() && !newQuery.trim() && !this.isManageMode) {
+        this.startAutoRefresh()
+      }
+    },
+
     // 新增方法：处理搜索结果更新
     handleSearchResultsUpdate(results) {
       this.loading = true
@@ -476,8 +493,8 @@ export default {
         this.photos = response.data.data || []
         this.totalPhotos = response.data.total || 0
 
-        // 手动刷新后重启自动刷新定时器
-        if (!this.isManageMode) {
+        // 手动刷新后重启自动刷新定时器（非管理模式且非搜索模式）
+        if (!this.isManageMode && !this.searchQuery.trim()) {
           this.startAutoRefresh()
         }
       } catch (error) {
@@ -519,8 +536,10 @@ export default {
     handlePhotoUploaded() {
       this.isUploadModalVisible = false
       this.fetchPhotos()
-      // 上传成功后重启自动刷新，确保能及时获取处理状态更新
-      this.startAutoRefresh()
+      // 上传成功后重启自动刷新，确保能及时获取处理状态更新（非管理模式且非搜索模式）
+      if (!this.isManageMode && !this.searchQuery.trim()) {
+        this.startAutoRefresh()
+      }
     },
     handleAlbumCreated() {
       this.isAlbumFormVisible = false
