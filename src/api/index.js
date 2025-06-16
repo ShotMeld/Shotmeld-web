@@ -102,15 +102,15 @@ export const photoService = {
   },
 
   // 批量上传照片
-  batchUploadPhotos(files, albumId = null, tags = [], onProgressUpdate = null) {
+  batchUploadPhotos(files, albumIds = null, tags = [], onProgressUpdate = null) {
     const formData = new FormData()
 
     files.forEach(file => {
       formData.append('photos', file)
     })
 
-    if (albumId) {
-      formData.append('albumId', albumId)
+    if (albumIds) {
+      formData.append('albumIds', albumIds)
     }
 
     if (tags && tags.length > 0) {

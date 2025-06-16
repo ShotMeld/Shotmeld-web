@@ -277,12 +277,14 @@ export default {
             updateProgress // 传入进度更新回调
           )
 
-          this.$emit('upload-success', response.data)
+          this.$emit('upload-success', response.data.photos || response.data)
           this.uploadProgress = 100
           this.uploadStatus = this.$t('photoUpload.uploadComplete')
           this.$notify({
             title: this.$t('photoWall.success'),
-            message: this.$t('photoUpload.uploadSuccess', { count: response.data.uploadedCount }),
+            message: this.$t('photoUpload.uploadSuccess', {
+              count: response.data.uploadedCount || response.data.count,
+            }),
             type: 'success',
           })
         } else {

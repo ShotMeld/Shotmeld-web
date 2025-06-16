@@ -278,8 +278,12 @@ export default {
         // 上传编辑后的图片
         const uploadResponse = await photoService.batchUploadPhotos([file])
 
-        if (uploadResponse.data && uploadResponse.data.length > 0) {
-          const newPhoto = uploadResponse.data[0]
+        if (
+          uploadResponse.data &&
+          uploadResponse.data.photos &&
+          uploadResponse.data.photos.length > 0
+        ) {
+          const newPhoto = uploadResponse.data.photos[0]
 
           // 如果原图片有标题，更新新图片的标题
           if (this.photo.title) {
