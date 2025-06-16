@@ -29,7 +29,12 @@
       "title": "Material",
       "description": "Choose interface material effects",
       "advanced": "Advanced Material",
-      "simple": "Simple Material"
+      "simple": "Simple Material",
+      "intensity": {
+        "title": "Material Intensity",
+        "light": "Light",
+        "strong": "Strong"
+      }
     },
     "experimental": {
       "title": "Experimental Features",

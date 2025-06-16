@@ -53,13 +53,14 @@
   --border-width: 0.5px;
 
   /* 毛玻璃效果 */
-  --blur-bg: rgba(255, 255, 255, 0.6);
-  --blur-bg-light: rgba(255, 255, 255, 0.4);
-  --blur-bg-medium: rgba(255, 255, 255, 0.55);
-  --blur-bg-strong: rgba(255, 255, 255, 0.7);
-  --blur-bg-extra-strong: rgba(255, 255, 255, 0.9);
-  --blur-border: rgba(255, 255, 255, 0.15);
-  --blur-border-strong: rgba(255, 255, 255, 0.25);
+  --blur-bg: rgba(255, 255, 255, calc(0.1 + var(--material-intensity) * 0.6));
+  --blur-bg-light: rgba(255, 255, 255, calc(0.05 + var(--material-intensity) * 0.5));
+  --blur-bg-medium: rgba(255, 255, 255, calc(0.08 + var(--material-intensity) * 0.55));
+  --blur-bg-strong: rgba(255, 255, 255, calc(0.15 + var(--material-intensity) * 0.65));
+  --blur-bg-extra-strong: rgba(255, 255, 255, calc(0.2 + var(--material-intensity) * 0.7));
+  --blur-bg-ultra: rgba(255, 255, 255, 0.95);
+  --blur-border: rgba(255, 255, 255, 0.1);
+  --blur-border-strong: rgba(255, 255, 255, 0.15);
   --blur-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
   --blur-shadow-strong: 0 4px 20px rgba(0, 0, 0, 0.08);
 
@@ -121,12 +122,15 @@
   --transition-slow: 0.4s cubic-bezier(0.25, 0.1, 0.25, 1);
   --transition-bounce: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 
+  /* 材质强度控制 */
+  --material-intensity: 0.5; /* 0-1之间的值，控制材质强度 */
+
   /* 背景模糊强度 */
-  --blur-light: blur(8px) saturate(1.2);
-  --blur-medium: blur(12px) saturate(1.5);
-  --blur-strong: blur(20px) saturate(1.8);
-  --blur-extra-strong: blur(30px) saturate(2);
-  --blur-ultra-strong: blur(40px) saturate(2.2);
+  --blur-light: blur(calc(4px + var(--material-intensity) * 25px)) saturate(calc(1.0 + var(--material-intensity) * 1.5));
+  --blur-medium: blur(calc(6px + var(--material-intensity) * 35px)) saturate(calc(1.2 + var(--material-intensity) * 1.8));
+  --blur-strong: blur(calc(10px + var(--material-intensity) * 50px)) saturate(calc(1.4 + var(--material-intensity) * 2.1));
+  --blur-extra-strong: blur(calc(15px + var(--material-intensity) * 65px)) saturate(calc(1.6 + var(--material-intensity) * 2.4));
+  --blur-ultra-strong: blur(calc(20px + var(--material-intensity) * 80px)) saturate(calc(1.8 + var(--material-intensity) * 2.7));
 
   /* 容器宽度 */
   --container-sm: 640px;
@@ -160,11 +164,12 @@
   --border-color-hover: rgba(235, 235, 245, 0.2);
 
   /* 毛玻璃效果 */
-  --blur-bg: rgba(29, 29, 32, 0.7);
-  --blur-bg-light: rgba(29, 29, 32, 0.5);
-  --blur-bg-medium: rgba(29, 29, 32, 0.65);
-  --blur-bg-strong: rgba(29, 29, 32, 0.75);
-  --blur-bg-extra-strong: rgba(29, 29, 32, 0.8);
+  --blur-bg: rgba(29, 29, 32, calc(0.15 + var(--material-intensity) * 0.7));
+  --blur-bg-light: rgba(29, 29, 32, calc(0.1 + var(--material-intensity) * 0.6));
+  --blur-bg-medium: rgba(29, 29, 32, calc(0.12 + var(--material-intensity) * 0.65));
+  --blur-bg-strong: rgba(29, 29, 32, calc(0.18 + var(--material-intensity) * 0.72));
+  --blur-bg-extra-strong: rgba(29, 29, 32, calc(0.22 + var(--material-intensity) * 0.75));
+  --blur-bg-ultra: rgba(29, 29, 32, 0.97);
   --blur-border: rgba(255, 255, 255, 0.1);
   --blur-border-strong: rgba(255, 255, 255, 0.15);
   --blur-shadow: 0 2px 12px rgba(29, 29, 32, 0.3);
@@ -185,6 +190,7 @@
   --blur-bg-medium: var(--bg-primary);
   --blur-bg-strong: var(--bg-primary);
   --blur-bg-extra-strong: var(--bg-primary);
+  --blur-bg-ultra: var(--bg-primary);
   --blur-border: var(--border-color);
   --blur-border-strong: var(--border-color);
   --blur-shadow: var(--shadow-medium);
@@ -206,6 +212,7 @@
   --blur-bg-medium: var(--bg-primary);
   --blur-bg-strong: var(--bg-primary);
   --blur-bg-extra-strong: var(--bg-primary);
+  --blur-bg-ultra: var(--bg-primary);
   --blur-border: var(--border-color);
   --blur-border-strong: var(--border-color);
   --blur-shadow: var(--shadow-medium);

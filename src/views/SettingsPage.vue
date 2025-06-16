@@ -121,6 +121,32 @@
               <span class="option-label">{{ $t(material.label) }}</span>
             </button>
           </div>
+
+          <!-- 材质强度滑块 - 仅在高级材质开启时显示 -->
+          <div v-if="advancedMaterial" class="material-intensity-section">
+            <div class="intensity-header">
+              <div class="intensity-label">
+                <i class="fas fa-sliders-h"></i>
+                <span>{{ $t('settings.material.intensity.title') }}</span>
+              </div>
+              <div class="intensity-value">{{ Math.round(materialIntensity * 100) }}%</div>
+            </div>
+            <div class="intensity-slider-container">
+              <input
+                type="range"
+                min="0"
+                max="1"
+                step="0.01"
+                v-model.number="materialIntensity"
+                @input="handleMaterialIntensityChange"
+                class="intensity-slider"
+              />
+              <div class="intensity-markers">
+                <span class="marker-label">{{ $t('settings.material.intensity.light') }}</span>
+                <span class="marker-label">{{ $t('settings.material.intensity.strong') }}</span>
+              </div>
+            </div>
+          </div>
         </div>
 
         <!-- Language Settings -->
@@ -238,6 +264,7 @@ export default {
       selectedTheme: 'system',
       selectedLanguage: '',
       advancedMaterial: true,
+      materialIntensity: 0.5, // 材质强度，0-1之间
       photoEditEnabled: false,
       showPhotoEditConsent: false,
       themes: [
@@ -268,6 +295,11 @@ export default {
     const themeStore = useThemeStore()
     this.selectedTheme = themeStore.theme
     this.advancedMaterial = themeStore.advancedMaterial
+
+    // 获取材质强度设置
+    const savedMaterialIntensity = localStorage.getItem('materialIntensity')
+    this.materialIntensity = savedMaterialIntensity ? parseFloat(savedMaterialIntensity) : 0.5
+    this.updateMaterialIntensity()
 
     // 获取当前语言设置
     const savedLocale = localStorage.getItem('locale')
@@ -305,6 +337,20 @@ export default {
       this.advancedMaterial = materialValue
       const themeStore = useThemeStore()
       themeStore.setAdvancedMaterial(materialValue)
+    },
+
+    handleMaterialIntensityChange() {
+      this.updateMaterialIntensity()
+      // 保存到本地存储
+      localStorage.setItem('materialIntensity', this.materialIntensity.toString())
+    },
+
+    updateMaterialIntensity() {
+      // 更新CSS变量
+      document.documentElement.style.setProperty(
+        '--material-intensity',
+        this.materialIntensity.toString()
+      )
     },
 
     handlePhotoEditToggle() {
@@ -717,6 +763,128 @@ h2 {
   padding: var(--spacing-lg) var(--spacing-xl) var(--spacing-xl);
 }
 
+/* Material Intensity Section */
+.material-intensity-section {
+  padding: var(--spacing-lg) var(--spacing-xl) var(--spacing-xl);
+  border-top: 1px solid var(--border-color);
+  margin-top: var(--spacing-lg);
+}
+
+.intensity-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-lg);
+}
+
+.intensity-label {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+}
+
+.intensity-label i {
+  color: var(--color-primary);
+  font-size: var(--font-size-sm);
+}
+
+.intensity-value {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-primary);
+  background: var(--color-primary-subtle);
+  padding: var(--spacing-2xs) var(--spacing-sm);
+  border-radius: var(--radius-small);
+  min-width: 48px;
+  text-align: center;
+}
+
+.intensity-slider-container {
+  position: relative;
+}
+
+.intensity-slider {
+  width: 100%;
+  height: 6px;
+  border-radius: 3px;
+  background: var(--bg-tertiary);
+  outline: none;
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+  margin: var(--spacing-sm) 0;
+}
+
+.intensity-slider::-webkit-slider-thumb {
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.3);
+  transition: var(--transition-base);
+}
+
+.intensity-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.1);
+  box-shadow: 0 4px 12px rgba(var(--color-primary-rgb), 0.4);
+}
+
+.intensity-slider::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+  cursor: pointer;
+  border: none;
+  box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.3);
+  transition: var(--transition-base);
+}
+
+.intensity-slider::-moz-range-thumb:hover {
+  transform: scale(1.1);
+  box-shadow: 0 4px 12px rgba(var(--color-primary-rgb), 0.4);
+}
+
+.intensity-slider::-webkit-slider-track {
+  height: 6px;
+  border-radius: 3px;
+  background: linear-gradient(
+    to right,
+    var(--bg-tertiary) 0%,
+    var(--color-primary-subtle) 50%,
+    var(--color-primary) 100%
+  );
+}
+
+.intensity-slider::-moz-range-track {
+  height: 6px;
+  border-radius: 3px;
+  background: linear-gradient(
+    to right,
+    var(--bg-tertiary) 0%,
+    var(--color-primary-subtle) 50%,
+    var(--color-primary) 100%
+  );
+  border: none;
+}
+
+.intensity-markers {
+  display: flex;
+  justify-content: space-between;
+  margin-top: var(--spacing-xs);
+}
+
+.marker-label {
+  font-size: var(--font-size-xs);
+  color: var(--text-tertiary);
+  font-weight: var(--font-weight-medium);
+}
+
 .feature-item {
   display: flex;
   align-items: center;
@@ -1046,6 +1214,20 @@ input:focus + .toggle-slider {
     padding: var(--spacing-md) var(--spacing-lg) var(--spacing-lg);
   }
 
+  .material-intensity-section {
+    padding: var(--spacing-md) var(--spacing-lg) var(--spacing-lg);
+  }
+
+  .intensity-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-sm);
+  }
+
+  .intensity-value {
+    align-self: flex-end;
+  }
+
   .feature-item {
     flex-direction: column;
     align-items: flex-start;
@@ -1073,6 +1255,10 @@ input:focus + .toggle-slider {
   .left-column,
   .right-column {
     gap: var(--spacing-md);
+  }
+
+  .material-intensity-section {
+    padding: var(--spacing-sm) var(--spacing-md) var(--spacing-md);
   }
 
   .brand-logo {

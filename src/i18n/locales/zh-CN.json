@@ -29,7 +29,12 @@
       "title": "材质",
       "description": "选择界面材质效果",
       "advanced": "高级材质",
-      "simple": "朴素材质"
+      "simple": "朴素材质",
+      "intensity": {
+        "title": "材质强度",
+        "light": "轻",
+        "strong": "强"
+      }
     },
     "experimental": {
       "title": "测试功能",

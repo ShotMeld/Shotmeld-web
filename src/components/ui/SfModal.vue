@@ -102,8 +102,9 @@ export default {
   right: 0;
   bottom: 0;
   left: 0;
-  background-color: rgba(0, 0, 0, 0.45);
-  backdrop-filter: blur(4px);
+  background-color: rgba(0, 0, 0, 0.15);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -111,30 +112,13 @@ export default {
   padding: var(--spacing-md);
 }
 
-.sf-modal-backdrop {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(5px);
-  -webkit-backdrop-filter: blur(5px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-  padding: var(--spacing-lg);
-}
-
 .sf-modal {
-  background: var(--blur-bg-extra-strong);
-  backdrop-filter: var(--blur-strong);
-  -webkit-backdrop-filter: var(--blur-strong);
-  outline: 1px solid var(--blur-border);
-
+  background: var(--blur-bg-ultra);
+  backdrop-filter: var(--blur-extra-strong);
+  -webkit-backdrop-filter: var(--blur-extra-strong);
+  outline: 1px solid var(--blur-border-strong);
   border-radius: var(--radius-large);
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--blur-shadow-strong);
   position: relative;
   width: 100%;
   max-width: 600px;
@@ -209,7 +193,7 @@ export default {
 }
 
 .sf-modal-close:hover {
-  background-color: var(--bg-secondary);
+  background-color: var(--blur-bg-light);
   color: var(--text-primary);
 }
 

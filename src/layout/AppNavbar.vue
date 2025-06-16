@@ -562,11 +562,10 @@ export default {
 }
 
 .user-dropdown {
-  background: var(--blur-bg-extra-strong);
+  background: var(--blur-bg-ultra);
   backdrop-filter: var(--blur-extra-strong);
   -webkit-backdrop-filter: var(--blur-extra-strong);
   border: 1px solid var(--blur-border);
-
   position: absolute;
   right: 0;
   top: calc(100% + 12px);
@@ -581,20 +580,6 @@ export default {
   transition: all 0.25s cubic-bezier(0.23, 1, 0.32, 1);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-}
-
-.user-dropdown:before {
-  content: '';
-  position: absolute;
-  top: -6px;
-  right: 12px;
-  width: 12px;
-  height: 12px;
-  background-color: var(--bg-primary);
-  transform: rotate(45deg);
-  border-radius: 3px;
-  box-shadow: -2px -2px 5px rgba(0, 0, 0, 0.03);
-  z-index: -1;
 }
 
 /* 移动端适配 */
