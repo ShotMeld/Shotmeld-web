@@ -6,11 +6,62 @@ on:
       - main
 
 jobs:
-  deploy:
+  build:
+    name: Build Application
     runs-on: ubuntu-latest
 
     steps:
-      - name: Execute Deployment Script on Server
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22.15.0'
+          cache: 'yarn'
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Build application
+        run: yarn build
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/
+          retention-days: 1
+
+  deploy:
+    name: Deploy to Server
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist/
+
+      - name: Create deployment archive
+        run: |
+          cd dist
+          tar -czf ../dist.tar.gz .
+          cd ..
+
+      - name: Deploy to server
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: 22
+          source: "dist.tar.gz"
+          target: "/tmp/"
+
+      - name: Extract and deploy files
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.SERVER_IP }}
@@ -18,37 +69,43 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 22
           script: |
-            export NVM_DIR="$HOME/.nvm"
-            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-            [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
-            nvm use v22.15.0 || { echo "Failed to switch node version"; exit 1; }
-
-            SERVER_PROJECT_PATH="/root/projects/Shotmeld-web"
             NGINX_WEB_ROOT="/var/www/shotmeld-web"
+            BACKUP_DIR="/tmp/shotmeld-web-backup-$(date +%Y%m%d_%H%M%S)"
 
-            echo "Navigating to project directory on server..."
-            cd $SERVER_PROJECT_PATH || { echo "Failed to change directory: $SERVER_PROJECT_PATH"; exit 1; }
+            echo "Creating backup of current deployment..."
+            if [ -d "$NGINX_WEB_ROOT" ]; then
+              sudo cp -rp $NGINX_WEB_ROOT $BACKUP_DIR || { echo "Failed to create backup"; exit 1; }
+              echo "Backup created at: $BACKUP_DIR"
+            fi
 
-            echo "Pulling latest code from Git..."
-            git fetch origin main || { echo "Failed to fetch latest code"; exit 1; }
-            git reset --hard origin/main || { echo "Failed to reset to latest code"; exit 1; }
-
-            echo "Installing dependencies on server..."
-            yarn install --force || { echo "Failed to install dependencies"; exit 1; }
-
-            echo "Building project on server..."
-            yarn build || { echo "Failed to build project"; exit 1; }
-
-            echo "Deploying built files to Nginx web root..."
+            echo "Preparing deployment directory..."
             sudo mkdir -p $NGINX_WEB_ROOT
-            sudo chown www-data:www-data $NGINX_WEB_ROOT || { echo "Failed to set initial ownership for web root"; exit 1; }
-            sudo chmod 755 $NGINX_WEB_ROOT || { echo "Failed to set initial permissions for web root"; exit 1; }
+            sudo rm -rf $NGINX_WEB_ROOT/* || { echo "Failed to clean deployment directory"; exit 1; }
 
-            sudo cp -rp ./dist/* $NGINX_WEB_ROOT/ || { echo "Failed to copy files from ./dist to $NGINX_WEB_ROOT"; exit 1; }
+            echo "Extracting new build files..."
+            cd /tmp
+            tar -xzf dist.tar.gz -C $NGINX_WEB_ROOT || { echo "Failed to extract build files"; exit 1; }
 
-            sudo chown -R www-data:www-data $NGINX_WEB_ROOT || { echo "Failed to set ownership for copied files"; exit 1; }
-            sudo chmod -R 755 $NGINX_WEB_ROOT || { echo "Failed to set permissions for copied files"; exit 1; }
+            echo "Setting proper permissions..."
+            sudo chown -R www-data:www-data $NGINX_WEB_ROOT || { echo "Failed to set ownership"; exit 1; }
+            sudo chmod -R 755 $NGINX_WEB_ROOT || { echo "Failed to set permissions"; exit 1; }
 
-            echo "Reloading Nginx to serve new files..."
-            sudo systemctl reload nginx || { echo "Failed to reload Nginx"; exit 1; }
-            echo "Deployment complete."
+            echo "Cleaning up temporary files..."
+            rm -f /tmp/dist.tar.gz
+
+            echo "Reloading Nginx..."
+            sudo systemctl reload nginx || { 
+              echo "Failed to reload Nginx, rolling back..."; 
+              if [ -d "$BACKUP_DIR" ]; then
+                sudo rm -rf $NGINX_WEB_ROOT/*
+                sudo cp -rp $BACKUP_DIR/* $NGINX_WEB_ROOT/
+                sudo chown -R www-data:www-data $NGINX_WEB_ROOT
+                sudo systemctl reload nginx
+                echo "Rollback completed"
+              fi
+              exit 1; 
+            }
+
+            echo "Deployment completed successfully!"
+            echo "Cleaning up old backups (keeping last 5)..."
+            sudo find /tmp -name "shotmeld-web-backup-*" -type d -mtime +7 -exec rm -rf {} + 2>/dev/null || true
