@@ -6,13 +6,71 @@ import AutoImport from 'unplugin-auto-import/vite'
 import Components from 'unplugin-vue-components/vite'
 import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
 import { VitePWA } from 'vite-plugin-pwa'
+import fs from 'fs'
+import { execSync } from 'child_process'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
+// 生成版本信息的插件
+function generateVersionInfo() {
+  return {
+    name: 'generate-version-info',
+    buildStart() {
+      const now = new Date()
+      const buildDate = now.toISOString()
+
+      // 生成版本号：年.月.日.构建时间（小时分钟）
+      const year = now.getFullYear()
+      const month = String(now.getMonth() + 1).padStart(2, '0')
+      const day = String(now.getDate()).padStart(2, '0')
+      const hour = String(now.getHours()).padStart(2, '0')
+      const minute = String(now.getMinutes()).padStart(2, '0')
+
+      const version = `${year}.${month}.${day}.${hour}${minute}`
+
+      // 尝试获取Git信息（如果可用）
+      let gitHash = ''
+      let gitDate = ''
+      try {
+        gitHash = execSync('git rev-parse --short HEAD', { encoding: 'utf8' }).trim()
+        gitDate = execSync('git log -1 --format=%ci', { encoding: 'utf8' }).trim()
+      } catch (error) {
+        console.warn('Git information not available:', error.message)
+      }
+
+      // 读取 package.json 获取基础版本
+      let packageVersion = '1.0.0'
+      try {
+        const packageJsonPath = path.resolve(__dirname, 'package.json')
+        const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'))
+        packageVersion = packageJson.version
+      } catch (error) {
+        console.warn('Failed to read package.json version:', error.message)
+      }
+
+      const versionInfo = {
+        version,
+        buildDate,
+        buildTimestamp: now.getTime(),
+        packageVersion,
+        ...(gitHash && { gitHash }),
+        ...(gitDate && { gitDate }),
+      }
+
+      // 写入版本信息文件
+      const versionFilePath = path.resolve(__dirname, 'public/version.json')
+      fs.writeFileSync(versionFilePath, JSON.stringify(versionInfo, null, 2))
+
+      console.log(`Version info generated: ${version} (package: ${packageVersion})`)
+    },
+  }
+}
+
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [
+    generateVersionInfo(),
     vue(),
     AutoImport({
       resolvers: [ElementPlusResolver()],

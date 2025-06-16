@@ -7,7 +7,7 @@
     "title": "Settings",
     "subtitle": "Customize your ShotMeld experience",
     "version": "Version",
-    "lastUpdate": "Last Update",
+    "gitCommit": "Git Commit",
     "versionInfo": {
       "title": "Version Information",
       "description": "View current application version and update details"

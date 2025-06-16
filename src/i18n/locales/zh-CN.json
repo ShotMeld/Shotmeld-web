@@ -7,7 +7,7 @@
     "title": "设置",
     "subtitle": "自定义您的 ShotMeld 体验",
     "version": "版本",
-    "lastUpdate": "更新时间",
+    "gitCommit": "Git 提交",
     "versionInfo": {
       "title": "版本信息",
       "description": "查看当前应用的版本和更新信息"

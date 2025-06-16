@@ -28,7 +28,7 @@
 
         <!-- Version Info Section -->
         <div
-          v-if="versionInfo.version || versionInfo.updateDate"
+          v-if="versionInfo.version || versionInfo.gitHash"
           class="settings-section version-section"
         >
           <div class="section-header">
@@ -52,13 +52,13 @@
               </div>
             </div>
 
-            <div v-if="versionInfo.updateDate" class="version-item">
+            <div v-if="versionInfo.gitHash" class="version-item">
               <div class="version-icon">
-                <i class="fas fa-clock"></i>
+                <i class="fab fa-git-alt"></i>
               </div>
               <div class="version-info">
-                <span class="version-label">{{ $t('settings.lastUpdate') }}</span>
-                <span class="version-value">{{ formatDate(versionInfo.updateDate) }}</span>
+                <span class="version-label">{{ $t('settings.gitCommit') }}</span>
+                <span class="version-value">{{ versionInfo.gitHash }}</span>
               </div>
             </div>
           </div>
@@ -282,7 +282,8 @@ export default {
       ],
       versionInfo: {
         version: '',
-        updateDate: '',
+        gitHash: '',
+        gitDate: '',
       },
     }
   },
@@ -399,19 +400,17 @@ export default {
 
     async fetchVersionInfo() {
       try {
-        const response = await fetch(
-          'https://api.github.com/repos/ShotMeld/Shotmeld-web/commits?per_page=1'
-        )
+        const response = await fetch('/version.json')
         if (response.ok) {
-          const commits = await response.json()
-          if (commits && commits.length > 0) {
-            const latestCommit = commits[0]
-            this.versionInfo.version = latestCommit.sha.substring(0, 7) // 取前7位作为版本号
-            this.versionInfo.updateDate = latestCommit.commit.author.date
+          const versionData = await response.json()
+          this.versionInfo = {
+            version: versionData.version,
+            gitHash: versionData.gitHash || '',
+            gitDate: versionData.gitDate || '',
           }
         }
       } catch (error) {
-        console.warn('Failed to fetch version info from GitHub:', error)
+        console.warn('Failed to fetch version info:', error)
         // 静默失败，不显示版本信息
       }
     },
@@ -1010,13 +1009,13 @@ input:focus + .toggle-slider {
 }
 
 /* Special version icon styles */
-.version-card:first-child .option-icon {
+.version-item:nth-child(1) .version-icon {
   background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
   color: white;
 }
 
-.version-card:last-child .option-icon {
-  background: linear-gradient(135deg, var(--color-success) 0%, #10b981 100%);
+.version-item:nth-child(2) .version-icon {
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
   color: white;
 }
 
