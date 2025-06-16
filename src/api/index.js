@@ -1,5 +1,7 @@
+/* global navigator */
 import axios from 'axios'
 import { API_BASE_URL, API_ENDPOINTS } from './config'
+import { offlineManager } from '../utils/offlineManager'
 
 // 创建axios实例
 const apiClient = axios.create({
@@ -32,17 +34,72 @@ apiClient.interceptors.response.use(
   response => {
     return response
   },
-  error => {
+  async error => {
+    // 如果是网络错误且处于离线状态，尝试从缓存获取数据
+    if (!navigator.onLine && error.code === 'ERR_NETWORK') {
+      const url = error.config.url
+      const method = error.config.method.toLowerCase()
+
+      // 只对 GET 请求尝试缓存回退
+      if (method === 'get') {
+        try {
+          let cachedData = null
+
+          if (url.includes('/photos')) {
+            cachedData = await offlineManager.getCachedPhotos()
+          } else if (url.includes('/albums')) {
+            cachedData = await offlineManager.getCachedAlbums()
+          }
+
+          if (cachedData && cachedData.length > 0) {
+            // 返回模拟的响应对象
+            return {
+              data: {
+                data: cachedData,
+                total: cachedData.length,
+                cached: true,
+                message: '正在使用缓存数据',
+              },
+              status: 200,
+              statusText: 'OK (Cached)',
+              config: error.config,
+            }
+          }
+        } catch (cacheError) {
+          console.error('Failed to get cached data:', cacheError)
+        }
+      }
+
+      // 如果是非 GET 请求且离线，存储操作以供后续同步
+      if (method !== 'get') {
+        await offlineManager.storeOfflineAction({
+          url: url,
+          method: method,
+          data: error.config.data,
+          params: error.config.params,
+        })
+
+        // 返回一个成功的响应，告知用户操作已排队
+        return {
+          data: {
+            message: '操作已保存，将在网络恢复后同步',
+            queued: true,
+          },
+          status: 202,
+          statusText: 'Queued for sync',
+          config: error.config,
+        }
+      }
+    }
+
     // 如果是401错误（未授权），可能是token过期
     if (error.response && error.response.status === 401) {
       // 清除本地存储的认证信息
       localStorage.removeItem('token')
       localStorage.removeItem('user')
 
-      // 跳转到登录页面
-      if (window.location.pathname !== '/login') {
-        window.location.href = '/login'
-      }
+      // 可以在这里添加重定向到登录页面的逻辑
+      // window.location.href = '/login'
     }
 
     return Promise.reject(error)
@@ -69,8 +126,15 @@ export const authService = {
 
 export const photoService = {
   // 获取照片列表（支持分页、排序和多种过滤条件）
-  getPhotos(params = {}) {
-    return apiClient.get(API_ENDPOINTS.PHOTOS.BASE, { params })
+  async getPhotos(params = {}) {
+    const response = await apiClient.get(API_ENDPOINTS.PHOTOS.BASE, { params })
+
+    // 如果请求成功且返回了数据，缓存到 IndexedDB
+    if (response.data && response.data.data) {
+      await offlineManager.cachePhotos(response.data.data)
+    }
+
+    return response
   },
 
   // 获取单张照片
@@ -213,8 +277,15 @@ export const tagService = {
 
 export const albumService = {
   // 获取相册列表（支持分页和排序）
-  getAlbums(params = {}) {
-    return apiClient.get(API_ENDPOINTS.ALBUMS.BASE, { params })
+  async getAlbums(params = {}) {
+    const response = await apiClient.get(API_ENDPOINTS.ALBUMS.BASE, { params })
+
+    // 如果请求成功且返回了数据，缓存到 IndexedDB
+    if (response.data && response.data.data) {
+      await offlineManager.cacheAlbums(response.data.data)
+    }
+
+    return response
   },
 
   // 获取单个相册

@@ -9,6 +9,7 @@ import { configureNotification } from './utils/notification'
 import i18n from './i18n'
 import ElementPlus from 'element-plus'
 import 'element-plus/dist/index.css'
+import { initPWA } from './utils/offlineManager'
 
 // 创建Vue应用实例
 const app = createApp(App)
@@ -46,5 +47,8 @@ themeStore.initTheme()
 
 // 修改网站标题
 document.title = 'ShotMeld - 照片管理系统'
+
+// 初始化 PWA 功能
+initPWA()
 
 app.mount('#app')

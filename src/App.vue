@@ -8,16 +8,21 @@
         <component :is="Component" :key="route.path" />
       </transition>
     </router-view>
+
+    <!-- 离线状态指示器 -->
+    <OfflineIndicator />
   </div>
 </template>
 
 <script>
 import GlobalBackground from './layout/GlobalBackground.vue'
+import OfflineIndicator from './components/OfflineIndicator.vue'
 
 export default {
   name: 'App',
   components: {
     GlobalBackground,
+    OfflineIndicator,
   },
   data() {
     return {
