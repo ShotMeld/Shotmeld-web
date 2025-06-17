@@ -368,7 +368,6 @@ export default {
 .selector-footer {
   border-top: var(--border-width) solid var(--border-color);
   padding: var(--spacing-lg);
-  background: var(--bg-primary);
   flex-shrink: 0;
 }
 
