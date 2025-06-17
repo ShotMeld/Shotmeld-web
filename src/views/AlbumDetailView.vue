@@ -7,12 +7,8 @@
     <!-- 相册封面头部区域 -->
     <div class="album-header" :class="{ 'album-header--empty': !coverPhoto }">
       <div class="album-header__background">
-        <div
-          v-if="coverPhoto"
-          class="album-header__cover"
-          :style="{ backgroundImage: `url(${coverPhoto.url || coverPhoto.thumbnailUrl})` }"
-        ></div>
-        <div v-else class="album-header__placeholder"></div>
+        <div v-if="coverPhoto" class="album-header__cover" :style="headerCoverStyle"></div>
+        <div v-else class="album-header__placeholder" :style="headerPlaceholderStyle"></div>
       </div>
 
       <div class="album-header__content">
@@ -169,6 +165,9 @@ export default {
       selectedPhotos: [],
       showDeleteSelectedModal: false,
       showRemoveFromAlbumModal: false,
+      // 滚动相关的状态
+      scrollY: 0,
+      headerHeight: 0,
     }
   },
   computed: {
@@ -176,6 +175,34 @@ export default {
       return {
         'album-detail-container': true,
         'with-toolbar-space': this.isManageMode,
+      }
+    },
+    // 计算滚动进度（0-1）
+    scrollProgress() {
+      if (!this.headerHeight) return 0
+      return Math.min(this.scrollY / this.headerHeight, 1)
+    },
+    // 计算背景图透明度
+    backgroundOpacity() {
+      // 初始透明度0.8，滚动时逐渐增加到1
+      return Math.min(0.8 + this.scrollProgress * 0.2, 1)
+    },
+    // 计算毛玻璃效果强度
+    blurIntensity() {
+      // 初始模糊0.5px，滚动时逐渐增加到8px
+      return 0.5 + this.scrollProgress * 7.5
+    },
+    // 动态样式对象
+    headerCoverStyle() {
+      if (!this.coverPhoto) return {}
+      return {
+        backgroundImage: `url(${this.coverPhoto.url || this.coverPhoto.thumbnailUrl})`,
+        filter: `blur(${this.blurIntensity}px)`,
+      }
+    },
+    headerPlaceholderStyle() {
+      return {
+        opacity: this.backgroundOpacity,
       }
     },
   },
@@ -192,10 +219,28 @@ export default {
       this.toggleManageMode()
     })
   },
+  mounted() {
+    // 添加滚动监听
+    this.handleScroll = this.throttle(this.onScroll, 16) // 约60fps
+    window.addEventListener('scroll', this.handleScroll)
+
+    // 获取头部高度
+    this.$nextTick(() => {
+      const headerEl = this.$el.querySelector('.album-header')
+      if (headerEl) {
+        this.headerHeight = headerEl.offsetHeight
+      }
+    })
+  },
   beforeUnmount() {
     // 清理事件监听
     eventBus.off('show-upload-modal')
     eventBus.off('toggle-manage')
+
+    // 移除滚动监听
+    if (this.handleScroll) {
+      window.removeEventListener('scroll', this.handleScroll)
+    }
   },
   methods: {
     formatDate(date) {
@@ -412,6 +457,25 @@ export default {
       this.showPhotoDetail = false
       this.getAlbumPhotos()
     },
+
+    // 滚动相关方法
+    onScroll() {
+      this.scrollY = window.pageYOffset || document.documentElement.scrollTop
+    },
+
+    // 节流函数
+    throttle(func, limit) {
+      let inThrottle
+      return function () {
+        const args = arguments
+        const context = this
+        if (!inThrottle) {
+          func.apply(context, args)
+          inThrottle = true
+          setTimeout(() => (inThrottle = false), limit)
+        }
+      }
+    },
   },
 }
 </script>
@@ -443,12 +507,14 @@ export default {
 }
 
 .album-header__background {
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   right: 0;
-  bottom: 0;
-  z-index: 1;
+  height: 70vh;
+  min-height: 500px;
+  max-height: 700px;
+  z-index: -1;
   mask: linear-gradient(
     to bottom,
     rgba(0, 0, 0, 1) 0%,
@@ -478,8 +544,8 @@ export default {
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  filter: blur(0.5px);
   transform: scale(1.05);
+  transition: filter 0.1s ease-out;
 }
 
 .album-header__placeholder {
@@ -494,12 +560,12 @@ export default {
     var(--primary-dark) 50%,
     var(--secondary) 100%
   );
-  opacity: 0.8;
+  transition: opacity 0.1s ease-out;
 }
 
 .album-header__content {
   position: relative;
-  z-index: 2;
+  z-index: 10;
   height: 100%;
   display: flex;
   align-items: flex-end;
@@ -589,6 +655,12 @@ export default {
     margin-top: 0;
   }
 
+  .album-header__background {
+    height: 60vh;
+    min-height: 400px;
+    max-height: 500px;
+  }
+
   .album-header__content {
     padding: var(--spacing-2xl) var(--spacing-lg) var(--spacing-xl);
   }
@@ -623,6 +695,11 @@ export default {
     max-height: 200px;
     transform: none;
     margin-top: 0;
+  }
+
+  .album-header__background {
+    height: 55vh;
+    min-height: 350px;
   }
 
   .album-header__content {
