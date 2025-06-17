@@ -9,8 +9,8 @@
       ref="photoSelector"
       :albumId="albumId"
       :existingPhotoIds="[]"
-      :isAlbumMode="true"
-      :singleSelect="true"
+      isAlbumMode
+      singleSelect
       @update:selectedPhotos="handlePhotoSelection"
     />
 
@@ -92,7 +92,6 @@ export default {
 .album-photo-selector {
   display: flex;
   flex-direction: column;
-  height: 600px;
 }
 
 .selector-actions {

@@ -81,30 +81,17 @@ export default {
   align-items: center;
   margin: var(--spacing-2xl) 0;
   padding: var(--spacing-lg) var(--spacing-xl);
-  background: rgba(248, 248, 248, 0.7);
+  background: var(--blur-bg-strong);
   border-radius: var(--radius-extra-large);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  box-shadow:
-    0 4px 24px rgba(0, 0, 0, 0.04),
-    0 1px 2px rgba(0, 0, 0, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.8);
+  backdrop-filter: var(--blur-strong);
+  -webkit-backdrop-filter: var(--blur-strong);
+  box-shadow: var(--blur-shadow-strong);
+  border: 1px solid var(--blur-border);
   position: relative;
   overflow: hidden;
   width: 100%;
   max-width: 100%;
   box-sizing: border-box;
-}
-
-.pagination-container::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
-  pointer-events: none;
 }
 
 :deep(.el-pagination) {
@@ -147,11 +134,11 @@ export default {
   font-weight: var(--font-weight-medium);
   font-size: var(--font-size-sm);
   transition: all var(--transition-fast);
-  background-color: rgba(255, 255, 255, 0.4);
+  background-color: var(--blur-bg);
   color: var(--text-primary);
-  border: 1px solid rgba(0, 0, 0, 0.06);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid var(--border-color);
+  backdrop-filter: var(--blur-light);
+  -webkit-backdrop-filter: var(--blur-light);
   margin: 0 1px;
 }
 
@@ -164,27 +151,27 @@ export default {
 
 :deep(.el-pagination .el-pager li:hover) {
   color: var(--color-primary);
-  background-color: rgba(255, 255, 255, 0.8);
-  border-color: rgba(0, 122, 255, 0.2);
-  box-shadow: 0 2px 8px rgba(0, 122, 255, 0.15);
+  background-color: var(--blur-bg-strong);
+  border-color: var(--color-primary-subtle);
+  box-shadow: var(--shadow-medium);
 }
 
 :deep(.el-pagination .el-pager li.is-active) {
-  background: rgba(0, 122, 255, 0.1);
+  background: var(--color-primary-subtle);
   color: var(--color-primary);
   border-color: var(--color-primary);
-  box-shadow: 0 4px 16px rgba(0, 122, 255, 0.3);
+  box-shadow: var(--shadow-large);
 }
 
 /* 前进后退按钮 */
 :deep(.el-pagination .btn-prev),
 :deep(.el-pagination .btn-next) {
-  background-color: rgba(255, 255, 255, 0.4);
+  background-color: var(--blur-bg);
   color: var(--text-primary);
   border-radius: var(--radius-medium);
-  border: 1px solid rgba(0, 0, 0, 0.06);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid var(--border-color);
+  backdrop-filter: var(--blur-light);
+  -webkit-backdrop-filter: var(--blur-light);
   width: 36px;
   height: 36px;
   transition: all var(--transition-fast);
@@ -200,17 +187,17 @@ export default {
 :deep(.el-pagination .btn-prev:hover),
 :deep(.el-pagination .btn-next:hover) {
   color: var(--color-primary);
-  background-color: rgba(255, 255, 255, 0.8);
-  border-color: rgba(0, 122, 255, 0.2);
+  background-color: var(--blur-bg-strong);
+  border-color: var(--color-primary-subtle);
   transform: translateY(-1px);
-  box-shadow: 0 2px 8px rgba(0, 122, 255, 0.15);
+  box-shadow: var(--shadow-medium);
 }
 
 :deep(.el-pagination .btn-prev:disabled),
 :deep(.el-pagination .btn-next:disabled) {
   color: var(--text-disabled);
-  background-color: rgba(255, 255, 255, 0.2);
-  border-color: rgba(0, 0, 0, 0.04);
+  background-color: var(--blur-bg-light);
+  border-color: var(--border-color);
   cursor: not-allowed;
   transform: none;
   box-shadow: none;
@@ -264,39 +251,26 @@ export default {
   }
 }
 
-/* 深色模式适配 */
-.theme-dark .pagination-container {
-  background: rgba(28, 28, 30, 0.8);
-  border-color: rgba(84, 84, 88, 0.4);
-  box-shadow:
-    0 4px 24px rgba(0, 0, 0, 0.2),
-    0 1px 2px rgba(0, 0, 0, 0.3);
-}
-
-.theme-dark .pagination-container::before {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
-}
-
 .theme-dark :deep(.el-pagination .el-pager li) {
-  background-color: rgba(44, 44, 46, 0.6);
-  border-color: rgba(84, 84, 88, 0.3);
+  background-color: var(--blur-bg);
+  border-color: var(--border-color);
   color: var(--text-primary);
 }
 
 .theme-dark :deep(.el-pagination .el-pager li:hover) {
-  background-color: rgba(58, 58, 60, 0.8);
-  border-color: rgba(0, 122, 255, 0.4);
+  background-color: var(--blur-bg-strong);
+  border-color: var(--color-primary-subtle);
 }
 
 .theme-dark :deep(.el-pagination .btn-prev),
 .theme-dark :deep(.el-pagination .btn-next) {
-  background-color: rgba(44, 44, 46, 0.6);
-  border-color: rgba(84, 84, 88, 0.3);
+  background-color: var(--blur-bg);
+  border-color: var(--border-color);
 }
 
 .theme-dark :deep(.el-pagination .btn-prev:hover),
 .theme-dark :deep(.el-pagination .btn-next:hover) {
-  background-color: rgba(58, 58, 60, 0.8);
-  border-color: rgba(0, 122, 255, 0.4);
+  background-color: var(--blur-bg-strong);
+  border-color: var(--color-primary-subtle);
 }
 </style>
