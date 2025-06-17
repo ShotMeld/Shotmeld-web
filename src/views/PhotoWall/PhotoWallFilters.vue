@@ -162,18 +162,14 @@ export default {
   methods: {
     async executeSearch() {
       if (!this.localSearchQuery || this.localSearchQuery.trim() === '') {
-        // 通常由 debouncedSearch 中的逻辑处理清空，这里作为保险
-        this.$emit('update:searchResults', {
-          data: [],
-          total: 0,
-          page: 1,
-          limit: 50,
-          totalPages: 0,
-          searchTerm: '',
-        })
-        this.$emit('fetchPhotos') // 确保在清除搜索词时重新加载默认照片列表
+        // 如果搜索词为空，通知父组件更新搜索查询状态，然后获取普通照片列表
+        this.$emit('update:searchQuery', '')
+        this.$emit('fetchPhotos')
         return
       }
+
+      // 通知父组件更新搜索查询状态
+      this.$emit('update:searchQuery', this.localSearchQuery.trim())
 
       try {
         const response = await photoService.searchPhotos({
@@ -197,15 +193,8 @@ export default {
     debouncedSearch() {
       clearTimeout(this.searchTimeout)
       if (!this.localSearchQuery || this.localSearchQuery.trim() === '') {
-        // 当输入框被清空时，清除搜索结果并通知父组件获取所有照片
-        this.$emit('update:searchResults', {
-          data: [],
-          total: 0,
-          page: 1,
-          limit: 50,
-          totalPages: 0,
-          searchTerm: '',
-        })
+        // 当输入框被清空时，通知父组件更新搜索查询状态，然后获取所有照片
+        this.$emit('update:searchQuery', '')
         this.$emit('fetchPhotos')
         return
       }

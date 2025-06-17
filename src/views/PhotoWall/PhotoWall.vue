@@ -455,27 +455,33 @@ export default {
 
     // 新增方法：处理搜索结果更新
     handleSearchResultsUpdate(results) {
-      this.loading = true
-      if (results && results.error) {
-        this.$notify.error({
-          title: this.$t('photoWall.error.searchFailed'),
-          message: results.error,
-        })
-      } else if (results && results.data) {
-        this.photos = results.data
-        this.totalPhotos = results.total || 0
-        // 如果API返回分页信息，也在这里更新
-        if (typeof results.page !== 'undefined') this.pagination.page = results.page
-        // this.pagination.limit 应该由请求时设置，通常搜索结果会尊重请求的limit
-      } else {
-        // 兜底处理，或当搜索清除时（尽管PhotoWallFilters会额外触发fetchPhotos）
-        this.photos = []
-        this.totalPhotos = 0
+      // 停止自动刷新，避免搜索结果被覆盖
+      this.stopAutoRefresh()
+
+      // 只有在真正有搜索结果时才更新照片数据
+      if (results && results.data && results.data.length >= 0) {
+        this.loading = true
+        if (results.error) {
+          this.$notify.error({
+            title: this.$t('photoWall.error.searchFailed'),
+            message: results.error,
+          })
+        } else {
+          this.photos = results.data
+          this.totalPhotos = results.total || 0
+          // 如果API返回分页信息，也在这里更新
+          if (typeof results.page !== 'undefined') this.pagination.page = results.page
+        }
+        this.loading = false
       }
-      this.loading = false
     },
 
     async fetchPhotos() {
+      // 如果当前正在搜索状态，不执行普通的照片获取
+      if (this.searchQuery && this.searchQuery.trim() !== '') {
+        return
+      }
+
       this.loading = true
       try {
         const params = {
