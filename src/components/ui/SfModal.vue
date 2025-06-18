@@ -113,7 +113,7 @@ export default {
 }
 
 .sf-modal {
-  background: var(--blur-bg-ultra);
+  background: var(--bg-primary);
   backdrop-filter: var(--blur-extra-strong);
   -webkit-backdrop-filter: var(--blur-extra-strong);
   outline: 1px solid var(--blur-border-strong);

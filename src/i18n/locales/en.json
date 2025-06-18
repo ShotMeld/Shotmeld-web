@@ -144,8 +144,6 @@
         "deleteFailedTitle": "Delete Failed",
         "deleteFailedMessage": "Unable to delete photo, please try again"
       },
-      "editPhoto": "Edit photo:",
-      "editPhotoComingSoon": "Photo editing feature will be implemented in future versions",
       "uploadSuccess": {
         "title": "Upload Success",
         "message": "Successfully uploaded {count} photos"
@@ -254,8 +252,6 @@
       "deleteFailedTitle": "Delete Failed",
       "deleteFailedMessage": "Unable to delete photo, please try again"
     },
-    "editPhoto": "Edit photo:",
-    "editPhotoComingSoon": "Photo editing feature will be implemented in future versions",
     "uploadSuccess": {
       "title": "Upload Success",
       "message": "Successfully uploaded {count} photos"
