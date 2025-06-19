@@ -604,7 +604,8 @@
       },
       "success": {
         "delete": "Successfully deleted {count} photos",
-        "keep": "Successfully kept {count} photos"
+        "keep": "Successfully kept {count} photos",
+        "smartRecommendations": "Smart recommendations applied"
       },
       "error": {
         "deleteFailed": "Delete failed, please try again",
@@ -616,8 +617,15 @@
       "count": "{count} photos",
       "similarity": "Similarity: {percent}%",
       "actions": {
+        "selectAll": "Select All",
+        "clearSelection": "Clear Selection",
+        "deleteSelected": "Delete Selected",
         "keep": "Keep",
         "delete": "Delete"
+      },
+      "stats": {
+        "photoCount": "{count} photos",
+        "spaceInfo": "Space can be freed"
       }
     },
     "item": {

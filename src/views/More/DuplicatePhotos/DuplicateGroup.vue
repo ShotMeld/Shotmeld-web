@@ -13,7 +13,7 @@
         </div>
         <div class="group-actions">
           <SfButton type="text" size="small" @click="selectAll" :disabled="isAllSelected">
-            全选
+            {{ $t('duplicatePhotos.group.actions.selectAll') }}
           </SfButton>
           <SfButton
             type="text"
@@ -21,7 +21,7 @@
             @click="clearSelection"
             :disabled="selectedCount === 0"
           >
-            清除选择
+            {{ $t('duplicatePhotos.group.actions.clearSelection') }}
           </SfButton>
           <SfButton
             type="danger"
@@ -29,7 +29,7 @@
             @click="deleteSelected"
             :disabled="selectedCount === 0"
           >
-            删除选中 ({{ selectedCount }})
+            {{ $t('duplicatePhotos.group.actions.deleteSelected') }} ({{ selectedCount }})
           </SfButton>
         </div>
       </div>
@@ -47,9 +47,11 @@
 
     <template #footer>
       <div class="group-stats">
-        <span class="photo-count">{{ photos.length }} 张图片</span>
+        <span class="photo-count">
+          {{ $t('duplicatePhotos.group.stats.photoCount', { count: photos.length }) }}
+        </span>
         <span class="space-info">
-          可释放空间:
+          {{ $t('duplicatePhotos.group.stats.spaceInfo') }}:
           <strong>{{ estimatedSpace }}</strong>
         </span>
       </div>

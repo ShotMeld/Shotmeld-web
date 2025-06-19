@@ -192,7 +192,7 @@ export default {
       }
 
       this.$notify({
-        message: '已应用智能推荐',
+        message: this.$t('duplicatePhotos.results.success.smartRecommendations'),
         type: 'success',
       })
     },
@@ -335,7 +335,9 @@ export default {
   justify-content: space-between;
   align-items: center;
   padding: var(--spacing-xl);
-  background: var(--bg-secondary);
+  background: var(--blur-bg-strong);
+  backdrop-filter: var(--blur-strong);
+  -webkit-backdrop-filter: var(--blur-strong);
   border-radius: var(--radius-large);
 }
 

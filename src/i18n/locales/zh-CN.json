@@ -606,7 +606,8 @@
       },
       "success": {
         "delete": "已成功删除 {count} 张照片",
-        "keep": "已成功保留 {count} 张照片"
+        "keep": "已成功保留 {count} 张照片",
+        "smartRecommendations": "已应用智能推荐"
       },
       "error": {
         "deleteFailed": "删除失败，请重试",
@@ -618,8 +619,15 @@
       "count": "{count} 张照片",
       "similarity": "相似度：{percent}%",
       "actions": {
+        "selectAll": "全选",
+        "clearSelection": "清除选择",
+        "deleteSelected": "删除选中",
         "keep": "保留",
         "delete": "删除"
+      },
+      "stats": {
+        "photoCount": "{count} 张图片",
+        "spaceInfo": "可释放空间"
       }
     },
     "item": {
