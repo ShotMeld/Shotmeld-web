@@ -102,6 +102,7 @@
   },
   "photo": {
     "deletedCount": "Deleted {count} photos",
+    "deleteSuccess": "Photo deleted successfully",
     "batchDeleteError": "Batch delete photos failed",
     "deleteError": "Delete photos failed",
     "deleteErrorMessage": "Unable to delete photos, please try again"

@@ -439,23 +439,50 @@ export default {
       // 显示成功提示（ChangeCoverModal 组件内部已经显示了，这里可以不重复显示）
     },
 
-    deletePhoto(deletedPhotoId) {
-      // 单张照片删除后的处理
-      this.photos = this.photos.filter(photo => photo.id !== deletedPhotoId)
-      this.album.photoCount = this.photos.length
+    async deletePhoto(deletedPhotoId) {
+      try {
+        if (!deletedPhotoId) return
+
+        // 调用API删除照片
+        await photoService.deletePhoto(deletedPhotoId)
+
+        this.$notify({
+          title: this.$t('common.success'),
+          message: this.$t('photo.deleteSuccess'),
+          type: 'success',
+        })
+
+        // 从列表中移除已删除的照片
+        this.photos = this.photos.filter(photo => photo.id !== deletedPhotoId)
+        this.album.photoCount = this.photos.length
+
+        // 重新设置封面照片（如果删除的是封面照片）
+        if (this.coverPhoto && this.coverPhoto.id === deletedPhotoId) {
+          this.setCoverPhoto()
+        }
+
+        // 关闭照片详情模态框
+        this.showPhotoDetail = false
+      } catch (error) {
+        console.error('删除照片失败', error)
+        this.$notify.error({
+          title: this.$t('common.operationFailed'),
+          message: error.response?.data?.message || this.$t('photo.deleteError'),
+        })
+      }
     },
 
     handlePhotoUpdated(newPhoto) {
       // 照片编辑完成，更新照片列表并关闭详情页
       this.showPhotoDetail = false
       // 重新获取相册照片以确保数据同步
-      this.getAlbumPhotos()
+      this.fetchAlbumPhotos()
     },
 
     handlePhotoReplaced(photoId) {
       // 照片被编辑器替换，只需关闭详情页和刷新数据，不调用删除API
       this.showPhotoDetail = false
-      this.getAlbumPhotos()
+      this.fetchAlbumPhotos()
     },
 
     // 滚动相关方法

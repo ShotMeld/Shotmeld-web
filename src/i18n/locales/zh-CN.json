@@ -102,6 +102,7 @@
   },
   "photo": {
     "deletedCount": "已删除{count}张照片",
+    "deleteSuccess": "照片删除成功",
     "batchDeleteError": "批量删除照片失败",
     "deleteError": "删除图片失败",
     "deleteErrorMessage": "无法删除照片，请重试"
