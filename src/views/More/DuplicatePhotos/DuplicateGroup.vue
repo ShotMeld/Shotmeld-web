@@ -7,9 +7,6 @@
           <span class="group-count">
             {{ $t('duplicatePhotos.group.count', { count: photos.length }) }}
           </span>
-          <span class="group-similarity">
-            {{ $t('duplicatePhotos.group.similarity', { percent: similarity }) }}
-          </span>
         </div>
         <div class="group-actions">
           <SfButton type="text" size="small" @click="selectAll" :disabled="isAllSelected">
@@ -87,10 +84,6 @@ export default {
       required: true,
     },
     groupIndex: {
-      type: Number,
-      required: true,
-    },
-    similarity: {
       type: Number,
       required: true,
     },
@@ -245,8 +238,7 @@ export default {
   margin-bottom: var(--spacing-2xs);
 }
 
-.group-count,
-.group-similarity {
+.group-count {
   font-size: var(--font-size-md);
   color: var(--text-secondary);
 }
