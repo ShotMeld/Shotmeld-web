@@ -324,46 +324,151 @@ export default {
       this.$router.push('/login')
     },
 
-    // 新增：优化照片布局，确保每排尽可能铺满（使用确定性算法）
+    // 确保每排密铺
     getOptimizedPhotoLayout(photos) {
+      if (!photos || photos.length === 0) return []
+
       const photosWithLayout = photos.map(photo => ({ ...photo }))
       const gridWidth = 6 // 每行6个单位格子
-      let currentRowUsed = 0
 
+      // 为每张照片生成随机权重（基于ID保证一致性）
       photosWithLayout.forEach((photo, index) => {
-        const remainingPhotos = photosWithLayout.length - index
-        const remainingInRow = gridWidth - currentRowUsed
-
-        // 使用确定性算法决定图片尺寸，基于照片ID和索引
-        let shouldUseLarge = false
-
-        // 如果还有足够空间放置2x2图片
-        if (remainingInRow >= 2) {
-          // 使用照片ID的哈希值来确定性地决定是否使用大图
-          const photoHash = this.getSimpleHash(photo.id || index.toString())
-          const threshold = currentRowUsed === 0 ? 0.4 : 0.25 // 行首更倾向于大图
-
-          // 如果剩余照片较多，调整阈值
-          const adjustedThreshold = remainingPhotos > 3 ? threshold * 1.2 : threshold * 0.8
-
-          shouldUseLarge = (photoHash % 100) / 100 < adjustedThreshold
-        }
-
-        if (shouldUseLarge) {
-          photo.gridSize = 'size-2x2'
-          currentRowUsed += 2
-        } else {
-          photo.gridSize = 'size-1x1'
-          currentRowUsed += 1
-        }
-
-        // 如果当前行已满或接近满，换到下一行
-        if (currentRowUsed >= gridWidth) {
-          currentRowUsed = 0
-        }
+        const hash = this.getSimpleHash(photo.id || index.toString())
+        photo.randomWeight = (hash % 1000) / 1000 // 0-1之间的随机值
       })
 
-      return photosWithLayout
+      const result = []
+      let photoIndex = 0
+
+      // 逐行处理照片
+      while (photoIndex < photosWithLayout.length) {
+        const rowPhotos = this.arrangePhotosInRow(
+          photosWithLayout.slice(photoIndex),
+          gridWidth,
+          photoIndex === 0 || photosWithLayout.length - photoIndex > gridWidth
+        )
+
+        result.push(...rowPhotos)
+        photoIndex += rowPhotos.length
+      }
+
+      return result
+    },
+
+    // 安排一行中的照片布局
+    arrangePhotosInRow(availablePhotos, gridWidth, shouldFillCompletely) {
+      if (!availablePhotos || availablePhotos.length === 0) return []
+
+      // 如果只有少量照片且不需要完全填满，直接处理
+      if (!shouldFillCompletely) {
+        return availablePhotos.map(photo => {
+          // 最后一行，更倾向于使用小图避免溢出
+          const shouldUseLarge = photo.randomWeight > 0.7 && availablePhotos.length >= 2
+          photo.gridSize = shouldUseLarge ? 'size-2x2' : 'size-1x1'
+          return photo
+        })
+      }
+
+      // 寻找最佳组合来填满这一行
+      const bestCombination = this.findBestRowCombination(availablePhotos, gridWidth)
+
+      return bestCombination
+    },
+
+    // 寻找最佳行组合（动态规划）
+    findBestRowCombination(photos, targetWidth) {
+      if (!photos || photos.length === 0) return []
+
+      // 对于每个位置，记录[使用的照片数, 总宽度, 布局方案]
+      const dp = Array(photos.length + 1)
+        .fill(null)
+        .map(() => [])
+      dp[0] = [{ count: 0, width: 0, layout: [] }]
+
+      for (let i = 0; i < photos.length; i++) {
+        for (let state of dp[i]) {
+          if (state.width >= targetWidth) continue
+
+          // 尝试放置1x1图片
+          if (state.width + 1 <= targetWidth) {
+            const newLayout = [...state.layout, { ...photos[i], gridSize: 'size-1x1' }]
+            const newState = { count: state.count + 1, width: state.width + 1, layout: newLayout }
+            dp[i + 1].push(newState)
+          }
+
+          // 尝试放置2x2图片（如果空间够且照片权重支持）
+          if (state.width + 2 <= targetWidth && photos[i].randomWeight > 0.3) {
+            const newLayout = [...state.layout, { ...photos[i], gridSize: 'size-2x2' }]
+            const newState = { count: state.count + 1, width: state.width + 2, layout: newLayout }
+            dp[i + 1].push(newState)
+          }
+        }
+
+        // 保留最优的几个状态，避免状态爆炸
+        dp[i + 1] = this.pruneStates(dp[i + 1], targetWidth)
+      }
+
+      // 找到最佳解
+      let bestSolution = null
+      let bestScore = -1
+
+      for (let i = 0; i <= photos.length; i++) {
+        for (let state of dp[i]) {
+          const score = this.calculateLayoutScore(state, targetWidth, photos.length)
+          if (score > bestScore) {
+            bestScore = score
+            bestSolution = state
+          }
+        }
+      }
+
+      return bestSolution
+        ? bestSolution.layout
+        : photos.slice(0, Math.min(6, photos.length)).map(photo => ({
+            ...photo,
+            gridSize: 'size-1x1',
+          }))
+    },
+
+    // 评估布局方案的得分
+    calculateLayoutScore(state, targetWidth, totalPhotos) {
+      if (!state || !state.layout) return -1
+
+      const widthScore =
+        state.width === targetWidth
+          ? 100
+          : Math.max(0, 100 - Math.abs(targetWidth - state.width) * 20)
+      const countScore = Math.min(state.count, totalPhotos) * 10
+      const diversityScore = this.calculateDiversityScore(state.layout)
+
+      return widthScore + countScore + diversityScore
+    },
+
+    // 计算布局多样性得分（大小图混合更好）
+    calculateDiversityScore(layout) {
+      if (!layout || layout.length === 0) return 0
+
+      const largeCount = layout.filter(photo => photo.gridSize === 'size-2x2').length
+      const smallCount = layout.length - largeCount
+
+      // 如果有大小图混合，给额外分数
+      if (largeCount > 0 && smallCount > 0) return 20
+      if (largeCount > 0) return 10
+      return 5
+    },
+
+    // 剪枝：保留最优的状态
+    pruneStates(states, targetWidth) {
+      if (!states || states.length <= 10) return states
+
+      // 按得分排序，保留前10个
+      const scored = states.map(state => ({
+        ...state,
+        score: this.calculateLayoutScore(state, targetWidth, 100),
+      }))
+
+      scored.sort((a, b) => b.score - a.score)
+      return scored.slice(0, 10).map(({ score, ...state }) => state)
     },
 
     // 简单哈希函数，用于确定性地生成伪随机数
