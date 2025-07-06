@@ -41,6 +41,16 @@
       >
         {{ loading ? $t('auth.login.button.loading') : $t('auth.login.button.login') }}
       </SfButton>
+
+      <SfButton
+        type="primary"
+        full-width
+        :loading="guestLoading"
+        class="auth-button"
+        @click="handleGuestLogin"
+      >
+        {{ guestLoading ? '游客登录中...' : '游客登录' }}
+      </SfButton>
     </form>
 
     <div class="auth-footer">
@@ -69,6 +79,7 @@ export default {
         password: '',
       },
       loading: false,
+      guestLoading: false,
     }
   },
   methods: {
@@ -129,6 +140,33 @@ export default {
         console.error('登录失败:', error)
       } finally {
         this.loading = false
+      }
+    },
+    async handleGuestLogin() {
+      try {
+        this.guestLoading = true
+
+        const response = await authService.login({
+          emailOrUsername: 'test',
+          password: '12345678',
+        })
+
+        const { token, user } = response.data
+
+        localStorage.setItem('token', token)
+        localStorage.setItem('user', JSON.stringify(user))
+
+        this.guestLoading = false
+
+        this.$emit('login-success', user)
+      } catch (error) {
+        let errorMessage = this.$t('auth.login.errors.loginFailed')
+        if (error.response) {
+          errorMessage = error.response.data.message || errorMessage
+        }
+        console.error('游客登录失败:', error)
+      } finally {
+        this.guestLoading = false
       }
     },
   },
