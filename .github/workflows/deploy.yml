@@ -13,15 +13,16 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
+      - name: Setup Node.js with Yarn Cache
         uses: actions/setup-node@v4
         with:
           node-version: '22'
+          cache: 'yarn'
 
-      - name: Install Dependencies and Build
+      - name: Install Dependencies and Build with Yarn
         run: |
-          npm install
-          npm run build
+          yarn install
+          yarn build
 
       - name: Deploy to Server
         uses: appleboy/scp-action@master
