@@ -1,4 +1,4 @@
-name: Deploy Vue App
+name: Deploy ShotMeld to Production Server
 
 on:
   push:
@@ -6,106 +6,29 @@ on:
       - main
 
 jobs:
-  build:
-    name: Build Application
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: Checkout Code
         uses: actions/checkout@v4
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22.15.0'
-          cache: 'yarn'
+          node-version: '22'
 
-      - name: Install dependencies
-        run: yarn install --frozen-lockfile
-
-      - name: Build application
-        run: yarn build
-
-      - name: Upload build artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: dist
-          path: dist/
-          retention-days: 1
-
-  deploy:
-    name: Deploy to Server
-    runs-on: ubuntu-latest
-    needs: build
-
-    steps:
-      - name: Download build artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: dist
-          path: dist/
-
-      - name: Create deployment archive
+      - name: Install Dependencies and Build
         run: |
-          cd dist
-          tar -czf ../dist.tar.gz .
-          cd ..
+          npm install
+          npm run build
 
-      - name: Deploy to server
-        uses: appleboy/scp-action@v0.1.7
+      - name: Deploy to Server
+        uses: appleboy/scp-action@master
         with:
-          host: ${{ secrets.SERVER_IP }}
-          username: ${{ secrets.SSH_USER }}
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          port: 22
-          source: "dist.tar.gz"
-          target: "/tmp/"
-
-      - name: Extract and deploy files
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.SERVER_IP }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          port: 22
-          script: |
-            NGINX_WEB_ROOT="/var/www/shotmeld-web"
-            BACKUP_DIR="/tmp/shotmeld-web-backup-$(date +%Y%m%d_%H%M%S)"
-
-            echo "Creating backup of current deployment..."
-            if [ -d "$NGINX_WEB_ROOT" ]; then
-              sudo cp -rp $NGINX_WEB_ROOT $BACKUP_DIR || { echo "Failed to create backup"; exit 1; }
-              echo "Backup created at: $BACKUP_DIR"
-            fi
-
-            echo "Preparing deployment directory..."
-            sudo mkdir -p $NGINX_WEB_ROOT
-            sudo rm -rf $NGINX_WEB_ROOT/* || { echo "Failed to clean deployment directory"; exit 1; }
-
-            echo "Extracting new build files..."
-            cd /tmp
-            tar -xzf dist.tar.gz -C $NGINX_WEB_ROOT || { echo "Failed to extract build files"; exit 1; }
-
-            echo "Setting proper permissions..."
-            sudo chown -R www-data:www-data $NGINX_WEB_ROOT || { echo "Failed to set ownership"; exit 1; }
-            sudo chmod -R 755 $NGINX_WEB_ROOT || { echo "Failed to set permissions"; exit 1; }
-
-            echo "Cleaning up temporary files..."
-            rm -f /tmp/dist.tar.gz
-
-            echo "Reloading Nginx..."
-            sudo systemctl reload nginx || { 
-              echo "Failed to reload Nginx, rolling back..."; 
-              if [ -d "$BACKUP_DIR" ]; then
-                sudo rm -rf $NGINX_WEB_ROOT/*
-                sudo cp -rp $BACKUP_DIR/* $NGINX_WEB_ROOT/
-                sudo chown -R www-data:www-data $NGINX_WEB_ROOT
-                sudo systemctl reload nginx
-                echo "Rollback completed"
-              fi
-              exit 1; 
-            }
-
-            echo "Deployment completed successfully!"
-            echo "Cleaning up old backups (keeping last 5)..."
-            sudo find /tmp -name "shotmeld-web-backup-*" -type d -mtime +7 -exec rm -rf {} + 2>/dev/null || true
+          source: "dist/*"
+          target: ${{ secrets.TARGET_DIR }}
+          strip_components: 1
