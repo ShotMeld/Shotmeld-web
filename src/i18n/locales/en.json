@@ -264,7 +264,7 @@
   },
   "photoWall": {
     "filters": {
-      "searchPlaceholder": "Search photos...",
+      "searchPlaceholder": "Search photos (AI Enhanced)",
       "searchButton": "Search",
       "searchButtonAriaLabel": "Execute search",
       "album": {

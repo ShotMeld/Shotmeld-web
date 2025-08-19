@@ -266,7 +266,7 @@
   },
   "photoWall": {
     "filters": {
-      "searchPlaceholder": "搜索照片...",
+      "searchPlaceholder": "搜索照片（AI 增强）",
       "searchButton": "搜索",
       "searchButtonAriaLabel": "执行搜索",
       "album": {
