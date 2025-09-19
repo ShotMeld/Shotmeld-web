@@ -1,0 +1,133 @@
+name: PR Preview Deployment
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+  pull_request_target:
+    types: [closed]
+
+jobs:
+  deploy-preview:
+    if: github.event.action != 'closed'
+    runs-on: ubuntu-latest
+    
+    permissions:
+      pull-requests: write
+      contents: read
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - name: Setup Node.js with Yarn Cache
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'yarn'
+
+      - name: Install Dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Build Project
+        run: yarn build
+
+      - name: Setup SPA routing for Surge
+        run: |
+          cp dist/index.html dist/200.html
+
+      - name: Generate unique subdomain
+        id: subdomain
+        run: |
+          SUBDOMAIN="shotmeld-pr-${{ github.event.pull_request.number }}"
+          echo "subdomain=$SUBDOMAIN" >> $GITHUB_OUTPUT
+          echo "url=https://$SUBDOMAIN.surge.sh" >> $GITHUB_OUTPUT
+
+      - name: Install Surge CLI
+        run: npm install -g surge
+
+      - name: Deploy to Surge.sh
+        run: |
+          surge ./dist ${{ steps.subdomain.outputs.url }} --token ${{ secrets.SURGE_TOKEN }}
+        env:
+          SURGE_LOGIN: ${{ secrets.SURGE_LOGIN }}
+
+      - name: Find existing preview comment
+        uses: peter-evans/find-comment@v3
+        id: find-comment
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          comment-author: 'github-actions[bot]'
+          body-includes: '🚀 PR Preview'
+
+      - name: Create or update preview comment
+        uses: peter-evans/create-or-update-comment@v4
+        with:
+          comment-id: ${{ steps.find-comment.outputs.comment-id }}
+          issue-number: ${{ github.event.pull_request.number }}
+          edit-mode: replace
+          body: |
+            ## 🚀 PR Preview Deployed!
+            
+            ✅ **Preview URL**: ${{ steps.subdomain.outputs.url }}
+            
+            📝 **Branch**: `${{ github.event.pull_request.head.ref }}`
+            📦 **Commit**: `${{ github.event.pull_request.head.sha }}`
+            🕐 **Updated**: ${{ github.event.pull_request.updated_at }}
+            
+            The preview will be automatically updated when you push new commits to this PR.
+            
+            ---
+            *Preview powered by [Surge.sh](https://surge.sh)*
+
+  cleanup-preview:
+    if: github.event.action == 'closed'
+    runs-on: ubuntu-latest
+    
+    permissions:
+      pull-requests: write
+
+    steps:
+      - name: Generate subdomain for cleanup
+        id: subdomain
+        run: |
+          SUBDOMAIN="shotmeld-pr-${{ github.event.pull_request.number }}"
+          echo "subdomain=$SUBDOMAIN" >> $GITHUB_OUTPUT
+          echo "url=https://$SUBDOMAIN.surge.sh" >> $GITHUB_OUTPUT
+
+      - name: Install Surge CLI
+        run: npm install -g surge
+
+      - name: Remove deployment from Surge.sh
+        run: |
+          surge teardown ${{ steps.subdomain.outputs.url }} --token ${{ secrets.SURGE_TOKEN }}
+        env:
+          SURGE_LOGIN: ${{ secrets.SURGE_LOGIN }}
+        continue-on-error: true
+
+      - name: Find existing preview comment
+        uses: peter-evans/find-comment@v3
+        id: find-comment
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          comment-author: 'github-actions[bot]'
+          body-includes: '🚀 PR Preview'
+
+      - name: Update comment with cleanup notice
+        if: steps.find-comment.outputs.comment-id != ''
+        uses: peter-evans/create-or-update-comment@v4
+        with:
+          comment-id: ${{ steps.find-comment.outputs.comment-id }}
+          edit-mode: replace
+          body: |
+            ## 🧹 PR Preview Cleaned Up
+            
+            ❌ **Preview URL**: ${{ steps.subdomain.outputs.url }} (no longer available)
+            
+            📝 **Branch**: `${{ github.event.pull_request.head.ref }}`
+            
+            The preview deployment has been removed since this PR was closed.
+            
+            ---
+            *Preview was powered by [Surge.sh](https://surge.sh)*
